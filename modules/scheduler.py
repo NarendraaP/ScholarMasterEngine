@@ -102,11 +102,24 @@ class AutoScheduler:
                 print(f"Could not schedule all sessions for {subject}. Scheduled {sessions_scheduled}/{sessions_needed}")
 
         # Save updates
-        self.timetable.to_csv(self.timetable_path, index=False)
-        with open(self.teachers_path, "w") as f:
-            json.dump(self.teachers, f, indent=4)
+        # Save updates
+        self.save_data()
 
         return pd.DataFrame(scheduled_classes)
+
+    def save_data(self):
+        # 1. Save timetable to a temp file
+        temp_tt_path = f"{self.timetable_path}.tmp"
+        self.timetable.to_csv(temp_tt_path, index=False)
+        # Atomic swap
+        os.replace(temp_tt_path, self.timetable_path)
+
+        # 2. Save teachers to a temp file
+        temp_teachers_path = f"{self.teachers_path}.tmp"
+        with open(temp_teachers_path, "w") as f:
+            json.dump(self.teachers, f, indent=4)
+        # Atomic swap
+        os.replace(temp_teachers_path, self.teachers_path)
 
     def _is_slot_available(self, day, start, end, faculty, dept, program, year, section, teacher_name, room):
         slot_mask = (self.timetable["day"] == day) & (self.timetable["start"] == start)
