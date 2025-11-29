@@ -5,8 +5,17 @@ import os
 from modules.scheduler import AutoScheduler
 from modules.auth import Authenticator
 from modules.analytics import AnalyticsEngine
+from utils.license_manager import check_license
+from utils.hasher import hash_password
+import time
 
 st.set_page_config(page_title="Scholar Master Admin", layout="wide")
+
+# --- License Check ---
+if not check_license():
+    st.error("❌ Invalid or Missing License Key. Please contact support.")
+    st.stop()
+
 
 # --- Authentication & Session State ---
 if 'logged_in' not in st.session_state:
@@ -58,7 +67,8 @@ else:
         st.title("🎓 Scholar Master Engine - University Management")
         
         # Create Tabs
-        tab1, tab2 = st.tabs(["📅 Scheduler", "📊 Analytics"])
+        tab1, tab2, tab3, tab4 = st.tabs(["📅 Scheduler", "📊 Analytics", "👥 User Management", "👤 Biometric Enrollment"])
+
         
         with tab1:
             st.subheader("Auto-Scheduler Module")
@@ -327,6 +337,227 @@ else:
             else:
                 st.info("No trend data available.")
 
+        with tab3:
+            st.subheader("👥 User Management")
+            
+            # Load Users
+            users_file = "data/users.json"
+            if os.path.exists(users_file):
+                with open(users_file, "r") as f:
+                    users_db = json.load(f)
+            else:
+                users_db = {}
+                
+            # --- Add User ---
+            with st.expander("Add New User"):
+                with st.form("add_user_form"):
+                    col_u1, col_u2 = st.columns(2)
+                    with col_u1:
+                        new_user = st.text_input("Username")
+                        new_pass = st.text_input("Password", type="password")
+                    with col_u2:
+                        new_role = st.selectbox("Role", ["Super Admin", "Faculty Manager", "Faculty", "Student"])
+                        new_dept = st.text_input("Department (Optional)")
+                        
+                    if st.form_submit_button("Create User"):
+                        if new_user and new_pass:
+                            if new_user in users_db:
+                                st.error("User already exists!")
+                            else:
+                                h_pass, salt = hash_password(new_pass)
+                                users_db[new_user] = {
+                                    "password": f"{h_pass}:{salt}",
+                                    "role": new_role,
+                                    "name": new_user.capitalize(),
+                                    "dept": new_dept
+                                }
+                                with open(users_file, "w") as f:
+                                    json.dump(users_db, f, indent=4)
+                                st.success(f"User {new_user} created!")
+                                st.rerun()
+                        else:
+                            st.warning("Username and Password required.")
+
+            # --- Bulk Import ---
+            with st.expander("📂 Bulk Import Users"):
+                st.info("Upload CSV with columns: `id` (username), `name`, `role`, `dept`")
+                bulk_file = st.file_uploader("Upload User CSV", type=["csv"])
+                if bulk_file:
+                    if st.button("Process Import"):
+                        df_bulk = pd.read_csv(bulk_file)
+                        count = 0
+                        for _, row in df_bulk.iterrows():
+                            uid = str(row['id'])
+                            if uid not in users_db:
+                                h_pass, salt = hash_password("1234") # Default password
+                                users_db[uid] = {
+                                    "password": f"{h_pass}:{salt}",
+                                    "role": row['role'],
+                                    "name": row['name'],
+                                    "dept": row.get('dept', '')
+                                }
+                                count += 1
+                        
+                        with open(users_file, "w") as f:
+                            json.dump(users_db, f, indent=4)
+                        st.success(f"Imported {count} users.")
+                        st.rerun()
+
+            # --- User List ---
+            st.markdown("### Existing Users")
+            
+            # Convert to DF for display (hide password)
+            user_list = []
+            for u, d in users_db.items():
+                user_list.append({
+                    "Username": u,
+                    "Name": d.get("name"),
+                    "Role": d.get("role"),
+                    "Dept": d.get("dept", "-")
+                })
+            
+            if user_list:
+                st.dataframe(pd.DataFrame(user_list), use_container_width=True)
+                
+                # Delete User
+                del_user = st.selectbox("Select User to Delete", [u["Username"] for u in user_list])
+                if st.button("Delete User", type="primary"):
+                    if del_user == st.session_state['username']:
+                        st.error("Cannot delete yourself!")
+                    else:
+                        del users_db[del_user]
+                        with open(users_file, "w") as f:
+                            json.dump(users_db, f, indent=4)
+                        st.success(f"Deleted {del_user}")
+                        st.rerun()
+
+        with tab4:
+            st.subheader("👤 Biometric Enrollment")
+            
+            from modules.face_registry import FaceRegistry
+            import numpy as np
+            import cv2
+            
+            registry = FaceRegistry()
+            
+            # RBAC for Enrollment
+            # Super Admin sees all, Faculty Manager sees only their dept
+            # Since this is Super Admin block, we see all.
+            # But we want to reuse this logic for Faculty Manager.
+            # For now, I will implement it here for Super Admin.
+            
+            enroll_tab1, enroll_tab2 = st.tabs(["📝 Single Enrollment", "📸 Kiosk Mode"])
+            
+            with enroll_tab1:
+                col_e1, col_e2 = st.columns(2)
+                with col_e1:
+                    e_id = st.text_input("User ID / Student ID")
+                    e_name = st.text_input("Full Name")
+                    e_role = st.selectbox("Role", ["Student", "Faculty", "Staff"])
+                    e_dept = st.text_input("Department")
+                
+                with col_e2:
+                    e_img_file = st.file_uploader("Upload Photo", type=["jpg", "png"])
+                    e_cam = st.camera_input("Take Photo")
+                
+                if st.button("Enroll User"):
+                    img = None
+                    if e_img_file:
+                        file_bytes = np.asarray(bytearray(e_img_file.read()), dtype=np.uint8)
+                        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                    elif e_cam:
+                        file_bytes = np.asarray(bytearray(e_cam.read()), dtype=np.uint8)
+                        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                    
+                    if img is not None and e_id and e_name:
+                        success, msg = registry.register_face(img, e_id, e_name, e_role, e_dept)
+                        if success:
+                            st.success(msg)
+                        else:
+                            st.error(msg)
+                    else:
+                        st.warning("Missing Data or Image")
+
+            with enroll_tab2:
+                st.info("Kiosk Mode: Designed for rapid enrollment.")
+                k_id = st.text_input("Enter ID to Enroll", key="kiosk_id")
+                k_name = st.text_input("Enter Name", key="kiosk_name")
+                k_dept = st.text_input("Department", key="kiosk_dept")
+                
+                k_cam = st.camera_input("Kiosk Camera", key="kiosk_cam_real")
+                
+                if k_cam and k_id and k_name:
+                    if st.button("Enroll Now"):
+                        file_bytes = np.asarray(bytearray(k_cam.read()), dtype=np.uint8)
+                        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                        success, msg = registry.register_face(img, k_id, k_name, "Student", k_dept)
+                        if success:
+                            st.success(msg)
+                            # Optional: Clear fields? Streamlit makes this hard without rerun
+                        else:
+                            st.error(msg)
+
+    elif role == "Faculty Manager":
+        st.title("👤 Biometric Enrollment (Manager)")
+        
+        from modules.face_registry import FaceRegistry
+        import numpy as np
+        import cv2
+        registry = FaceRegistry()
+        
+        # Get Manager's Dept
+        users_file = "data/users.json"
+        manager_dept = "Unknown"
+        if os.path.exists(users_file):
+            with open(users_file, "r") as f:
+                u_db = json.load(f)
+                manager_dept = u_db.get(st.session_state['username'], {}).get("dept", "Unknown")
+        
+        st.info(f"Managing Enrollment for Department: **{manager_dept}**")
+        
+        enroll_tab1, enroll_tab2 = st.tabs(["📝 Single Enrollment", "📸 Kiosk Mode"])
+        
+        with enroll_tab1:
+            col_e1, col_e2 = st.columns(2)
+            with col_e1:
+                e_id = st.text_input("User ID")
+                e_name = st.text_input("Full Name")
+                e_role = st.selectbox("Role", ["Student", "Faculty"])
+                # Locked Dept
+                st.text_input("Department", value=manager_dept, disabled=True)
+            
+            with col_e2:
+                e_cam = st.camera_input("Take Photo")
+            
+            if st.button("Enroll User"):
+                if e_cam and e_id and e_name:
+                    file_bytes = np.asarray(bytearray(e_cam.read()), dtype=np.uint8)
+                    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                    success, msg = registry.register_face(img, e_id, e_name, e_role, manager_dept)
+                    if success:
+                        st.success(msg)
+                    else:
+                        st.error(msg)
+                else:
+                    st.warning("Missing info")
+
+        with enroll_tab2:
+            st.markdown("### 📸 Kiosk Mode")
+            k_id = st.text_input("ID", key="m_k_id")
+            k_name = st.text_input("Name", key="m_k_name")
+            
+            k_cam = st.camera_input("Camera", key="m_k_cam")
+            
+            if k_cam and k_id and k_name:
+                if st.button("Enroll"):
+                    file_bytes = np.asarray(bytearray(k_cam.read()), dtype=np.uint8)
+                    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+                    success, msg = registry.register_face(img, k_id, k_name, "Student", manager_dept)
+                    if success:
+                        st.success(msg)
+                    else:
+                        st.error(msg)
+
     elif role == "Faculty":
         st.title("👨‍🏫 Faculty Portal")
         st.write(f"Welcome, {st.session_state['name']}")
@@ -356,3 +587,4 @@ else:
             st.dataframe(df, use_container_width=True)
         else:
             st.info("No timetable has been generated yet.")
+
