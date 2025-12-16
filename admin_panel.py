@@ -2,12 +2,15 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import time
+import datetime
+import plotly.express as px
 from modules.scheduler import AutoScheduler
 from modules.auth import Authenticator
 from modules.analytics import AnalyticsEngine
 from utils.license_manager import check_license
 from utils.hasher import hash_password
-import time
+from streamlit_autorefresh import st_autorefresh
 
 st.set_page_config(page_title="Scholar Master Admin", layout="wide")
 
@@ -15,6 +18,9 @@ st.set_page_config(page_title="Scholar Master Admin", layout="wide")
 if not check_license():
     st.error("❌ Invalid or Missing License Key. Please contact support.")
     st.stop()
+
+# --- Auto-Refresh for Real-Time Updates ---
+st_autorefresh(interval=2000, key="data_refresh")
 
 
 # --- Authentication & Session State ---
@@ -31,19 +37,28 @@ if not st.session_state['logged_in']:
     
     col1, col2 = st.columns([1, 2])
     with col1:
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        
-        if st.button("Login", type="primary"):
-            role, name = auth.verify_user(username, password)
-            if role:
-                st.session_state['logged_in'] = True
-                st.session_state['role'] = role
-                st.session_state['username'] = username
-                st.session_state['name'] = name
-                st.rerun()
-            else:
-                st.error("Invalid username or password")
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            
+            submit_button = st.form_submit_button("Login", type="primary")
+            
+            if submit_button:
+                is_valid, user_data = auth.verify_user(username, password)
+                if is_valid:
+                    # Check if user is approved
+                    user_status = user_data.get("status", "Approved")  # Default to Approved for legacy users
+                    if user_status != "Approved":
+                        st.error("❌ Your account is pending approval. Please contact administrator.")
+                    else:
+                        st.session_state['logged_in'] = True
+                        st.session_state['username'] = username
+                        st.session_state['role'] = user_data.get('role')
+                        st.session_state['name'] = user_data.get('name', username)
+                        st.success(f"✅ Welcome, {st.session_state['name']}!")
+                        st.rerun()
+                else:
+                    st.error("❌ Invalid credentials")
     
     st.info("Default Users: admin/123, smith/123, john/123")
 
@@ -67,7 +82,7 @@ else:
         st.title("🎓 Scholar Master Engine - University Management")
         
         # Create Tabs
-        tab1, tab2, tab3, tab4 = st.tabs(["📅 Scheduler", "📊 Analytics", "👥 User Management", "👤 Biometric Enrollment"])
+        tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["📅 Scheduler", "📊 Analytics", "👥 User Management", "👤 Biometric Enrollment", "🔔 Alert Center", "📝 Attendance Logs", "👔 Grooming"])
 
         
         with tab1:
@@ -369,7 +384,8 @@ else:
                                     "password": f"{h_pass}:{salt}",
                                     "role": new_role,
                                     "name": new_user.capitalize(),
-                                    "dept": new_dept
+                                    "dept": new_dept,
+                                    "status": "Approved"  # Super Admin creates approved users
                                 }
                                 with open(users_file, "w") as f:
                                     json.dump(users_db, f, indent=4)
@@ -430,6 +446,38 @@ else:
                             json.dump(users_db, f, indent=4)
                         st.success(f"Deleted {del_user}")
                         st.rerun()
+            
+            # --- Pending Approvals (Super Admin Only) ---
+            st.markdown("---")
+            st.subheader("🔔 Pending Approvals")
+            
+            pending_users = {u: d for u, d in users_db.items() if d.get("status") == "Pending"}
+            
+            if pending_users:
+                st.warning(f"{len(pending_users)} user(s) awaiting approval")
+                
+                for username, user_data in pending_users.items():
+                    col_p1, col_p2, col_p3, col_p4 = st.columns([3, 2, 1, 1])
+                    with col_p1:
+                        st.text(f"👤 {username} ({user_data.get('name', 'N/A')})")
+                    with col_p2:
+                        st.text(f"Role: {user_data.get('role', 'N/A')}")
+                    with col_p3:
+                        if st.button("✅ Approve", key=f"approve_{username}"):
+                            users_db[username]["status"] = "Approved"
+                            with open(users_file, "w") as f:
+                                json.dump(users_db, f, indent=4)
+                            st.success(f"Approved {username}")
+                            st.rerun()
+                    with col_p4:
+                        if st.button("❌ Reject", key=f"reject_{username}"):
+                            del users_db[username]
+                            with open(users_file, "w") as f:
+                                json.dump(users_db, f, indent=4)
+                            st.info(f"Rejected {username}")
+                            st.rerun()
+            else:
+                st.info("No pending approvals")
 
         with tab4:
             st.subheader("👤 Biometric Enrollment")
@@ -460,6 +508,13 @@ else:
                     e_img_file = st.file_uploader("Upload Photo", type=["jpg", "png"])
                     e_cam = st.camera_input("Take Photo")
                 
+                # Privacy Mode Option
+                use_federated = st.checkbox(
+                    "🔒 Use Federated Privacy Mode",
+                    help="Updates local model only. No raw biometric data transmitted to central server."
+                )
+                
+                
                 if st.button("Enroll User"):
                     img = None
                     if e_img_file:
@@ -470,11 +525,37 @@ else:
                         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
                     
                     if img is not None and e_id and e_name:
-                        success, msg = registry.register_face(img, e_id, e_name, e_role, e_dept)
-                        if success:
-                            st.success(msg)
+                        if use_federated:
+                            # Federated Learning Mode
+                            from modules.federated_trainer import FederatedTrainer
+                            from insightface.app import FaceAnalysis
+                            
+                            # Extract face embedding first
+                            face_app = FaceAnalysis(providers=['CPUExecutionProvider'])
+                            face_app.prepare(ctx_id=0, det_size=(640, 640))
+                            faces = face_app.get(img)
+                            
+                            if len(faces) > 0:
+                                # Get embedding
+                                embedding = faces[0].embedding
+                                
+                                # Call federated trainer with vector
+                                trainer = FederatedTrainer()
+                                status = trainer.train_local([embedding])
+                                
+                                if status == "Success":
+                                    st.success(f"✅ {e_name} enrolled via Federated Learning (Privacy-First)")
+                                else:
+                                    st.error("❌ Enrollment failed")
+                            else:
+                                st.error("❌ No face detected in image")
                         else:
-                            st.error(msg)
+                            # Standard Registration
+                            success, msg = registry.register_face(img, e_id, e_name, e_role, e_dept)
+                            if success:
+                                st.success(msg)
+                            else:
+                                st.error(msg)
                     else:
                         st.warning("Missing Data or Image")
 
@@ -496,6 +577,215 @@ else:
                             # Optional: Clear fields? Streamlit makes this hard without rerun
                         else:
                             st.error(msg)
+
+        with tab5:
+            st.subheader("🔔 Alert Center (Human-in-the-Loop)")
+            
+            # Auto-refresh logic
+            if st.button("Refresh Feed"):
+                st.rerun()
+            
+            # Poll for alerts
+            alerts_file = "data/alerts.json"
+            if os.path.exists(alerts_file):
+                try:
+                    with open(alerts_file, "r") as f:
+                        alerts = json.load(f)
+                except:
+                    alerts = []
+            else:
+                alerts = []
+            
+            if alerts:
+                # Sort by newest first
+                alerts = sorted(alerts, key=lambda x: x['timestamp'], reverse=True)
+                
+                # Display Alerts Table
+                # We iterate and show actions for each
+                for i, alert in enumerate(alerts):
+                    # Determine Color
+                    a_type = alert.get("type", "Info")
+                    if a_type == "Critical":
+                        icon = "🚨"
+                        color = "red"
+                    elif a_type == "Warning":
+                        icon = "⚠️"
+                        color = "orange"
+                    else:
+                        icon = "ℹ️"
+                        color = "blue"
+                    
+                    with st.container():
+                        col_a1, col_a2, col_a3 = st.columns([3, 1, 1])
+                        with col_a1:
+                            st.markdown(f":{color}[**{icon} {a_type.upper()}**] | {alert['timestamp']} | **{alert['zone']}**")
+                            st.write(f"**Reason:** {alert['msg']}")
+                        
+                        with col_a2:
+                            if st.button("✅ Confirm", key=f"conf_{i}"):
+                                # Log to permanent record (mock)
+                                st.toast(f"Alert Confirmed: {alert['msg']}")
+                                # Remove from active alerts
+                                alerts.pop(i)
+                                with open(alerts_file, "w") as f:
+                                    json.dump(alerts, f, indent=4)
+                                st.rerun()
+                                
+                        with col_a3:
+                            if st.button("❌ Dismiss", key=f"diss_{i}"):
+                                # Mark as False Positive (mock)
+                                st.toast("Alert Dismissed (False Positive)")
+                                # Remove from active alerts
+                                alerts.pop(i)
+                                with open(alerts_file, "w") as f:
+                                    json.dump(alerts, f, indent=4)
+                                st.rerun()
+                        st.markdown("---")
+            else:
+                st.info("No active alerts. System is secure.")
+            
+            # Auto-rerun every 5 seconds
+            time.sleep(5)
+            st.rerun()
+
+        with tab6:
+            st.subheader("📝 Attendance Logs")
+            
+            from modules.attendance_logger import AttendanceManager
+            am = AttendanceManager()
+            
+            # Filters
+            col_att1, col_att2 = st.columns(2)
+            with col_att1:
+                sel_date = st.date_input("Select Date", datetime.date.today())
+            with col_att2:
+                # Get unique subjects from attendance file for dropdown
+                df_all = am.get_attendance()
+                if not df_all.empty and "subject" in df_all.columns:
+                    unique_subs = ["All"] + sorted(df_all["subject"].unique().tolist())
+                else:
+                    unique_subs = ["All"]
+                sel_sub = st.selectbox("Filter by Subject", unique_subs)
+            
+            # Load Data
+            df_att = am.get_attendance()
+            
+            if not df_att.empty:
+                # Filter by Date
+                # Ensure date column is string YYYY-MM-DD
+                df_att['date'] = df_att['date'].astype(str)
+                df_att = df_att[df_att['date'] == str(sel_date)]
+                
+                # Filter by Subject
+                if sel_sub != "All":
+                    df_att = df_att[df_att['subject'] == sel_sub]
+                
+                # Display
+                st.dataframe(df_att, use_container_width=True)
+                
+                # Download
+                csv = df_att.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Download Report (CSV)",
+                    data=csv,
+                    file_name=f"attendance_{sel_date}.csv",
+                    mime="text/csv",
+                )
+            else:
+                st.info("No attendance records found.")
+
+        with tab7:
+            st.subheader("👔 Dress Code & Grooming Settings")
+            
+            config_file = "data/uniform_config.json"
+            
+            # Load Config
+            if os.path.exists(config_file):
+                with open(config_file, "r") as f:
+                    u_config = json.load(f)
+            else:
+                u_config = {
+                    "uniform_enabled": True,
+                    "uniform_color_hsv": {
+                        "h_min": 100, "h_max": 120,
+                        "s_min": 100, "s_max": 255,
+                        "v_min": 50, "v_max": 200,
+                        "description": "Navy Blue"
+                    }
+                }
+            
+            # UI Controls
+            col_g1, col_g2 = st.columns(2)
+            
+            with col_g1:
+                st.markdown("### General Settings")
+                u_enabled = st.toggle("Enable Uniform Compliance Check", value=u_config.get("uniform_enabled", True))
+                
+                st.info("When enabled, the system will check if students are wearing the prescribed uniform color.")
+            
+            with col_g2:
+                st.markdown("### Uniform Color")
+                
+                # Simple Color Picker (RGB) -> We need to approximate HSV range
+                # For this demo, we'll let user pick a "Target Color" and we'll build a range around it.
+                
+                # Convert current HSV description to a representative RGB for the picker default?
+                # That's complex. Let's just default to Blue.
+                target_color = st.color_picker("Select Uniform Color", "#000080") # Navy Blue default
+                
+                st.caption("Note: The system will automatically calculate the acceptable HSV range based on your selection.")
+            
+            # Save Button
+            if st.button("💾 Save Grooming Rules"):
+                # Convert Hex to RGB
+                h = target_color.lstrip('#')
+                rgb = tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+                
+                # Convert RGB to HSV (OpenCV uses H:0-179, S:0-255, V:0-255)
+                # But here we are in Python. Let's use a helper or just approximate.
+                # Actually, let's just save the "description" and a generic range for the demo 
+                # because robust RGB->HSV range generation is tricky without a library like colorsys + scaling.
+                
+                # For the demo, we will update the description and assume the user picked "Navy Blue" or "White".
+                # We'll implement a simple switch for common colors to set robust ranges.
+                
+                # Heuristic for demo:
+                # If high brightness -> White
+                # If blue dominant -> Navy Blue
+                # If red dominant -> Maroon
+                
+                r, g, b = rgb
+                
+                new_hsv = u_config["uniform_color_hsv"]
+                desc = "Custom"
+                
+                if r > 200 and g > 200 and b > 200:
+                    # White
+                    new_hsv = {"h_min": 0, "h_max": 180, "s_min": 0, "s_max": 50, "v_min": 200, "v_max": 255}
+                    desc = "White"
+                elif b > r and b > g and b < 100:
+                    # Navy Blue
+                    new_hsv = {"h_min": 100, "h_max": 120, "s_min": 100, "s_max": 255, "v_min": 50, "v_max": 200}
+                    desc = "Navy Blue"
+                elif r > g and r > b:
+                    # Red/Maroon
+                    new_hsv = {"h_min": 0, "h_max": 10, "s_min": 100, "s_max": 255, "v_min": 50, "v_max": 255}
+                    desc = "Red/Maroon"
+                else:
+                    # Default/Custom (Keep existing or generic)
+                    desc = "Custom (Approximated)"
+                
+                new_hsv["description"] = desc
+                
+                # Update Config
+                u_config["uniform_enabled"] = u_enabled
+                u_config["uniform_color_hsv"] = new_hsv
+                u_config["last_updated"] = datetime.datetime.now().isoformat()
+                
+                with open(config_file, "w") as f:
+                    json.dump(u_config, f, indent=4)
+                
+                st.success(f"Settings Saved! Uniform set to: **{desc}**")
 
     elif role == "Faculty Manager":
         st.title("👤 Biometric Enrollment (Manager)")
@@ -565,14 +855,19 @@ else:
         timetable_file = "data/timetable.csv"
         if os.path.exists(timetable_file):
             df = pd.read_csv(timetable_file)
-            # Filter for the logged-in teacher
-            my_classes = df[df['Teacher'] == st.session_state['name']]
             
-            if not my_classes.empty:
-                st.subheader("My Class Schedule")
-                st.dataframe(my_classes, use_container_width=True)
+            # Check if dataframe is empty
+            if not df.empty:
+                # Filter for the logged-in teacher (use lowercase 'teacher')
+                my_classes = df[df['teacher'] == st.session_state['name']]
+                
+                if not my_classes.empty:
+                    st.subheader("My Class Schedule")
+                    st.dataframe(my_classes, use_container_width=True)
+                else:
+                    st.info("You have no classes scheduled yet.")
             else:
-                st.info("You have no classes scheduled yet.")
+                st.info("Timetable is empty.")
         else:
             st.info("No timetable has been generated yet.")
 

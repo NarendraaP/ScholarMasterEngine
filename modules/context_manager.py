@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import os
 import datetime
+from filelock import FileLock
 
 class ContextEngine:
     def __init__(self, data_dir="data"):
@@ -36,7 +37,7 @@ class ContextEngine:
         """
         Looks up the student's Section/Year/Dept.
         Filters the Timetable DataFrame for that specific class at that time.
-        Returns the `room` and `subject` if a class exists, or `None` if free.
+        Returns a dict with `room`, `subject`, `start`, `end` if a class exists, or `None`.
         """
         student = self.get_student_info(student_id)
         if not student:
@@ -75,30 +76,67 @@ class ContextEngine:
                 t_end = datetime.datetime.strptime(end_time, "%H:%M").time()
                 
                 if t_start <= t_check < t_end:
-                    return row["room"], row["subject"]
+                    return {
+                        "room": row["room"],
+                        "subject": row["subject"],
+                        "start": row["start"],
+                        "end": row["end"],
+                        "teacher": row["teacher"]
+                    }
             except ValueError:
                 continue
                 
         return None
 
+    def get_class_context(self, zone, day, time_str):
+        """
+        Checks if a class is currently active in the given zone.
+        Returns: True (Class Active) or False (Break/Free).
+        """
+        if self.timetable.empty:
+            return False
+            
+        # Filter for the room
+        room_classes = self.timetable[
+            (self.timetable["day"] == day) &
+            (self.timetable["room"] == zone)
+        ]
+        
+        for _, row in room_classes.iterrows():
+            start_time = row["start"]
+            end_time = row["end"]
+            
+            try:
+                t_check = datetime.datetime.strptime(time_str, "%H:%M").time()
+                t_start = datetime.datetime.strptime(start_time, "%H:%M").time()
+                t_end = datetime.datetime.strptime(end_time, "%H:%M").time()
+                
+                if t_start <= t_check < t_end:
+                    return True # Class is active
+            except ValueError:
+                continue
+                
+        return False
+
     def check_compliance(self, student_id, current_zone, day, time_str):
         """
         Uses `get_expected_location`.
-        If no class is scheduled: Return `(True, "Free Period")`.
-        If class is scheduled AND `current_zone == expected_room`: Return `(True, "Compliant")`.
-        If class is scheduled AND `current_zone != expected_room`: Return `(False, f"TRUANCY: Expected in {room} for {subject}")`.
+        If no class is scheduled: Return `(True, "Free Period", None)`.
+        If class is scheduled AND `current_zone == expected_room`: Return `(True, "Compliant", expected_data)`.
+        If class is scheduled AND `current_zone != expected_room`: Return `(False, f"TRUANCY...", expected_data)`.
         """
         expected = self.get_expected_location(student_id, day, time_str)
         
         if expected is None:
-            return True, "Free Period"
+            return True, "Free Period", None
             
-        expected_room, subject = expected
+        expected_room = expected["room"]
+        subject = expected["subject"]
         
         if current_zone == expected_room:
-            return True, "Compliant"
+            return True, "Compliant", expected
         else:
-            return False, f"TRUANCY: Expected in {expected_room} for {subject}"
+            return False, f"TRUANCY: Expected in {expected_room} for {subject}", expected
 
     def get_anon_id(self, real_id):
         """Returns the privacy_hash for a given student ID."""
@@ -135,10 +173,12 @@ class ContextEngine:
         # Append new entry
         df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
         
-        # RCU Save
-        temp_path = f"{self.log_path}.tmp"
-        df.to_csv(temp_path, index=False)
-        os.replace(temp_path, self.log_path)
+        # RCU Save with FileLock
+        log_lock = FileLock(f"{self.log_path}.lock")
+        with log_lock:
+            temp_path = f"{self.log_path}.tmp"
+            df.to_csv(temp_path, index=False)
+            os.replace(temp_path, self.log_path)
 
 if __name__ == "__main__":
     # Quick test
@@ -169,9 +209,9 @@ if __name__ == "__main__":
     }
     engine.timetable = pd.concat([engine.timetable, pd.DataFrame([test_row])], ignore_index=True)
     
-    is_compliant, message = engine.check_compliance("S101", "Canteen", "Mon", "10:00")
-    print(f"Result: {is_compliant}, Message: {message}")
+    is_compliant, message, data = engine.check_compliance("S101", "Canteen", "Mon", "10:00")
+    print(f"Result: {is_compliant}, Message: {message}, Data: {data}")
     
     print("\nTesting Compliance for S101 at Mon 10:00 (Location: Lab 1)...")
-    is_compliant, message = engine.check_compliance("S101", "Lab 1", "Mon", "10:00")
-    print(f"Result: {is_compliant}, Message: {message}")
+    is_compliant, message, data = engine.check_compliance("S101", "Lab 1", "Mon", "10:00")
+    print(f"Result: {is_compliant}, Message: {message}, Data: {data}")

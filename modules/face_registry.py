@@ -33,12 +33,34 @@ class FaceRegistry:
                 self.identity_map = json.load(f)
         else:
             self.identity_map = {}
+            # Create empty file immediately
+            with open(self.identity_map_file, "w") as f:
+                json.dump(self.identity_map, f)
 
-    def register_face(self, image_array, user_id, name, role, dept=None):
+    def register_face(self, image_array, user_id, name, role, dept=None, user_role=None):
         """
         Detects face, extracts embedding, adds to FAISS, and updates records.
-        Returns: (success: bool, message: str)
+        
+        RBAC Protection: Only Admin and Faculty Manager can register biometric data.
+        
+        Args:
+            image_array: Image containing the face
+            user_id: User ID for the person being registered
+            name: Name of the person
+            role: Role of the person being registered
+            dept: Department (optional)
+            user_role: Current user's role performing registration (for RBAC)
+        
+        Returns: 
+            (success: bool, message: str)
+            
+        Raises:
+            PermissionError: If user doesn't have Admin or Faculty Manager role
         """
+        # RBAC Backend Protection - Only Admin and Faculty Manager can enroll users
+        from modules.auth import validate_role
+        validate_role(['Admin', 'Faculty Manager'], user_role)
+        
         # Detect faces
         faces = self.app.get(image_array)
         
@@ -97,6 +119,32 @@ class FaceRegistry:
             self._update_students_file(user_id, name, dept)
             
         return True, f"Successfully registered {name} (ID: {user_id})"
+
+    def search_face(self, embedding):
+        """
+        Searches for a face in the FAISS index.
+        Input: 512-D numpy array (embedding).
+        Returns: (True, student_id) if found, else (False, "Unknown").
+        """
+        if self.index.ntotal == 0:
+            return False, "Index Empty"
+            
+        # Normalize embedding (L2)
+        faiss.normalize_L2(embedding.reshape(1, -1))
+        
+        # Search
+        D, I = self.index.search(embedding.reshape(1, -1), 1)
+        
+        # Threshold Check
+        # Cosine Distance < 0.6 => d^2 < 1.2
+        if D[0][0] < 1.2:
+            match_idx = str(I[0][0])
+            match_info = self.identity_map.get(match_idx, {})
+            match_uid = match_info.get("id", "Unknown")
+            return True, match_uid
+            
+        return False, "Unknown"
+
 
     def _update_students_file(self, student_id, name, dept):
         """Updates the main students.json file with the new student if not exists."""

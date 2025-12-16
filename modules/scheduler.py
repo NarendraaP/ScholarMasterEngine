@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 import json
+import sys
+from filelock import FileLock
 
 class AutoScheduler:
     def __init__(self, data_dir="data"):
@@ -108,18 +110,24 @@ class AutoScheduler:
         return pd.DataFrame(scheduled_classes)
 
     def save_data(self):
-        # 1. Save timetable to a temp file
-        temp_tt_path = f"{self.timetable_path}.tmp"
-        self.timetable.to_csv(temp_tt_path, index=False)
-        # Atomic swap
-        os.replace(temp_tt_path, self.timetable_path)
+        # Use file locks to prevent race conditions
+        timetable_lock = FileLock(f"{self.timetable_path}.lock")
+        teachers_lock = FileLock(f"{self.teachers_path}.lock")
+        
+        # 1. Save timetable with lock
+        with timetable_lock:
+            temp_tt_path = f"{self.timetable_path}.tmp"
+            self.timetable.to_csv(temp_tt_path, index=False)
+            # Atomic swap
+            os.replace(temp_tt_path, self.timetable_path)
 
-        # 2. Save teachers to a temp file
-        temp_teachers_path = f"{self.teachers_path}.tmp"
-        with open(temp_teachers_path, "w") as f:
-            json.dump(self.teachers, f, indent=4)
-        # Atomic swap
-        os.replace(temp_teachers_path, self.teachers_path)
+        # 2. Save teachers with lock
+        with teachers_lock:
+            temp_teachers_path = f"{self.teachers_path}.tmp"
+            with open(temp_teachers_path, "w") as f:
+                json.dump(self.teachers, f, indent=4)
+            # Atomic swap
+            os.replace(temp_teachers_path, self.teachers_path)
 
     def _is_slot_available(self, day, start, end, faculty, dept, program, year, section, teacher_name, room):
         slot_mask = (self.timetable["day"] == day) & (self.timetable["start"] == start)

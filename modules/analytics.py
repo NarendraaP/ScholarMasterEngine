@@ -41,7 +41,10 @@ class AnalyticsEngine:
         if df.empty:
             return pd.DataFrame()
             
-        # Ensure timestamp is datetime
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        # Ensure timestamp is datetime (handle ISO format)
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='mixed', errors='coerce')
+        
+        # Drop rows with invalid timestamps
+        df = df.dropna(subset=['timestamp'])
         
         return df
