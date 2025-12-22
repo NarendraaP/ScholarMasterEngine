@@ -60,7 +60,7 @@ class AttendanceManager:
             PermissionError: If user doesn't have Admin or Faculty role
         """
         # RBAC Backend Protection
-        from modules.auth import validate_role
+        from modules_legacy.auth import validate_role
         validate_role(['Admin', 'Faculty'], user_role)
         
         subject = context_data.get("subject", "Unknown")

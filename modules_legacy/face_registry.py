@@ -58,7 +58,7 @@ class FaceRegistry:
             PermissionError: If user doesn't have Admin or Faculty Manager role
         """
         # RBAC Backend Protection - Only Admin and Faculty Manager can enroll users
-        from modules.auth import validate_role
+        from modules_legacy.auth import validate_role
         validate_role(['Admin', 'Faculty Manager'], user_role)
         
         # Detect faces

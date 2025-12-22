@@ -8,15 +8,15 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from modules.context_manager import ContextEngine
-from modules.face_registry import FaceRegistry
-from modules.audio_sentinel import AudioSentinel
-from modules.safety_rules import SafetyEngine
-from modules.attendance_logger import AttendanceManager
-from modules.logger import SystemLogger
-from modules.grooming import GroomingInspector
-from modules.scribe import LectureScribe
-from modules.liveness import AntiSpoofing
+from modules_legacy.context_manager import ContextEngine
+from modules_legacy.face_registry import FaceRegistry
+from modules_legacy.audio_sentinel import AudioSentinel
+from modules_legacy.safety_rules import SafetyEngine
+from modules_legacy.attendance_logger import AttendanceManager
+from modules_legacy.logger import SystemLogger
+from modules_legacy.grooming import GroomingInspector
+from modules_legacy.scribe import LectureScribe
+from modules_legacy.liveness import AntiSpoofing
 import json
 import datetime
 import time
