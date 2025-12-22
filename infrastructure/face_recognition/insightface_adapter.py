@@ -8,6 +8,7 @@ import numpy as np
 from insightface.app import FaceAnalysis
 
 from domain.interfaces import IFaceRecognizer, Face
+from utils.logging_config import logger
 
 
 class InsightFaceAdapter(IFaceRecognizer):
@@ -24,9 +25,19 @@ class InsightFaceAdapter(IFaceRecognizer):
         
         Args:
             det_size: Detection size tuple
+            
+        Raises:
+            RuntimeError: If InsightFace fails to initialize
         """
-        self._app = FaceAnalysis(providers=['CPUExecutionProvider'])
-        self._app.prepare(ctx_id=0, det_size=det_size)
+        try:
+            logger.info("Initializing InsightFace model...")
+            self._app = FaceAnalysis(providers=['CPUExecutionProvider'])
+            self._app.prepare(ctx_id=0, det_size=det_size)
+            logger.info("InsightFace initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize InsightFace: {e}")
+            logger.error("Please ensure InsightFace models are downloaded")
+            raise RuntimeError(f"InsightFace initialization failed: {e}")
     
     def detect_faces(self, image: np.ndarray) -> List[Face]:
         """
@@ -36,26 +47,31 @@ class InsightFaceAdapter(IFaceRecognizer):
             image: NumPy array in BGR format
             
         Returns:
-            List of Face objects
+            List of Face objects (empty if detection fails)
         """
-        # Call InsightFace
-        insight_faces = self._app.get(image)
-        
-        # Convert to our domain Face objects
-        faces = []
-        for insight_face in insight_faces:
-            bbox = insight_face.bbox.astype(int)
-            embedding = insight_face.embedding
-            confidence = float(insight_face.det_score)
+        try:
+            # Call InsightFace
+            insight_faces = self._app.get(image)
             
-            face = Face(
-                bbox=tuple(bbox),
-                embedding=embedding,
-                confidence=confidence
-            )
-            faces.append(face)
-        
-        return faces
+            # Convert to our domain Face objects
+            faces = []
+            for insight_face in insight_faces:
+                bbox = insight_face.bbox.astype(int)
+                embedding = insight_face.embedding
+                confidence = float(insight_face.det_score)
+                
+                face = Face(
+                    bbox=tuple(bbox),
+                    embedding=embedding,
+                    confidence=confidence
+                )
+                faces.append(face)
+            
+            logger.debug(f"Detected {len(faces)} faces")
+            return faces
+        except Exception as e:
+            logger.error(f"Face detection failed: {e}")
+            return []
     
     def extract_embedding(self, image: np.ndarray, bbox: tuple) -> np.ndarray:
         """

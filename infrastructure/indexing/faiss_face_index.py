@@ -10,6 +10,8 @@ import json
 import os
 
 from domain.interfaces import IFaceIndex
+from utils.logging_config import logger
+from utils.config import FAISS_INDEX_PATH, DATA_PATH
 
 
 class FaissFaceIndex(IFaceIndex):
@@ -20,34 +22,47 @@ class FaissFaceIndex(IFaceIndex):
     """
     
     def __init__(self, 
-                 index_file: str = "data/faiss_index.bin",
-                 identity_map_file: str = "data/identity_map.json",
+                 index_file: str = None,
+                 identity_map_file: str = None,
                  embedding_dim: int = 512):
         """
         Initialize FAISS index.
         
         Args:
-            index_file: Path to FAISS index file
+            index_file: Path to FAISS index file (defaults to config)
             identity_map_file: Path to identity mapping JSON
             embedding_dim: Dimension of face embeddings
         """
-        self.index_file = index_file
-        self.identity_map_file = identity_map_file
+        self.index_file = index_file or os.path.join(DATA_PATH, "faiss_index.bin")
+        self.identity_map_file = identity_map_file or os.path.join(DATA_PATH, "identity_map.json")
         self.embedding_dim = embedding_dim
         
-        # Initialize or load index
-        if os.path.exists(index_file):
-            self.index = faiss.read_index(index_file)
+        # Initialize or load index with error handling
+        if os.path.exists(self.index_file):
+            try:
+                self.index = faiss.read_index(self.index_file)
+                logger.info(f"Loaded FAISS index with {self.index.ntotal} vectors")
+            except Exception as e:
+                logger.error(f"Corrupted FAISS index at {self.index_file}: {e}")
+                logger.warning("Creating new index to replace corrupted one")
+                self.index = faiss.IndexFlatL2(embedding_dim)
         else:
             # Create L2 index
             self.index = faiss.IndexFlatL2(embedding_dim)
+            logger.info("Created new FAISS index")
         
         # Load identity mapping: {index_position: student_id}
-        if os.path.exists(identity_map_file):
-            with open(identity_map_file, 'r') as f:
-                self.identity_map = json.load(f)
+        if os.path.exists(self.identity_map_file):
+            try:
+                with open(self.identity_map_file, 'r') as f:
+                    self.identity_map = json.load(f)
+                logger.debug(f"Loaded {len(self.identity_map)} identity mappings")
+            except Exception as e:
+                logger.error(f"Failed to load identity map: {e}")
+                self.identity_map = {}
         else:
             self.identity_map = {}
+            logger.info("Created new identity mapping")
     
     def add_embedding(self, student_id: str, embedding: np.ndarray) -> bool:
         """
@@ -77,7 +92,7 @@ class FaissFaceIndex(IFaceIndex):
             
             return True
         except Exception as e:
-            print(f"Failed to add embedding: {e}")
+            logger.error(f"Failed to add embedding for {student_id}: {e}")
             return False
     
     def search(self, embedding: np.ndarray, threshold: float = 0.6) -> Tuple[bool, Optional[str]]:
@@ -114,7 +129,7 @@ class FaissFaceIndex(IFaceIndex):
                 return False, None
                 
         except Exception as e:
-            print(f"Search failed: {e}")
+            logger.error(f"Face search failed: {e}")
             return False, None
     
     def remove_embedding(self, student_id: str) -> bool:
@@ -131,9 +146,10 @@ class FaissFaceIndex(IFaceIndex):
                     del self.identity_map[pos]
             
             self._save()
+            logger.info(f"Removed embedding for {student_id}")
             return True
         except Exception as e:
-            print(f"Failed to remove: {e}")
+            logger.error(f"Failed to remove embedding for {student_id}: {e}")
             return False
     
     def get_count(self) -> int:

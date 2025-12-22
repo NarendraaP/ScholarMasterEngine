@@ -9,6 +9,8 @@ import os
 
 from domain.entities import Student
 from domain.interfaces import IStudentRepository
+from utils.logging_config import logger
+from utils.config import STUDENTS_DB
 
 
 class JsonStudentRepository(IStudentRepository):
@@ -18,15 +20,16 @@ class JsonStudentRepository(IStudentRepository):
     Persists student data to data/students.json
     """
     
-    def __init__(self, data_file: str = "data/students.json"):
+    def __init__(self, data_file: str = None):
         """
         Initialize repository.
         
         Args:
-            data_file: Path to JSON file
+            data_file: Path to JSON file (defaults to config.STUDENTS_DB)
         """
-        self.data_file = data_file
+        self.data_file = data_file or STUDENTS_DB
         self._students = self._load()
+        logger.info(f"JsonStudentRepository initialized with {len(self._students)} students")
     
     def get_by_id(self, student_id: str) -> Optional[Student]:
         """Get student by ID"""
@@ -45,9 +48,10 @@ class JsonStudentRepository(IStudentRepository):
         try:
             self._students[student.id] = self._entity_to_dict(student)
             self._persist()
+            logger.info(f"Student saved: {student.id}")
             return True
         except Exception as e:
-            print(f"Failed to save student: {e}")
+            logger.error(f"Failed to save student {student.id}: {e}")
             return False
     
     def delete(self, student_id: str) -> bool:
@@ -56,10 +60,12 @@ class JsonStudentRepository(IStudentRepository):
             if student_id in self._students:
                 del self._students[student_id]
                 self._persist()
+                logger.info(f"Student deleted: {student_id}")
                 return True
+            logger.warning(f"Attempted to delete non-existent student: {student_id}")
             return False
         except Exception as e:
-            print(f"Failed to delete student: {e}")
+            logger.error(f"Failed to delete student {student_id}: {e}")
             return False
     
     def find_by_class(self, department: str, program: str, year: int, section: str) -> List[Student]:
@@ -78,9 +84,16 @@ class JsonStudentRepository(IStudentRepository):
         if os.path.exists(self.data_file):
             try:
                 with open(self.data_file, 'r') as f:
-                    return json.load(f)
-            except json.JSONDecodeError:
+                    data = json.load(f)
+                    logger.debug(f"Loaded {len(data)} students from {self.data_file}")
+                    return data
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse JSON from {self.data_file}: {e}")
                 return {}
+            except Exception as e:
+                logger.error(f"Failed to load students: {e}")
+                return {}
+        logger.warning(f"Student database not found at {self.data_file}, creating new")
         return {}
     
     def _persist(self):
