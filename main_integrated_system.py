@@ -8,7 +8,16 @@ import random
 from datetime import datetime
 
 class IntegratedSystem:
-    """End-to-End Integration - Multi-Modal Surveillance System"""
+    """
+    ARCHITECTURE B: NAIVE EDGE INTEGRATION (INTERMEDIATE PROTOTYPE)
+    ================================================================
+    This module represents the "Baseline" integrated system using:
+    - 1. Haar Cascade Classifiers (Legacy CV)
+    - 2. SQLite Database (Disk/Memory)
+    - 3. Linear Logic Flow
+    
+    Status: REFERENCE ONLY. See 'main_unified.py' for SOTA implementation.
+    """
     
     def __init__(self):
         # Shared state variables

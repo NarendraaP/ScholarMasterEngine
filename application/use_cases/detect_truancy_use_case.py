@@ -19,9 +19,12 @@ class DetectTruancyUseCase:
     
     def __init__(self,
                  student_repo: IStudentRepository,
-                 schedule_repo: IScheduleRepository):
+                 schedule_repo: IScheduleRepository,
+                 debounce_threshold: int = 30):
         self._student_repo = student_repo
         self._schedule_repo = schedule_repo
+        self._violation_counters = {}  # {student_id: consecutive_violation_count}
+        self._debounce_threshold = debounce_threshold  # 30 frames = ~30s at 1Hz
     
     def execute(self,
                 student_id: str,
@@ -67,10 +70,21 @@ class DetectTruancyUseCase:
             }
             
             if current_location == expected_room:
+                # Reset violation counter on compliance
+                self._violation_counters[student_id] = 0
                 return True, "Compliant", session_data
             else:
-                message = f"TRUANCY: Expected in {expected_room} for {expected_entry.subject}, found in {current_location}"
-                return False, message, session_data
+                # Increment violation counter
+                self._violation_counters[student_id] = self._violation_counters.get(student_id, 0) + 1
+                
+                # Only trigger alert if violation persists beyond threshold (debounce)
+                if self._violation_counters[student_id] >= self._debounce_threshold:
+                    message = f"PERSISTENT TRUANCY: Expected in {expected_room} for {expected_entry.subject}, found in {current_location} (verified {self._debounce_threshold}+ times)"
+                    return False, message, session_data
+                else:
+                    # Transient violation - still counting
+                    transient_msg = f"Potential mismatch detected ({self._violation_counters[student_id]}/{self._debounce_threshold})"
+                    return True, transient_msg, session_data  # Return True to avoid premature alerts
                 
         except Exception as e:
             return False, f"Truancy check failed: {str(e)}", None

@@ -3,14 +3,20 @@ import numpy as np
 import time
 import sys
 
-# Core Modules
-from modules.camera_manager import CameraManager
-from modules.master_engine import ScholarMasterEngine
-from modules.notification_service import NotificationDispatcher
+# LEGACY IMPORTS (V1 System)
+# Points to modules_legacy for historical compatibility
+try:
+    from modules_legacy.camera_manager import CameraManager
+    from modules_legacy.master_engine import ScholarMasterEngine
+    from modules_legacy.notification_service import NotificationDispatcher
+except ImportError as e:
+    print(f"CRITICAL: Legacy modules not found. {e}")
+    sys.exit(1)
 
 def main():
     print("===========================================")
-    print("🎓 SCHOLAR MASTER ENGINE - SYSTEM STARTUP 🎓")
+    print("🎓 SCHOLAR MASTER ENGINE - LEGACY SYSTEM (V1)")
+    print("   Status: DEPRECATED (See main_unified.py)")
     print("===========================================")
     
     # 1. Initialize Notification Service
@@ -41,7 +47,7 @@ def main():
         notifier.stop()
         return
 
-    print("\n🚀 SYSTEM LIVE. Press 'q' to exit.\n")
+    print("\n🚀 LEGACY SYSTEM LIVE. Press 'q' to exit.\n")
     
     try:
         while True:
@@ -60,34 +66,26 @@ def main():
                 if frame is None: 
                     continue
                 
-                # Copy frame to ensure thread safety during processing if needed
-                # (Engine usually returns a copy or modifies in place, better to send copy if visualizing raw elsewhere)
-                
                 # Run AI
-                # This will detect faces, pose, check compliance, log attendance, etc.
                 annotated_frame = engine.process_frame(frame, current_zone=zone_name)
                 
-                # Resize for grid display (optional, keeps grid uniform)
-                # Let's standardize to 640x480 for display
+                # Resize for grid display
                 resized = cv2.resize(annotated_frame, (640, 480))
                 processed_frames.append(resized)
             
             # 3. Stitch Frames for Display
             if processed_frames:
-                # Simple Horizonital Stacking for MVP
-                # A proper grid logic would be better for > 3 cameras
                 if len(processed_frames) == 1:
                     final_display = processed_frames[0]
                 else:
-                    # Stack horizontally provided they have same height (resized above)
+                    # Stack horizontally provided they have same height
                     try:
                         final_display = np.hstack(processed_frames)
                     except ValueError:
-                        # Fallback if dimensions mismatch despite resize
                         final_display = processed_frames[0]
                 
-                # 4. Show Display directly via CV2
-                cv2.imshow("ScholarMaster Control Center", final_display)
+                # 4. Show Display
+                cv2.imshow("Legacy Control Center", final_display)
                 
             # 5. Handle User Input
             key = cv2.waitKey(1) & 0xFF

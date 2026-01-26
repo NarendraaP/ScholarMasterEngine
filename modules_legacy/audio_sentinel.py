@@ -35,20 +35,42 @@ class AudioSentinel:
         if status:
             print(f"Audio Status: {status}")
             
-        # Calculate Volume (RMS)
-        volume_norm = np.linalg.norm(indata) * 10
-        self.current_volume = volume_norm
+        # Spectrum Privacy: We operate on the frequency domain, not time domain
+        # FFT computation
+        fft_data = np.fft.rfft(indata.flatten())
+        fft_freq = np.fft.rfftfreq(len(indata.flatten()), d=1/44100)
         
-        # Scream Detection: Volume > 0.8 threshold
-        if volume_norm > 0.8:
+        # Calculate Energy Bands (Algorithm 1 from Paper 6)
+        # Low Frequency (0-500Hz) - Thuds, Doors
+        low_mask = (fft_freq < 500)
+        low_energy = np.sum(np.abs(fft_data[low_mask]))
+        
+        # High Frequency (2000-4000Hz) - Screams, Glass, Alarms
+        high_mask = (fft_freq > 2000) & (fft_freq < 4000)
+        high_energy = np.sum(np.abs(fft_data[high_mask]))
+        
+        # Safety Check: Avoid division by zero
+        if low_energy < 0.001: 
+            low_energy = 0.001
+            
+        spectral_ratio = high_energy / low_energy
+        
+        # DECISION LOGIC (Paper 6)
+        # 1. Volume Gate (Must be loud)
+        # 2. Spectral Gate (Must be impulsive/high-frequency)
+        is_loud = volume_norm > self.threshold
+        is_impulsive = spectral_ratio > 2.5
+        
+        if is_loud and is_impulsive:
             self.status = "LOUD NOISE"
-            result = (True, "SCREAM_DETECTED")
+            result = (True, f"ANOMALY: Ratio={spectral_ratio:.1f}")
         else:
             self.status = "Safe"
             result = (False, "Normal")
-        
-        # Privacy Protection: Overwrite audio buffer with zeros immediately
+            
+        # PRIVACY: Secure Wipe (Volatile Memory Barrier)
         indata.fill(0)
+        fft_data.fill(0) # Also wipe spectral data from RAM
         
         return result
         # indata is numpy array of shape (frames, channels)

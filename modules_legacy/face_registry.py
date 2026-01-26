@@ -24,8 +24,12 @@ class FaceRegistry:
         if os.path.exists(self.index_file):
             self.index = faiss.read_index(self.index_file)
         else:
-            # 512-D for InsightFace (ArcFace)
-            self.index = faiss.IndexFlatL2(512)
+            # Paper 1: Use HNSW graph indexing for sub-millisecond retrieval at N=100k
+            # Hyperparameters: M=16, efConstruction=200 (from Paper 1, Section VII)
+            M = 16  # Number of neighbors per layer
+            self.index = faiss.IndexHNSWFlat(512, M)
+            self.index.hnsw.efConstruction = 200  # Build-time search depth
+            self.index.hnsw.efSearch = 50  # Query-time search depth (adjustable)
             
         # Load Identity Map
         if os.path.exists(self.identity_map_file):
