@@ -1,425 +1,431 @@
-# 🎓 ScholarMaster Research Series
+# ScholarMaster Engine
 
-**Edge-Native Privacy-Preserving Smart Campus Intelligence**
+**Real-time, privacy-preserving intelligent campus monitoring system for educational institutions**
 
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Papers](https://img.shields.io/badge/research-9%20papers-green.svg)]()
-[![Architecture](https://img.shields.io/badge/architecture-Edge%20First-orange.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-> A comprehensive research platform demonstrating the integration of biometric identification, privacy-preserving analytics, and immutable audit trails for institutional-scale deployments.
+Version: 2.1.0 (Event-Driven Architecture)  
+License: Proprietary  
+Maintainer: Narendra P (@NarendraaP)
 
 ---
 
-## 📄 Research Contributions
+## What is ScholarMaster?
 
-This repository implements the complete **ScholarMaster Research Series** (Papers 1-9), addressing the "Deployment Gap" between algorithmic SOTA and institutional reality.
+ScholarMaster is an edge-based campus monitoring system that combines biometric identification, timetable-driven compliance checking, privacy-preserving behavior analytics, and immutable audit logging into a single integrated platform. It solves the problem of **institution-scale intelligence** (100k+ identities) while maintaining **privacy-first** design (no image retention, only spectral audio features, volatile memory processing).
 
-### Core Papers
+The system runs on edge hardware (M2 Mac, Raspberry Pi) and provides real-time detection of:
+- **Truancy** (students in wrong locations based on timetable)
+- **Noise violations** (context-aware: strict during lectures, relaxed during breaks)
+- **Safety concerns** (prolonged sleep, violence detection)
+- **Attendance** (automated, non-repudiable via blockchain-style audit)
 
-| Paper | Title | Key Contribution |
-|:---:|---|---|
-| **1** | Scalable Biometric Identification using HNSW | Sub-logarithmic search at N=100k identities |
-| **2** | Context-Aware Engagement Analysis | Multi-modal false negative reduction |
-| **3** | Privacy-Preserving Pose Heuristics | Zero-retention volatile memory processing |
-| **4** | Schedule Compliance via ST-CSF | Spatiotemporal constraint satisfaction |
-| **5** | UMA Thermal Benchmarking | Unified memory vs discrete GPU analysis |
-| **6** | Acoustic Anomaly Detection | Spectral gating for privacy-first audio |
-| **7** | Rule-Based Spatiotemporal Reasoning | Prolog-style academic logic engine |
-| **8** | Cryptographic Provenance | Merkle-DAG + GDPR crypto-shredding |
-| **9** | System-Level Adversarial Validation | **Capstone integration & Pareto analysis** |
-
-**Full Paper PDFs**: See `docs/papers/` (Post-publication)
+All actions are logged to a tamper-evident Merkle tree, and access is controlled via role-based permissions (7 roles: Super Admin, Admin/HOD, Faculty, Class Teacher, Students, Security, Non-Teaching).
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
-### Three-Tier Design
+ScholarMaster implements **Hybrid Onion Architecture with Event-Driven Orchestration**:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  ARCHITECTURE C: "Unified" (main_unified.py) - SOTA         │
-│  │                                                           │
-│  ├─ Sensing: InsightFace + HNSW (Paper 1) + FFT (Paper 6) │
-│  ├─ Logic: ST-CSF Compliance (Paper 4, 7)                  │
-│  ├─ Privacy: Pose-Only Engagement (Paper 3)                │
-│  ├─ Audit: Merkle DAG + ZKP (Paper 8)                      │
-│  └─ Infrastructure: Power Profiling (Paper 5)              │
-└─────────────────────────────────────────────────────────────┘
-          ▲
-          │ Pareto-Dominant (Speed + Privacy + Trust)
-          │
-┌─────────────────────────────────────────────────────────────┐
-│  ARCHITECTURE B: "Naive Edge" (main_integrated_system.py)   │
-│  - Baseline: Haar + SQLite + Linear Search                 │
-│  - Purpose: Comparative failure analysis (Paper 9)          │
-└─────────────────────────────────────────────────────────────┘
-          ▲
-          │
-┌─────────────────────────────────────────────────────────────┐
-│  ARCHITECTURE A: "Legacy" (main.py)                         │
-│  - Multi-camera orchestration (V1 system)                   │
-│  - Status: Reference implementation                         │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  main_event_driven.py (Orchestrator)    │  ← Thin coordinator
+└─────────────┬───────────────────────────┘
+              │
+              ├──→ APPLICATION LAYER (Use Cases)
+              │    • DetectTruancyUseCase
+              │    • MarkAttendanceUseCase
+              │    • EventHandlers (pub/sub)
+              │
+              ├──→ DOMAIN LAYER (Pure Logic)
+              │    • ComplianceRules (ST-CSF)
+              │    • AlertRules (context-aware)
+              │    • ZERO infrastructure deps
+              │
+              ├──→ INTERFACES (Contracts)
+              │    • IFaceRecognizer
+              │    • IAudioAnalyzer
+              │    • IScheduleRepository
+              │    • IAlertService
+              │
+              └──→ INFRASTRUCTURE (Adapters)
+                   • FaceRecognizer (InsightFace+FAISS)
+                   • AudioAnalyzer (Spectral FFT)
+                   • Repositories (CSV, JSON)
+                   • AuditLog (Merkle chain)
 ```
+
+### Why This Structure?
+
+1. **Testability**: Domain rules can be unit-tested without database, camera, or microphone
+2. **Safety**: Business logic (compliance, alerts) is isolated from hardware failures
+3. **Research Integrity**: Each layer maps to specific research papers (see below)
+4. **Extensibility**: Swap implementations (e.g., PostgreSQL instead of JSON) without changing logic
+5. **Dependency Inversion**: Application depends on interfaces, not concrete implementations
 
 ---
 
-## 🚀 Quick Start
+## Why There Are THREE Main Files
 
-### System Requirements
-- **Hardware**: Apple M2+ / Intel i7+ / NVIDIA GPU (CUDA 11.8+)
-- **Memory**: 16GB RAM (recommended for 100k gallery)
-- **Python**: 3.12+
-- **OS**: macOS / Linux / Windows (WSL2)
+You'll notice three executable entry points:
 
-### Installation
+### 1. `main.py` (formerly main_unified.py) ← **RECOMMENDED FOR PRODUCTION**
+- **What**: The robust, fully integrated system engine
+- **When**: Use for deployment (Paper 11) and defense
+- **Why**: References all correct modules (P1-P11) verified in the audit
+- **LOC**: 400+ lines
+- **Status**: ✅ Freeze-Ready, Audited
 
+### 2. `main_refactored.py` ← **CONSERVATIVE ALTERNATIVE**
+- **What**: Onion Architecture without event bus
+- **When**: Use if event-driven feels aggressive or hard to debug
+- **Why**: Explicit Onion layers, but direct method calls (no pub/sub)
+- **LOC**: 467 lines (44% smaller than original)
+- **Pattern**: Dependency injection with use cases
+- **Status**: ✅ Stable, less complex than event-driven
+
+### 3. `main_unified_backup.py` ← **LEGACY / PAPER REPRODUCIBILITY**
+- **What**: Original monolithic implementation
+- **When**: Use ONLY for reproducing research paper experiments
+- **Why**: Preserves exact logic from publications (Papers 1-10)
+- **LOC**: 834 lines (original)
+- **Pattern**: Monolithic, embedded business logic
+- **Status**: ✅ Preserved for backward compatibility, NOT for new work
+
+**Rule of Thumb**: Start with `main_event_driven.py`. If you need to debug event flow, temporarily switch to `main_refactored.py`. Never delete `main_unified_backup.py` (research integrity).
+
+---
+
+## System Roles & Permissions
+
+ScholarMaster implements a 7-layer RBAC (Role-Based Access Control) hierarchy:
+
+### Implemented Roles
+
+| Role | Privileges | Data Scope | Typical Actions |
+|------|-----------|------------|-----------------|
+| **Super Admin** | System-wide control | All departments | Create users, modify timetables, audit access |
+| **Admin / HOD** | Department management | Own department | Manage faculty, approve leave, department reports |
+| **Faculty** | Teacher functions | Assigned subjects | Mark attendance, override alerts, view class analytics |
+| **Class Teacher** | Class-specific | Own class (year+section) | Student welfare, attendance review, parent communication |
+| **Students** | Self-service | Own records | View attendance, check timetable, appeal violations |
+| **Security** | Safety monitoring | Campus-wide (alerts only) | Respond to safety alerts, view live violations |
+| **Non-Teaching** | Limited ops | Facility-specific | Lab access logs, library monitoring |
+
+### RBAC Boundaries (IMPORTANT)
+
+- **Department Scoping**: Admins can ONLY see their own department's data (e.g., CS HOD cannot see Mech records)
+- **Year/Section Scoping**: Class Teachers limited to specific cohort (e.g., "Year 3, Section A")
+- **Timetable-Driven**: Permissions change dynamically (Faculty can edit attendance ONLY during their scheduled class)
+- **Audit Trail**: All actions logged with role+timestamp (immutable, see `data/audit_log.db`)
+
+### Why Timetable is Central
+
+The timetable (`data/timetable.csv`) is NOT just a schedule—it's the **ground truth** for:
+1. **Compliance**: Determines where students SHOULD be (ST-CSF spatiotemporal logic)
+2. **Context**: Lecture mode (strict) vs break mode (relaxed) noise thresholds
+3. **Attendance**: Marks are valid ONLY during scheduled class time
+4. **Teacher Absence**: Alerts if no Faculty present in a scheduled session
+5. **Authorization**: Faculty can modify attendance ONLY for their assigned subject
+
+**DO NOT** manually edit timetable without understanding cascading effects on compliance, alerts, and attendance.
+
+---
+
+## Key System Features (Mapped to Code)
+
+### 1. Timetable Auto-Generation
+- **File**: `modules_legacy/scheduler.py` (AutoScheduler class)
+- **Logic**: Backtracking solver for conflict-free scheduling
+- **Output**: `data/timetable.csv` (7-column CSV: dept, program, year, section, day, start, end, subject, teacher, room)
+- **Papers**: Not published (infrastructure only)
+
+### 2. Attendance & Compliance
+- **Files**: 
+  - `core/application/use_cases/detect_truancy_use_case.py` (compliance logic)
+  - `modules_legacy/attendance_logger.py` (logging, RBAC enforcement)
+- **Logic**: 
+  - If `current_location == expected_location` → Compliant, mark attendance
+  - Else → Truancy violation, trigger alert
+- **Debounce**: 30 frames (~30 seconds) to avoid false positives
+- **Papers**: Paper 4 (ST-CSF), Paper 7 (ST reasoning), Paper 10 (integration)
+
+### 3. Teacher Absence Alerts
+- **File**: `modules_legacy/context_manager.py` (ContextEngine)
+- **Logic**: If `timetable[time].teacher` is not detected via face recognition → Alert Admin/HOD
+- **Escalation**: Security notified if absence >15 minutes
+- **Papers**: Paper 4 (timetable integration)
+
+### 4. Acoustic Safety Detection
+- **File**: `core/infrastructure/sensing/audio/audio_analyzer.py`
+- **Logic**: 
+  - Spectral FFT analysis (NO speech recognition)
+  - Context-aware thresholds: 40 dB lecture, 80 dB break
+  - Scream detection: >85 dB → Critical alert to Dean
+- **Privacy**: Only dB level, spectral centroid, zero-crossing rate stored (NOT audio samples)
+- **Papers**: Paper 6 (acoustic anomaly), Paper 3 (privacy)
+
+### 5. Participation Detection
+- **File**: `modules_legacy/master_engine.py` (multi-modal fusion)
+- **Logic**: `is_hand_raised AND is_loud` → Confirmed participation event
+- **Sensors**: Pose keypoints (MediaPipe) + Audio dB
+- **Papers**: Paper 2 (multi-modal fusion), Paper 3 (privacy pose)
+
+### 6. Immutable Audit Trail
+- **File**: `main_event_driven.py` (SimplifiedAuditLog class)
+- **Logic**: 
+  - Merkle tree: Each event hashes previous event
+  - SHA-256 chaining prevents tampering
+  - Stored in SQLite (`data/audit_log.db`)
+- **Verification**: `verify_integrity()` recomputes root hash
+- **Papers**: Paper 8 (blockchain audit)
+
+---
+
+## What NOT to Change Casually
+
+### 🔒 Domain Rules (`core/domain/rules/`)
+**DO NOT modify** without understanding paper claims:
+- `ComplianceRules.is_in_expected_location()` → Paper 4 (ST-CSF)
+- `AlertRules.get_noise_alert_severity()` → Paper 6 (context-aware thresholds)
+
+These are **pure functions** with ZERO dependencies. Changing them invalidates research papers.
+
+### 🔒 Event Semantics (`core/infrastructure/events/event_bus.py`)
+**DO NOT rename** event types without updating all subscribers:
+- `EventType.FACE_DETECTED` → Subscribed by DetectTruancyUseCase
+- `EventType.VIOLATION_DETECTED` → Subscribed by EventHandlers
+- `EventType.ALERT_TRIGGERED` → Subscribed by AuditLog
+
+Breaking event flow breaks the entire system.
+
+### 🔒 Privacy Barriers
+**DO NOT add logging that exposes**:
+- Raw image frames (only 512-dim embeddings allowed)
+- Audio samples (only spectral features: dB, centroid, ZCR)
+- Real student IDs in public logs (use privacy_hash)
+
+Violations compromise GDPR compliance (Paper 3).
+
+### 🔒 Adaptive Thresholds (`core/infrastructure/sensing/vision/face_recognizer.py`)
+**DO NOT hardcode** face recognition threshold:
+- Current: `τ(N) = 0.75 + 0.00001 × log(N)` (adaptive to gallery size)
+- Changing breaks Paper 1 (open-set identification claims)
+
+### ✅ Safe to Change
+- UI/UX (dashboard colors, terminal formatting)
+- File paths (via environment variables)
+- Database schema (if you maintain interface contracts)
+- Logging verbosity
+
+---
+
+## How This Supports the Research Papers
+
+**The system came first, papers were extracted second** (not vice versa).
+
+Each research paper focuses on ONE subsystem of ScholarMaster:
+- **Paper 1**: Face recognition subsystem (FAISS indexing, adaptive thresholds)
+- **Paper 4**: Compliance subsystem (timetable logic, ST-CSF)
+- **Paper 6**: Audio subsystem (spectral analysis, context-aware alerts)
+- **Paper 8**: Audit subsystem (Merkle tree, tamper detection)
+- **Paper 10**: System integration (validates cross-subsystem interactions)
+
+This is why:
+1. **Logic is preserved**: Papers depend on implementation being correct
+2. **Architecture is explicit**: Makes subsystem boundaries visible for publication
+3. **Three versions exist**: `main_unified_backup.py` reproduces paper experiments exactly
+
+**For reviewers**: If a paper claims "adaptive threshold τ(N)", you can `grep` the codebase and find it implemented in `face_recognizer.py:L78`. This is **reproducible research**.
+
+---
+
+## Quick Start (New Developers)
+
+### 1. Install Dependencies
 ```bash
-# Clone repository
-git clone https://github.com/NarendraaP/ScholarMasterEngine.git
-cd ScholarMasterEngine
-
-# Create virtual environment
-python3.12 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download models (InsightFace, YOLOv8-Pose)
-python scripts/download_models.py
+pip3 install -r requirements.txt
 ```
 
-### Running the SOTA System
-
+### 2. Initialize Data
 ```bash
-# Option 1: Unified SOTA System (Paper 9)
-python main_unified.py
+# Create students database
+python3 utils/create_student_db.py
 
-# Option 2: Admin Dashboard (Streamlit UI)
-streamlit run admin_panel.py
-
-# Option 3: REST API Server
-python -m api.main
-# Visit: http://localhost:8000/docs
+# Generate timetable (or use existing data/timetable.csv)
+python3 modules_legacy/scheduler.py
 ```
 
----
-
-## 📊 Performance Benchmarks
-
-### Comparative Analysis (Paper 9)
-
-| Architecture | Latency (ms) | Accuracy | Privacy | Thermal Stability |
-|---|:---:|:---:|:---:|:---:|
-| **Cloud (AWS Rekognition)** | 450 ± 120 | 99.5% (closed-set) | ❌ Transmission | N/A |
-| **Naive Edge (Arch B)** | 55 ± 2 | 92.1% (closed-set) | ❌ SQL Logs | 85°C @ 14min |
-| **Unified (Arch C)** | **28 ± 1.2** | **99.82% (open-set, 20% unknown)** | ✅ Volatile | **62°C stable** |
-
-**Target Metrics** (Apple M2, N=100k):
-- End-to-End Latency: **28ms** (33 FPS sustained)
-- Open-Set Identification Rate (OSIR): **99.82%**
-- Unknown Rejection Rate (UIRR): **99.91%**
-- Merkle Root Computation: **<100ms** per 100 events
-
-**See**: `benchmarks/` for full stress test results.
-
----
-
-## 🔬 Research Validation
-
-### Reproducing Paper Results
-
-Each paper has a corresponding validation script:
-
+### 3. Run the System
 ```bash
-# Paper 1: HNSW Scalability Test
-python benchmarks/benchmark_face_recognition.py --gallery_size 100000
+# Recommended: Event-driven version
+python3 main_event_driven.py
 
-# Paper 3: Privacy Metrics (Zero Retention)
-python benchmarks/test_secure_memory.py
+# Alternative: Refactored version
+python3 main_refactored.py
 
-# Paper 5: Thermal Profiling
-python scripts/power_profiler.sh --duration 3600
+# Legacy: Original implementation
+python3 main_unified_backup.py
+```
 
-# Paper 6: Acoustic SNR Analysis
-python benchmarks/test_audio_snr.py
+Press `q` in the video window to quit.
 
-# Paper 8: Blockchain Integrity Audit
-python benchmarks/test_merkle_performance.py
+### 4. Validate Architecture
+```bash
+# Run validation tests (ensures papers are intact)
+python3 test_papers.py
 
-# Paper 9: Full System Stress Test
-python benchmarks/stress_test.py --duration 3600
+# Expected: 8/8 tests passed (100%)
 ```
 
 ---
 
-## 🔐 Privacy & Security Features
-
-### Zero-Knowledge Implementations
-
-1. **Volatile Memory Processing** (Paper 3)
-   - Frame data wiped via `secure_wipe()` after vectorization
-   - No persistent visual storage
-
-2. **Cryptographic Shredding** (Paper 8)
-   - GDPR "Right to be Forgotten" via key destruction
-   - `KeyManagementService` prototype in `main_unified.py`
-
-3. **Zero-Knowledge Proofs** (Paper 8)
-   - Fiat-Shamir NIZK for attendance verification
-   - `ZeroKnowledgeProver` class demonstrates protocol
-
-4. **STFT Spectral Gating** (Paper 6)
-   - Privacy-preserving audio analysis
-   - Human voice isolation without speech recognition
-
----
-
-## 📁 Repository Structure
+## Project Structure
 
 ```
 ScholarMasterEngine/
-├── main_unified.py           # 🌟 SOTA integrated system (Papers 1-9)
-├── main_integrated_system.py # Baseline comparison (Paper 9)
-├── main.py                   # Legacy multi-camera system
+├── core/                              # Refactored Onion Architecture
+│   ├── domain/                        # Pure business logic
+│   │   ├── entities/                  # Student, Alert
+│   │   ├── rules/                     # ComplianceRules, AlertRules
+│   │   └── events/                    # Domain events
+│   ├── application/                   # Use cases
+│   │   ├── use_cases/                 # DetectTruancy, MarkAttendance
+│   │   └── services/                  # EventHandlers
+│   ├── infrastructure/                # External systems
+│   │   ├── sensing/                   # Vision, audio, pose
+│   │   ├── persistence/               # Repositories
+│   │   ├── notifications/             # Alert service
+│   │   └── events/                    # Event bus
+│   └── interfaces/                    # Dependency inversion ports
 │
-├── modules_legacy/           # Core modules for all architectures
-│   ├── face_registry.py      # InsightFace + HNSW (Paper 1)
-│   ├── privacy_analytics.py  # Pose-only engagement (Paper 3)
-│   ├── audio_sentinel.py     # FFT spectral analysis (Paper 6)
-│   ├── scheduler.py          # ST-CSF logic (Paper 4, 7)
-│   ├── context_manager.py    # Compliance engine (Paper 7)
-│   └── safety_rules.py       # Violence/sleep detection
+├── modules_legacy/                    # Original implementations (backward compat)
+│   ├── face_registry.py               # Paper 1
+│   ├── context_manager.py             # Paper 4, 7
+│   ├── audio_sentinel.py              # Paper 6
+│   └── ... (11 more modules)
 │
-├── chaincode/                # Hyperledger Fabric smart contract (Paper 8)
-│   └── smart_contract.go     # Attendance asset management
+├── data/                              # Runtime data (DO NOT commit to git)
+│   ├── timetable.csv                  # Schedule ground truth
+│   ├── students.json                  # Student database
+│   ├── alerts.json                    # Alert log
+│   ├── audit_log.db                   # Merkle chain (SQLite)
+│   └── faiss_index.bin                # Face gallery (FAISS)
 │
-├── benchmarks/               # Performance validation scripts
-├── scripts/                  # Utilities & profiling tools
-├── docs/                     # Architecture documentation
-│   └── papers/               # Research papers (post-publication)
+├── docs/                              # Documentation
+│   ├── SYSTEM_ARCHITECTURE_DIAGRAM.md # IEEE-grade architecture
+│   ├── PAPER_SAFETY_MATRIX.md         # Paper validation matrix
+│   ├── REFACTORING_COMPLETE.md        # Refactoring summary
+│   └── ... (8 more docs)
 │
-├── domain/                   # Clean Architecture (DDD)
-├── application/              # Use cases layer
-├── infrastructure/           # Adapters (FAISS, InsightFace, etc.)
-├── di/                       # Dependency injection
-└── api/                      # RESTful API (FastAPI)
+├── main_event_driven.py              # Production entry point (RECOMMENDED)
+├── main_refactored.py                # Conservative entry point
+├── main_unified_backup.py            # Legacy entry point
+├── test_papers.py                    # Validation suite
+└── README.md                         # This file
 ```
 
 ---
 
-## 🧪 Testing
+## Common Tasks
 
-### Unit Tests
-
+### Add a New Student
 ```bash
-# Run all tests
-pytest tests/ -v
-
-# Specific modules
-pytest tests/test_face_recognition.py -v
-pytest tests/test_privacy_analytics.py -v
-pytest tests/test_blockchain.py -v
-
-# With coverage
-pytest --cov=modules_legacy --cov=domain --cov-report=html
+python3 utils/create_superuser.py
+# Then use admin panel to enroll face
 ```
 
-### Integration Tests
-
+### Modify Timetable
 ```bash
-# Full system integration (60 seconds)
-python tests/integration/test_full_system.py
-
-# Multi-threaded stress test
-python tests/integration/test_concurrency.py
+# Edit data/timetable.csv (7 columns: dept, program, year, section, day, start, end, subject, teacher, room)
+# Restart system to reload
 ```
 
----
-
-## 🎯 Key Technical Highlights
-
-### Innovation Points
-
-✅ One of the **first** system-level adversarial stress tests at institutional scale (N=100k, 30 FPS)  
-✅ Demonstrates **Pareto-dominant** privacy + speed + trust architecture  
-✅ Novel **GDPR-compliant blockchain** implementation via crypto-shredding  
-✅ Comprehensive **cross-layer failure mode** exposition (Paper 9)
-
-### Engineering Excellence
-
-- **Clean Architecture** with Domain-Driven Design (DDD)
-- **SOLID Principles** throughout codebase
-- **Dependency Injection** via custom container
-- **Type Safety** with Python 3.12+ type hints
-- **Atomic Operations** via RCU pattern (attendance logging)
-
----
-
-## 📚 Documentation
-
-### Primary Documents
-
-- **System Architecture**: [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md)
-- **API Reference**: `http://localhost:8000/docs` (when running API)
-- **Audit Reports**: `.gemini/antigravity/brain/*/` (adversarial validation logs)
-- **Contributing Guide**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
-
-### Research Artifacts
-
-Each paper includes:
-- LaTeX source (post-publication)
-- Adversarial audit report (validation against SOTA)
-- Implementation checklist (code alignment proof)
-
----
-
-## 🔌 API Usage Examples
-
-### REST API (FastAPI)
-
+### Debug Event Flow
 ```bash
-# Start API server
-python -m api.main
+# Switch to refactored version (no event bus)
+python3 main_refactored.py
 
-# Register student
-curl -X POST "http://localhost:8000/api/students/register" \
-  -F "image=@student_photo.jpg" \
-  -F "student_id=CS2024001" \
-  -F "name=John Doe"
-
-# Recognize face
-curl -X POST "http://localhost:8000/api/students/recognize" \
-  -F "image=@query_face.jpg"
-
-# Mark attendance (with context)
-curl -X POST "http://localhost:8000/api/attendance/mark" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "student_id": "CS2024001",
-    "subject": "Data Structures",
-    "room": "Lab-101"
-  }'
+# Or add debug logging to event bus
+# In core/infrastructure/events/event_bus.py:
+# print(f"Event published: {event.type}")
 ```
 
-### Python SDK
-
-```python
-from di.container import get_container
-
-# Get dependency injection container
-container = get_container()
-
-# Use case: Register student
-success, message = container.register_student.execute(
-    image=face_img,
-    student_id="CS2024001",
-    name="John Doe",
-    department="Computer Science",
-    program="UG",
-    year=2,
-    section="A"
-)
-
-# Use case: Recognize student
-student_id, confidence = container.face_recognizer.recognize(query_img)
-print(f"Recognized: {student_id} (confidence: {confidence:.2f})")
-```
-
----
-
-## 🛠️ Development
-
-### Adding New Features
-
-Following Clean Architecture principles:
-
-1. **Define Domain Interface**: `domain/interfaces/i_new_feature.py`
-2. **Create Use Case**: `application/use_cases/new_feature_use_case.py`
-3. **Implement Adapter**: `infrastructure/adapters/new_feature_adapter.py`
-4. **Wire Dependencies**: Update `di/container.py`
-5. **Add Tests**: `tests/test_new_feature.py`
-6. **Document**: Update relevant `docs/` files
-
-### Code Quality Standards
-
-- **Linting**: `flake8 .` (PEP 8 compliance)
-- **Type Checking**: `mypy modules_legacy/ domain/ application/`
-- **Test Coverage**: Minimum 85% for new code
-- **Documentation**: Docstrings for all public APIs
-
----
-
-## 🌐 Deployment
-
-### Production Checklist
-
-- [ ] Configure environment variables (`.env` from `.env.example`)
-- [ ] Set up SSL certificates for API
-- [ ] Configure role-based access control (RBAC)
-- [ ] Initialize FAISS index with production gallery
-- [ ] Set up external logging (e.g., ELK stack)
-- [ ] Configure backup strategy for attendance logs
-- [ ] Test disaster recovery procedures
-
-### Docker Deployment (Optional)
-
+### Export Attendance Report
 ```bash
-# Build image
-docker build -t scholarmaster:latest .
-
-# Run container
-docker run -d \
-  -p 8501:8501 \
-  -p 8000:8000 \
-  -v $(pwd)/data:/app/data \
-  scholarmaster:latest
+python3 utils/export_attendance.py --format csv --month 2026-01
 ```
 
 ---
 
-## 👥 Authors & Acknowledgments
+## Testing
 
-**Principal Investigator**  
-Narendra Babu P - Department of Computer Science, Swarnandhra College of Engineering and Technology
+### Unit Tests (Domain Rules)
+```bash
+pytest tests/test_compliance_rules.py
+pytest tests/test_alert_rules.py
+```
 
-**Acknowledgments**
-- InsightFace (Jiankang Deng et al.) for face recognition models
-- Ultralytics for YOLOv8-Pose
-- Hyperledger Fabric for blockchain framework
-- FastAPI & Streamlit communities
+### Integration Tests (Use Cases)
+```bash
+pytest tests/test_detect_truancy.py
+```
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see [`LICENSE`](LICENSE) file for details.
-
-**Citation** (Post-publication):
-```bibtex
-@misc{narendra2026scholarmaster,
-  author = {Narendra Babu P},
-  title = {ScholarMaster: Edge-Native Privacy-Preserving Smart Campus Intelligence},
-  year = {2026},
-  publisher = {GitHub},
-  url = {https://github.com/NarendraaP/ScholarMasterEngine}
-}
+### System Validation (All Papers)
+```bash
+python3 test_papers.py
+# Expected: 8/8 tests passed
 ```
 
 ---
 
-## 🚦 Project Status
+## Troubleshooting
 
-✅ **Research Complete** - All 9 papers validated & code-aligned  
-✅ **Deployment-Ready Reference Implementation** - SOTA design passes adversarial stress tests  
-✅ **Open Source** - MIT licensed, contributions welcome
+### "FAISS index not found"
+- Run `python3 utils/create_student_db.py` to initialize face gallery
+- Or create empty index: `touch data/faiss_index.bin`
 
-**Last Updated**: January 2026  
-**Version**: 1.0.0 (Gold Master)
+### "Timetable CSV corrupted"
+- Check columns: `dept,program,year,section,day,start,end,subject,teacher,room`
+- Validate with: `python3 utils/validate_timetable.py`
+
+### "Event handler not receiving events"
+- Ensure event type is subscribed: `event_bus.subscribe(EventType.X, handler)`
+- Check event bus imports in `main_event_driven.py`
+
+### "Paper validation fails"
+- DO NOT proceed with deployment
+- Revert changes to domain rules or interfaces
+- Check `test_papers.py` output for exact failure
 
 ---
 
-**For questions or collaboration**: Contact via GitHub Issues or [email@domain.com]
+## Contributing
+
+### Rules
+1. **DO NOT modify domain rules** without paper author approval
+2. **DO write tests** for new features (unit + integration)
+3. **DO update documentation** (this README, architecture diagrams)
+4. **DO run validation** before committing: `python3 test_papers.py`
+
+### Workflow
+1. Create feature branch: `git checkout -b feature/your-feature`
+2. Make changes (prefer infrastructure/application layers)
+3. Run tests: `pytest tests/`
+4. Validate papers: `python3 test_papers.py`
+5. Update docs if architecture changed
+6. Submit PR with clear justification
+
+---
+
+## Support & Contact
+
+- **Primary Maintainer**: Narendra P (@NarendraaP)
+- **Research Papers**: See `docs/PAPER_SAFETY_MATRIX.md` for full list
+- **Architecture Questions**: See `docs/SYSTEM_ARCHITECTURE_DIAGRAM.md`
+- **Onboarding**: This README (15-minute read)
+
+---
+
+**Last Updated**: January 27, 2026  
+**Version**: 2.1.0  
+**Status**: ✅ Production-Ready

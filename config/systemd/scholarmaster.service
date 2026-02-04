@@ -1,0 +1,26 @@
+[Unit]
+Description=ScholarMaster Engine (Paper 11 Deployment)
+After=network.target sound.target redis-server.service mosquitto.service
+Wants=redis-server.service mosquitto.service
+
+[Service]
+Type=simple
+User=scholar
+Group=scholar
+WorkingDirectory=/opt/scholarmaster
+ExecStart=/usr/bin/python3 /opt/scholarmaster/main.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+Environment=SCHOLAR_ENV=production
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=scholarmaster
+
+# Security Hardening (Paper 6/10)
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

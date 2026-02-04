@@ -61,7 +61,7 @@ narendrababu.p@swarnandhra.ac.in}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Current manual attendance protocols fail to scale within high-density academic environments. While commercial facial recognition provides a theoretical alternative, standard implementations rely heavily on high-latency cloud architectures or suffer from retrieval bottlenecks at institutional scale. Unlike prior works reporting near-perfect accuracy under closed-set assumptions, we evaluate biometric identification at institutional scale (N=100,000) with open-set stress testing. By coupling \textbf{ArcFace} deep feature embedding with \textbf{Hierarchical Navigable Small World (HNSW)} graph indexing, we achieve strictly sublinear retrieval complexity. Validated on the Apple M2 platform, our approach replaces traditional $O(N)$ linear searches with $O(\log N)$ behavior. Empirical benchmarking confirms \textbf{0.42 ms} mean retrieval latency (131x faster than linear search), perfect unknown rejection (UIRR=100\% at 20\% injection rate), and sustained \textbf{$>$30 FPS} processing capability. Honest disclosure: synthetic vector stress testing yields 88\% known-probe accuracy, reflecting conservative random noise injection; real-world performance expected higher due to structured face variation correlation.
+Current manual attendance protocols fail to scale within high-density academic environments. While commercial facial recognition provides a theoretical alternative, standard implementations rely heavily on high-latency cloud architectures or suffer from retrieval bottlenecks at institutional scale. Unlike prior works reporting near-perfect accuracy under closed-set assumptions, we evaluate biometric identification at institutional scale (N=100,000) with open-set stress testing. By coupling \textbf{ArcFace} deep feature embedding with \textbf{Hierarchical Navigable Small World (HNSW)} graph indexing, we achieve strictly sublinear retrieval complexity. Validated on the Apple M2 platform, our approach replaces traditional $O(N)$ linear searches with $O(\log N)$ behavior. Empirical benchmarking confirms \textbf{0.86 ms} mean retrieval latency (64x faster than linear search), perfect unknown rejection (UIRR=100\% at 20\% injection rate), and sustained \textbf{$>$30 FPS} processing capability. Honest disclosure: synthetic vector stress testing yields 88\% known-probe accuracy, reflecting conservative random noise injection; real-world performance expected higher due to structured face variation correlation.
 \end{abstract}
 
 % ==========================================
@@ -107,7 +107,7 @@ While ArcFace and FaceNet have demonstrated exceptional closed-set accuracy (99.
 
 To our knowledge, no prior work has validated sub-millisecond biometric retrieval at 100K-identity scale using graph-based indexing on unified-memory edge hardware. In our parallel hardware study, we demonstrated that this elimination of the PCIe memory bottleneck results in superior latency determinism and an estimated \textbf{5.4x increase in energy efficiency} compared to discrete peers (validated in companion hardware study) \cite{b16}. We propose a privacy-native framework that combines the geometric compactness of \textbf{ArcFace} embeddings \cite{b5} with the logarithmic retrieval speed of \textbf{HNSW indexing} \cite{b7}.
 
-\textbf{Core Contribution:} We demonstrate that replacing O(N) with O(log N) retrieval is the deployment-critical bottleneck, independent of embedding quality. Our HNSW implementation achieves 131x speedup over linear search (0.42ms vs 55ms at N=100k), enabling true real-time streaming.
+\textbf{Core Contribution:} We demonstrate that replacing O(N) with O(log N) retrieval is the deployment-critical bottleneck, independent of embedding quality. Our HNSW implementation achieves 64x speedup over linear search (0.86ms vs 55ms at N=100k), enabling true real-time streaming.
 
 \textbf{Ethics Statement:} This research utilized public datasets (LFW) and synthetic vectors. No personally identifiable information (PII) from real students was used for model training or benchmarking.
 
@@ -148,7 +148,7 @@ FaceNet \cite{b18} & 99.63\% & 5.7K & $\times$ & 55ms (est.) \\
 \hline
 MegaFace \cite{megaface} & 98.36\% & 1M$^*$ & $\times$ & Not reported \\
 \hline
-\textbf{Ours (HNSW)} & \textbf{99.82\%}$^\dagger$ & \textbf{100K} & $\checkmark$ & \textbf{0.42ms} \\
+\textbf{Ours (HNSW)} & \textbf{99.82\%}$^\dagger$ & \textbf{100K} & $\checkmark$ & \textbf{0.86ms} \\
 \hline
 \end{tabular}
 \end{center}
@@ -179,7 +179,7 @@ HNSW constructs a multi-layered graph with greedy routing from top to bottom, ac
 
 \subsection{System Pipeline}
 \begin{enumerate}
-    \item \textbf{Detection:} YOLOv8-based face detection
+    \item \textbf{Detection:} InsightFace-based detection (SCRFD/RetinaFace)
     \item \textbf{Alignment:} Five-point landmark warping
     \item \textbf{Embedding:} ResNet-100 → 512-d vector
     \item \textbf{Indexing:} HNSW graph search
@@ -228,24 +228,25 @@ We generated galleries of $N \in \{100, 1K, 10K, 50K, 100K\}$ identities. For ea
 \hline
 \textbf{Gallery (N)} & \textbf{UIRR} & \textbf{Mean Latency} & \textbf{p99} \\
 \hline
-100 & 100\% & 0.03 ms & 0.12 ms \\
+100 & 100\% & 0.04 ms & 0.11 ms \\
 \hline
-1,000 & 100\% & 0.08 ms & 0.21 ms \\
+1,000 & 100\% & 0.13 ms & 0.35 ms \\
 \hline
-10,000 & 100\% & 0.24 ms & 0.89 ms \\
+10,000 & 100\% & 0.29 ms & 0.74 ms \\
 \hline
-50,000 & 100\% & 0.38 ms & 1.32 ms \\
+50,000 & 100\% & 0.82 ms & 1.97 ms \\
 \hline
-\textbf{100,000} & \textbf{100\%} & \textbf{0.42 ms} & \textbf{1.08 ms} \\
+\textbf{100,000} & \textbf{100\%} & \textbf{0.86 ms} & \textbf{2.31 ms} \\
 \hline
 \end{tabular}
 \end{center}
 \label{tab_scalability}
-\textit{Perfect unknown rejection maintained across all scales}
+\textit{Perfect unknown rejection maintained across all scales}\\
+\textit{Averaged over 10,000 queries with 100-query warmup (3 runs)}
 \end{table}
 
 \subsection{Baseline Comparison}
-To verify deployment readiness, we calculated theoretical throughput based on measured retrieval latency (0.42ms) and typical inference time (15ms), projecting stable operation over continuous 10-minute streams (18,000 frames).
+To verify deployment readiness, we calculated theoretical throughput based on measured retrieval latency (0.86ms) and typical inference time (15ms), projecting stable operation over continuous 10-minute streams (18,000 frames).
 \begin{table}[t!]
 \caption{Retrieval Algorithm Comparison (N=100k)}
 \begin{center}
@@ -259,7 +260,7 @@ KD-Tree & 124.5 ms & 0.4x & 65.0\% \\
 \hline
 IVF-Flat & 6.2 ms & 8.9x & 98.5\% \\
 \hline
-\textbf{HNSW (Ours)} & \textbf{0.42 ms} & \textbf{131x} & \textbf{100\%} \\
+\textbf{HNSW (Ours)} & \textbf{0.86 ms} & \textbf{64x} & \textbf{100\%} \\
 \hline
 \end{tabular}
 \end{center}
@@ -268,10 +269,10 @@ IVF-Flat & 6.2 ms & 8.9x & 98.5\% \\
 \end{table}
 
 \subsection{Streaming FPS Capability}
-Given mean latency of 0.42ms, theoretical maximum FPS = 1000ms / (15ms inference + 0.42ms retrieval) ≈ 65 FPS. Sustained 31 FPS confirmed via 10-minute continuous operation with no thermal throttling (M2 SoC stabilized at 62°C).
+Given mean latency of 0.86ms, theoretical maximum FPS = 1000ms / (15ms inference + 0.86ms retrieval) ≈ 63 FPS. Sustained 31 FPS confirmed via 10-minute continuous operation with no thermal throttling (M2 SoC stabilized at 62°C).
 
 \subsection{Limitation: Synthetic Vector Evaluation}
-\textbf{Critical Disclosure:} While our HNSW implementation achieves verified sub-millisecond latency (0.42ms mean), synthetic vector stress testing with Gaussian noise (stddev=0.01) yields \textbf{OSIR=88.33\%}, below typical biometric targets.
+\textbf{Critical Disclosure:} While our HNSW implementation achieves verified sub-millisecond latency (0.86ms mean), synthetic vector stress testing with Gaussian noise (stddev=0.01) yields \textbf{OSIR=88.33\%}, below typical biometric targets.
 
 \textbf{Root Cause:} Synthetic noise is uniformly random, lacking the structured correlation present in real-world face variations (lighting, angle). This creates a \textit{harder} test than real deployment.
 
@@ -283,7 +284,7 @@ Given mean latency of 0.42ms, theoretical maximum FPS = 1000ms / (15ms inference
 % VIII. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This study validates that moving from linear search to HNSW indexing is not merely an optimization, but a necessity for campus-scale biometrics. Our implementation demonstrates 131x retrieval speedup (0.42ms vs 55ms at N=100K), perfect unknown rejection (UIRR=100\%), and sustained 31 FPS capability.
+This study validates that moving from linear search to HNSW indexing is not merely an optimization, but a necessity for campus-scale biometrics. Our implementation demonstrates 64x retrieval speedup (0.86ms vs 55ms at N=100K), perfect unknown rejection (UIRR=100\%), and sustained 31 FPS capability.
 
 While synthetic vector stress testing reveals challenges (OSIR=88\%), the algorithmic contribution—O(log N) retrieval complexity—is mathematically validated. This represents the first demonstration of sub-millisecond biometric search at institutional scale on unified-memory edge hardware.
 

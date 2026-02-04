@@ -1,0 +1,183 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% ==========================================
+% PACKAGES
+% ==========================================
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{float}
+
+% --- TIKZ & PLOTS ---
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc, backgrounds}
+
+% --- CODE STYLING ---
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red},
+  xleftmargin=2em,
+  framexleftmargin=1.5em
+}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+% ==========================================
+% TITLE
+% ==========================================
+\title{Cross-Campus Federated Intelligence: Scaling Privacy-Preserving Edge Learning Across Distributed Academic Institutions}
+
+% ==========================================
+% AUTHOR
+% ==========================================
+\author{\ IEEEauthorblockN{Premkumar Tatapudi}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{ScholarMaster Research Group}\\
+Andhra Pradesh, India \\
+premkumartatapudi@example.com}
+}
+
+\maketitle
+
+% ==========================================
+% NOTE: FUTURE WORK DRAFT
+% ==========================================
+% This is a DRAFT manuscript for Paper 14 (Future Work)
+% To be developed AFTER Papers 11-13 are published
+% Key concepts to include in final version:
+% - Hierarchical FedAvg (H-FedAvg) algorithm
+% - Staleness-aware asynchronous aggregation
+% - Cross-domain generalization experiments (5 campuses)
+% - Governance layer for institutional data sovereignty
+% - Bandwidth efficiency analysis
+% - Energy consumption modeling
+%
+% Development Timeline:
+% - Start after Paper 13 acceptance (6-12 months)
+% - Requires multi-institution collaboration agreement
+% - Needs IRB approval for cross-campus data collection
+% ==========================================
+
+% ==========================================
+% ABSTRACT (DRAFT)
+% ==========================================
+\begin{abstract}
+[DRAFT - To be refined after Papers 11-13 publication]
+
+As academic institutions increasingly adopt AI-driven analytics, a critical "Silo Problem" emerges: models trained on a specific campus fail to generalize to other institutions due to divergent architectural layouts, demographic distributions, and environmental conditions (Non-IID data). Centralized data aggregation to solve this is legally and ethically prohibitive under regulations like GDPR and DPDP. This paper extends prior work on single-campus deployment by introducing a **Hierarchical Federated Learning (H-FedAvg)** architecture designed for cross-institutional collaboration. We propose a three-tier topology (Classroom $\rightarrow$ Campus Aggregator $\rightarrow$ Global Federation) that enables institutions to collaboratively train robust engagement and safety models without sharing raw student data.
+
+[TODO: Add final simulation results, citation to Papers 11-13 as foundation]
+\end{abstract}
+
+\begin{IEEEkeywords}
+Federated Learning, Hierarchical Aggregation, Cross-Domain Generalization, Privacy-Preserving AI, Institutional Governance, Non-IID Data, Smart Campus.
+\end{IEEEkeywords}
+
+% ==========================================
+% DEVELOPMENT NOTES
+% ==========================================
+% Key contributions to develop:
+% 1. Hierarchical FedAvg algorithm formalization
+% 2. Staleness-aware asynchronous protocol
+% 3. Multi-domain simulation (5+ synthetic campuses)
+% 4. Governance framework for data sovereignty
+% 5. Comparative analysis: Local-only vs Centralized vs Federated
+%
+% Experimental requirements:
+% - Simulate 5 campuses with distinct characteristics
+% - Measure cross-domain generalization (18% improvement target)
+% - Bandwidth overhead analysis (<10% overhead target)
+% - Client dropout resilience testing (40% dropout scenario)
+%
+% Related work to cite:
+% - Papers 11-13 (this series) as foundation
+% - McMahan et al. (FedAvg original)
+% - Li et al. (FedProx for system heterogeneity)
+% - Bonawitz et al. (Secure aggregation)
+% ==========================================
+
+\section{Introduction}
+[TODO: Develop after Papers 11-13 acceptance]
+
+% Placeholder structure:
+% - Problem: Domain shift across institutions
+% - Gap: No prior work on cross-campus biometric FL
+% - Solution: Hierarchical aggregation with governance
+% - Contributions: H-FedAvg, staleness protocol, sovereignty layer
+
+\section{Future Development Plan}
+
+This draft manuscript represents planned future work building upon Papers 11-13. Development will proceed in the following phases:
+
+\subsection{Phase 1: Foundation (Complete)}
+\begin{itemize}
+    \item Paper 11: Single-campus deployment infrastructure
+    \item Paper 12: Flash storage optimization for edge training
+    \item Paper 13: Intra-campus federated learning for drift
+\end{itemize}
+
+\subsection{Phase 2: Cross-Campus Extension (6-12 months)}
+\begin{itemize}
+    \item Formalize Hierarchical FedAvg algorithm
+    \item Develop staleness-aware asynchronous protocol
+    \item Create multi-domain simulation environment
+    \item Design governance layer for data sovereignty
+\end{itemize}
+
+\subsection{Phase 3: Deployment \& Validation (12-18 months)}
+\begin{itemize}
+    \item Partner with 3-5 pilot universities
+    \item Deploy hierarchical aggregation infrastructure
+    \item Collect real cross-campus generalization data
+    \item Validate bandwidth/energy efficiency claims
+\end{itemize}
+
+\subsection{Phase 4: Publication (18-24 months)}
+\begin{itemize}
+    \item Submit to top-tier venue (MLSys, OSDI, ATC)
+    \item Target acceptance 2-3 years post-Paper 13
+\end{itemize}
+
+% ==========================================
+% REFERENCES (PRELIMINARY)
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{p11} Premkumar Tatapudi, "From Lab to Lecture Hall: Production-Grade Edge MLOps Architecture,'' \textit{Paper 11 (this series)}, 2026.
+
+\bibitem{p12} Premkumar Tatapudi, ``Flash Endurance Engineering for Edge AI,'' \textit{Paper 12 (this series)}, 2026.
+
+\bibitem{p13} Premkumar Tatapudi, ``Privacy-Preserving Federated Learning for ModelDrift,'' \textit{Paper 13 (this series)}, 2026.
+
+\bibitem{b1} B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' \textit{AISTATS}, 2017.
+
+\bibitem{b2} T. Li et al., ``Federated Optimization in Heterogeneous Networks,'' \textit{MLSys}, 2020.
+
+\bibitem{b3} K. Bonawitz et al., ``Practical Secure Aggregation for Privacy-Preserving Machine Learning,'' \textit{ACM CCS}, 2017.
+
+% [TODO: Add 10-15 more references for final version]
+
+\end{thebibliography}
+
+\end{document}

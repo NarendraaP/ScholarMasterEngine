@@ -22,6 +22,14 @@ class AudioSentinel:
         """
         return self.status == "LOUD NOISE"
         
+    @property
+    def is_speaking(self):
+        """
+        Property to check if speaking is detected.
+        Used by Governance Layer for IRG.
+        """
+        return self.status == "LOUD NOISE" # Simplified: Treat loud noise as potential speaking behavior for now
+        
         # VAD (Voice Activity Detection) to prevent false positives
         # Aggressiveness: 0 (least) to 3 (most aggressive)
         self.vad = webrtcvad.Vad(2)  # Moderate aggressiveness

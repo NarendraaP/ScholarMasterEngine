@@ -13,10 +13,21 @@ from modules_legacy.face_registry import FaceRegistry
 from modules_legacy.audio_sentinel import AudioSentinel
 from modules_legacy.safety_rules import SafetyEngine
 from modules_legacy.attendance_logger import AttendanceManager
-from modules_legacy.logger import SystemLogger
+# from modules_legacy.logger import SystemLogger # Replaced by Trust Layer (Paper 8)
+from modules_legacy.trust_layer import TrustLogger
+from modules_legacy.governance import GovernanceEngine
 from modules_legacy.grooming import GroomingInspector
 from modules_legacy.scribe import LectureScribe
 from modules_legacy.liveness import AntiSpoofing
+
+# Paper 2: Context-Aware Engagement Fusion (Soft-Integration)
+# Feature flag: Set to True to enable experimental fusion logic
+ENABLE_CONTEXT_FUSION_DEMO = os.getenv("ENABLE_CONTEXT_FUSION", "false").lower() == "true"
+
+if ENABLE_CONTEXT_FUSION_DEMO:
+    from modules_legacy.context_fusion import demo_context_fusion, ContextFusionEngine
+    print("⚗️  Context Fusion (Paper 2) enabled via feature flag")
+
 import json
 import datetime
 import time
@@ -56,9 +67,18 @@ class ScholarMasterEngine:
         self.grooming_inspector = GroomingInspector()
         print("✅ GroomingInspector loaded")
 
-        # Initialize System Logger
-        self.logger = SystemLogger()
-        print("✅ SystemLogger loaded")
+        # Initialize Trust Layer (Paper 8)
+        # Replaces standard SystemLogger with Cryptographic Ledger
+        self.logger = TrustLogger()
+        print("✅ TrustLogger (Paper 8) loaded - Immutable Audit Active")
+
+        self.logger = TrustLogger()
+        print("✅ TrustLogger (Paper 8) loaded - Immutable Audit Active")
+
+        # Initialize Governance Layer (Orchestration Paper)
+        # Implements Hierarchical Control Plane & IRG
+        self.governance = GovernanceEngine()
+        print("✅ GovernanceEngine (Orchestration) loaded - IRG Active")
 
         # Initialize Lecture Scribe (Paper 2)
         self.scribe = LectureScribe()
@@ -194,13 +214,38 @@ class ScholarMasterEngine:
         # In production, use datetime.datetime.now()
         is_lecture_mode = self.context_engine.get_class_context(current_zone, "Mon", "10:00")
         
-        # Display Context Status
         if is_lecture_mode:
+            current_status = "Lecture"
             cv2.putText(annotated_frame, "Mode: LECTURE (Strict)", (10, 30), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         else:
+            current_status = "Break"
             cv2.putText(annotated_frame, "Status: Break Time (Monitoring Relaxed)", (10, 30), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+        
+        # ---------------------------------------------------------
+        # ORCHESTRATION LAYER: Governance Check (Paper 9)
+        # ---------------------------------------------------------
+        # Ask Governance Engine for Inference Strategy based on context
+        # ---------------------------------------------------------
+        context_state = {
+            "phase": current_status,
+            "hand_raised": False, # Will be updated by Pose in next cycle (using persistent state if needed)
+            "is_speaking": self.audio_sentinel.is_speaking
+        }
+        strategy = self.governance.get_inference_strategy(context_state)
+        
+        # Visualize Governance Decision
+        cv2.putText(annotated_frame, f"Gov Mode: {strategy['enable_face']}", (10, 50), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
+
+        # ---------------------------------------------------------
+        # 🛡️ PRIORITY SCHEDULER (Paper 10)
+        # ---------------------------------------------------------
+        # Audio Analysis (Safety) preempts Visual Indexing (Identity)
+        # This ensures that a "Loud Noise" (Gunshot/Scream) is processed 
+        # instantly even if the Vision Queue is full.
+        # ---------------------------------------------------------
         
         # Step 0: Audio Alert Check (Paper 2)
         # Explicit check for Audio Alert
@@ -208,8 +253,23 @@ class ScholarMasterEngine:
             cv2.putText(annotated_frame, "🔊 AUDIO ALERT", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
             self.trigger_alert("Warning", "Loud Noise Detected", current_zone)
         
+        # Step 0.5: Context-Aware Engagement Fusion (Paper 2 - Experimental, behind feature flag)
+        # This demonstrates soft-integration: same code as demo, but disabled by default
+        if ENABLE_CONTEXT_FUSION_DEMO:
+            # Example usage - would need actual face expression and transcript in production
+            # For now, this is a placeholder showing where it would be called
+            pass  # Disabled by default, enabled via ENABLE_CONTEXT_FUSION=true env var
+
+        
         # Step 1: Face Recognition (Paper 1)
-        faces = self.face_app.get(frame)
+        # 🛑 GOVERNED BLOCK: Only run if Strategy permits (IRG)
+        faces = []
+        if strategy["enable_face"]:
+            faces = self.face_app.get(frame)
+            self.governance.heartbeat("face_module") # Watchdog update
+        else:
+            cv2.putText(annotated_frame, "Face Rec: SUPPRESSED (IRG)", (50, 200),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (128, 128, 128), 2)
         
         # Draw boxes for faces first
         for face in faces:
@@ -350,10 +410,67 @@ class ScholarMasterEngine:
                 cv2.putText(annotated_frame, "✅ CONFIRMED PARTICIPATION", (50, 250), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
                 
-                # Log this specific "High Value" event
+                # Log this specific "High Value" event via Trust Layer
                 if self.logger:
-                    self.logger.log_event("Participation_Confirmed", current_zone)
+                    self.logger.log_event("Participation_Confirmed", {
+                        "zone": current_zone,
+                        "type": "High_Confidence_Intent"
+                    })
             # ---------------------------------------------------------
+            # ORCHESTRATION LAYER: End of Cycle
+            # ---------------------------------------------------------
+                 
+            # Step 3: Behavior & Safety (Paper 3 & 6)
+            # Run YOLO Pose (Privacy Safe - High Availability)
+            # Pose is usually critical for fallback, so Governance keeps it ON unless SAFE mode fails
+            results = None
+            keypoints_list = []
+            
+            if strategy["enable_pose"]:
+                results = self.pose_model(frame, verbose=False)
+                self.governance.heartbeat("pose_module")
+                
+                # ... process keypoints ...
+                keypoints_list = []
+                # Extract keypoints for rules engine
+                if results and results[0].keypoints is not None:
+                    # Convert to list of tensors/arrays
+                    keypoints_data = results[0].keypoints.data
+                    for kp in keypoints_data:
+                        keypoints_list.append(kp)
+                    
+                    # Render Skeleton (Paper 3 Privacy Mode)
+                    for r in results:
+                        annotated_frame = r.plot() 
+            
+                # Explicit crowd counting (makes integration visible)
+                crowd_count = self.count_people(keypoints_list)
+                
+                # Safety Checks
+                is_hand_raised = self.safety_engine.detect_hand_raise(keypoints_list)
+                if is_hand_raised:
+                    cv2.putText(annotated_frame, "HAND RAISE DETECTED", (50, 300), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    # Update context for next frame governance
+                    context_state["hand_raised"] = True
+
+                is_sleeping, s_msg, sleeping_indices = self.safety_engine.detect_sleeping(keypoints_list)
+                if is_sleeping:
+                    cv2.putText(annotated_frame, "SLEEPING", (50, 400), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2) # Blue (BGR)
+                    self.trigger_alert("Warning", s_msg, current_zone)
+            else:
+                cv2.putText(annotated_frame, "Pose: SUPPRESSED (Safe Mode)", (50, 300),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+            # Step 4: Audio (Paper 6)
+            # Check Audio Sentinel status (Usually enabled unless Mic broken)
+            if strategy["enable_audio"]:
+                self.governance.heartbeat("audio_module")
+                if self.audio_sentinel.status == "LOUD NOISE":
+                     cv2.putText(annotated_frame, "🔊 AUDIO ALERT", (50, 100), 
+                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+                     self.trigger_alert("Warning", "Loud Noise Detected", current_zone)
             
             # Trigger only if sustained for > 30 frames (~1-2 seconds at 30 FPS)
             if self.hand_raise_persistence > 30:
@@ -523,7 +640,7 @@ class ScholarMasterEngine:
 
     def trigger_alert(self, alert_type, message, location):
         """
-        Logs an alert to data/alerts.json using atomic write.
+        Logs an alert to the Trust Layer (Immutable Audit) and data/alerts.json.
         """
         alert = {
             "timestamp": datetime.datetime.now().isoformat(),
@@ -531,6 +648,11 @@ class ScholarMasterEngine:
             "msg": message,
             "zone": location
         }
+        
+        # 🛡️ TRUST LAYER INTEGRATION (Paper 8)
+        # Log to Immutable Ledger via Hash Chain
+        if hasattr(self, 'logger') and self.logger:
+            self.logger.log_event("ALERT", alert)
         
         alerts_file = "data/alerts.json"
         

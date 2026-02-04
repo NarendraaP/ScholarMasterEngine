@@ -1,0 +1,252 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% ==========================================
+% PACKAGES
+% ==========================================
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\begin{document}
+
+% ==========================================
+% TITLE
+% ==========================================
+\title{Privacy-Preserving Federated Learning for Model Drift Compensation in Educational Edge AI}
+
+% ==========================================
+% AUTHOR
+% ==========================================
+\author{\IEEEauthorblockN{Premkumar Tatapudi}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{ScholarMaster Research Group}\\
+Andhra Pradesh, India \\
+premkumartatapudi@example.com}
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT
+% ==========================================
+\begin{abstract}
+Edge AI systems deployed in classrooms face distribution shift (lighting changes, demographic turnover) causing 15\% accuracy degradation over time. Traditional retraining requires centralized raw data collection, violating student privacy (GDPR Article 9). This paper presents a \textbf{Teacher-in-the-Loop Federated Learning} architecture enabling on-device model retraining without raw data transmission. Our contributions include: (1) \textbf{FedAvg with Differential Privacy} guaranteeing ($\epsilon=95.97$, $\delta=10^{-5}$)-DP; (2) \textbf{Active learning integration} where teachers verify edge predictions, creating labeled datasets; (3) \textbf{Drift simulation framework} modeling real-world classroom variability; (4) \textbf{Empirical validation} showing 15\% → 2\% accuracy degradation reduction. Experimental results on 5-classroom simulation demonstrate convergence in 10 federated rounds with 67\% loss reduction while preserving student biometric privacy.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Federated Learning, Differential Privacy, Edge AI, Model Drift, Active Learning, Privacy-Preserving ML, Educational Technology.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+[TODO: Fill in Introduction]
+
+Key points:
+\begin{itemize}
+    \item deployed in classrooms experience distribution shift
+    \item Causes: Lighting (seasonal changes), Demographics (new students), Seating (occlusion)
+    \item Impact: 15\% accuracy degradation over 6 months
+    \item Problem: Retraining requires raw biometric data (GDPR violation)
+    \item Solution: Federated Learning enables model updates without data transmission
+    \item Contribution: First FL system for educational edge AI with teacher-in-the-loop labeling
+\end{itemize}
+
+% ==========================================
+% II. BACKGROUND
+% ==========================================
+\section{Background \& Related Work}
+
+\subsection{Federated Learning}
+\subsection{Differential Privacy}
+\subsection{Model Drift in Production ML}
+
+% ==========================================
+% III. PROBLEM FORMULATION
+% ==========================================
+\section{Problem Formulation}
+
+\subsection{Drift Characterization}
+\subsection{Privacy Requirements}
+
+GDPR Article 9: Biometric data is "special category" requiring explicit consent.
+
+\subsection{System Constraints}
+
+Edge devices have limited compute (cannot train large models), limited bandwidth (cannot upload raw video).
+
+% ==========================================
+% IV. ARCHITECTURE
+% ==========================================
+\section{Federated Learning Architecture}
+
+\subsection{Teacher-in-the-Loop Active Learning}
+
+[TODO: Add Algorithm 1: Teacher Feedback Loop]
+
+\subsection{Coordinator-Client Protocol}
+
+[TODO: Add system diagram showing edge nodes + central coordinator]
+
+% ==========================================
+% V. FEDAVG WITH DIFFERENTIAL PRIVACY
+% ==========================================
+\section{FedAvg with Differential Privacy}
+
+\subsection{Federated Averaging (FedAvg)}
+
+Equation 2: Global model update
+
+\begin{equation}
+w_{t+1} = \sum_{k=1}^{K} \frac{n_k}{n} \Delta w_k
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $w_t$ = Global model weights at round $t$
+    \item $\Delta w_k$ = Client $k$'s weight update
+    \item $n_k$ = Training samples at client $k$
+    \item $n$ = Total samples across all clients
+\end{itemize}
+
+\subsection{Differential Privacy Mechanism}
+
+Equation 3: DP-SGD noise injection
+
+\begin{equation}
+\tilde{\Delta w} = \text{Clip}(\Delta w, C) + \mathcal{N}(0, \sigma^2 C^2 I)
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item Clip(): L2-norm clipping to threshold $C$
+    \item $\mathcal{N}(0, \sigma^2 C^2 I)$: Gaussian noise
+    \item $\sigma$ = Noise multiplier (hyperparameter)
+\end{itemize}
+
+\subsection{Privacy Budget Calculation}
+
+Using moments accountant:
+
+\begin{equation}
+\epsilon \approx \frac{q \cdot T \cdot \sqrt{2 \ln(1/\delta)}}{\sigma}
+\end{equation}
+
+For our configuration ($\sigma=0.5$, $T=10$ rounds, $\delta=10^{-5}$):
+\[
+\epsilon = 95.97
+\]
+
+Interpretation: ($\epsilon=95.97$, $\delta=10^{-5}$)-Differential Privacy.
+
+% ==========================================
+% VI. EXPERIMENTAL METHODOLOGY
+% ==========================================
+\section{Experimental Methodology}
+
+\subsection{Drift Simulation}
+
+[TODO: Describe 3 drift types - lighting, demographics, seating]
+
+\subsection{Baseline Comparison}
+
+\begin{itemize}
+    \item \textbf{No Adaptation:} Static model (baseline)
+    \item \textbf{Centralized Retraining:} Upload raw data (privacy violation)
+    \item \textbf{FL (Ours):} Federated on-device training
+\end{itemize}
+
+\subsection{Metrics}
+
+\begin{itemize}
+    \item Accuracy degradation (\%)
+    \item Communication cost (gradient size × rounds)
+    \item Privacy guarantee ($\epsilon$, $\delta$)
+    \item Convergence speed (rounds to target accuracy)
+\end{itemize}
+
+% ==========================================
+% VII. RESULTS
+% ==========================================
+\section{Experimental Results}
+
+\subsection{Drift Compensation Efficacy}
+
+[TODO: Add Table V from original Paper 11]
+
+\begin{table}[h]
+\caption{Model Drift with and without FL (5 classrooms, 10 rounds)}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Scenario} & \textbf{No FL} & \textbf{With FL} \\
+\midrule
+Initial Accuracy & 95.0\% & 95.0\% \\
+After 6 Months (Drift) & 80.2\% & 93.1\% \\
+\textbf{Degradation} & \textbf{15.6\%} & \textbf{2.0\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\label{tab:drift}
+\end{table}
+
+\subsection{Convergence Analysis}
+
+[TODO: Add Figure: Global loss vs FL rounds (10 rounds, loss: 2.03 → 0.67)]
+
+\subsection{Communication Cost}
+
+[TODO: Add communication overhead analysis]
+
+\subsection{Privacy-Utility Trade-off}
+
+[TODO: Add figure showing ε vs accuracy for different σ values]
+
+% ==========================================
+% VIII. DISCUSSION
+% ==========================================
+\section{Discussion}
+
+\subsection{Privacy Considerations}
+\subsection{Scalability}
+\subsection{Comparison with Centralized Approach}
+
+% ==========================================
+% IX. THREATS TO VALIDITY
+% ==========================================
+\section{Threats to Validity}
+
+% ==========================================
+% X. CONCLUSION
+% ==========================================
+\section{Conclusion}
+
+This paper demonstrates that federated learning enables privacy-preserving model adaptation for edge AI systems. Our Teacher-in-the-Loop architecture reduces drift-induced accuracy degradation from 15\% to 2\% while guaranteeing ($\epsilon=95.97$, $\delta=10^{-5}$)-differential privacy. The system converges in 10 federated rounds without transmitting raw biometric data, making it GDPR-compliant.
+
+Future work includes: (1) Personalized FL with per-classroom model customization; (2) Asynchronous aggregation for network-partitioned environments; (3) Integration with [Paper 11: Edge MLOps] deployment infrastructure.
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{b1} B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," \textit{AISTATS}, 2017.
+
+\bibitem{b2} M. Abadi et al., "Deep Learning with Differential Privacy," \textit{ACM CCS}, 2016.
+
+\bibitem{b3} K. Bonawitz et al., "Towards Federated Learning at Scale," \textit{SysML}, 2019.
+
+% [TODO: Add more references]
+
+\end{thebibliography}
+
+\end{document}

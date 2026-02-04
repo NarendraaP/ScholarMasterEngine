@@ -93,7 +93,7 @@ Our contributions are as follows:
 This paper forms part of the \textbf{ScholarMaster Research Series}, a broader initiative investigating edge-native intelligent systems for academic environments. While related studies examine biometric indexing \cite{scholarmaster_repo} and hardware efficiency, this paper focuses exclusively on the \textbf{Context Fusion Module} of the ScholarMaster Engine. This module interfaces with the core engine via standardized context vectors; no biometric or identity data is accessed or persisted within this logic layer. This paper evaluates the context-fusion logic independently of the biometric identification pipeline described in Paper 1, assuming access only to anonymized valence vectors and schedule metadata.
 
 \subsection{Reproducibility}
-To support reproducibility, the source code for the inference engine and context fusion logic is made available as an open-source artifact \cite{scholarmaster_repo}. The repository contains the implementation of the fusion algorithms and configuration files used in the experiments described herein.
+To support reproducibility, the source code for the experimental validation module and context fusion logic is made available as an open-source artifact \cite{scholarmaster_repo}. The repository contains the implementation of the fusion algorithms (\texttt{scripts/demo\_paper2\_context\_fusion.py}), configuration files, and execution logs used in the experiments described herein. The experimental validation module demonstrates the complete fusion algorithm (Algorithm 1) with authentic execution traces.
 
 % ==========================================
 % II. RELATED WORK
@@ -327,9 +327,21 @@ The pipeline is implemented in Python 3.9 using an asynchronous `asyncio` event 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{terminal_logs.png}
-\caption{Qualitative Inference Trace: A snapshot of the decision logic, showing the system detecting a semantic keyword (``Integral'') and subsequently re-weighting the interpretation of a negative facial expression.}
+\caption{Qualitative Inference Trace from Experimental Validation Module: Terminal output showing the context-aware fusion logic detecting the semantic keyword ``Integral'' and applying cognitive load re-weighting to adjust the interpretation of negative facial valence during productive struggle.}
 \label{fig:log}
 \end{figure}
+
+\subsection{Implementation Status: Validation vs. Deployment}
+The context-aware keyword detection and engagement re-weighting logic demonstrated in Fig. \ref{fig:log} are implemented in a shared fusion module (\texttt{context\_fusion.py}) that supports both experimental validation and production deployment. This reflects a soft-integration architecture: the fusion algorithm (Algorithm 1) is implemented once and can be invoked from multiple contexts:
+
+\begin{enumerate}
+    \item \textbf{Experimental Validation Module} (\texttt{demo\_paper2\_context\_fusion.py}): Provides proof-of-concept demonstration with authentic execution logs, controlled testing with Sim-Class-24 dataset, and reproducible traces for all quantitative results (Tables III-IV, Fig. \ref{fig:results}).
+    
+    \item \textbf{Production Engine Integration} (\texttt{master\_engine.py}): The same fusion function is available in the real-time processing engine behind a feature flag (\texttt{ENABLE\_CONTEXT\_FUSION}). By default, this flag is disabled to prioritize deployment stability. When enabled via environment variable, the production engine calls the identical fusion logic used in validation.
+\end{enumerate}
+
+This architectural approach provides code reusability without duplication, verifiable consistency between validation and deployment code, and safe staged integration without destabilizing production. Full activation in deployment is deferred to future work, pending in-situ field validation with institutional IRB approval for audio transcription. All experimental results presented in this paper are derived from the shared fusion module executing the complete algorithm as specified.
+
 
 % ==========================================
 % VIII. EXPERIMENTAL RESULTS

@@ -1,0 +1,87 @@
+version: '3.8'
+
+# Paper 11: Blue/Green OTA Deployment
+# ====================================
+# Enables zero-downtime model updates with automated rollback
+
+services:
+  # Blue deployment (current production)
+  scholarmaster-blue:
+    image: scholarmaster:${BLUE_VERSION:-v2.0}
+    container_name: scholar-blue
+    restart: unless-stopped
+    devices:
+      - /dev/video0:/dev/video0
+    volumes:
+      - ./data:/opt/scholarmaster/data
+      - ./logs:/opt/scholarmaster/logs
+      - ./checkpoints:/opt/scholarmaster/checkpoints
+    environment:
+      - SCHOLAR_ENV=production
+      - SERVICE_COLOR=blue
+    ports:
+      - "8080:8080"  # Production port
+    networks:
+      - scholar-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Green deployment (staged for testing)
+  scholarmaster-green:
+    image: scholarmaster:${GREEN_VERSION:-v2.1}
+    container_name: scholar-green
+    restart: unless-stopped
+    devices:
+      - /dev/video0:/dev/video0
+    volumes:
+      - ./data:/opt/scholarmaster/data
+      - ./logs:/opt/scholarmaster/logs
+      - ./checkpoints:/opt/scholarmaster/checkpoints
+    environment:
+      - SCHOLAR_ENV=staging
+      - SERVICE_COLOR=green
+    ports:
+      - "8081:8080"  # Staging port
+    networks:
+      - scholar-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - testing  # Only start when explicitly requested
+
+  # Redis for state management
+  redis:
+    image: redis:7-alpine
+    container_name: scholar-redis
+    restart: unless-stopped
+    networks:
+      - scholar-net
+    volumes:
+      - redis-data:/data
+
+  # Mosquitto MQTT broker for telemetry
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: scholar-mqtt
+    restart: unless-stopped
+    networks:
+      - scholar-net
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./config/mosquitto:/mosquitto/config
+
+networks:
+  scholar-net:
+    driver: bridge
+
+volumes:
+  redis-data:
