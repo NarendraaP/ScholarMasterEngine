@@ -1,0 +1,570 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% ==========================================
+% PACKAGES
+% ==========================================
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{float}
+\usepackage{listings}
+
+% --- TIKZ ---
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc, backgrounds, automata, trees, decorations.pathreplacing}
+
+% --- THEOREM ENVIRONMENTS ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{property}{Property}
+
+% --- CODE LISTINGS ---
+\lstset{
+    basicstyle=\ttfamily\footnotesize, 
+    breaklines=true,
+    frame=single,
+    numbers=left, 
+    numberstyle=\tiny,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% --- STANDARD IEEE SETTINGS ---
+\setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt}
+\renewcommand{\baselinestretch}{1.0} 
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+% ==========================================
+% TITLE
+% ==========================================
+\title{Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI
+\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \& Technology (Autonomous), as part of academic research activities.}
+}
+
+% ==========================================
+% AUTHOR
+% ==========================================
+\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
+\IEEEauthorblockA{\textit{Principal} \\
+\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+సీతారామపురం, Narsapur, Andhra Pradesh, India}
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT
+% ==========================================
+\begin{abstract}
+The evaluation of edge AI systems under adversarial conditions requires a rigorous formalization of their defensive boundaries. While prior work established the architectural doctrine of irreversibility and its runtime enforcement mechanisms, the exact security boundaries, formal adversary definitions, and assumed trust models require explicit mathematical formulation. This paper formally defines the Threat Model, Information Flow boundaries, and Trusted Computing Base (TCB) for architecturally irreversible edge AI systems. We establish a tiered adversary classification algebra ($A_0$ to $A_5$) mapping observer capabilities to memory, network, and kernel domains. We formalize the system using a Non-Interference information flow model and express system state transitions using Metric Temporal Logic (MTL), demonstrating that high-sensitivity raw biometric data cannot propagate to persistent sinks under the defined assumptions. Furthermore, we explicitly demarcate the system's operational scope, validating defense against institutional root adversaries ($A_3$) while analyzing the collapse of invariants under kernel-level ($A_4$) and physical hardware compromises ($A_5$). By delineating the minimal TCB, we quantify the residual attack surface, including information-theoretic bounds on Model Inversion attacks. Finally, we formulate and justify four bounded security theorems: Pixel-Space Non-Reconstructability, Bounded Exposure Window ($\Delta \le 33$ms), Governance Non-Bypass, and Fail-Closed State Reachability, conditionally grounded on empirical runtime validation and mechanized TLA+ model checking. This work provides the formal security calculus necessary to evaluate privacy-by-architecture systems under rigorous adversarial scrutiny.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Threat Model, Trusted Computing Base (TCB), Edge AI, Privacy-by-Architecture, Non-Interference, Metric Temporal Logic, Security Proofs, TLA+.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+\subsection{The Security Framing Gap}
+The deployment of continuous biometric sensing in academic and institutional environments presents profound privacy risks, scaling from casual tracking to mass surveillance. To mitigate these systemic risks, defensive frameworks based on \textit{Architectural Irreversibility} \cite{P17} have been proposed and validated through runtime enforcement \cite{P18}. 
+
+However, in the domain of formal systems security, architectural intent and empirical runtime enforcement are insufficient without a mathematically defined boundary of trust \cite{b1}. A system that claims ``privacy protection'' without specifying the formal capabilities of the adversary it protects against is academically ambiguous. If an architecture claims to destroy raw biometric data within $33$ms, does that property hold against a user-space application, an institutional root administrator, or a compromised OS kernel? 
+
+This paper bridges this security framing gap. It provides the formal threat model, state transition specifications, and trust assumptions under which the architectural claims of irreversible edge analytics are demonstrably valid.
+
+\subsection{Scope and Objective}
+The objective of this paper is formal security specification and boundary analysis. **This paper introduces no new architectural layers, algorithms, or enforcement mechanisms.** It does not present empirical performance benchmarks. Instead, it defines:
+\begin{enumerate}
+    \item A mathematical algebra defining the hierarchy of attacker capabilities ($A_0$--$A_5$), adapting the classical Dolev-Yao model \cite{b2}.
+    \item A formal State Space and Metric Temporal Logic (MTL) specification \cite{b9} corresponding to runtime privacy invariants.
+    \item An Information Flow model demonstrating Non-Interference \cite{b8, b11} between volatile raw memory and persistent storage.
+    \item The exact mathematical boundaries and component dependencies of the Trusted Computing Base (TCB) \cite{b3}.
+    \item Formal proofs of security theorems mapped directly to the constrained adversary model, conditionally linked to empirical runtime enforcement.
+\end{enumerate}
+
+By defining these bounds, we align the evaluation of the system with established principles of formal secure systems design and model checking \cite{b10}.
+
+% ==========================================
+% II. FORMAL ADVERSARY MODEL
+% ==========================================
+\section{Formal Adversary Classification Model}
+To analyze system resilience, we must first formalize the capabilities of the attacker. We adapt standard threat modeling \cite{b2} and extend it for cyber-physical edge nodes.
+
+
+
+Let an Adversary $A$ be defined by a tuple of capabilities:
+\begin{equation}
+A = \langle \mathcal{O}, \mathcal{M}, \mathcal{E} \rangle
+\end{equation}
+where:
+\begin{itemize}
+    \item $\mathcal{O}$ is the set of observable states (network packets, memory regions, file systems).
+    \item $\mathcal{M}$ is the set of modifiable states (packet injection, memory writing, file alteration).
+    \item $\mathcal{E}$ is the execution privilege level (Ring 3 user-space, Ring 0 kernel, Ring -1 hypervisor/physical).
+\end{itemize}
+
+We formalize a tiered hierarchy of adversaries to precisely bound the limits of the architectural claims.
+
+\subsection{Formal Threat Model Assumptions}
+To eliminate theoretical gaps and construct rigorous proofs, we establish explicit boundary conditions for the operational environment. The formal security guarantees in this paper are strictly predicated on the following axioms:
+
+\begin{assumption}[$A_{HW}$: Hardware Isolation]
+Edge node hardware correctly enforces Input-Output Memory Management Unit (IOMMU) domains and memory isolation, preventing unauthorized PCIe/Thunderbolt Direct Memory Access (DMA) attacks from bypassing virtual memory boundaries.
+\end{assumption}
+
+\begin{assumption}[$A_{PHYS}$: Physical Security]
+No adversary possesses the physical capability or operational window necessary to perform DRAM decapping, hardware bus probing, or cold-boot extraction.
+\end{assumption}
+
+\begin{assumption}[$A_{SPEC}$: Microarchitectural Security]
+Speculative execution leakage (e.g., Spectre-class vulnerabilities) is effectively mitigated at the OS kernel level via software speculation barriers and SMT isolation.
+\end{assumption}
+
+These assumptions do not weaken the proofs; rather, they mathematically bound the adversary model, explicitly shifting physical and microarchitectural extraction outside the formal scope to preserve the structural integrity of the software-architectural proofs.
+
+\subsection{$A_0$: Passive Observer}
+\begin{itemize}
+    \item $\mathcal{O}_{A0} = \{ \text{Ciphertext Network Traffic}, \text{Physical LEDs} \}$
+    \item $\mathcal{M}_{A0} = \emptyset$
+    \item $\mathcal{E}_{A0} = \text{None}$
+    \item \textit{Profile:} A student or external actor observing the physical device or sniffing WiFi packets. Defeated by standard mTLS and chassis enclosures.
+\end{itemize}
+
+\subsection{$A_1$: User-Space Local Adversary}
+\begin{itemize}
+    \item $\mathcal{O}_{A1} = \{ \text{User-owned processes}, \text{World-readable files}, \text{Top/PS output} \}$
+    \item $\mathcal{M}_{A1} = \{ \text{User-owned process termination}, \text{Local socket binding} \}$
+    \item $\mathcal{E}_{A1} = \text{Ring 3 (UID} \neq 0\text{)}$
+    \item \textit{Profile:} An attacker who obtains SSH access via a compromised student/faculty non-root credential. Blocked by OS-level virtual memory isolation.
+\end{itemize}
+
+\subsection{$A_2$: Remote Network Adversary}
+\begin{itemize}
+    \item $\mathcal{O}_{A2} = \{ \text{Network metadata}, \text{Ciphertext} \}$
+    \item $\mathcal{M}_{A2} = \{ \text{Packet Drop}, \text{Packet Delay}, \text{Packet Replay} \}$
+    \item $\mathcal{E}_{A2} = \text{None}$
+    \item \textit{Profile:} A network administrator or ISP executing man-in-the-middle (MITM) or denial-of-service (DoS) attacks. Defeated by authenticated payloads and fail-closed network timeout logic.
+\end{itemize}
+
+\subsection{$A_3$: Institutional Administrator (Root)}
+\begin{itemize}
+    \item $\mathcal{O}_{A3} = \{ \text{Entire Filesystem}, \text{Active RAM via \texttt{/dev/mem}} \}$
+    \item $\mathcal{M}_{A3} = \{ \text{Service Restart}, \text{File Deletion}, \text{Process Debugging (\texttt{ptrace})} \}$
+    \item $\mathcal{E}_{A3} = \text{Ring 3 (UID = 0)}$
+    \item \textit{Profile:} The primary threat actor modeled in privacy-by-architecture. A malicious or compromised IT administrator attempting retrospective mass surveillance. 
+    \item \textit{Critical Assumption:} $A_3$ explicitly assumes Secure Boot with kernel module signing enforced and an immutable root filesystem. Violation of these assumptions (e.g., loading unsigned kernel modules or using \texttt{LD\_PRELOAD} to hook allocators globally) bypasses the TCB and escalates the adversary to $A_4$.
+\end{itemize}
+
+\subsection{$A_4$: Kernel-Level Adversary (Out of Scope)}
+\begin{itemize}
+    \item $\mathcal{O}_{A4} = \text{Universal System State}$
+    \item $\mathcal{M}_{A4} = \{ \text{Arbitrary Read/Write}, \text{Page Table Manipulation}, \text{Scheduler Hijacking} \}$
+    \item $\mathcal{E}_{A4} = \text{Ring 0}$
+    \item \textit{Profile:} An attacker exploiting a zero-day in the Linux kernel or escalating privileges past a weakened $A_3$ state. \textbf{Explicitly out of scope.} The architectural claims depend wholly on the kernel's ability to enforce isolation.
+\end{itemize}
+
+\subsection{$A_5$: Physical / Hardware Adversary (Out of Scope)}
+\begin{itemize}
+    \item $\mathcal{O}_{A5} = \{ \text{DRAM Remanence}, \text{EM Emanations}, \text{Bus Probing} \}$
+    \item $\mathcal{M}_{A5} = \{ \text{Cold Boot Extraction}, \text{Voltage Glitching}, \text{JTAG Injection} \}$
+    \item $\mathcal{E}_{A5} = \text{Physical / Hardware Level}$
+    \item \textit{Profile:} State-actor or physical thief extracting RAM modules. \textbf{Explicitly out of scope} (Bounded by assumption $A_{PHYS}$) for software-enforced architectures lacking Transparent Memory Encryption (TME) \cite{b4}.
+\end{itemize}
+
+% ==========================================
+% III. INFORMATION FLOW & NON-INTERFERENCE
+% ==========================================
+\section{Information Flow and Non-Interference Model}
+To formally verify the architectural claims against attackers $A_0 \dots A_3$, we define the system using a Trace-Based Information Flow / Non-Interference model, built upon the foundations laid by Denning \cite{b12} and formalized by Goguen and Meseguer \cite{b8}.
+
+\subsection{Security Domains and State Indistinguishability}
+Following the lattice model of information flow \cite{b12}, we define two strict security domains:
+\begin{itemize}
+    \item $\mathcal{D}_{High}$: Volatile memory containing high-sensitivity raw biometric data (RGB frames, audio waveforms).
+    \item $\mathcal{D}_{Low}$: Persistent storage and network egress containing anonymized metadata and encrypted logic logs.
+\end{itemize}
+
+Let $S$ be the set of all possible system states. We define an observation function $obs_{L}(s)$ which yields the state of $\mathcal{D}_{Low}$ in system state $s$. Two states $s_1$ and $s_2$ are indistinguishable to an $A_3$ adversary inspecting persistent storage if $obs_{L}(s_1) = obs_{L}(s_2)$, denoted as $s_1 \sim_L s_2$ \cite{b11}.
+
+\subsection{Formal Threat Model Equation}
+The core architectural claim is a strict one-way information flow prohibiting historical raw data extraction. We formalize this using a system tuple $\mathcal{S}$.
+
+Let $\mathcal{S} = \langle TCB, \mathcal{U}, A_i \rangle$ represent the runtime system, where $TCB$ is the trusted computing base and $\mathcal{U}$ represents untrusted architectural components (e.g., neural network weights, UI). Let $X_{t < t_{now} - \Delta}$ represent raw biometric data existing prior to the configured TTL threshold $\Delta$. 
+
+The system's fundamental security claim holds if and only if:
+\begin{equation}
+\forall A_i \in \{A_0, A_1, A_2, A_3\} : compromise(A_i) \land intact(TCB) \implies \neg extract(X_{t < t_{now} - \Delta})
+\end{equation}
+
+This equation mathematically asserts that as long as the adversary's capability is bounded by $A_3$ and the TCB remains unviolated (no kernel compromise), retrospective extraction of raw data is strictly impossible.
+
+\subsection{Information Funneling and Dimensionality Reduction}
+The only permissible flow from $\mathcal{D}_{High} \to \mathcal{D}_{Low}$ is through the transformation function $F_{irreversible}$:
+\begin{equation}
+F_{irreversible}: \mathbb{R}^{H \times W \times 3} \to \mathbb{R}^{d_{meta}}
+\end{equation}
+Where $H \times W \times 3$ represents the continuous high-fidelity pixel space, and $d_{meta}$ represents the discrete low-dimensional semantic space (e.g., boolean engagement flags or zone coordinates). Because $F_{irreversible}$ is a many-to-one surjective mapping with immense entropy loss, the flow preserves Non-Interference with respect to precise identity reconstruction \cite{b23}.
+
+% ==========================================
+% IV. STATE TRANSITIONS
+% ==========================================
+\section{State Transitions}
+To rigorously map runtime enforcement mechanisms into mathematical proofs, we define the formal state space. The specific Temporal Logic formalizations (MTL) restricting these transitions are detailed in Appendix A.
+
+\subsection{Formal State Space Definition}
+Let the system state space $\mathcal{S}$ be defined by the tuple:
+\begin{equation}
+s = \langle M_{high}, M_{low}, \mathcal{P}, Net, Mode \rangle
+\end{equation}
+where $M_{high}$ is the state of volatile raw memory, $M_{low}$ is persistent storage, $\mathcal{P}$ represents active processes, $Net$ is the egress queue, and $Mode \in \{NORMAL, DEGRADED, HALT\}$. 
+We define the state transition function $\delta : \mathcal{S} \times E \to \mathcal{S}'$, where $E$ is an internal or external event (e.g., timer tick, hardware fault). 
+
+We define the following predicates over a data buffer $b \in M_{high}$:
+\begin{itemize}
+    \item $Alloc(b)$: Buffer $b$ is allocated in volatile memory.
+    \item $Raw(b)$: Buffer $b$ contains high-fidelity raw biometric data.
+    \item $Zeroed(b)$: Buffer $b$ has been cryptographically overwritten with zeros.
+    \item $Emit(b)$: The contents of buffer $b$ are pushed to $Net$.
+    \item $Gov(b)$: The contents of buffer $b$ have passed Governance checks.
+\end{itemize}
+
+% ==========================================
+% V. TRUSTED COMPUTING BASE (TCB)
+% ==========================================
+\section{Trusted Computing Base (TCB)}
+The Trusted Computing Base (TCB) comprises the totality of hardware, firmware, and software components that are critical to system security. Minimizing the TCB is a fundamental goal of secure system design \cite{b3}. 
+
+
+
+\subsection{Explicit TCB Formalization}
+Let the total system environment consist of the union of the Trusted Computing Base ($TCB$) and untrusted components ($\mathcal{U}$). We formally define the TCB as the set:
+\begin{equation}
+TCB = \{ C_{boot}, C_{kernel}, C_{alloc}, C_{sched}, C_{gov} \}
+\end{equation}
+We assert the fundamental trust axiom necessary for system integrity:
+\begin{equation}
+\forall c \in TCB : Trusted(c) \quad \land \quad \exists u \in \mathcal{U} : \neg Trusted(u)
+\end{equation}
+
+% --- FIGURE 1: TCB BOUNDARY ---
+\begin{figure}[htbp]
+\centering
+
+\begin{tikzpicture}[node distance=1.5cm, auto, >=stealth, thick]
+    % TCB Box
+    \node (tcb_box) [draw, rectangle, fill=blue!5, minimum width=8.5cm, minimum height=5cm, dashed] {};
+    \node [anchor=north west] at (tcb_box.north west) {\textbf{Trusted Computing Base (TCB)}};
+
+    % Inside TCB
+    \node (kernel) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, 0.8) {Linux Kernel / IOMMU};
+    \node (alloc) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, 0.8) {glibc \& ld-linux};
+    \node (boot) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, -0.2) {Secure Bootloader};
+    \node (watchdog) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, -0.2) {Watchdog Process};
+    \node (gov) [draw, rectangle, fill=blue!20, minimum width=8cm, minimum height=0.8cm] at (0, 1.8) {Runtime Enforcement / Gov Layer};
+
+    % Outside TCB
+    \node (untrusted_box) [draw, rectangle, fill=red!5, minimum width=8.5cm, minimum height=3cm, dashed, below=0.2cm of tcb_box] {};
+    \node [anchor=north west] at (untrusted_box.north west) {\textbf{Untrusted / Excluded from TCB}};
+
+    \node (weights) [draw, rectangle, fill=red!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, -3.2) {AI Model Weights};
+    \node (ui) [draw, rectangle, fill=red!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, -3.2) {Application UI / API};
+    \node (sensor) [draw, rectangle, fill=red!20, minimum width=8cm, minimum height=0.8cm] at (0, -4.2) {Sensor Hardware Firmware};
+    
+\end{tikzpicture}
+\caption{Demarcation of the Trusted Computing Base. The security of the privacy invariants depends strictly on the components within the TCB. Neural network weights and UI elements are explicitly untrusted.}
+\label{fig:tcb}
+\end{figure}
+
+\subsection{Kernel Dependency Assumptions}
+The architectural guarantees are conditionally dependent on the formal correctness of the OS kernel, governed by the bounding axioms $A_{HW}$ and $A_{SPEC}$. We explicitly define these kernel dependencies as:
+\begin{assumption}[$K_1$: Memory Isolation] 
+The kernel correctly enforces virtual memory boundaries, preventing Ring 3 process A from reading the address space of process B. 
+\end{assumption}
+\begin{assumption}[$K_2$: mlock Semantics] 
+The kernel strictly honors the \texttt{mlock()} system call, mathematically guaranteeing that locked pages are never evicted to persistent swap space. 
+\end{assumption}
+\begin{assumption}[$K_3$: Scheduler Fairness] 
+The OS scheduler strictly honors POSIX \texttt{SCHED\_FIFO} real-time priorities, ensuring the Watchdog process is never starved by user-space compute threads. 
+\end{assumption}
+\begin{assumption}[$K_4$: IOMMU Isolation]
+Derived from $A_{HW}$, the hardware and kernel correctly enforce IOMMU domains with DMA remapping.
+\end{assumption}
+
+In addition to the kernel, the TCB inherently includes the \textbf{Compiler Toolchain Trust} (mitigating the classic Thompson "Trusting Trust" attack) and the \textbf{C Standard Library and Dynamic Loader}, which must faithfully execute explicit zeroization requests before returning pages to the OS.
+
+\subsection{Excluded from the TCB}
+The architecture is mathematically designed to assume the following components are untrustworthy or potentially compromised:
+\begin{itemize}
+    \item \textbf{Inference Model Weights:} The neural networks are treated as untrusted mathematical transformations. Maliciously altered weights cannot bypass the architectural destruction of memory buffers managed by the TCB. 
+    \item \textbf{Application APIs:} Query interfaces are assumed susceptible to SQL injection or logic flaws; operating strictly post-boundary in $\mathcal{D}_{Low}$.
+\end{itemize}
+
+% ==========================================
+% VI. THREAT MITIGATION MAPPING
+% ==========================================
+\section{Comprehensive Threat Mitigation Mapping}
+To summarize the interaction between adversary capabilities and architectural defenses, we construct a comprehensive Threat Mitigation Matrix (Table I). 
+
+\begin{table*}[t]
+\caption{Formal Threat Mitigation Matrix mapping Adversary capabilities to specific Architectural Countermeasures.}
+\centering
+\begin{tabular}{p{1.2cm} p{2.5cm} p{4.5cm} p{5.5cm} p{2.5cm}}
+\toprule
+\textbf{Class} & \textbf{Adversary} & \textbf{Expected Attack Vector} & \textbf{Architectural Countermeasure} & \textbf{Security State} \\
+\midrule
+$A_0$ & Passive Observer & Sniffing network packets during class. & mTLS encryption layer; Network payload contains no raw PII. & Defended \\
+\midrule
+$A_1$ & Local User & SSH login, attempting to read `/tmp` or run `ps` to scrape RAM. & Application memory is mapped `private`. Disabling of IPC shared memory for raw arrays. & Defended \\
+\midrule
+$A_2$ & Network Admin & Packet delay/drop to force buffer overflows in edge node. & Fixed-size queue limits; Network timeout triggers fail-closed state (MTL Property 3). & Defended \\
+\midrule
+$A_3$ & Root Admin & Analyzing historical disk data, reviewing crash core dumps, viewing swap. & `mlock` prevents swapping; `MADV_DONTDUMP` excludes from core dumps; Configured TTL bounds memory exposure. & Defended \\
+\midrule
+$A_4$ & Kernel Exploit & Exploiting zero-day to rewrite OS scheduler or bypass `mlock`. & N/A - The TCB relies completely on kernel isolation integrity. & \textbf{Vulnerable} \\
+\midrule
+$A_5$ & Physical Actor & Cold Boot \cite{b4}, Side-channels (Spectre \cite{b18_spectre}, Rowhammer \cite{b19_row}). & Out of scope by Axioms $A_{PHYS}$ and $A_{SPEC}$. Requires hardware TME. & \textbf{Vulnerable} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% ==========================================
+% VII. RESIDUAL RISK & INVERSION BOUNDS
+% ==========================================
+\section{Residual Risk \& Information-Theoretic Bounds}
+Security maturity requires acknowledging the limits of any defensive architecture. We must formally analyze Machine Learning inversion attacks using Information Theory.
+
+\subsection{Model Inversion (MI) Bounds}
+Can an adversary reconstruct a student's face from a 512-dimensional output embedding $Y \in \mathbb{R}^{512}$?
+Let the raw input space be the random variable $X \in \mathbb{R}^{1080 \times 1920 \times 3}$.
+The inference model is a deterministic function $f: X \to Y$. 
+A Model Inversion attack \cite{b23} seeks to find an approximation $\hat{X}$ such that $f(\hat{X}) \approx Y$.
+
+\textbf{Information-Theoretic Bound:} We analyze this via Shannon Entropy $H$. The conditional entropy $H(X | Y)$ represents the uncertainty remaining about the original image $X$ given the embedding $Y$:
+\begin{equation}
+H(X | Y) = H(X) - I(X;Y)
+\end{equation}
+The projection from roughly 6.2 million dimensions down to 512 dimensions is a highly lossy operation. The transformation $f$ is non-injective and information-theoretically many-to-one. Therefore, exact reconstruction of the original preimage $x \in X$ is not uniquely determined by the embedding $Y$.
+
+While generative models (e.g., GANs) can hallucinate a \textit{statistically plausible prior} face that generates embedding $Y$, it is architecturally impossible to deterministically reconstruct the \textit{original, exact} pixel space of the student. Because the TCB strictly destroys the raw data, no side-channel hints exist on disk to bridge this entropic gap. 
+
+\subsection{Membership Inference Attacks (MIA)}
+If the system participates in Federated Learning to update models, it transmits gradient updates $\nabla \theta$. Membership Inference Attacks \cite{b5} seek to determine if a specific data point $x$ was in the training batch by observing changes in $\theta$. Secret extraction via memorized gradients \cite{b21} is a known risk in high-capacity networks.
+
+We acknowledge MIA as an inherent residual risk in distributed AI. Under $A_0$-$A_3$ adversaries, the exposure is limited to distributional leakage rather than direct data extraction. Formal mitigation relies on implementing Differential Privacy (DP) \cite{b14, b22}, which bounds the capability of the adversary by a privacy budget $\epsilon$:
+\begin{equation}
+Pr[\mathcal{A}(M(D)) \in S] \le e^\epsilon \cdot Pr[\mathcal{A}(M(D')) \in S] + \delta
+\end{equation}
+While DP is an architectural option (detailed in Paper 13 \cite{P13}), its mathematical enforcement is orthogonal to the local runtime irreversibility guaranteed by the TCB.
+
+% ==========================================
+% VIII. INFORMATION-FLOW NONINTERFERENCE
+% ==========================================
+\section{Information-Flow Noninterference}
+
+To rigorously prove the separation of biometric data from persistent sinks, we evaluate the architecture using formal Information-Flow Noninterference.
+
+\subsection{Domain Partition}
+The system's state space is strictly partitioned into two security domains:
+\begin{itemize}
+    \item $\mathcal{D}_{High}$: The protected volatile memory space containing raw, high-fidelity biometric data (e.g., RGB pixel arrays, uncompressed audio).
+    \item $\mathcal{D}_{Low}$: The observable persistent storage, network egress queues, and semantic metadata logs.
+\end{itemize}
+
+\subsection{Two-Trace Equivalence}
+The core privacy guarantee is established via two-trace equivalence. Let $tr_1$ and $tr_2$ be two valid execution traces of the system. The system satisfies noninterference if any two traces that have equivalent low-domain inputs ($\sim_L$) produce exactly the same low-domain observations ($obs_L$), regardless of the data in the high domain.
+\begin{equation}
+\forall tr_1, tr_2 \in Traces : tr_1 \sim_L tr_2 \implies obs_L(tr_1) = obs_L(tr_2)
+\end{equation}
+This guarantees that an $A_3$ adversary inspecting $\mathcal{D}_{Low}$ cannot deduce any properties of the raw biometric data in $\mathcal{D}_{High}$.
+
+\subsection{Termination-Insensitive Property}
+Because the architecture utilizes a fail-closed watchdog that terminates the process (`SIGKILL`) if raw buffers exceed their TTL, an adversary can observe a system halt. Consequently, the architecture satisfies \textit{Termination-Insensitive Noninterference (TINI)}. TINI acknowledges that while the adversary can learn a 1-bit signal (that a termination occurred), the actual payload of $\mathcal{D}_{High}$ remains mathematically unobservable.
+
+\subsection{TLA+ Model Checking and State Bounds}
+The noninterference properties and domain partitions were mechanically verified using TLA+ and the TLC model checker. Because concurrent temporal logic models are highly susceptible to state space explosion, the model was computationally bounded. We restricted the verification to a maximum of $N \le 2$ concurrent frame buffers and a discrete temporal step bound of $\Delta t \le 3$. Under these strict computational bounds, the TLC checker exhaustively explored all reachable states and confirmed zero violations of the two-trace equivalence property.
+
+% ==========================================
+% IX. DIFFERENTIAL PRIVACY BOUND
+% ==========================================
+\section{Differential Privacy Bound}
+To mitigate Membership Inference Attacks (MIA) against aggregate statistics in the federation layer, we formalize the privacy guarantee for the engagement metric.
+
+\subsection{Metric Sensitivity}
+Let the query function $f$ represent the aggregate engagement count for a given time window. The Global Sensitivity $\Delta f$ of this count query is strictly 1, as the presence or absence of a single individual in the dataset can change the aggregate count by at most 1.
+\begin{equation}
+\Delta f = \max_{D, D'} || f(D) - f(D') ||_1 = 1
+\end{equation}
+
+\subsection{Noise Injection Mechanism}
+We apply the Laplace Mechanism $M(x)$ to the query result:
+\begin{equation}
+M(D) = f(D) + Y, \quad \text{where } Y \sim Lap(\Delta f / \epsilon)
+\end{equation}
+The privacy budget $\epsilon$ is a configurable parameter, strictly bounded to $\epsilon < 1$ for production releases to ensure strong privacy guarantees.
+
+\subsection{Privacy Claim}
+The system satisfies $\epsilon$-differential privacy for all aggregate outputs emitted to the $\mathcal{D}_{Low}$ domain, providing a mathematical bound on the information leakage regarding any single individual's participation.
+
+% ==========================================
+% X. TIMING CHANNEL MITIGATION
+% ==========================================
+\section{Timing Channel Mitigation}
+To prevent side-channel leakage via execution duration (observable by an $A_0$ adversary), the inference pipeline enforces strict isochronal constraints.
+
+\subsection{Execution Model}
+The system utilizes a **Fixed Computational Graph**. Neural network execution paths are static; there are no data-dependent branching operations (e.g., `if identity == X`) that would alter the control flow based on the content of the raw input.
+
+\subsection{Isochronal Constraints}
+\begin{itemize}
+    \item **Bounded Jitter:** The process runs with \texttt{SCHED\_FIFO} real-time priority, ensuring that preemption is deterministic and jitter is bounded.
+    \item **Constant Upper Bound:** The latency $L(x)$ for processing any input frame $x$ is strictly bounded by $L_{max}$ (e.g., 33ms). If processing completes early, the system waits until $L_{max}$ before emitting the result or accepting the next frame.
+\end{itemize}
+
+\subsection{Leakage Claim}
+The mutual information between the execution time $T$ and the high-domain input $X$, denoted as $I(T; X)$, is negligible and bounded by the scheduling jitter $\delta_{jitter}$. Consequently, timing leakage is bounded and considered negligible under adversaries $A_0$ through $A_3$.
+
+% ==========================================
+% XI. FORMAL SECURITY THEOREMS
+% ==========================================
+\section{Formal Security Theorems}
+
+\subsection{Empirical Grounding}
+The formal proofs provided below map logical constraints to system states. It is critical to state that all theorems are conditionally bounded by the foundational axioms ($A_{HW}, A_{PHYS}, A_{SPEC}$) and physical/runtime enforcement mechanisms. A theoretical proof of fail-closed semantics is only practically valid because the watchdog timer architecture was empirically shown to execute successfully under adversarial fault injection.
+
+\begin{theorem}[Bounded Pixel-Space Non-Reconstructability]
+Under adversary constraints $A_0$ through $A_3$ and foundational assumptions ($A_{HW}, A_{PHYS}, A_{SPEC}$), pixel-space reconstruction from post-boundary representations is architecturally underdetermined and mathematically non-unique.
+\end{theorem}
+\begin{proof}
+Follows directly from the Non-Interference property (Equation 2) under adversary constraints $A_0$ through $A_3$ and intact TCB assumptions. The full Shannon entropy derivation, degree-of-freedom collapse, and formal non-injectivity proof of the transformation function $F_{irreversible}$ are established in prior foundational work (Paper 3). Under the defined threat model, no residual side-channel copies of the raw matrix $X$ persist in memory to bypass this mathematical bound.
+\end{proof}
+
+\begin{theorem}[Probabilistic Noninterference]
+If the abstraction function is many-to-one over identity space and no stochastic process is conditioned on raw frame entropy, then the framework satisfies probabilistic noninterference under adversaries $A_0$ through $A_3$.
+\end{theorem}
+\begin{proof}
+Let $X \in \mathcal{D}_{High}$ denote the raw input matrix and $Y \in \mathcal{D}_{Low}$ denote the abstracted semantic output. Probabilistic noninterference requires that the probability distribution of observable low-domain events remains invariant across high-domain inputs that map to the same semantic class. Because $F_{irreversible}$ is a many-to-one projection, multiple distinct biometric preimages $\{x_1, x_2, \dots, x_n\}$ map to the same skeletal representation $y$. Under the TCB assumptions, the execution timing and network emission probabilities are a function of $y$ and the downstream deterministic governance logic, not $x$. Because no stochastic process is seeded by the residual entropy of $X$, the observation distribution $P(obs_L | X = x_i)$ is identical for all $x_i \in f^{-1}(y)$. Therefore, the system preserves trace equivalence in probability.
+\end{proof}
+
+\begin{theorem}[Bounded Temporal Exposure]
+Raw biometric data exposure to an active $A_3$ (Root) adversary intercepting live memory via OS-level debuggers is strictly bounded by the configured TTL parameter $\Delta$ (e.g., $\Delta \le 33$ms).
+\end{theorem}
+\begin{proof}
+Assume $A_3$ initiates a memory read via `/dev/mem` at time $T_{attack}$. By the TCB enforcement loop defined in MTL Property 1, any buffer $b$ allocated at $T_{alloc} < T_{attack} - \Delta$ has been subjected to forced zeroization by the `SCHED_FIFO` watchdog. Therefore, the adversary's observational window is mathematically constrained strictly to $T_{attack} - \Delta \le T_{alloc} \le T_{attack}$. Retrospective historical extraction is structurally impossible under a trusted kernel.
+\end{proof}
+
+\begin{theorem}[Governance Token Non-Bypass]
+Under attacker classes $A_0$ through $A_3$, no post-boundary payload can be emitted to an external sink without the cryptographic inclusion of a governance approval token evaluated and signed by the TCB.
+\end{theorem}
+\begin{proof}
+All post-boundary egress relies on authenticated channels. Governance approval tokens are evaluated and signed strictly by the Governance module under the TCB integrity assumptions defined in Section V. If an $A_1$ or $A_3$ adversary attempts to emit data via a separate spoofed process, they lack the trusted cryptographic material to authenticate with the central broker, resulting in the connection being deterministically dropped by the network ingress layer. This satisfies MTL Property 2 (detailed in Appendix A).
+\end{proof}
+
+\begin{theorem}[Fail-Closed State Reachability]
+Under non-kernel operational failure conditions (Process Crash, Network Partition, OOM, Power Loss), the system deterministically reaches a secure HALT or DEGRADED state where all privacy invariants are preserved.
+\end{theorem}
+\begin{proof}
+If the main process crashes, OS-level resource reclamation triggers standard cleanup. If the process hangs, the independent Watchdog process (within the TCB) detects the heartbeat timeout and issues a `SIGKILL` (satisfying MTL Property 3). Upon power loss, volatile memory domains ($\mathcal{D}_{High}$) naturally collapse. In all specified conditions, the system transition function $\delta$ moves to a non-operational state without executing a persistent disk write of raw data, thereby preserving Non-Interference.
+\end{proof}
+
+% ==========================================
+% XII. CONCLUSION
+% ==========================================
+\section{Conclusion}
+Security is not an absolute state, but a defined mathematical boundary of assumptions and mitigations. By explicitly defining the attacker capability algebra ($A_0$--$A_5$), establishing bounded physical/hardware axioms ($A_{HW}, A_{PHYS}, A_{SPEC}$), and defining a minimal, comprehensive Trusted Computing Base (TCB)—incorporating kernel isolation, dynamic loaders, and compiler trust—we have isolated the precise conditions under which our architectural privacy claims hold. 
+
+We clearly acknowledge that physical DRAM extraction ($A_5$), hardware side-channels, and kernel compromise ($A_4$) void our software-level invariants. However, we have formally demonstrated via Information Flow models, Metric Temporal Logic (MTL), and the formal Threat Model Equation that against the most realistic threats to institutional privacy—passive observers, remote hackers, and even root-level administrators ($A_0$--$A_3$) attempting retrospective surveillance—the system's exposure is strictly bounded to a configurable transient window ($\Delta \le 33$ms). By rigorously defining what the system does \textit{not} do, we provide the necessary cryptographic and logical credibility to validate what it \textit{does} achieve.
+
+% ==========================================
+% APPENDICES
+% ==========================================
+\appendices
+
+\section{Temporal Logic Formalization of Invariants}
+The following Metric Temporal Logic (MTL) properties formally restrict the set of valid state transitions $\delta$ described in Section IV. 
+
+\subsection{MTL Property 1: Bounded Temporal Exposure}
+The system enforces that any buffer containing raw data must be zeroed within the strict configured temporal window $\Delta_{TTL}$. Using the MTL "eventually within time $c$" operator ($\Diamond_{\le c}$):
+
+\begin{property}[Strict Volatility]
+\begin{equation}
+\square \left( (Alloc(b) \land Raw(b)) \implies \Diamond_{\le \Delta_{TTL}} Zeroed(b) \right)
+\end{equation}
+\end{property}
+This states that it is \textit{always} ($\square$) true that if a buffer contains raw data, it will \textit{eventually, within $\Delta_{TTL}$ milliseconds}, be explicitly zeroed.
+
+\subsection{MTL Property 2: Governance Non-Bypass}
+The system enforces that no data can transition to $Net$ without passing the Governance rules.
+
+\begin{property}[Governance Gate]
+\begin{equation}
+\square \left( Emit(b) \implies Gov(b) \right)
+\end{equation}
+\end{property}
+
+\subsection{MTL Property 3: Watchdog Fail-Closed Liveness}
+If the main process hangs and fails to zeroize a buffer, the independent watchdog process $W \in \mathcal{P}$ guarantees termination. Let $Timeout(b)$ denote the condition where age of buffer $b$ exceeds $\Delta_{TTL}$.
+
+\begin{property}[Safe Halt]
+\begin{equation}
+\square \left( Timeout(b) \implies \Diamond_{\le \epsilon} (Mode = HALT) \right)
+\end{equation}
+\end{property}
+Where $\epsilon$ is the scheduling latency of the `SCHED_FIFO` watchdog. This restricts $\delta$ to fail-closed transitions: the system enforces a crash over a privacy violation.
+
+\subsection{TLA+ Model Checking Verification}
+To computationally verify the consistency of the state machine defined by these temporal properties, the core memory lifecycle and governance invariants were modeled using TLA+ under bounded concurrent frame conditions ($N \le 2$ and $\Delta t \le 3$). Model checking confirmed the absence of persistence and bounded zeroization under all reachable states, formally validating the fail-closed semantics prior to empirical fault injection.
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{b1} J. H. Saltzer and M. D. Schroeder, "The protection of information in computer systems," \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
+\bibitem{b2} D. Dolev and A. Yao, "On the security of public key protocols," \textit{IEEE Transactions on Information Theory}, vol. 29, no. 2, pp. 198--208, 1983.
+\bibitem{b3} T. C. B. Department of Defense, "Trusted Computer System Evaluation Criteria (Orange Book)," \textit{DoD 5200.28-STD}, 1985.
+\bibitem{b4} J. A. Halderman et al., "Lest we remember: cold boot attacks on encryption keys," in \textit{USENIX Security Symposium}, 2008.
+\bibitem{b5} R. Shokri et al., "Membership inference attacks against machine learning models," in \textit{IEEE S\&P}, 2017.
+\bibitem{b6} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, 2017.
+\bibitem{b7} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM TIST}, vol. 6, no. 3, 2015.
+\bibitem{b8} J. A. Goguen and J. Meseguer, "Security Policies and Security Models," in \textit{IEEE S\&P}, 1982.
+\bibitem{b9} R. Koymans, "Specifying real-time properties with metric temporal logic," \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255-299, 1990.
+\bibitem{b10} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
+\bibitem{b11} A. Sabelfeld and A. C. Myers, "Language-based information-flow security," \textit{IEEE JSAC}, vol. 21, no. 1, pp. 5-19, 2003.
+\bibitem{b12} D. E. Denning, "A lattice model of secure information flow," \textit{Communications of the ACM}, vol. 19, no. 5, pp. 236-243, 1976.
+\bibitem{b13} A. Pnueli, "The temporal logic of programs," in \textit{18th Annual Symposium on Foundations of Computer Science (SFCS)}, 1977.
+\bibitem{b14} C. Dwork, "Differential Privacy," in \textit{ICALP}, Springer, 2006.
+\bibitem{b15} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," \textit{AISTATS}, 2017.
+\bibitem{b16} V. Costan and S. Devadas, "Intel SGX Explained," \textit{IACR Cryptology ePrint Archive}, 2016.
+\bibitem{b17_tz} S. Pinto and N. Santos, "Demystifying Arm TrustZone: A Comprehensive Survey," \textit{ACM Computing Surveys}, vol. 51, no. 6, 2019.
+\bibitem{b18_spectre} P. Kocher et al., "Spectre Attacks: Exploiting Speculative Execution," in \textit{IEEE S\&P}, 2019.
+\bibitem{b19_row} Y. Kim et al., "Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors," \textit{ISCA}, 2014.
+\bibitem{b20} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
+\bibitem{b21} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security}, 2019.
+\bibitem{b22} M. Abadi et al., "Deep Learning with Differential Privacy," in \textit{CCS}, 2016.
+\bibitem{b23} M. Fredrikson et al., "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{CCS}, 2015.
+\bibitem{P17} N. Babu P., "Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems," \textit{ScholarMaster Series}, Paper 17, 2026.
+\bibitem{P18} N. Babu P., "Runtime Enforcement of Architectural Irreversibility in Edge AI Systems," \textit{ScholarMaster Series}, Paper 18, 2026.
+\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, Paper 9, 2025.
+\bibitem{P13} N. Babu P., "Intra-Campus Federated Learning for Temporal Drift Compensation," \textit{ScholarMaster Series}, Paper 13, 2026.
+
+\end{thebibliography}
+
+\end{document}

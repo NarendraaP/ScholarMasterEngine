@@ -9,17 +9,17 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 
-@dataclass
+@dataclass(kw_only=True)
 class DomainEvent:
     """Base class for domain events"""
-    timestamp: datetime
+    timestamp: datetime = None
     
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
 
 
-@dataclass
+@dataclass(kw_only=True)
 class FaceDetectedEvent(DomainEvent):
     """Face was detected and recognized"""
     student_id: str
@@ -28,7 +28,7 @@ class FaceDetectedEvent(DomainEvent):
     timestamp: datetime = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ViolationDetectedEvent(DomainEvent):
     """Compliance violation detected"""
     student_id: str
@@ -39,7 +39,7 @@ class ViolationDetectedEvent(DomainEvent):
     timestamp: datetime = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class AttendanceMarkedEvent(DomainEvent):
     """Attendance was successfully marked"""
     student_id: str
@@ -49,7 +49,7 @@ class AttendanceMarkedEvent(DomainEvent):
     timestamp: datetime = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class NoiseAlertEvent(DomainEvent):
     """Loud noise detected"""
     zone: str
@@ -59,7 +59,7 @@ class NoiseAlertEvent(DomainEvent):
     timestamp: datetime = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class SafetyAlertEvent(DomainEvent):
     """Safety concern detected (violence, sleep, etc.)"""
     zone: str

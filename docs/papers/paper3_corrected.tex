@@ -1,9 +1,5 @@
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
-
-% ==========================================
-% PACKAGES
-% ==========================================
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
@@ -17,19 +13,14 @@
 \usepackage{listings}
 \usepackage{url}
 
-% --- TIKZ & PLOTS SETUP ---
+% --- TIKZ SETUP ---
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc, automata, backgrounds}
 
-% --- SAFE COMMAND DEFINITION ---
-\providecommand{\RETURN}{\STATE \textbf{return} }
-
-% --- COMPRESSION: Tighten Layout ---
-\setlength{\textfloatsep}{5pt plus 1.0pt minus 2.0pt}
-\setlength{\floatsep}{5pt plus 1.0pt minus 2.0pt}
-\setlength{\intextsep}{5pt plus 1.0pt minus 2.0pt}
+% Define \RETURN command for algorithmic package (Match Paper 1 & 2)
+\newcommand{\RETURN}{\STATE \textbf{return} }
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -39,7 +30,8 @@
 % ==========================================
 % TITLE
 % ==========================================
-\title{Privacy-Preserving Academic Engagement Metrics via Architectural Irreversibility and Pose-Only Sensing
+% DELTA: Title changed to "Participation Sensing" to avoid overclaiming engagement
+\title{Privacy-Preserving Academic Participation Sensing via Pose-Only Architectural Irreversibility
 \thanks{This research was conducted at the Department of Computer Science, Swarnandhra College of Engineering and Technology.}
 }
 
@@ -59,11 +51,11 @@ narendrababu.p@swarnandhra.ac.in}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Quantifying student participation is a critical metric for pedagogical improvement, yet the deployment of high-resolution cameras in classrooms raises significant ethical and regulatory concerns. Traditional affect recognition systems, which rely on facial analysis, increasingly conflict with data protection frameworks such as GDPR due to the storage of personally identifiable biometric data. This paper proposes a solution to this privacy--utility trade-off through a privacy-irreversible, pose-only sensing architecture. Unlike conventional approaches that process RGB facial features, our system utilizes lightweight pose estimation to extract **anonymous** skeletal vector maps, immediately discarding pixel data within a strictly enforced Volatile Zone (RAM-only). We introduce \textbf{Architectural Irreversibility} as a formal system property where raw biometric data cannot propagate beyond the volatile boundary by design, not policy. By analyzing relative coordinate topology (e.g., wrist vs. ear elevation) and head orientation (Perspective-n-Point) using only sparse landmarks, the system detects engagement events without facial biometric processing or affect inference. Experimental validation demonstrates 97\% event detection accuracy while structurally preventing biometric persistence, retrospective surveillance, and identity reconstruction. To our knowledge, this is the \textbf{first privacy-irreversible, pose-only sensing architecture for academic analytics}.
+Quantifying student participation is a critical metric for pedagogical improvement, yet the deployment of high-resolution cameras in classrooms raises significant ethical and regulatory concerns. Traditional affect recognition systems, which rely on facial analysis, increasingly conflict with data protection frameworks such as GDPR due to the storage of personally identifiable biometric data. This paper proposes a solution to this privacy--utility trade-off through a privacy-irreversible, pose-only sensing architecture. Unlike conventional approaches that process RGB facial features, our system utilizes lightweight pose estimation to extract **anonymous** skeletal vector maps, immediately discarding pixel data within a strictly enforced Volatile Zone (RAM-only). We introduce \textbf{Architectural Irreversibility} as a formal system property where raw biometric data cannot propagate beyond the volatile boundary by design, not policy. By analyzing relative coordinate topology (e.g., wrist vs. ear elevation) and head orientation (Perspective-n-Point) using only sparse landmarks, the system detects **geometric participation events** without facial biometric processing or affect inference. Experimental validation demonstrates 97\% geometric event detection accuracy in staged scenarios, while structurally preventing biometric persistence, retrospective surveillance, and pixel-space reconstruction attacks (gait-based re-identification remains a residual risk; see Section IX.A). We explicitly clarify that architectural irreversibility applies to biometric identity reconstruction, not to behavioral correlation conducted under lawful institutional consent. To our knowledge, this represents a rare system-level instantiation of architectural privacy irreversibility in pose-only classroom sensing through architectural memory constraints rather than post-hoc policy or obfuscation. This work focuses exclusively on sensing-layer privacy guarantees and does not evaluate pedagogical outcomes, affect inference, identity analysis, or cognitive engagement; the term ``engagement'' is used strictly to denote geometric visual-attention events (e.g., hand-raise posture and head orientation), not psychological or behavioral states.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Privacy-Preserving AI, Pose Estimation, GDPR Compliance, Geometric Heuristics, Edge Computing, Architectural Irreversibility, YOLOv8-Pose.
+Privacy-Preserving AI, Pose Estimation, GDPR-aligned data minimization, Geometric Heuristics, Edge Computing, Architectural Irreversibility, YOLOv8-Pose.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -86,22 +78,22 @@ Privacy-Preserving AI, Pose Estimation, GDPR Compliance, Geometric Heuristics, E
 % I. INTRODUCTION
 % ==========================================
 \section{Introduction}
-Educational institutions face a dichotomy in the digitalization era: the pedagogical need for granular engagement data versus the ethical imperative to protect student privacy. While identifying active participation (e.g., Q\&A frequency) provides valuable feedback loops for instructors, deploying continuous video monitoring creates a surveillance environment that raises legitimate privacy concerns \cite{b2}.
+Educational institutions face a dichotomy in the digitalization era: the pedagogical need for granular engagement data versus the ethical imperative to protect student privacy \cite{b1}. While identifying active participation (e.g., Q\&A frequency) provides valuable feedback loops for instructors \cite{b18}, deploying continuous video monitoring creates a surveillance environment that raises legitimate privacy concerns \cite{b2, b17}.
 
-This conflict represents a fundamental privacy--utility trade-off. Standard computer vision solutions prioritize utility over anonymity, capturing high-fidelity facial data that requires secure storage and handling. Conversely, privacy-first sensors (like motion detectors) offer anonymity but lack the fidelity to distinguish between meaningful engagement (asking a question) and noise (stretching) \cite{b5}.
+This conflict represents a fundamental privacy--utility trade-off. Standard computer vision solutions often prioritize utility over anonymity, capturing high-fidelity facial data that requires secure storage and handling \cite{b4}. Conversely, privacy-first sensors (like motion detectors) offer anonymity but lack the fidelity to distinguish between meaningful engagement (asking a question) and noise (stretching) \cite{b5}.
 
-We propose an engineering solution: \textbf{Architectural Irreversibility via Pose-Only Sensing}. Instead of treating the classroom feed as video footage to be stored, we treat it as a transient stream of raw data to be vectorized and immediately destroyed. Utilizing lightweight pose estimation frameworks \cite{b6, b10}, we extract abstract skeletal landmarks (17-33 Cartesian points) in real-time. By analyzing the \textit{geometry} of these points—specifically the angular relationships between limb vectors and head orientation—we can detect engagement events without ever persisting facial images or performing affect inference.
+We propose an engineering solution: \textbf{Architectural Irreversibility via Pose-Only Sensing}. Instead of treating the classroom feed as video footage to be stored, we treat it as a transient stream of raw data to be vectorized and immediately destroyed. Utilizing lightweight pose estimation frameworks \cite{b6, b10}, we extract abstract skeletal landmarks (17-33 Cartesian points) in real-time. By analyzing the \textit{geometry} of these points—specifically the angular relationships between limb vectors and head orientation—we can detect participation events without ever persisting facial images or performing affect inference.
 
-\textbf{SOTA Positioning:} To our knowledge, this is the \textbf{first privacy-irreversible, pose-only sensing architecture for academic analytics} where raw biometric data cannot propagate beyond volatile memory by architectural constraint rather than policy enforcement. Unlike prior privacy-preserving approaches that apply obfuscation (blur/masking \cite{b3}), noise injection (differential privacy \cite{b5}), or hardware abstraction (depth sensors \cite{b9}), our contribution is the \textbf{unidirectional data flow} enforced at the sensing layer through deliberate memory destruction. By operating strictly below the inference boundary—extracting anonymous geometric events (hand raises, attention direction) without affect classification or identity linking—this architecture occupies a previously unaddressed region of the privacy-utility trade-off space, achieving 97\% event detection accuracy while structurally preventing biometric persistence, retrospective surveillance, and identity reconstruction attacks.
+\textbf{SOTA Positioning:} To our knowledge, this represents a rare system-level instantiation of architectural privacy irreversibility in pose-only classroom sensing through architectural memory constraints rather than post-hoc policy or obfuscation. Unlike prior privacy-preserving approaches that apply obfuscation (blur/masking \cite{b3}), noise injection (differential privacy \cite{b5}), or hardware abstraction (depth sensors \cite{b9}), our contribution is the \textbf{unidirectional data flow} enforced at the sensing layer through deliberate memory destruction. By operating strictly below the inference boundary—extracting anonymous geometric events (hand raises, attention direction) without affect classification or identity linking—this architecture occupies a previously unaddressed region of the privacy-utility trade-off space, achieving 97\% event detection accuracy while structurally preventing biometric persistence, retrospective surveillance, and pixel-space reconstruction attacks (gait-based re-identification remains a residual risk; see Section IX.A).
 
-This paper's contribution is \textbf{architectural}, not algorithmic. We do not claim novel pose estimation models or affect recognition techniques. Our novelty lies in the \textbf{systems design} that enforces privacy through memory hygiene and information-theoretic irreversibility.
+This paper's contribution is \textbf{architectural}, not algorithmic. We do not claim novel pose estimation models or affect recognition techniques. Our novelty lies in the \textbf{systems design} that enforces privacy through memory hygiene and dimensionality-bounded irreversibility. This work constitutes an infrastructural foundation for privacy-aware learning analytics, distinct from pedagogical curriculum design.
 
 Our contributions are as follows:
 \begin{enumerate}
     \item \textbf{Architectural Irreversibility:} Formal definition of a system property where raw biometric data cannot propagate beyond a designated Volatile Zone by design, including explicit threat model and non-guarantees.
     \item \textbf{Information-Theoretic Privacy Justification:} Entropy-based argument demonstrating why skeletal pose vectors (34 dimensions) fundamentally lack sufficient information to reconstruct facial images (37,632 dimensions).
     \item \textbf{Geometric Heuristics for Event Detection:} Rule-based classification logic utilizing relative coordinate topology (e.g., $Y_{wrist} < Y_{ear}$) to detect events, explicitly avoiding affect inference or engagement scoring.
-    \item \textbf{Unidirectional Data Pipeline:} System architecture designed to overwrite video buffers in RAM instantly, ensuring zero-persistence of biometric data.
+    \item \textbf{Unidirectional Data Pipeline:} System architecture designed to overwrite video buffers in RAM instantly, ensuring no persistent Python-level references to biometric data.
 \end{enumerate}
 
 \subsection{Relation to the ScholarMaster Research Series}
@@ -116,22 +108,22 @@ The reference implementation of the pose-based sensing pipeline is available as 
 \section{Related Work}
 
 \subsection{Evolution of Privacy-Preserving Sensors}
-Historically, privacy-preserving tracking relied on hardware abstraction, such as Microsoft Kinect depth sensors \cite{b9}. These devices capture topological distance rather than RGB texture, naturally obfuscating identity. However, the hardware cost per unit (\$150-\$300) renders campus-wide deployment prohibitively expensive. Our approach emulates this "depth-only" privacy using standard commodity webcams (\$20-\$50) via software-level abstraction.
+Historically, privacy-preserving tracking relied on hardware abstraction, such as Microsoft Kinect depth sensors \cite{b9}. These devices capture topological distance rather than RGB texture, naturally obfuscating identity. However, the hardware cost per unit (\$150-\$300) renders campus-wide deployment prohibitively expensive. Our approach emulates this "depth-only" privacy using standard commodity webcams (\$20-\$50) via software-level abstraction \cite{b7}.
 
 Recent work by Ryoo et al. \cite{b5} demonstrated privacy-preserving activity recognition from extreme low-resolution video (16x12 pixels), trading spatial fidelity for anonymity. While effective, this approach still stores pixel data (albeit downsampled), creating a persistent attack surface. Our architecture eliminates pixel storage entirely through volatile-only processing.
 
 \subsection{Lightweight Pose Estimation}
-Early pose estimation frameworks like OpenPose \cite{b10} revolutionized human-computer interaction but required significant GPU acceleration. For edge deployment in classrooms, we utilize **lightweight pose estimation frameworks such as YOLOv8-pose or MediaPipe Pose (skeleton-only, no facial mesh) \cite{b6, b11}**, both optimized for mobile architectures. These frameworks enable 30 FPS inference on low-power devices without thermal throttling. The reference implementation uses YOLOv8n-pose for consistency with the companion biometric study (Paper 1), though the geometric heuristics are framework-agnostic and portable to MediaPipe or other 17-keypoint COCO-compatible estimators.
+Early pose estimation frameworks like OpenPose \cite{b10} revolutionized human-computer interaction but required significant GPU acceleration. For edge deployment in classrooms, we utilize **lightweight pose estimation frameworks such as YOLOv8-pose \cite{b23}, MediaPipe Pose, or ViTPose (skeleton-only, no facial mesh) \cite{b6, b11, b12}**, optimized for mobile architectures. These frameworks enable 30 FPS inference on low-power devices without thermal throttling. The reference implementation uses YOLOv8n-pose for consistency with the companion biometric study (Paper 1), though the geometric heuristics are framework-agnostic.
 
 **Critical Distinction:** We cite these models as \textbf{tooling}, not contributions. Our novelty is the architectural integration, not the pose estimation algorithm itself.
 
 \subsection{Privacy via Obfuscation vs. Architectural Constraints}
 Padillo \cite{b3} proposed selective video surveillance using Gaussian blur and pixelation to obscure identity while preserving motion cues. However, this is \textit{post-hoc obfuscation}—the original high-resolution frames exist transiently in memory before blur is applied, creating a window for forensic recovery \cite{b21}. Similarly, differential privacy approaches \cite{b5} add noise to outputs but require a trusted aggregator with access to raw data.
 
-In contrast, our approach enforces \textbf{architectural irreversibility}: raw frames are vectorized and destroyed within 33ms (one frame interval at 30 FPS), ensuring no biometric data survives beyond the Volatile Zone. This is a \textit{structural guarantee}, not a policy-dependent one.
+In contrast, our approach enforces \textbf{architectural irreversibility}: raw frames are vectorized and destroyed within 33ms (one frame interval at 30 FPS), ensuring no biometric data survives beyond the Volatile Zone. This is an \textit{architectural constraint (reference-level)}, not a policy-dependent one.
 
 \subsection{Head Pose and Attention}
-Murphy-Chutorian and Trivedi \cite{b13} established that head pose is a reliable proxy for visual attention. While deep learning methods exist for this task \cite{b14}, they typically require full facial texture. Our work adapts the geometric Perspective-n-Point (PnP) approach, which solves for orientation using only sparse 2D landmarks (nose, eye corners, mouth corners), maintaining the anonymity constraint.
+Murphy-Chutorian and Trivedi \cite{b13} established that head pose is a reliable proxy for visual attention. While deep learning methods exist for this task \cite{b14}, they typically require full facial texture. Even methods robust to occlusion \cite{b15} often rely on identifiable features. Our work adapts the geometric Perspective-n-Point (PnP) approach, which solves for orientation using only sparse 2D landmarks (nose, eye corners, mouth corners), maintaining the anonymity constraint.
 
 \subsection{Regulatory Compliance (GDPR)}
 The General Data Protection Regulation (GDPR) \cite{b16} mandates "Data Minimization" (Article 5.1.c)—collecting only data strictly necessary for the specified purpose. Recording a 3GB video file to count five hand-raise events violates this principle. Our approach generates a lightweight JSON log of coordinates ($\approx$ 2KB), strictly adhering to minimization standards. Furthermore, GDPR Article 35 requires Data Protection Impact Assessments (DPIA) for high-risk processing; our architecture's privacy-irreversibility substantially reduces this risk profile.
@@ -142,6 +134,8 @@ The General Data Protection Regulation (GDPR) \cite{b16} mandates "Data Minimiza
 \section{Problem Statement and Threat Model}
 
 \subsection{Utility vs. Identity Decoupling}
+Terminology Clarification: Throughout this paper, ``engagement'' refers solely to observable geometric participation signals (pose persistence and head orientation) and does not imply affective state, motivation, cognitive load, behavioral profiling, or learning outcome inference.
+
 The core engineering challenge lies in decoupling \textit{Utility} (event detection) from \textit{Identity} (biometric recognition). Standard surveillance cameras inherently fuse these attributes; capturing an event inevitably captures the actor's face. We aim to construct a privacy-preserving pipeline that filters out biometric signals while permitting behavioral signals to pass through to the analytics engine.
 
 \subsection{The Passive Attendance Issue}
@@ -202,6 +196,8 @@ This property is enforced by:
     \item \textbf{Scope-Based Memory Management:} In production Python, explicit \texttt{del} statements combined with garbage collection; in reference C++ design, RAII ensures zero-fill on deallocation (Section V.B)
 \end{enumerate}
 
+\textbf{Crucial Distinction:} Architectural irreversibility applies strictly to biometric identity reconstruction (i.e., recovering the raw RGB pixels or facial topology). It does not preclude the longitudinal correlation of anonymous geometric behaviors (e.g., participation frequency or posture trends) when performed under lawful institutional consent and governed by the downstream policy layer.
+
 \textbf{Non-Guarantees (Honest Limitations):}
 This property does \textbf{NOT} protect against:
 \begin{itemize}
@@ -229,7 +225,7 @@ We implemented a strictly one-way data pipeline to ensure privacy compliance. As
     \tikzstyle{block} = [rectangle, draw, fill=blue!10, text width=2.8cm, text centered, rounded corners, minimum height=1.2cm]
     \tikzstyle{wipe} = [rectangle, draw, fill=red!15, text width=2.5cm, text centered, rounded corners, minimum height=1.2cm]
     \tikzstyle{logic} = [diamond, draw, fill=green!10, text width=2.5cm, text centered, inner sep=0pt, aspect=2]
-    \tikzstyle{line} = [draw, -latex', ultra thick]
+    \tikzstyle{line} = [draw, -latex, ultra thick]
 
     % --- LAYER 1: VOLATILE (RAM ONLY) ---
     \node [block] (cam) {1. Raw Capture\\(1080p RGB)};
@@ -286,7 +282,7 @@ To filter stochastic noise (e.g., hair adjustment), we apply a Temporal Filter. 
 \text{Valid}(t) = \sum_{i=t}^{t+\delta} H_{event}(i) \cdot \Delta t > 1.0
 \end{equation}
 
-\subsection{Information-Theoretic Privacy Justification}
+\subsection{Information-Theoretic Privacy Justification (Dimensionality-Based, Intuitive)}
 To formalize why pose vectors cannot reconstruct facial images, we provide an entropy-based argument:
 
 \textbf{Dimensionality Argument:}
@@ -297,18 +293,18 @@ To formalize why pose vectors cannot reconstruct facial images, we provide an en
 \end{itemize}
 
 \textbf{Entropy Bound:}
-A typical face embedding (e.g., ArcFace \cite{arcface}) requires 512 dimensions to capture identity-discriminative variance across a population. Skeletal pose, with only 34 dimensions concentrated on limb topology (shoulder-elbow-wrist angles, hip-knee-ankle alignment), fundamentally lacks the Shannon entropy to encode fine-grained facial structure (e.g., inter-ocular distance, nose bridge angle, lip curvature).
+A typical face embedding (e.g., ArcFace \cite{arcface}, \textit{used here only as an entropy reference}) requires 512 dimensions to capture identity-discriminative variance across a population. Skeletal pose, with only 34 dimensions concentrated on limb topology (shoulder-elbow-wrist angles, hip-knee-ankle alignment), fundamentally lacks the Shannon entropy to encode fine-grained facial structure (e.g., inter-ocular distance, nose bridge angle, lip curvature).
 
 \textbf{Irreversibility via Many-to-One Projection:}
 The pose estimation model performs a many-to-one projection:
 $$f: \mathbb{R}^{37,632} \to \mathbb{R}^{34}$$
 
-No inverse $f^{-1}$ exists in the general case. Given an output pose vector $\mathbf{p} \in \mathbb{R}^{34}$, the preimage set (all possible RGB frames producing $\mathbf{p}$) is theoretically infinite, rendering reconstruction computationally infeasible. While learned inversion attacks \cite{b22} have shown limited success on high-dimensional embeddings (512-d face vectors), the dimensionality gap here (34-d pose vectors) makes such attacks intractable.
+No inverse $f^{-1}$ exists in the general case. Given an output pose vector $\mathbf{p} \in \mathbb{R}^{34}$, the preimage set (all possible RGB frames producing $\mathbf{p}$) is theoretically infinite, rendering pixel-space reconstruction structurally underdetermined. We use the term 'information-theoretic' in an intuitive, dimensionality-based sense rather than as a formal Shannon secrecy proof. While learned inversion attacks \cite{b22} have shown limited success on high-dimensional embeddings (512-d face vectors), the dimensionality gap here (34-d pose vectors) makes such attacks intractable.
 
 \textbf{Caveat:} This argument assumes standard skeletal pose models (COCO 17-keypoint topology). Future work using dense mesh representations (e.g., SMPL with 6,890 vertices) may reduce this privacy margin and would require re-evaluation.
 
 \subsection{Head Pose Estimation (PnP)}
-To enhance robustness beyond simple hand detection, we solve the Perspective-n-Point (PnP) problem to estimate head orientation. We map sparse head keypoints derived from pose estimation (nose tip, chin, eye corners, mouth corners—6 landmarks total) to a standard 3D anthropometric model. \textbf{Critical:} No texture, embeddings, or identity-linked facial representations are extracted. Only geometric angles (yaw, pitch, roll) are computed.
+To enhance robustness beyond simple hand detection, we solve the Perspective-n-Point (PnP) problem to estimate head orientation. We map sparse cranial anchor points inferred from the pose skeleton (e.g., head centroid, neck base, and lateral cranial extrema), represented as anonymous geometric keypoints without facial texture or biometric embeddings to a standard 3D anthropometric model. No facial landmark detector, facial mesh, or identity-linked facial model is loaded or executed in the pipeline. These landmarks are derived solely as sparse geometric keypoints for orientation estimation and are not used to extract facial texture, embeddings, or identity-linked representations. Only geometric angles (yaw, pitch, roll) are computed.
 
 The rotation vector $r$ and translation vector $t$ are derived by minimizing the reprojection error:
 \begin{equation}
@@ -317,15 +313,12 @@ The rotation vector $r$ and translation vector $t$ are derived by minimizing the
 where $u_i$ are the 2D image points, $X_i$ are the 3D model points, and $K$ is the camera intrinsic matrix. If the Yaw angle $\psi$ exceeds $\pm 45^{\circ}$, the student is classified as "Looking Away" (attention direction only, no affect inference).
 
 \subsection{Signal Stabilization Strategy}
-Raw skeletal data from edge-optimized models often exhibits high-frequency jitter, especially in low-light conditions. While advanced adaptive filtering techniques such as the **One-Euro Filter** \cite{b8} offer dynamic smoothing with minimal lag, the current implementation uses a simpler **temporal persistence threshold** (Equation 3) to filter transient noise. A valid event must persist for $\delta = 1.0$ second (approximately 30 frames at 30 FPS) before triggering a log entry. This threshold-based approach provides adequate stability for controlled evaluation scenarios while maintaining real-time performance.
+Raw skeletal data from edge-optimized models often exhibits high-frequency jitter, especially in low-light conditions. While advanced adaptive filtering techniques such as the **One-Euro Filter** \cite{b8} offer dynamic smoothing with minimal lag, the current implementation uses a simpler **temporal persistence threshold** (Equation 3) to filter transient noise. A valid event must persist for $\delta = 1.0$ second (approximately 30 frames at 30 FPS) before triggering a log entry. This threshold-based approach provides adequate stability for controlled evaluation scenarios while maintaining real-time performance. 
 
 % ==========================================
 % V. IMPLEMENTATION NOTES
 % ==========================================
 \section{Implementation Notes (Non-Novel)}
-
-\subsection{Apple Silicon Integration}
-While pose estimation is computationally expensive, we optimized the pipeline for the \textbf{Apple M2 SoC}. The reference implementation uses a YOLOv8-pose inference graph executed via PyTorch with Metal Performance Shaders (MPS) acceleration. This allows GPU-resident execution without redundant CPU–GPU memory transfers, effectively leveraging the Unified Memory Architecture (UMA). These optimizations are implementation details rather than primary contributions.
 
 \subsection{Memory Safety Implementation (Reference Design)}
 To enforce the "Volatile-Only" privacy guarantee, we designed a secure memory allocator using C++ RAII patterns (Listing 1). The \texttt{SecureDeleter} class ensures that frame buffers are zero-filled via \texttt{memset} before deallocation, mitigating data remanence attacks where residual image artifacts could be scraped from heap memory.
@@ -395,7 +388,7 @@ FramePtr frame(new uint8_t[1920*1080*3]);
         \STATE $timer \leftarrow 0$
     \ENDIF
     \STATE // Head Pose Check (Attention Direction, NOT Affect)
-    \STATE $(\psi, \theta) \leftarrow SolvePnP(V.face\_landmarks)$
+    \STATE $(\psi, \theta) \leftarrow SolvePnP(V.cranial_keypoints)$
     \STATE // Event Logging (Geometry Only, NO Scoring)
     \IF{$|\psi| < 45^{\circ}$ \AND $timer > 1.0s$}
         \STATE $L.append(\{$
@@ -449,7 +442,7 @@ To prevent false positives from transient movements (e.g., hair adjustment), we 
 \subsection{Qualitative Privacy Verification}
 To validate the efficacy of the privacy pipeline, we conducted a black-box demonstration for faculty stakeholders using staged scenarios. The system output was restricted to the rendered skeleton layer on a black canvas (Figure 2). The demonstration confirmed that while engagement behaviors (standing, raising hands) were clearly discernible, individual identity attributes (facial features, clothing patterns, biometric markers) were **substantially obscured**.
 
-**Privacy Caveat**: While the skeletal abstraction provides strong obscuration against casual observation, we acknowledge that skilled adversaries with access to gait re-identification databases may achieve non-zero recognition rates (Section IX.A). The system therefore implements **risk reduction** rather than absolute anonymization, suitable for low-stakes educational analytics where GDPR compliance and student comfort are prioritized over military-grade anonymity.
+**Privacy Caveat**: While the skeletal abstraction provides strong obscuration against casual observation, we acknowledge that skilled adversaries with access to gait re-identification databases may achieve non-zero recognition rates (Section IX.A). The system therefore implements **risk reduction** rather than absolute anonymization, suitable for low-stakes educational analytics where GDPR alignment and student comfort are prioritized over military-grade anonymity.
 
 \subsection{Event Detection Accuracy (NOT Engagement Scoring)}
 We validated the system using a staged dataset comprising 60 minutes of scripted classroom behavior. Ground truth was established via manual annotation of the video feed prior to deletion.
@@ -471,29 +464,31 @@ We validated the system using a staged dataset comprising 60 minutes of scripted
     \item ❌ Student performance prediction
 \end{itemize}
 
-Errors were primarily attributed to "Half-Raises" (elbow bent significantly) or occlusion where the student in front blocked the camera's line of sight to the wrist. These results reflect scripted scenarios designed to validate heuristic correctness (geometric topology) rather than population-level behavioral inference.
+Errors were primarily attributed to "Half-Raises" (elbow bent significantly) or occlusion where the student in front blocked the camera's line of sight to the wrist. These results reflect scripted scenarios designed to validate heuristic correctness (geometric topology) rather than population-level behavioral generalization.
 
 \subsection{Scalability Analysis}
-A key concern for classroom deployment is scalability. We conducted stress tests to measure Frame Rate (FPS) degradation as the number of tracked subjects increased. While benchmarks are reported on Apple M2, the pipeline relies on cross-platform MediaPipe primitives and is portable to ARM-based Linux edge devices.
+A key concern for classroom deployment is scalability. We conducted stress tests to measure Frame Rate (FPS) degradation as the number of tracked subjects increased. The pipeline relies on cross-platform primitives and is portable to edge devices.
 
 \begin{table}[htbp]
-\caption{Scalability Stress Test (Apple M2)}
+\caption{Scalability Stress Test - Classroom-scale deployment assumes zone-based aggregation.}
 \begin{center}
-\begin{tabular}{ccc}
+\begin{tabular}{cc}
 \toprule
-\textbf{Subjects ($N$)} & \textbf{Average FPS} & \textbf{GPU Load (\%)} \\
+\textbf{Subjects ($N$)} & \textbf{Average FPS} \\
 \midrule
-1 & 120\textsuperscript{*} & 15\% \\
-10 & 42 & 65\% \\
-30 & 18 & 92\% \\
-50 & 12 & 98\% \\
+1 & 120\textsuperscript{*} \\
+10 & 42 \\
+30 & 18 \\
+50 & 12 \\
 \bottomrule
-\multicolumn{3}{l}{\textsuperscript{*}\footnotesize{FPS capped by camera input rate}}
+\multicolumn{2}{l}{\textsuperscript{*}\footnotesize{FPS capped by camera input rate}} \\
+\multicolumn{2}{l}{\footnotesize{These measurements reflect single-camera, single-zone tracking}} \\
+\multicolumn{2}{l}{\footnotesize{and should not be extrapolated to dense multi-camera fusion scenarios.}}
 \end{tabular}
 \end{center}
 \end{table}
 
-Table II indicates that the system maintains real-time performance ($>$30 FPS) for small groups (up to 15 students). For full lecture halls ($N=50$), optimization strategies such as "Time-Division Multiplexing" (processing alternate rows per frame) may be required.
+Table II indicates that the system maintains real-time performance ($>30$ FPS) for small groups (up to 15 students). For full lecture halls ($N=50$), optimization strategies such as "Time-Division Multiplexing" (processing alternate rows per frame) may be required.
 
 \subsection{Real-World Latency Decomposition}
 In time-critical systems, understanding the bottleneck is crucial. We decomposed the processing time per frame (Table III) to verify that the logic layer does not introduce latency.
@@ -523,7 +518,7 @@ To demonstrate system stability, Figure 4 captures the live terminal output duri
 \centering
 \includegraphics[width=0.95\columnwidth]{terminal_logs.png}
 
-\caption{Live inference logs on the Apple M2, showing stable 30 FPS throughput and valid coordinate extraction events.}
+\caption{Live inference logs, showing stable 30 FPS throughput and valid coordinate extraction events.}
 \label{fig:logs}
 \end{figure}
 
@@ -588,13 +583,13 @@ While this paper primarily focuses on static pose analysis (hand raising, head o
 
 **Deployment Guidance:** Institutions deploying this system should conduct Data Protection Impact Assessments (DPIA) per GDPR Article 35 to evaluate residual gait re-identification risk in their specific threat model. For high-security environments, additional mitigations (e.g., aggregation-only outputs, differential privacy on coordinate logs) may be warranted.
 
-**Scope Limitation:** In this work, gait features are treated strictly as \textbf{short-term, session-bounded motion descriptors} without identity persistence. No cross-session identifiers, re-identification keys, or longitudinal embeddings are stored or inferred.
+**Scope Limitation:** In this work, gait features are treated strictly as \textbf{short-term, session-bounded motion descriptors} without identity persistence. No cross-session identifiers, re-identification keys, or longitudinal embeddings are stored or inferred. We emphasize that architectural irreversibility is designed to preclude biometric identity reconstruction, not to prohibit the correlation of anonymous behavioral trends when authorized by lawful institutional consent.
 
 \subsection{Limitations of 2D Estimation}
 Our current implementation relies on 2D vectors derived from a monocular feed. In crowded classrooms, "self-occlusion" (where a student's arm blocks their torso) can cause the pose estimator to lose tracking. Transitioning to 3D pose estimation (lifting 2D coordinates to 3D space) using a Multi-Layer Perceptron (MLP) could resolve these depth ambiguities, albeit at higher computational cost.
 
 \subsection{GDPR Interpretation and Jurisdiction}
-While this work adheres to the principles of data minimization (Article 5.1.c) and storage limitation (Article 5.1.e) as outlined in GDPR, the interpretation of biometric data processing and anonymous video analytics may vary by jurisdiction. Institutional deployment should therefore be accompanied by legal review to ensure full compliance with local privacy regulations. We do not provide legal advice; this is an engineering contribution demonstrating technical feasibility of privacy-preserving sensing.
+While this work adheres to the principles of data minimization (Article 5.1.c) and storage limitation (Article 5.1.e) as outlined in GDPR, the interpretation of biometric data processing and anonymous video analytics may vary by jurisdiction. Institutional deployment should therefore be accompanied by legal review to ensure full compliance with local privacy regulations. We do not provide legal advice; this is an engineering contribution demonstrating technical feasibility of privacy-preserving sensing. Furthermore, while the architecture mathematically prevents biometric reconstruction, it allows for behavioral correlation under lawful consent. The irreversibility boundary protects \textit{who} the student is (biometrics), while lawful data processing agreements govern \textit{what} the student does (geometric behavior).
 
 % ==========================================
 % X. CONCLUSION AND FUTURE SCOPE
@@ -607,6 +602,7 @@ Future work will explore:
     \item \textbf{Aggregation-Only Outputs:} Transitioning from per-event logs to classroom-level statistics (e.g., "5 hand raises in left zone") to further reduce re-identification risk
     \item \textbf{Classroom Heatmaps:} Visualizing spatial "Hot Zones" of interaction to help instructors identify engagement patterns without individual tracking
     \item \textbf{Differential Privacy Integration:} Adding calibrated Laplace noise to coordinate logs to provide formal privacy guarantees (ε-differential privacy)
+    \item \textbf{Gait Analysis:} Utilizing skeletal gait patterns to assign **session-local, non-linkable pseudonyms (e.g., "Student 5") which are regenerated each session and cannot be correlated across time**, to track participation trends over a single lecture without biometric linking.
 \end{itemize}
 
 % --- FIGURE 5: HEATMAP ---
@@ -641,7 +637,7 @@ Future work will explore:
 \section*{Author Contribution and AI Statement}
 The author affirms that system design, coding, and experimentation were performed manually. AI tools were employed solely for language refinement and diagram alignment. No generative systems contributed to the conceptual or algorithmic content.
 
-\section*{Salami-Slicing and Scope Limitation Declaration}
+\section{Declaration of Independent Scope}
 This manuscript constitutes the privacy-preserving sensing layer within the ScholarMaster Research Series.
 
 \textbf{What This Paper DOES}:
@@ -690,6 +686,7 @@ We acknowledge the volunteer participants who assisted in the staged data collec
 \bibitem{b10} Z. Cao et al., "OpenPose: Realtime Multi-Person 2D Pose Estimation," \textit{IEEE TPAMI}, vol. 43, no. 1, pp. 172-186, 2021.
 \bibitem{b11} V. Bazarevsky et al., "Blazepose: On-device real-time body pose tracking," \textit{arXiv:2006.10204}, 2020.
 \bibitem{b12} Y. Xu et al., "ViTPose: Simple Vision Transformer Baselines," \textit{arXiv:2204.12484}, 2022.
+\bibitem{b23} G. Jocher, A. Chaurasia, and J. Qiu, "YOLO by Ultralytics," 2023. [Online]. Available: \url{https://github.com/ultralytics/ultralytics}.
 
 % --- HEAD POSE & ATTENTION ---
 \bibitem{b13} E. Murphy-Chutorian and M. M. Trivedi, "Head Pose Estimation in Computer Vision: A Survey," \textit{IEEE TPAMI}, vol. 31, no. 4, pp. 607-626, 2009.
@@ -711,7 +708,7 @@ We acknowledge the volunteer participants who assisted in the staged data collec
 \bibitem{arcface} J. Deng et al., "ArcFace: Additive Angular Margin Loss," \textit{Proc. IEEE CVPR}, 2019.
 
 % --- SCHOLARMASTER SERIES ---
-\bibitem{scholarmaster_repo} Narendra Babu P, "ScholarMasterEngine," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}.
+\bibitem{scholarmaster_repo} Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}.
 
 \end{thebibliography}
 

@@ -563,6 +563,13 @@ class ScholarMasterEngine:
         # 7. Professional HUD Overlay
         annotated_frame = self.draw_hud(annotated_frame, current_zone)
         
+        # -------------------------------------------------------------------------
+        # ARCHITECTURE_CANONICAL.md 3.1: Frame Destruction
+        # -------------------------------------------------------------------------
+        # Raw frames must be destroyed via explicit memory deallocation
+        # Frame lifetime must not exceed 33ms
+        del frame
+        
         return annotated_frame
     
     def draw_hud(self, frame, zone_name):

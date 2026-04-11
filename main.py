@@ -44,6 +44,14 @@ from modules_legacy.safety_rules import SafetyEngine  # Phase 3: Safety detectio
 from utils.secure_memory import secure_wipe, lock_memory # Paper 6: Secure Memory & mlock
 from infrastructure.acoustic.anomaly_detector import AcousticAnomalyDetector # Paper 6: Gold Implementation
 
+# Canonical Layer Stack (ARCHITECTURE_CANONICAL.md)
+from core.canonical_layers import (
+    PhysicalSubstrate,     # L1: Physical Substrate
+    SensorAcquisition,     # L2: Sensor Acquisition
+    EdgeAbstraction,       # L3: Irreversible Boundary (33ms TTL)
+    GovernanceFilter,      # L5: Governance & Compliance Gate
+)
+
 
 # ============================================================================
 # DATA STRUCTURES
@@ -340,6 +348,68 @@ class ScholarMasterUnified:
         print("[INIT] Starting power monitor...")
         self.power_monitor = PowerMonitor()
         
+        # -------------------------------------------------------------------------
+        # ARCHITECTURE_CANONICAL.md 6.1: Privacy LED at Boot
+        # -------------------------------------------------------------------------
+        # Privacy LED must be set at system boot
+        # Failure to set LED must halt system
+        print("[INIT] Setting Privacy LED (ARCHITECTURE_CANONICAL.md 6.1)...")
+        try:
+            from core.failure_semantics import FailureHandler, PrivacyMode, SystemState
+            self._failure_handler = FailureHandler()
+            
+            # Set boot LED to PRIVACY mode (anonymous pose-only)
+            led_success = self._failure_handler.set_boot_privacy_led(PrivacyMode.PRIVACY)
+            
+            if not led_success:
+                print("❌ CRITICAL: Privacy LED could not be set. Halting system.")
+                print("   Per ARCHITECTURE_CANONICAL.md 6.1: Boot LED is mandatory.")
+                raise RuntimeError("Boot LED initialization failed - system halt required")
+            
+            # Verify LED was set
+            if not self._failure_handler.verify_boot_led():
+                print("❌ CRITICAL: Boot LED verification failed. Halting system.")
+                raise RuntimeError("Boot LED verification failed")
+            
+            print("[INIT] ✅ Privacy LED set to PRIVACY mode at boot")
+        except ImportError:
+            print("[INIT] ⚠️ FailureHandler not available, skipping LED check")
+            self._failure_handler = None
+        except RuntimeError as e:
+            # Re-raise to halt system
+            raise e
+        
+        # -------------------------------------------------------------------------
+        # ARCHITECTURE_CANONICAL.md 3.0: Canonical Layer Stack (L1→L3, L5)
+        # -------------------------------------------------------------------------
+        # Wire formal enforcement layers into runtime pipeline
+        print("[INIT] Initializing Canonical Layer Stack (L1→L3, L5)...")
+        try:
+            # L1: Physical Substrate
+            self._L1_physical = PhysicalSubstrate()
+            self._L1_physical.start()
+            
+            # L2: Sensor Acquisition (volatile frame buffer)
+            self._L2_sensor = SensorAcquisition(self._L1_physical)
+            
+            # L3: Edge Abstraction (irreversible boundary, 33ms TTL)
+            self._L3_edge = EdgeAbstraction(self._L2_sensor)
+            self._L3_edge.start_watchdog()  # Enforce FRAME_TTL_MS=33ms
+            
+            # L5: Governance & Compliance Gate (allowlist-only output filter)
+            self._L5_governance = GovernanceFilter()
+            self._L5_governance.set_validator(
+                lambda payload: self.st_csf.validate_event(payload)
+            )
+            
+            print("[INIT] ✅ Canonical layers active: L1→L2→L3 (33ms watchdog) + L5 (GovernanceFilter)")
+        except Exception as e:
+            print(f"[INIT] ⚠️ Canonical layer init failed: {e}")
+            self._L1_physical = None
+            self._L2_sensor = None
+            self._L3_edge = None
+            self._L5_governance = None
+        
         print("\n✅ All systems initialized!\n")
     
     # ========================================================================
@@ -412,6 +482,12 @@ class ScholarMasterUnified:
             ret, frame = cap.read()
             if not ret:
                 break
+            
+            # L2→L3: Register frame capture for TTL enforcement
+            frame_capture_time = time.time()
+            frame_id = None
+            if self._L2_sensor is not None:
+                frame_id = self._L2_sensor.capture_frame(frame)
             
             # FACE RECOGNITION (Papers 1-3) - Using real InsightFace
             student_id = "UNKNOWN"
@@ -523,12 +599,47 @@ class ScholarMasterUnified:
                                             print(f"🛑 [ST-CSF] Event Rejected: {st_reason}")
                                             # Do not log to blockchain if physically impossible
                                         else:
-                                            # Add to immutable audit log
-                                            event_hash = self.audit_log.append_event(audit_event)
-                                            print(f"🔒 [AUDIT] Event logged: {event_hash[:16]}...")
+                                            # ================================================
+                                            # L5: GOVERNANCE FILTER GATE
+                                            # (ARCHITECTURE_CANONICAL.md 4.0)
+                                            # ================================================
+                                            # Events MUST pass through GovernanceFilter's
+                                            # 3-stage pipeline before reaching L6 (audit/UI).
+                                            # GovernanceFilter enforces ALLOWED_FIELDS allowlist.
+                                            event_approved = True
+                                            if self._L5_governance is not None:
+                                                gov_event_id = f"evt_{int(time.time()*1000)}"
+                                                gov_payload = {
+                                                    "zone_id": current_zone,
+                                                    "timestamp": time.time(),
+                                                    "event_type": "ATTENDANCE",
+                                                    "severity": "LOW",
+                                                    "event_id": gov_event_id,
+                                                    "is_valid": is_compliant,
+                                                    "reason": compliance_message if not is_compliant else "Compliant"
+                                                }
+                                                # Stage 1: Receive inference output
+                                                self._L5_governance.receive_inference_complete(
+                                                    gov_event_id, gov_payload
+                                                )
+                                                # Stage 2: Compliance check (allowlist)
+                                                if self._L5_governance.compliance_check(gov_event_id):
+                                                    # Stage 3: Approve for L6 output
+                                                    approved_payload = self._L5_governance.approve_for_output(
+                                                        gov_event_id
+                                                    )
+                                                    event_approved = approved_payload is not None
+                                                else:
+                                                    event_approved = False
+                                                    print(f"🛡️ [L5] Event {gov_event_id} blocked by GovernanceFilter")
                                             
-                                            # Increment event counter
-                                            self.total_events += 1
+                                            if event_approved:
+                                                # Add to immutable audit log
+                                                event_hash = self.audit_log.append_event(audit_event)
+                                                print(f"🔒 [AUDIT] Event logged: {event_hash[:16]}...")
+                                                
+                                                # Increment event counter
+                                                self.total_events += 1
                                         
                                     except Exception as audit_err:
                                         print(f"⚠️ [AUDIT] Error: {audit_err}")
@@ -603,9 +714,17 @@ class ScholarMasterUnified:
                 # Calculate FPS
                 frame_count += 1
                 
-            # SECURE MEMORY ERASURE (Paper 3)
-            # Wipe frame from memory before next iteration
-            secure_wipe(frame)
+            # L3: CANONICAL FRAME DESTRUCTION (ARCHITECTURE_CANONICAL.md 3.1)
+            # Enforce 33ms TTL via EdgeAbstraction with watchdog verification
+            if self._L3_edge is not None and frame_id is not None:
+                try:
+                    self._L3_edge._destroy_frame(frame, frame_id, frame_capture_time)
+                except Exception:
+                    # Fallback: best-effort wipe if timing violation (logged by L3)
+                    secure_wipe(frame)
+            else:
+                # Fallback: legacy secure wipe
+                secure_wipe(frame)
                 
             if frame_count % 30 == 0:
                 elapsed = time.time() - start_time

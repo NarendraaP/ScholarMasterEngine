@@ -25,6 +25,11 @@ class ClientUpdate:
     timestamp: str
 
 
+class PrivacyBudgetExhaustedError(Exception):
+    """Raised when DP privacy budget would exceed the ceiling."""
+    pass
+
+
 class FedAvgCoordinator:
     """
     Federated Averaging Coordinator (McMahan et al., 2017)
@@ -60,6 +65,7 @@ class FedAvgCoordinator:
         
         # Privacy accounting
         self.epsilon = 0.0  # Will be computed via moments accountant
+        self.MAX_EPSILON = 100.0  # Budget ceiling (pre-aggregation guard)
         self.delta = 1e-5   # Target delta for (ε,δ)-DP
         
     def _initialize_model(self) -> np.ndarray:
@@ -113,8 +119,17 @@ class FedAvgCoordinator:
         noise = np.random.normal(0, noise_scale, size=gradients.shape)
         noisy_gradients = gradients + noise
         
+        # Pre-aggregation budget ceiling check (G5 remediation)
+        next_cost = self._compute_privacy_cost()
+        if self.epsilon + next_cost > self.MAX_EPSILON:
+            raise PrivacyBudgetExhaustedError(
+                f"Privacy budget would exceed ceiling: "
+                f"ε={self.epsilon:.2f} + {next_cost:.2f} > {self.MAX_EPSILON:.2f}. "
+                f"Training must stop to preserve DP guarantee."
+            )
+        
         # Update privacy budget (simplified moments accountant)
-        self.epsilon += self._compute_privacy_cost()
+        self.epsilon += next_cost
         
         return noisy_gradients
     

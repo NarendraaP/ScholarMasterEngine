@@ -1,0 +1,156 @@
+{
+    "metadata": {
+        "instrument_name": "System Trust Scale (STS)",
+        "version": "1.0.0",
+        "paper": "Paper 16: Beyond the Panopticon",
+        "purpose": "Measure student trust, anxiety, and agency in automated monitoring systems",
+        "validation": {
+            "cronbach_alpha_trust": 0.88,
+            "cronbach_alpha_anxiety": 0.91,
+            "pilot_sample_size": 50,
+            "validation_date": "2025-07-15"
+        },
+        "ethics_approval": "SCET-IRB-2025-042",
+        "gdpr_compliance": "No PII collected; responses anonymized at collection"
+    },
+    "response_scale": {
+        "type": "likert",
+        "min": 1,
+        "max": 5,
+        "labels": {
+            "1": "Strongly Disagree",
+            "2": "Disagree",
+            "3": "Neutral",
+            "4": "Agree",
+            "5": "Strongly Agree"
+        }
+    },
+    "constructs": [
+        {
+            "construct_id": "SURVEILLANCE",
+            "construct_name": "Perceived Surveillance",
+            "description": "Measures the degree to which students feel watched and judged by the system",
+            "scoring": "reverse",
+            "items": [
+                {
+                    "item_id": "SRV_01",
+                    "text_en": "I feel watched and judged by the camera system.",
+                    "text_te": "నేను కెమెరా వ్యవస్థ ద్వారా గమనించబడుతున్నానని మరియు విమర్శించబడుతున్నానని భావిస్తున్నాను."
+                },
+                {
+                    "item_id": "SRV_02",
+                    "text_en": "I worry about who can see my recorded data.",
+                    "text_te": "నా రికార్డ్ చేయబడిన డేటాను ఎవరు చూడగలరో అని నేను ఆందోళన చెందుతున్నాను."
+                }
+            ]
+        },
+        {
+            "construct_id": "UTILITY",
+            "construct_name": "Perceived Utility",
+            "description": "Measures belief that the system provides tangible benefits",
+            "scoring": "direct",
+            "items": [
+                {
+                    "item_id": "UTL_01",
+                    "text_en": "The system improves my campus experience.",
+                    "text_te": "ఈ వ్యవస్థ నా క్యాంపస్ అనుభవాన్ని మెరుగుపరుస్తుంది."
+                },
+                {
+                    "item_id": "UTL_02",
+                    "text_en": "Automated attendance saves valuable class time.",
+                    "text_te": "ఆటోమేటెడ్ హాజరు విలువైన క్లాస్ సమయాన్ని ఆదా చేస్తుంది."
+                }
+            ]
+        },
+        {
+            "construct_id": "TRUST",
+            "construct_name": "System Trust",
+            "description": "Measures belief in data safety and system honesty",
+            "scoring": "direct",
+            "items": [
+                {
+                    "item_id": "TRS_01",
+                    "text_en": "I trust that my personal data is safe.",
+                    "text_te": "నా వ్యక్తిగత డేటా సురక్షితంగా ఉందని నేను నమ్ముతున్నాను."
+                },
+                {
+                    "item_id": "TRS_02",
+                    "text_en": "I believe the system works as described.",
+                    "text_te": "వ్యవస్థ వివరించిన విధంగా పనిచేస్తుందని నేను నమ్ముతున్నాను."
+                }
+            ]
+        },
+        {
+            "construct_id": "AGENCY",
+            "construct_name": "Perceived Agency",
+            "description": "Measures sense of control over personal data",
+            "scoring": "direct",
+            "items": [
+                {
+                    "item_id": "AGN_01",
+                    "text_en": "I feel in control of my data.",
+                    "text_te": "నా డేటాపై నాకు నియంత్రణ ఉందని నేను భావిస్తున్నాను."
+                },
+                {
+                    "item_id": "AGN_02",
+                    "text_en": "I understand how to delete my records if I choose to.",
+                    "text_te": "నేను ఎంచుకుంటే నా రికార్డులను ఎలా తొలగించాలో నాకు అర్థమైంది."
+                }
+            ]
+        }
+    ],
+    "attribution_questions": [
+        {
+            "question_id": "ATTR_01",
+            "type": "multiple_choice",
+            "text_en": "Which feature most increased your trust in the system?",
+            "text_te": "ఏ ఫీచర్ వ్యవస్థపై మీ నమ్మకాన్ని అత్యధికంగా పెంచింది?",
+            "options": [
+                {
+                    "option_id": "A",
+                    "text": "Skeleton View (seeing the wireframe)"
+                },
+                {
+                    "option_id": "B",
+                    "text": "Audit App (viewing my logs)"
+                },
+                {
+                    "option_id": "C",
+                    "text": "Privacy LEDs (camera indicators)"
+                },
+                {
+                    "option_id": "D",
+                    "text": "Blockchain (tamper-proof records)"
+                }
+            ]
+        }
+    ],
+    "demographic_fields": [
+        {
+            "field_id": "YEAR",
+            "type": "categorical",
+            "options": [
+                "2nd",
+                "3rd",
+                "4th"
+            ]
+        },
+        {
+            "field_id": "MAJOR",
+            "type": "categorical",
+            "options": [
+                "CS",
+                "ECE"
+            ]
+        },
+        {
+            "field_id": "GENDER",
+            "type": "categorical",
+            "options": [
+                "M",
+                "F",
+                "Other"
+            ]
+        }
+    ]
+}

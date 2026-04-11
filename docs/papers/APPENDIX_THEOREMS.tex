@@ -1,0 +1,111 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% -- DEFINITIONS --
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{property}{Property}
+\newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+\section*{Appendix A: Consolidated Formal Algebra and Theorems}
+\label{sec:appendix_theorems}
+
+This appendix consolidates the formal definitions, axioms, and theorems established throughout the ScholarMaster Research Series (Papers 1--19). These formalisms constitute the mathematical foundation of the \textit{Automated Stewardship} architecture.
+
+% =========================================================================================
+% SECTION 1: PRIVACY & IRREVERSIBILITY (P3, P17, P19)
+% =========================================================================================
+\subsection{Privacy & Architectural Irreversibility}
+
+\begin{definition}[Architectural Irreversibility \cite{P3, P17}]
+Raw biometric data $D_{raw}$ (RGB pixel buffers, Audio waveforms) cannot propagate beyond a designated \textit{Volatile Zone} $Z_V$ (RAM-only) to the \textit{Persistent Zone} $Z_P$ (logs, disk storage, network egress) by architectural constraint enforced at the memory management layer.
+\begin{equation}
+\forall t, \quad D_{raw}(t) \in Z_V \implies D_{raw}(t) \notin Z_P
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Pixel-Space Non-Reconstructability \cite{P19}]
+Let $\mathcal{A}$ be an adversary constrained to capability tiers $A_0$ through $A_3$ (Root). The exact reconstruction of the original high-fidelity raw biometric matrix $X$ from any post-boundary representation $Y \in \mathcal{D}_{Low}$ is architecturally precluded due to the massive non-injectivity of the transformation function $f: \mathbb{R}^{H \times W} \to \mathbb{R}^{d_{meta}}$.
+\begin{equation}
+\text{Let } \text{rank}(f) \le d_{meta} \ll H \times W. \quad \text{Then } \text{Ker}(f) \neq \{0\}, \text{ hence } f \text{ is non-injective.}
+\end{equation}
+The function $f$ explicitly discards the phase, texture, and identity subspaces required for inversion.
+\end{theorem}
+
+\begin{property}[Bounded Temporal Exposure \cite{P19}]
+The system enforces that any buffer $b$ containing raw data must be zeroed within the strict configured temporal window $\Delta_{TTL}$ (default 33ms).
+\begin{equation}
+\square \left( (Alloc(b) \land Raw(b)) \implies \Diamond_{\le \Delta_{TTL}} Zeroed(b) \right)
+\end{equation}
+\end{property}
+
+\begin{theorem}[Identity Non-Propagation \cite{P9}]
+Given typed context vectors $\vec{C}_{Perc \to Reas}$ containing only discrete spatiotemporal event tuples without biometric identifiers, identity reconstruction in higher layers is non-invertible under the defined adversary model, provided the spatial zone $\zeta$ encompasses $k \ge 2$ individuals ($k$-anonymity) over the aggregation window $\Delta t$.
+\begin{equation}
+\forall \text{event } e, \text{ anonymity holds if } |\text{Subjects}(\zeta, \Delta t)| \ge k
+\end{equation}
+\end{theorem}
+
+% =========================================================================================
+% SECTION 2: SPATIOTEMPORAL LOGIC (P4, P7)
+% =========================================================================================
+\subsection{Spatiotemporal Logic}
+
+\begin{axiom}[Spatial Exclusivity \cite{P4, P7}]
+An entity cannot occupy two disjoint spatial zones at the same instant $t$.
+\begin{equation}
+\forall \epsilon, t: At(\epsilon, z_i, t) \land At(\epsilon, z_j, t) \implies z_i = z_j
+\end{equation}
+\end{axiom}
+
+\begin{axiom}[Kinematic Continuity \cite{P7}]
+For any transition between zone $z_i$ at $t_1$ and $z_j$ at $t_2$, the average velocity must not exceed the physical maximum $V_{max}$.
+\begin{equation}
+\frac{dist(z_i, z_j)}{|t_2 - t_1|} \le V_{max}
+\end{equation}
+\end{axiom}
+
+\begin{axiom}[Topological Adjacency \cite{P7}]
+An entity cannot move between zones $z_i$ and $z_j$ unless a valid path exists in the graph topology $G$.
+\end{axiom}
+
+\begin{definition}[Compliance Predicate \cite{P4}]
+A schedule deviation $T(s_i, t)$ is True if and only if the detected location differs from the scheduled location for a non-empty schedule slot.
+\begin{equation}
+T(s_i, t) \iff \text{Loc}(s_i, t) \neq S(s_i, t) \land S(s_i, t) \notin \{\emptyset, \text{Break}\}
+\end{equation}
+\end{definition}
+
+% =========================================================================================
+% SECTION 3: SYSTEM STABILITY & GOVERNANCE (P9, P19)
+% =========================================================================================
+\subsection{System Stability & Governance}
+
+\begin{property}[Governance Gate Non-Bypass \cite{P19}]
+No data can transition to network egress ($Net$) without passing L5 Governance checks ($Gov$).
+\begin{equation}
+\square \left( Emit(b) \implies Gov(b) \right)
+\end{equation}
+\end{property}
+
+\begin{property}[Watchdog Fail-Closed Liveness \cite{P19}]
+If a buffer $b$ exceeds its TTL due to process hang, the system transitions to a HALT state.
+\begin{equation}
+\square \left( Timeout(b) \implies \Diamond_{\le \epsilon} (Mode = HALT) \right)
+\end{equation}
+\end{property}
+
+\begin{definition}[Trusted Computing Base \cite{P19}]
+The set of components critical to privacy invariants, strictly defined as:
+\begin{equation}
+TCB = \{ C_{boot}, C_{kernel}, C_{alloc}, C_{sched}, C_{gov} \}
+\end{equation}
+All other components (AI Models, UI, MQTT Broker, Blockchain Layer) are strictly \textit{Untrusted} ($\mathcal{U}$) and excluded from the TCB.
+\end{definition}
+
+\end{document}
