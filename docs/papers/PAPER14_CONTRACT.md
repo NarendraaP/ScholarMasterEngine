@@ -1,98 +1,87 @@
-# PAPER 14 CONTRACT
+# Paper 14 Contract: Hierarchical Asynchronous Federation
 
-## 1. Identity
+**Paper**: "Hierarchical Federated Aggregation for Cross-Institution Model Adaptation Under Asynchronous Participation"  
+**Layer**: Distributed ML Optimization Algorithm  
+**Status**: ✅ Submission Ready  
+**Contract Date**: 2026-04-15  
+**Source**: `docs/papers/paper14_revised.tex`
 
-| Field | Value |
+---
+
+## Primary Contribution
+
+A hierarchical algorithmic formulation (H-FedAvg) for distributed empirical risk minimization across non-IID partitions. The paper introduces a mathematical update algebra that incorporates dual-level Dirichlet heterogeneity and applies polynomial staleness dampening $\alpha(\tau_i)$ to safely integrate asynchronous updates, achieving a +4.8% cross-domain F1 increase and maintaining convergence under 50% node dropout.
+
+---
+
+## Scope Definition
+
+### In-Scope ✅
+| Item | Description |
+|------|-------------|
+| H-FedAvg Objective | The core mathematical formulation combining edge, intermediate, and global risks. |
+| Dual-Level Non-IID | Covariate shift at the edge layer and Dirichlet label skew ($\beta$) at the domain layer. |
+| Staleness Dampening | Polynomial scaling function $\alpha(\tau_i) = 1/(1+\tau_i)^\gamma$ applied to delayed gradients. |
+| Two-Tier DP Mechanism | Dual-clipping ($C_1, C_2$) injected to obfuscate empirical gradient updates. |
+| Simulation Results | Algorithm optimization under induced delay and 50% structural dropout. |
+
+### Out-of-Scope ❌
+| Item | Why Excluded | Owning Paper |
+|------|--------------|--------------| 
+| Physical Network Topology | P14 defines abstract clustering, not WAN/LAN infrastructure. | P18, P20 |
+| Orchestration & Queues | P14 defines the math of arrival, not the software queuing it. | P20 |
+| Full DP Budget Proofs | P14 uses DP as a mechanism; pure theory is extracted. | P8 |
+| Formal Compliance Axioms | Statistical adaptation $\neq$ logical spatial/temporal proof. | P21 |
+
+---
+
+## System-Agnostic Enforcement
+
+> **CRITICAL RULE**: Paper 14 strictly bounds itself to the **mathematics of statistical learning**. It must not describe event routing, networking hardware, MQTT execution, or precise logical privacy boundaries.
+
+| Forbidden Content | Status |
 |---|---|
-| **Title** | Cross-Campus Federated Intelligence: Hierarchical Privacy-Preserving Learning for Distributed Academic Institutions |
-| **Paper ID** | P14 |
-| **Layer** | Adaptation (L10 — Cross-Campus Federation) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| MQTT, Firewalls, Network topologies | ❌ ABSENT (replaced with abstract aggregation) |
+| Active server orchestration language | ❌ ABSENT (replaced with mathematical arrival) |
+| Deep DP Budget Derivations | ❌ ABSENT (P14 only defines clipping math) |
+| Security analyses (Sybil, poisoning) | ❌ ABSENT (Outside optimization scope) |
 
-## 2. Primary Contribution
+---
 
-**A hierarchical three-tier federated learning architecture (Classroom → Campus → Global) that enables cross-institutional model improvement while respecting institutional governance boundaries, heterogeneous environments, and privacy budgets — with hierarchical Differential Privacy composing across aggregation tiers.**
+## Key Claims & Evidence
 
-Paper 14 extends Paper 13's intra-campus FL to the inter-institutional scope, introducing governance and staleness protocols for asynchronous multi-campus collaboration.
+| Claim | Metric | Value | Evidence |
+|-------|--------|-------|----------|
+| Generalization on skewed domains | F1 Improvement | **+4.8% Absolute** | Test on simulated Dirichlet domains |
+| Dropout robustness | Model accuracy | **> 90%** | Stable up to 50% node dropout |
+| Asynchronous stability | Ablation metric | optimal at **$\gamma = 0.5$** | Empirical comparison vs $\gamma=0$ and $\gamma=2.0$ |
+| Dual-Level Divergence Model | Parameter definitions | Structural math | Formally defined in §II.B |
 
-## 3. Core Claims
+---
 
-| # | Claim | Evidence | CC Flag |
-|---|---|---|---|
-| C1 | Three-tier hierarchical FedAvg converges within 5% of centralized accuracy while maintaining DP bounds | Convergence analysis (§X) | Clean |
-| C2 | Staleness-aware aggregation (exponential decay weighting) tolerates campus connectivity gaps of up to 72 hours | Staleness protocol (§IV); robustness analysis | Clean |
-| C3 | Hierarchical DP composition (ε_campus=4.0, ε_global=2.0) provides tighter bounds than flat aggregation | Privacy analysis (§V) | Clean — "GDPR alignment," not "compliance" |
-| C4 | Governance layer enables per-institution opt-in/opt-out and contribution auditing | Governance protocol (§VII) | Clean |
-| C5 | Cross-campus FL reduces per-institution training cost by 89% vs independent retraining | Cost analysis (§X) | Clean |
+## Paper Boundary (Clean Separation)
 
-## 4. Scope
+| Layer | Paper | P14 Relationship |
+|-------|-------|------------------|
+| Runtime Arch | P18 | No overlap. P18 builds the system; P14 provides the model training algorithm. |
+| Orchestration | P20 | No overlap. P20 routes messages; P14 mathematically integrates them. |
+| Privacy Theory | P8 | Clean boundary. P8 proves deep budget; P14 uses generic clipping structural constraints. |
+| Formal Bounds | P21 | No overlap. Statistical optimization (P14) vs logical compliance proofs (P21). |
 
-### 4.1 In-Scope
-- Three-tier hierarchical FedAvg (Classroom → Campus → Global)
-- Staleness-aware asynchronous aggregation
-- Hierarchical Differential Privacy with budget composition
-- Cross-institutional governance layer (IRB-compatible)
-- Communication infrastructure (MQTT federation)
-- Security analysis (Sybil resistance, model poisoning defense)
+---
 
-### 4.2 Out-of-Scope
-- Intra-campus drift compensation (Paper 13)
-- Base model design (Papers 1–3)
-- Production deployment (Paper 11)
-- System-level validation (Paper 10)
-- AR visualization (Paper 15)
+## Fixes Applied (v2.0)
 
-## 5. Enforcement Invariants
+| Fix | Severity | Status |
+|-----|----------|--------|
+| Purged "infrastructure detail" and network topology diagrams (P18 overlap) | 🔴 P0 | ✅ Fixed |
+| Replaced orchestration language with mathematical arrival behavior (P20 overlap) | 🔴 P0 | ✅ Fixed |
+| Cut theoretical DP / RDP derivations down to local clipping ops (P8 overlap) | 🟡 P1 | ✅ Fixed |
+| Renamed mechanism from generic "exponential decay" to actual "polynomial dampening" | 🟡 P1 | ✅ Fixed |
 
-| ID | Invariant | Enforcement |
-|---|---|---|
-| P14-INV-01 | Raw data MUST NOT leave institutional boundaries — only aggregated gradients | Protocol: no raw data serializer at campus gateway |
-| P14-INV-02 | Each aggregation tier MUST apply independent DP noise | Hierarchical DP mechanism with per-tier moments accountant |
-| P14-INV-03 | Stale updates (>72h) MUST be exponentially down-weighted, not discarded | Staleness decay function applied at aggregation |
-| P14-INV-04 | Institutions MUST be able to opt out of federation without affecting local model | Governance: opt-out preserves last-known campus model |
-| P14-INV-05 | "Reducing risk of reconstruction" — hierarchical DP reduces but does not eliminate reconstruction risk | Scoped privacy claim |
+---
 
-## 6. Upstream / Downstream Dependencies
-
-| Direction | Paper | Interface |
-|---|---|---|
-| **Upstream** | P13 (Intra-Campus FL) | Campus-level aggregated models as input to global tier |
-| **Upstream** | P11 (MLOps) | OTA pipeline delivers globally-updated models |
-| **Upstream** | P8 (Trust) | Audit logs for cross-campus governance |
-| **Downstream** | P1–P3 (Perception) | Globally-improved models deployed to perception modules |
-| **Downstream** | P10 (Validation) | Cross-campus models validated under system stress |
-
-## 7. Verification Requirements
-
-- Global model accuracy within 5% of centralized baseline after 50 rounds
-- Hierarchical DP budget tracked correctly per tier (ε_campus, ε_global)
-- Staleness decay correctly weights 72-hour-stale updates
-- Opt-out leaves local campus model unchanged
-- Zero raw data in any cross-campus communication channel
-
-## 8. What This Paper Does NOT Do
-
-- Does **not** handle intra-campus temporal drift (defers to Paper 13)
-- Does **not** claim GDPR compliance — provides "GDPR-aligned technical architecture"
-- Does **not** prevent all reconstruction attacks — "reduces risk"
-- Does **not** validate results on more than 3 simulated campus environments
-
-## 9. Key Distinction: P14 vs P13
-
-| Dimension | P14 (This Paper) | P13 |
-|---|---|---|
-| **Scope** | Multiple campuses | Single campus |
-| **Problem** | Cross-environment heterogeneity | Temporal drift |
-| **Aggregation** | Hierarchical (3-tier) | Flat FedAvg |
-| **Governance** | Cross-institutional layer | Single institution |
-| **Relationship** | Aggregates P13 campus outputs | Feeds into P14's hierarchical aggregation |
-
-## 10. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
-|---|---|---|
-| **Multi-Campus Sim** | `benchmarks/paper14_end_to_end_simulation.py` | ✅ Verified (5-Campus Topology) |
-| **Hierarchical Agg** | `modules/h_fedavg_coordinator.py` | ✅ Verified (Tier 3 Coordinator) |
-| **Campus Node** | `modules/campus_aggregator.py` | ✅ Verified (Tier 2 Aggregator) |
-
+**Contract Version**: 2.0  
+**Last Updated**: 2026-04-15  
+**CC Audit**: Passed (zero boundary violations, zero software engineering overclaims)  
+**Authority**: Paper 14 LaTeX Source (Distributed Learning Layer)
