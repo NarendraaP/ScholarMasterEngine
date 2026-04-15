@@ -45,7 +45,16 @@ Formal Methods, Spatiotemporal Logic, Distributed Systems, Automata Theory, Kine
 \end{IEEEkeywords}
 
 % ==========================================
-% I. MATHEMATICAL PRELIMINARIES
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring. Existing implementations predominantly rely on heuristic anomaly detection \cite{b1} or probabilistic inference techniques that perform well under typical operating conditions but provide limited guarantees when confronted with adversarial manipulation, distributed state inconsistencies, or physically impossible observation sequences.
+
+This paper develops a formal mathematical framework for reasoning about spatiotemporal compliance and distributed system integrity. The principal contributions are: (1) an axiomatic foundation grounded in classical kinematics and event calculus that resolves discrete sensor observations into continuous state intervals; (2) measure-theoretic compliance predicates enabling Lebesgue-integrable duration bounds; (3) proofs of verification soundness under bounded sensor noise and completeness boundaries via sampling-theoretic analysis; (4) a decidability classification of the verification problem under finite zone and entity constraints; (5) a distributed integrity theorem governing causal monotonicity across system shards; and (6) a game-theoretic adversarial formulation that characterizes the equilibrium behavior of spoofing under kinematic constraints.
+
+% ==========================================
+% II. MATHEMATICAL PRELIMINARIES
 % ==========================================
 \section{Mathematical Preliminaries}
 
@@ -83,11 +92,21 @@ The true physical path of an entity $\epsilon$ is defined as a continuous mappin
 \end{definition}
 
 % ==========================================
-% II. SPATIOTEMPORAL SYSTEM MODEL
+% III. SPATIOTEMPORAL SYSTEM MODEL
 % ==========================================
 \section{Spatiotemporal System Model}
 
 Having defined the underlying mathematical spaces, we now construct the formal spatiotemporal system model.
+
+\subsection{Absorbing Failure State}
+
+\begin{definition}[Absorbing Failure State]
+We define $\fail$ as the absorbing failure state of the verification system. Upon detection of any axiom violation---including kinematic discontinuities ($\neg Continuous(\epsilon, t_1, t_2)$), spatial exclusivity violations, or topological adjacency failures---the system transitions irrevocably to $\fail$:
+\begin{equation}
+\delta_{trans}(q, \sigma) = \fail \quad \text{if } \sigma \text{ violates Axiom 1, 2, or 3}
+\end{equation}
+The state $\fail$ is a sink: $\forall \sigma \in \Sigma: \delta_{trans}(\fail, \sigma) = \fail$. Recovery from $\fail$ requires an external system reset. This formalizes the fail-closed property: no sequence of subsequent observations can restore the system from a detected inconsistency without explicit intervention.
+\end{definition}
 
 \subsection{Spatiotemporal Axiomatics}
 The system model is grounded in a set of fundamental physical constraints derived from classical kinematics. In practice these axioms function as sanity checks on the digital observation stream: when a detected state violates them, the inconsistency is interpreted either as sensor noise or as adversarial interference \cite{b18}.
@@ -334,6 +353,20 @@ Although the framework establishes mathematical soundness under stated assumptio
 
 Similarly, the Nyquist-style completeness condition establishes only a necessary sampling threshold. It does not guarantee resilience under arbitrary sensor degradation or deliberate interference. The adversarial analysis therefore should be interpreted as identifying equilibrium behavior under explicitly defined assumptions rather than providing unconditional security guarantees.
 
+The proofs presented in this work are structured as pen-and-paper deductions. Mechanized verification using theorem provers such as Coq, Isabelle/HOL, or model checkers such as TLA+ has not yet been undertaken. Formalizing the axiom set and core theorems within a mechanized proof assistant remains an important direction for future work and would significantly strengthen the confidence level of the results.
+
+\section{Related Work}
+
+The formal verification of spatiotemporal properties in cyber-physical systems has been addressed through several complementary traditions. Alur and Dill's timed automata \cite{b26} provide a foundational framework for reasoning about real-time systems with clock constraints, and their decidability results for reachability problems parallel the decidability analysis presented here. However, timed automata are typically applied to control-theoretic systems with continuous dynamics, whereas the present framework operates over discrete zone topologies with kinematic bounds.
+
+Signal Temporal Logic (STL) and Metric Temporal Logic (MTL) \cite{b27} provide expressive specification languages for continuous-time properties, including quantitative robustness semantics. The compliance predicates developed in this work share the spirit of STL robustness but are grounded in Lebesgue measure theory rather than signal distance metrics, and are specifically tailored to institutional schedule adherence rather than continuous signal monitoring.
+
+Runtime verification \cite{b28} provides techniques for monitoring system executions against formal specifications. The sampling completeness analysis (Theorem 5) addresses a concern central to runtime verification: the detectability of violations given finite observation rates. The Nyquist-style bound derived here complements existing work on monitorability \cite{b29} by providing an explicit frequency threshold tied to physical kinematics.
+
+Within the CPS security domain, Cardenaş et al. \cite{b18} establish threat models for cyber-physical systems that inform the adversarial formulation presented here. The MDP-based spoofing analysis (Theorem 8) extends this line of work by embedding the adversary within a game-theoretic framework governed by physical kinematic constraints.
+
+The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2} and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8} and Mattern's vector time formalism \cite{b25} to establish causal monotonicity requirements for cross-shard entity migration.
+
 % ==========================================
 % REFERENCES
 % ==========================================
@@ -362,6 +395,10 @@ Similarly, the Nyquist-style completeness condition establishes only a necessary
 \bibitem{b23} O. Burkart, M. Caucal, F. Moller, and B. Steffen, "Verification on infinite structures," \textit{Handbook of Process Algebra}, 2001.
 \bibitem{b24} L. Lamport, R. Shostak, and M. Pease, "The Byzantine Generals Problem," \textit{ACM Transactions on Programming Languages and Systems}, vol. 4, no. 3, pp. 382-401, 1982.
 \bibitem{b25} F. Mattern, "Virtual time and global states of distributed systems," \textit{Parallel and Distributed Algorithms}, pp. 215-226, 1989.
+\bibitem{b26} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
+\bibitem{b27} O. Maler and D. Nickovic, "Monitoring temporal properties of continuous signals," in \textit{Proc. FORMATS/FTRTFT}, Springer, 2004, pp. 152-166.
+\bibitem{b28} M. Leucker and C. Schallhart, "A brief account of runtime verification," \textit{Journal of Logic and Algebraic Programming}, vol. 78, no. 5, pp. 293-303, 2009.
+\bibitem{b29} K. Havelund and G. Roşu, "Synthesizing monitors for safety properties," in \textit{Proc. TACAS}, Springer, 2002, pp. 342-356.
 
 \end{thebibliography}
 

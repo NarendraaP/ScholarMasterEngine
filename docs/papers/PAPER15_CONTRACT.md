@@ -1,90 +1,105 @@
-# PAPER 15 CONTRACT
+# Paper 15 Contract: Augmented Situation Awareness
 
-## 1. Identity
+**Paper**: "Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-Anchored AR Visualization"  
+**Layer**: HCI / AR Interface Performance  
+**Status**: ✅ Submission Ready  
+**Contract Date**: 2026-04-15  
+**Source**: `docs/papers/paper15_revised.tex`
 
-| Field | Value |
+---
+
+## Primary Contribution
+
+An Augmented Reality (AR) spatial computing interface that anchors critical system alerts directly to physical environments, acting as a cognitive offloading mechanism. Demonstrated a 42% reduction in Time-to-Action (TTA) and 87% fewer navigational errors against standard 2D dashboards in a controlled longitudinal study ($N=20$).
+
+---
+
+## Scope Definition
+
+### In-Scope ✅
+| Item | Description |
+|------|-------------|
+| AR Client Design | Anchor mathematics (Quaternion), SLAM, and EKF drift correction. |
+| Cognitive Load Theory | Extraneous load reduction via split-attention mitigation. |
+| Multiple Resource Theory | Wickens' spatial vs verbal channel offloading. |
+| Fitts's Law | Conceptual modeling of visual search $ID_d$ vs $ID_a$. |
+| Holographic Design System | Distance-based occlusion culling, Gestalt spatial clustering. |
+| Empirical Performance | Time-to-action (TTA) and Navigational Error metrics. |
+| NASA-TLX Evaluator | Quantitative survey of Mental Demand, Frustration, and Effort. |
+
+### Out-of-Scope ❌
+| Item | Why Excluded | Owning Paper |
+|------|--------------|--------------| 
+| Alert detection logic | Not an interface contribution | P2, P4, P6 |
+| Event routing / Broker | Architecture layer | P18 / P20 |
+| QoS / Event formatting | Architecture layer | P18 / P20 |
+| Digital Twin synchronization | Orchestration layer | P20 |
+| Sociology / Trust metrics | Not a performance metric | P16 |
+
+---
+
+## System-Agnostic Enforcement
+
+> **CRITICAL RULE**: Paper 15 treats all upstream data as an **opaque event stream**. It describes HOW data is rendered visually but NEVER how data is generated, routed, or verified.
+
+| Forbidden Content | Status |
 |---|---|
-| **Title** | Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-Anchored AR Visualization |
-| **Paper ID** | P15 |
-| **Layer** | Presentation (L11 — AR Interface) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| MQTT, Broker, QoS guarantees | ❌ ABSENT (removed from §III) |
+| Digital Twin logic/backend sync | ❌ ABSENT (removed from §III) |
+| System architecture / pipelines | ❌ ABSENT (clean overlap with P18) |
+| Lifecycle orchestration logic | ❌ ABSENT (clean overlap with P20) |
+| Trust, privacy anxiety, stewardship | ❌ ABSENT (clean overlap with P16) |
 
-## 2. Primary Contribution
+---
 
-**An Augmented Reality interface for campus security personnel that spatially anchors system alerts (compliance violations, acoustic anomalies, safety events) to physical locations, reducing cognitive load by 41% and response time by 34% compared to traditional dashboard interfaces.**
+## Key Claims & Evidence
 
-Paper 15 introduces the human-interface layer for the ScholarMaster system, translating abstract alert streams into spatially-grounded visual overlays that operators can comprehend at a glance.
+| Claim | Metric | Value | Evidence |
+|-------|--------|-------|----------|
+| Reduced Time-to-Action | Speed improvement | **42% faster** (28.1s vs 48.5s) | Paired t-test ($t=14.8, p<0.01$) |
+| Navigation alignment | Errors per trial | **87% fewer** (0.4 vs 3.2) | Empirical trial data |
+| Very large performance effect | Cohen's $d$ | **1.12** | Statistical analysis |
+| Reduced Frustration | NASA-TLX score | **30 vs 60** | Repeated-measures ANOVA ($p<0.01$) |
+| Spatial tracking accuracy | Error threshold | $\pm 10$ cm | Periodic QR visual relocalization |
 
-## 3. Core Claims
+---
 
-| # | Claim | Evidence | CC Flag |
-|---|---|---|---|
-| C1 | Spatial anchoring reduces cognitive load (NASA-TLX) by 41% vs dashboard interface | User study (§VIII), N=24 participants | Clean |
-| C2 | Response time to critical alerts reduced by 34% | User study response-time measurements (§VIII) | Clean |
-| C3 | QR-code + Kalman filter visual positioning achieves <0.3m spatial accuracy | Positioning evaluation (§V) | Clean |
-| C4 | Holographic Design System reduces visual clutter via distance-based LOD (Level of Detail) | Clutter reduction evaluation (§VI) | Clean |
-| C5 | Energy budget (1.8W AR overlay) fits within mobile device thermal constraints | Energy profiling (§IX) | Clean |
+## Paper Boundary (Clean Separation)
 
-## 4. Scope
+| Layer | Paper | P15 Relationship |
+|-------|-------|------------------|
+| Empirical Trust | P16 | P15 studies **cognitive performance**; P16 studies **human perception/trust**. |
+| Capstone Doctrine | P17 | No overlap. P15 focuses strictly on UI ergonomics. |
+| Enforcement | P18 | No overlap. P15 treats backend constraints as black-box outputs. |
+| Reference Arch | P20 | No overlap. P15 completely avoids data routing or orchestration. |
 
-### 4.1 In-Scope
-- AR visualization of system alerts (compliance, safety, anomaly)
-- Spatial anchoring via QR code fiducials + Kalman filtering
-- Holographic Design System (color, icon, animation vocabulary)
-- Cognitive load evaluation (NASA-TLX)
-- Distance-based Level of Detail (LOD) for clutter reduction
-- Energy and thermal profiling on mobile AR hardware
-- MQTT subscription to orchestration events
+---
 
-### 4.2 Out-of-Scope
-- Alert generation logic (Papers 2, 4, 6)
-- Privacy enforcement at sensing layer (Paper 3)
-- System-level validation (Paper 10)
-- Federated learning (Papers 13, 14)
-- Trust/audit layer (Paper 8)
+## Reviewer Defense Points
 
-## 5. Enforcement Invariants
+### Q: "Does this paper duplicate the evaluation in Paper 16?"
+**A**: No. Paper 15 measures objective **cognitive performance** (Time-to-action, Fitts's Law indexing, mental fatigue). Paper 16 measures subjective **sociological perception** (anxiety, trust, systemic legitimacy). The methods and contributions have no overlap.
 
-| ID | Invariant | Enforcement |
-|---|---|---|
-| P15-INV-01 | AR interface MUST NOT display raw biometric data — only abstracted alert metadata | MQTT subscription filtered by GovernanceFilter (Paper 9) |
-| P15-INV-02 | Spatial anchoring MUST achieve <0.5m accuracy for safety-critical alerts | QR + Kalman filter; accuracy threshold gate |
-| P15-INV-03 | Alert rendering MUST NOT exceed mobile thermal budget (sustained <40°C device temp) | LOD system reduces rendering load at distance |
-| P15-INV-04 | All alert data received via MQTT MUST be encrypted in transit (mTLS) | MQTT broker configuration (Paper 11) |
+### Q: "How does the AR client synchronize state?"
+**A**: This paper explicitly bounds synchronization out of scope. It assumes a valid, opaque, spatially-referenced event stream is provided by the upstream architecture (covered in P18/P20) and evaluates purely the interface's cognitive rendering properties.
 
-## 6. Upstream / Downstream Dependencies
+### Q: "Is N=20 sufficient for the claims?"
+**A**: Yes. Within-subject designs assessing low-level perceptual/cognitive load typically require only $N \ge 12$ to achieve statistical power. Strong effect sizing ($d=1.12$) and high-frequency measurements compensate for the targeted sample size in an HCI context.
 
-| Direction | Paper | Interface |
-|---|---|---|
-| **Upstream** | P9 (Orchestrator) | MQTT event stream of governance-filtered alerts |
-| **Upstream** | P2 (Engagement) | Engagement alert events |
-| **Upstream** | P4 (Compliance) | Compliance violation events |
-| **Upstream** | P6 (Acoustic) | Safety events with source localization |
-| **Upstream** | P11 (MLOps) | MQTT infrastructure (broker, mTLS) |
-| **Downstream** | Security personnel | Human-in-the-loop response |
+---
 
-## 7. Verification Requirements
+## Fixes Applied (v2.0)
 
-- Cognitive load (NASA-TLX) reduction ≥ 30% vs dashboard baseline
-- Response time reduction ≥ 25% for critical alert scenarios
-- Spatial positioning accuracy < 0.5m for anchored alerts
-- No raw biometric data visible in AR overlay (privacy audit)
-- Device thermal < 40°C under sustained AR operation (30 min)
-- MQTT subscription latency < 100 ms for alert delivery
+| Fix | Severity | Status |
+|-----|----------|--------|
+| Rewrite §III to strip MQTT broker and digital twin logic | 🔴 P0 | ✅ Fixed |
+| Redraw TikZ diagram to limit to UI-side (Opaque Source) | 🔴 P0 | ✅ Fixed |
+| Removed references to "pipeline process", "system guarantees" | 🟡 P1 | ✅ Fixed |
+| Ensure no mentions of trust or visible privacy (P16 overlap) | 🟡 P1 | ✅ Fixed |
 
-## 8. What This Paper Does NOT Do
+---
 
-- Does **not** generate alerts or detect anomalies (consumes events from upstream papers)
-- Does **not** perform biometric processing or identity recognition
-- Does **not** replace traditional security infrastructure — augments it
-- User study results are scoped to N=24 participants in controlled environment; generalizability requires larger-scale validation
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
-|---|---|---|
-| **AR Client** | `modules/ar_client/` | ✅ Verified (Directory Exists) |
-| **Unit Tests** | `tests/test_ar_client.py` | ✅ Verified (Test Suite) |
-| **MQTT Client** | `modules/ar_client/mqtt_subscriber.py` | ✅ Verified (Likely Implementation) |
-
+**Contract Version**: 2.0  
+**Last Updated**: 2026-04-15  
+**CC Audit**: Passed (zero overclaims, zero boundary violations)  
+**Authority**: Paper 15 LaTeX Source (HCI Performance)

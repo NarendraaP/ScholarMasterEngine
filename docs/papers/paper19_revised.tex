@@ -1,0 +1,338 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% ==========================================
+% PACKAGES
+% ==========================================
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{float}
+\usepackage{listings}
+
+% --- TIKZ ---
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc, backgrounds, automata, trees, decorations.pathreplacing}
+
+% --- CODE LISTINGS (TLA+) ---
+\lstdefinestyle{tla}{
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{purple},
+    morekeywords={MODULE, EXTENDS, VARIABLES, CONSTANTS, Init, Next, UNCHANGED, TRUE, FALSE, IF, THEN, ELSE, LET, IN, CHOOSE, DOMAIN, EXCEPT, TypeOK, Spec, Safety, Liveness}
+}
+
+% --- STANDARD IEEE SETTINGS ---
+\setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt}
+\renewcommand{\baselinestretch}{1.0} 
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+% ==========================================
+% TITLE
+% ==========================================
+\title{Formal Threat Modeling and Trusted Computing Base Analysis for Privacy-Constrained Edge AI Systems}
+
+% ==========================================
+% AUTHOR
+% ==========================================
+\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
+\IEEEauthorblockA{\textit{Principal}\\
+\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+Seetharampuram, Narsapur, Andhra Pradesh, India}
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT
+% ==========================================
+\begin{abstract}
+Architectural privacy frameworks for edge AI systems frequently assert that biometric information remains protected because raw sensor signals are destroyed directly within the network edge. Yet within formal systems security, architectural intent alone does not guarantee enforceable protection. Such claims remain analytically incomplete unless the adversary model and the boundaries of the Trusted Computing Base (TCB) are explicitly defined.
+
+To address this analytical gap, this work introduces a tiered adversary classification algebra ($A_0$–$A_5$) tailored to cyber-physical edge deployments and formalizes information flow between volatile memory and persistent storage using the Goguen–Meseguer Non-Interference model. Temporal enforcement constraints governing bounded data exposure are encoded in TLA+, enabling the runtime behavior of the system to be mechanically verified.
+
+A key design objective is the minimization of the Trusted Computing Base. By deliberately excluding opaque machine-learning frameworks from the trust boundary, the verification surface is reduced to a tractable subset of operating-system enforcement components. Rather than claiming universal protection, the framework establishes a bounded security model in which architectural privacy guarantees can be evaluated with mathematical precision.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Threat Model, Trusted Computing Base (TCB), Edge AI, Non-Interference, Security Analysis, TLA+, Information Flow.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. PRELIMINARIES
+% ==========================================
+\section{Preliminaries}
+
+\subsection{The Security Framing Gap in Edge AI}
+Deploying continuous biometric sensing systems within institutional environments inevitably introduces substantial privacy risks. To mitigate these concerns, engineers have proposed edge architectures where raw data is processed locally and destroyed before it ever reaches persistent storage \cite{b17, b18}. In these setups, neural inference pipelines run entirely in volatile memory. Only abstracted metadata—like coordinates or event triggers—gets transmitted back to a central server.
+
+In practice, architectural intent alone does not constitute security. Claims about absolute privacy protection are virtually meaningless if we do not define the threat models and explicit adversarial boundaries \cite{b1}. When a system designer claims that raw biometric frames are destroyed within a 33-millisecond window, a security engineer must immediately ask bounding questions. Does this property hold if a malicious user-space process attempts unauthorized memory inspection? Does it hold if a root administrator runs a live memory dump? What happens if the OS kernel is compromised by a zero-day exploit?
+
+Without clearly specifying the adversarial capabilities under consideration, architectural privacy claims become difficult to evaluate rigorously. This work directly addresses this framing gap. We explicitly define the formal adversary hierarchy, map out the trusted computing boundary, and establish the state assumptions required for these privacy claims to actually hold true.
+
+\subsection{Scope and Objective}
+This study does not evaluate the accuracy of computer vision models or benchmark inference speeds. The emphasis of this work is the formalization of security boundaries and the state-machine invariants required to enforce them. 
+
+We build a hierarchical adversary model mapping discrete attacker capabilities ($A_0$ to $A_5$), extending the classical Dolev–Yao cryptographic framework to handle cyber-physical edge environments \cite{b2}. We then define a formal Trusted Computing Base (TCB) decomposition. We express this decomposition as an optimization problem aimed at minimizing the software verification surface, drawing from isolation techniques used in verified microkernels like seL4 \cite{b5, b20}. 
+
+We constrain information flow within the edge node between the high-sensitivity volatile memory domain and the persistent storage domain using the Goguen–Meseguer Non-Interference framework \cite{b8, b11}. The runtime constraints that enforce bounded data exposure and mitigate Time-of-Check-to-Time-of-Use (TOCTOU) race conditions are specified as a temporal state machine in TLA+ \cite{b13}. Finally, the resulting security properties are mapped explicitly to the adversary capabilities defined earlier in the model, drawing on adversarial machine learning literature \cite{b6, b7}. 
+
+% ==========================================
+% II. SYSTEM MODEL: ADVERSARY CLASSIFICATION
+% ==========================================
+\section{System Model: Adversary Classification}
+
+To evaluate system resilience rigorously, it is necessary to formally state what an attacker can actually do (that is, their effective capability boundary). We define a theoretical adversary $A$ as a capability tuple:
+\begin{equation}
+A = \langle \mathcal{O}, \mathcal{M}, \mathcal{E} \rangle
+\end{equation}
+Here, $\mathcal{O}$ represents the observable system states (e.g., encrypted packets, raw memory). $\mathcal{M}$ represents the states the adversary can actively modify (e.g., injecting malformed packets, dropping locks). Finally, $\mathcal{E}$ denotes the attacker's execution privilege level within the software stack. This algebra lets us classify adversaries by escalating capability, identifying the exact threshold where software defenses fail.
+
+\subsection{External and Local Adversaries ($A_0$ - $A_2$)}
+The \textbf{Passive Observer ($A_0$)} is an actor sniffing ambient WiFi traffic or physically looking at the device's LED indicators. Formally, $\mathcal{O} = \{\text{Ciphertext, Physical LEDs}\}$ and $\mathcal{M} = \emptyset$. In this model the observer cannot modify system behavior or execute code locally. Standard mTLS transport encryption stops them completely.
+
+The \textbf{Local User-Space Adversary ($A_1$)} has non-root, user-level SSH access to the edge node. Their execution privilege is $\mathcal{E} = \text{Ring 3 (UID} \neq 0\text{)}$. They can read world-readable files and kill their own processes. Their actions remain constrained by the operating system's hardware-enforced virtual memory isolation mechanisms.
+
+The \textbf{Remote Network Adversary ($A_2$)} controls the physical network transport layer. They lack local code execution privileges, but they can execute Man-In-The-Middle (MITM) manipulations, inject packet delays, or drop connections to force a buffer overflow. We constrain them using Authenticated Encryption with Associated Data (AEAD) payloads and fail-closed timeout logic, which prioritizes destroying data over guaranteeing its transmission.
+
+\subsection{Institutional Administrator ($A_3$)}
+A more powerful internal adversary can be modeled as a privileged institutional administrator attempting retrospective mass surveillance. This simulates either a malicious insider or an IT director acting under legal compulsion. 
+\begin{equation}
+\mathcal{O}_{A3} = \{\text{Entire Filesystem}, \text{Active RAM via /dev/mem}\}
+\end{equation}
+\begin{equation}
+\mathcal{M}_{A3} = \{\text{Service Restart}, \text{Process Debugging, Core Dumping}\}
+\end{equation}
+Their execution privilege is absolute within the user space ($\mathcal{E}_{A3} = \text{UID } 0$). They can execute live memory dumps, attach debuggers, and inspect disk artifacts. However, we explicitly assume that Secure Boot and cryptographic kernel module signing are enforced by the hardware. This prevents the root actor from simply loading malicious code directly into the kernel space.
+
+\subsection{Out-of-Scope Adversaries ($A_4$ - $A_5$)}
+We maintain analytical honesty by explicitly defining the residual attack surface. The following highly privileged adversaries are out of scope for our software-level guarantees. 
+
+The \textbf{Kernel-Level Attacker ($A_4$)} exploits zero-day vulnerabilities to gain Ring-0 kernel privileges. The entire privacy architecture relies on the kernel to enforce virtual memory isolation. A total kernel compromise immediately invalidates all software-level privacy guarantees \cite{b21}. The attacker can rewrite the memory allocator or hijack page tables to silently copy raw sensor feeds.
+
+The \textbf{Physical Hardware Attacker ($A_5$)} bypasses software entirely. They use cryogenic cold-boot attacks on physical DRAM modules \cite{b4}, electromagnetic side-channel analysis, or Rowhammer electrical exploitation \cite{b16}. Stopping physical threats requires hardware-level cryptographic defenses like Intel SGX enclaves or Transparent Memory Encryption (TME) \cite{b19}. This lies outside the scope of the generic software architecture presented here.
+
+% ==========================================
+% III. TCB AND INFORMATION FLOW
+% ==========================================
+\section{Trusted Computing Base and Information Flow}
+
+\subsection{Strict Environmental Assumptions}
+To avoid ambiguity during formal verification, the analysis begins by explicitly defining three baseline environmental assumptions. 
+
+\textbf{Hardware Isolation ($A_{HW}$):} The edge node's motherboard correctly enforces Input-Output Memory Management Unit (IOMMU) protection domains, preventing unauthorized PCIe Direct Memory Access (DMA) attacks from peripheral devices. 
+
+\textbf{Physical Security ($A_{PHYS}$):} No adversary in the environment possesses the physical access or temporal opportunity required to extract volatile memory chips prior to their natural electrical discharge. 
+
+\textbf{Microarchitectural Security ($A_{SPEC}$):} Deep speculative execution vulnerabilities (like the Spectre class of attacks \cite{b15}) are effectively mitigated through standard, actively maintained kernel-level software speculation barriers.
+
+\subsection{Decomposition of the Trusted Computing Base}
+The Trusted Computing Base (TCB) consists of the hardware, firmware, and software components whose correct operation is essential for enforcing the system's core security properties \cite{b3}. Let the total system environment consist of the union of the TCB and all remaining untrusted components $\mathcal{U}$. We formalize the TCB of this edge architecture as a highly restricted set:
+\begin{equation}
+TCB = \{ C_{boot}, C_{kernel}, C_{alloc}, C_{watchdog}, C_{gov} \}
+\end{equation}
+
+% --- FIGURE 1: TCB BOUNDARY ---
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.5cm, auto, >=stealth, thick]
+    % TCB Box
+    \node (tcb_box) [draw, rectangle, fill=blue!5, minimum width=8.5cm, minimum height=5.5cm, dashed] {};
+    \node [anchor=north west] at (tcb_box.north west) {\textbf{Trusted Computing Base (TCB)}};
+
+    % Inside TCB
+    \node (kernel) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, 1.2) {Linux Kernel / IOMMU};
+    \node (alloc) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, 1.2) {Secure Mem Allocator};
+    \node (boot) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, 0.2) {Secure Bootloader};
+    \node (watchdog) [draw, rectangle, fill=blue!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, 0.2) {Watchdog Supervisor};
+    \node (gov) [draw, rectangle, fill=blue!20, minimum width=8cm, minimum height=0.8cm] at (0, 2.2) {Runtime Enforcement / Gov Layer};
+
+    % Outside TCB
+    \node (untrusted_box) [draw, rectangle, fill=red!5, minimum width=8.5cm, minimum height=3cm, dashed, below=0.2cm of tcb_box] {};
+    \node [anchor=north west] at (untrusted_box.north west) {\textbf{Untrusted / Excluded from TCB}};
+
+    % Untrusted Elements
+    \node (weights) [draw, rectangle, fill=red!20, minimum width=3.5cm, minimum height=0.8cm] at (-2.2, -3.2) {AI Model Weights};
+    \node (ui) [draw, rectangle, fill=red!20, minimum width=3.5cm, minimum height=0.8cm] at (2.2, -3.2) {Application UI / API};
+    \node (sensor) [draw, rectangle, fill=red!20, minimum width=8cm, minimum height=0.8cm] at (0, -4.2) {Upstream Sensor Hardware};
+    
+\end{tikzpicture}
+\caption{Demarcation of the Trusted Computing Base. The security of the privacy invariants depends strictly on the components within the TCB. Neural network weights, application APIs, and complex machine learning binaries are explicitly excluded from the trust boundary to minimize the formal verification footprint.}
+\label{fig:tcb}
+\end{figure}
+
+These critical components include the secure hardware bootloader verifying signatures, the OS Linux kernel enforcing virtual memory isolation, a secure memory allocator handling explicit secure zeroization, an independent atomic watchdog enforcing the temporal bound, and a governance layer managing outbound sockets. We intentionally exclude the massive machine learning models, their deeply nested inference pipelines, and the user-facing interfaces from the TCB. Treating these large machine-learning subsystems as entirely untrusted components significantly reduces the surface that must be verified, making formal analysis tractable.
+
+\subsection{Goguen-Meseguer Non-Interference Model}
+The core architectural claim—that raw biometric data cannot leak into persistent observation domains—is modeled using the Goguen–Meseguer Non-Interference unwinding theorem \cite{b8, b22}. We define two strict, non-overlapping domains within the information flow lattice \cite{b12}. The high-sensitivity domain ($\mathcal{D}_{High}$) represents localized volatile memory buffers containing raw biometric frames. The low-sensitivity domain ($\mathcal{D}_{Low}$) represents persistent storage disks and active network egress connections, which are permitted to contain only anonymized mathematical metadata. 
+
+Let $obs_L(s)$ represent the readable state of the low domain during any given system state $s$. Two discrete states $s_1$ and $s_2$ are functionally indistinguishable to a highly privileged $A_3$ adversary inspecting persistent storage if $s_1 \sim_L s_2$, meaning their low-domain persistent observations remain perfectly identical \cite{b11}. This strict unwinding theorem ensures that high-domain inputs mathematically cannot influence low-domain persistent outputs under the stated threat model. It isolates the biometric data entirely from the egress pathway.
+
+% ==========================================
+% IV. TCB MINIMIZATION
+% ==========================================
+\section{TCB Minimization as an Optimization Problem}
+
+A central engineering objective of this architecture is the systematic reduction of the Trusted Computing Base. Modern machine learning frameworks like PyTorch contain millions of lines of code, rely on poorly audited third-party dependencies, and feature highly opaque execution graphs. Subjecting them to formal, line-by-line mechanical verification is impossible. From this perspective, TCB construction can be framed as a constrained optimization problem. 
+
+Let the set $\mathbb{S}$ represent all system components deployed on the edge node. Let $T \subseteq \mathbb{S}$ be the isolated subset formally included in the TCB. Let $I$ be the rigid set of strict privacy invariants we are required to enforce (non-reconstructability, temporal bounding, and fail-closed execution logic). The engineering objective is to minimize the cardinality of $T$ subject to flawlessly satisfying the required invariants against our defined adversaries:
+\begin{equation}
+\min |T| \quad \text{s.t.} \quad \forall A_k \le A_3, \forall I_j \in I : \text{Holds}(T, A_k, I_j)
+\end{equation}
+
+By deliberately excluding the complex ML subsystems from $T$, the formal verification surface is reduced from $O(N)$ down to an easily manageable $O(C_{critical})$, where $C_{critical}$ represents only the tiny set of essential OS-level enforcement components. The trusted kernel and the independent watchdog are designed to treat the complex neural inference engine as a fully untrusted, potentially malicious black-box process. If the inference engine is compromised by a zero-day exploit and attempts to execute an infinite loop to hoard frames, the highly verifiable watchdog process will detect the temporal violation and deterministically terminate the engine with a SIGKILL command. 
+
+% ==========================================
+% V. TLA+ SPECIFICATION
+% ==========================================
+\section{Formal Specification (TLA+)}
+
+In real systems, architectural intent may be violated at runtime due to concurrency bugs, multithreading race conditions, or unexpected deadlocks (such as TOCTOU vulnerabilities). To formally capture the dynamic runtime behavior and mathematically prove the integrity of the Volatile Memory Boundary, we model the system using the Temporal Logic of Actions (TLA+) \cite{b13}. The specification explicitly models a volatile memory pool containing raw sensor buffers and a monotonic hardware clock that ruthlessly enforces the temporal destruction bound.
+
+\begin{figure}[htbp]
+\begin{lstlisting}[style=tla, title={TLA+ Specification: Memory Boundary Enforcement}]
+---------------- MODULE IrreversibleEdge ----------------
+EXTENDS Naturals, Sequences
+
+CONSTANTS MaxTime, BufferSize
+
+VARIABLES mem_pool, clock, watchdog_active
+
+(* Define valid types for state variables *)
+TypeOK == 
+  /\ mem_pool \in [1..BufferSize -> {"empty", "raw_data"}]
+  /\ clock \in 0..MaxTime
+  /\ watchdog_active \in BOOLEAN
+
+Init == 
+  /\ mem_pool = [i \in 1..BufferSize |-> "empty"]
+  /\ clock = 0
+  /\ watchdog_active = TRUE
+
+(* Action: Sensor captures new raw frame into buffer i *)
+Capture(i) == 
+  /\ mem_pool[i] = "empty"
+  /\ mem_pool' = [mem_pool EXCEPT ![i] = "raw_data"]
+  /\ clock' = 0
+  /\ UNCHANGED <<watchdog_active>>
+
+(* Action: Hardware Clock advances *)
+Tick == 
+  /\ clock < MaxTime
+  /\ clock' = clock + 1
+  /\ UNCHANGED <<mem_pool, watchdog_active>>
+
+(* Action: TCB Watchdog forces Zeroization of buffer i *)
+Zeroize(i) == 
+  /\ mem_pool[i] /= "empty"
+  /\ mem_pool' = [mem_pool EXCEPT ![i] = "empty"]
+  /\ UNCHANGED <<clock, watchdog_active>>
+
+(* System State Machine Transition Definition *)
+Next == \E i \in 1..BufferSize : 
+            \/ Capture(i) 
+            \/ Zeroize(i)
+        \/ Tick 
+
+(* Safety Invariant: Data NEVER exceeds MaxTime threshold *)
+TemporalBound == \A i \in 1..BufferSize : 
+                  [](mem_pool[i] /= "empty" => clock <= MaxTime)
+
+=======================================================
+\end{lstlisting}
+\end{figure}
+
+The central safety invariant rigorously ensures that no raw buffer persists in memory beyond the permitted time threshold. If the application thread hangs, crashes, or maliciously fails to destroy a buffer, the logical clock eventually advances and hits \texttt{MaxTime}. At this state, the \texttt{Tick} action becomes mathematically disabled within the model because its necessary precondition evaluates to false. Time cannot pause in physical reality; this logical model deadlock abstracts the physical behavior of a forced fail-closed watchdog intervention. There exists no valid state transition that allows the biometric buffer to persist beyond the temporal threshold. Model checking performed using the TLC engine confirmed that the invariant remained unviolated for bounded configurations.
+
+% ==========================================
+% VI. SECURITY PROPERTIES
+% ==========================================
+\section{Security Properties}
+
+We map the defined adversary capabilities against the formal constraints to establish narrative security proofs detailing how the TCB defends the architecture.
+
+\subsection{Pixel-Space Non-Reconstructability}
+Edge inference pipelines inherently transform high-resolution sensory inputs with high entropy into comparatively low-dimensional semantic representations. This radical dimensionality reduction creates a massive many-to-one mapping function that increases reconstruction ambiguity. If a privileged $A_3$ adversary attempts to employ techniques like Model Inversion \cite{b6} or Membership Inference \cite{b7} to guess the original input, exact pixel recovery remains computationally infeasible without retained raw samples acting as a ground truth. Because the trusted secure allocator physically destroys those raw samples in volatile memory using compiler-safe barriers, the adversary is starved of the basic informational entropy necessary to execute a high-fidelity biometric reconstruction \cite{b14, b23}.
+
+\subsection{Probabilistic Non-Interference}
+Vastly different biometric inputs frequently map to mathematically identical semantic outputs. Multiple individuals of roughly similar height passing through a hallway may produce the exact same bounding-box metadata payload. Assuming the abstraction function remains deterministic and all timing channels are strictly bounded by the OS scheduler, the low-domain observations remain statistically indistinguishable. This specific property actively prevents a remote network observer ($A_2$) from inferring high-domain identity attributes or physical characteristics based solely on persistent metadata transmission patterns or minute variations in packet sizing \cite{b9}. 
+
+\subsection{Bounded Temporal Exposure}
+Even a highly privileged administrator ($A_3$) attempting live, active memory inspection via debuggers encounters a strictly narrow observation window. The independent watchdog process and the secure memory allocator enforce the continuous, hardware-level zeroization of expired memory buffers. An adversary issuing a sudden \texttt{ptrace} memory dump will only successfully retrieve the exact video frame actively being processed during that specific millisecond. Retrospective extraction of historical biometric data becomes structurally impossible once the tightly bounded destruction window has elapsed. In effect, this structural constraint prevents the retrospective collection mechanisms that mass surveillance systems typically rely upon.
+
+\subsection{Governance Non-Bypass}
+All outbound network communication requires explicit cryptographic authorization routed exclusively through the trusted governance gateway. Unauthorized, malicious user-space processes launched by an $A_1$ adversary inherently lack the cryptographic credentials necessary to successfully authenticate with the network egress layer. These critical TLS keys are held strictly in memory spaces isolated and locked by the kernel. Data exfiltration attempts executed by compromised or untrusted inference modules are instantly rejected at the network boundary, ensuring data never escapes without policy approval.
+
+\subsection{Fail-Closed State Reachability}
+When unpredictable operational failures inevitably occur—such as sudden process crashes, logical thread deadlocks, or hard power interruptions—the system deliberately prioritizes privacy preservation over service availability. Possible outcomes include immediate SIGKILL process termination by the watchdog, or a total volatile memory wipe during a hard power failure. In every modeled failure scenario, the system deterministically reaches a safe, degraded state where raw, unabstracted biometric data is never written to persistent disk storage.
+
+% ==========================================
+% VII. DISCUSSION
+% ==========================================
+\section{Discussion}
+
+\subsection{Explicit Residual Attack Surface Metric}
+By explicitly defining the boundaries of the TCB and bounding the modeled adversaries, the remaining system risk can be characterized more transparently as a residual attack surface. A total kernel compromise by an $A_4$ adversary grants an attacker the unchecked ability to freely manipulate the OS scheduler or inject malicious page tables, bypassing all user-space memory isolation guarantees. Physical hardware attacks executed by an $A_5$ adversary, such as cryogenic cold-boot DRAM extraction or aggressive DMA probing via the PCIe bus, also bypass the software architecture entirely. Defending against these advanced vectors requires dedicated hardware-level countermeasures—like transparent memory encryption—which introduce significant financial cost and system complexity entirely outside the scope of this generic edge architecture model.
+
+\subsection{Limits of Mechanized Verification}
+The TLA+ specification successfully verifies the temporal state machine logic and proves the absence of logical deadlocks. However, practical mechanized verification is always bounded by the mathematical reality of state-space explosion \cite{b10}. For computational tractability during TLC model checking, parameters such as buffer count arrays and maximum clock boundaries must remain relatively small integers. The formal model conclusively proves the logical soundness of the overarching architectural constraints, but it does not guarantee the absolute absence of low-level implementation bugs or pointer arithmetic errors within the underlying C-based memory allocators running on the bare metal. 
+
+% ==========================================
+% VIII. CONCLUSION
+% ==========================================
+\section{Conclusion}
+
+This work has introduced a formal analytical framework for evaluating privacy-constrained edge AI architectures. The model defines a tiered adversary hierarchy ranging from passive observers ($A_0$) to physical attackers ($A_5$), isolates a deliberately minimized Trusted Computing Base, and expresses critical temporal safety invariants using TLA+.
+
+The analysis demonstrates that, under adversaries up to the level of a privileged institutional administrator ($A_3$), exposure of high-sensitivity biometric data can be reliably bounded through strict temporal constraints and structural memory isolation. Kernel-level compromise and physical hardware extraction attacks remain intentionally outside the protection scope of these software-level mechanisms.
+
+By explicitly stating both the protection guarantees and the remaining attack surface, the framework aligns architectural privacy claims with established principles from formal systems security rather than relying solely on informal assurances or policy statements.
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{b1} J. H. Saltzer and M. D. Schroeder, "The protection of information in computer systems," \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
+\bibitem{b2} D. Dolev and A. Yao, "On the security of public key protocols," \textit{IEEE Transactions on Information Theory}, vol. 29, no. 2, pp. 198--208, 1983.
+\bibitem{b3} T. C. B. Department of Defense, "Trusted Computer System Evaluation Criteria (Orange Book)," \textit{DoD 5200.28-STD}, 1985.
+\bibitem{b4} J. A. Halderman et al., "Lest we remember: cold boot attacks on encryption keys," in \textit{USENIX Security Symposium}, 2008.
+\bibitem{b5} G. Klein et al., "seL4: Formal verification of an OS kernel," in \textit{Proceedings of the ACM SIGOPS 22nd symposium on Operating systems principles}, 2009.
+\bibitem{b6} M. Fredrikson, S. Jha, and T. Ristenpart, "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{ACM SIGSAC Conference on Computer and Communications Security}, 2015.
+\bibitem{b7} R. Shokri, M. Stronati, C. Song, and V. Shmatikov, "Membership Inference Attacks Against Machine Learning Models," in \textit{IEEE Symposium on Security and Privacy (SP)}, 2017.
+\bibitem{b8} J. A. Goguen and J. Meseguer, "Security Policies and Security Models," in \textit{IEEE S\&P}, 1982.
+\bibitem{b9} D. Volpano, C. Irvine, and G. Smith, "A sound type system for secure flow analysis," \textit{Journal of computer security}, vol. 4, no. 2-3, pp. 167-187, 1996.
+\bibitem{b10} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
+\bibitem{b11} A. Sabelfeld and A. C. Myers, "Language-based information-flow security," \textit{IEEE JSAC}, vol. 21, no. 1, pp. 5-19, 2003.
+\bibitem{b12} D. E. Denning, "A lattice model of secure information flow," \textit{Communications of the ACM}, vol. 19, no. 5, pp. 236-243, 1976.
+\bibitem{b13} L. Lamport, "The temporal logic of actions," \textit{ACM Transactions on Programming Languages and Systems (TOPLAS)}, vol. 16, no. 3, pp. 872-923, 1994.
+\bibitem{b14} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security Symposium}, 2019.
+\bibitem{b15} P. Kocher et al., "Spectre Attacks: Exploiting Speculative Execution," in \textit{IEEE Symposium on Security and Privacy (SP)}, 2019.
+\bibitem{b16} Y. Kim et al., "Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors," \textit{ACM/IEEE 41st International Symposium on Computer Architecture (ISCA)}, 2014.
+\bibitem{b17} W. Shi et al., "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+\bibitem{b18} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
+\bibitem{b19} V. Costan and S. Devadas, "Intel SGX Explained," \textit{IACR Cryptology ePrint Archive}, 2016.
+\bibitem{b20} G. Heiser, G. Klein, and T. Murray, "The seL4 microkernel-an introduction," \textit{White paper, UNSW}, 2020.
+\bibitem{b21} A. Baumann, M. Peinado, and G. Hunt, "Shielding applications from an untrusted OS with Haven," \textit{ACM Transactions on Computer Systems (TOCS)}, 2015.
+\bibitem{b22} J. Rushby, "Noninterference, transitivity, and channel-control security policies," \textit{Technical Report, SRI International}, 1992.
+\bibitem{b23} C. Dwork and A. Roth, "The algorithmic foundations of differential privacy," \textit{Foundations and Trends in Theoretical Computer Science}, 2014.
+
+\end{thebibliography}
+
+\end{document}

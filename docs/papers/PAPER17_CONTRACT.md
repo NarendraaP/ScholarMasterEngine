@@ -1,175 +1,138 @@
-# PAPER 17 CONTRACT
+# Paper 17 Contract: Architectural Irreversibility
 
-**Title**: Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems  
-**Type**: Capstone / System Synthesis  
-**Author**: Narendra Babu P  
-**Status**: BINDING  
-**Version**: 1.1.0
-
----
-
-## 1. PAPER IDENTITY
-
-| Property | Value |
-|----------|-------|
-| **Paper Number** | P17 |
-| **Role** | Capstone Synthesis |
-| **Scope** | Full L1–L8 Architecture |
-| **Contribution** | Introduces "Architectural Irreversibility" as foundational paradigm |
+**Paper**: "Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems"  
+**Layer**: Capstone Doctrine  
+**Status**: ✅ Submission Ready  
+**Contract Date**: 2026-04-15  
+**Source**: `docs/papers/paper17_revised.tex`
 
 ---
 
-## 2. PRIMARY CONTRIBUTION
+## Primary Contribution
 
-Paper 17 is the **capstone paper** that synthesizes all 16 preceding papers into a unified architectural thesis:
-
-> **Architectural Irreversibility**: Privacy is enforced not by policy, but by the architecture of the data pipeline. One-way transformations, mandatory governance gates, and visible trust indicators render pixel-space reconstruction of sensitive data structurally underdetermined.
+Establishes **Architectural Irreversibility** as a foundational design principle for privacy-centered edge intelligence. Argues that privacy must be enforced through structural elimination of surveillance capability, not through post-hoc policy or administrative restraint.
 
 ---
 
-## 3. CORE CLAIMS
+## Scope Definition
 
-| ID | Claim | Layer(s) | Proof Type |
-|----|-------|----------|------------|
-| **17.1** | Privacy-by-Policy fails; capability precedes governance in surveillance-derived architectures | Meta | Theoretical |
-| **17.2** | Architectural Irreversibility eliminates entire classes of harm by design | L3 | Structural |
-| **17.3** | Compression ratio >1000:1 makes inverse mapping structurally underdetermined | L3 | Mathematical |
-| **17.4** | Governance is a mandatory runtime stage, not optional policy | L5 | Runtime |
-| **17.5** | Visible privacy (Skeleton Effect + LED) transforms trust into observable output | L6 | Empirical |
-| **17.6** | System fails closed (halts) rather than fails open (degrades privacy) | L1–L8 | Runtime |
-| **17.7** | Automated Stewardship is a distinct ethical category from surveillance | Meta | Conceptual |
-| **17.8** | 8-layer canonical architecture is a closed constraint system | L1–L8 | Structural |
+### In-Scope ✅
+| Item | Description |
+|------|-------------|
+| Architectural Irreversibility | Core design principle — destructive transformation |
+| Capability Elimination Principle | $f: X→Y$ non-invertible + raw destruction |
+| 3-Class Privacy Architecture Taxonomy | Policy / Crypto / Architecturally Constrained |
+| Epistemic Humility | Judgment ≠ authority separation |
+| Automated Stewardship | Ethical paradigm definition |
+| Visible Privacy & Semiotics | Transparency vs legibility distinction |
+| Data-as-Liability Framing | Raw data as hazardous institutional asset |
+| Constraint-Based Design | Utility limited to preserve contextual integrity |
+| PET Differentiation | Why DP/FL/SGX don't eliminate capability |
+| De-Identification Illusion | Anonymization / pseudonymization critique |
+| Non-Negotiable Architectural Constraints | Boundary irreversibility, governance liveness, algorithmic forgetting |
+| Pipeline Doctrine (§VII) | 4 conceptual constraints — monotonic reduction, unidirectional flow, governance interposition, fail-closed default |
 
----
-
-## 4. ENFORCEMENT INVARIANTS
-
-| ID | Invariant | Enforcement | Check Frequency |
-|----|-----------|-------------|-----------------|
-| **P17-INV-01** | Raw buffer age < 33ms | Memory wipe if exceeded | 100ms |
-| **P17-INV-02** | No RGB/AudioWaveform in L4+ | Type check at layer boundary | Continuous |
-| **P17-INV-03** | Governance Gate ACTIVE | Output ports disabled if unreachable | 100ms |
-| **P17-INV-04** | Network Air-Gap L1–L4 | Strict proxy for L7/L8 only | Continuous |
-
-> **Note**: These invariants use the P17 namespace. For the authoritative 15-invariant taxonomy (INV-01 through INV-15), see `CANONICAL_CONSTRAINTS.md` v2.3.0.
-
----
-
-## 5. PAPER-TO-LAYER TRACEABILITY
-
-Paper 17 synthesizes all papers into the canonical 8-layer stack:
-
-| Layer | Associated Papers |
-|-------|-------------------|
-| L1: Physical Substrate | P1 (Volatile Memory) |
-| L2: Sensor Acquisition | P2, P3 (Capture Gates, Isolation) |
-| L3: Edge Abstraction | P4, P5, P6 (Irreversibility, Spectral, Skeleton) |
-| L4: Inference | P7, P8 (Identity-Free Models, Edge Inference) |
-| L5: Governance | P9, P10 (Policy Injection, Governance Gate) |
-| L6: Human Output | P11, P12 (LEDs, AR Trust) |
-| L7: Audit Persistence | P13, P14 (Blockchain, Immutable Logs) |
-| L8: Federation | P15, P16 (Sovereignty FL, DP Budgets) |
+### Out-of-Scope ❌
+| Item | Why Excluded | Owning Paper |
+|------|--------------|--------------| 
+| 8-layer structural specification | P17 motivates; P20 specifies | P20 |
+| Enforcement mechanisms | P17 prescribes; P18 implements | P18 |
+| Formal security theory | Different domain | P19 |
+| Mathematical foundations | Different domain | P21 |
+| Empirical trust validation | P17 argues; P16 measures | P16 |
+| Deployment topologies | Structural detail | P20 |
 
 ---
 
-## 6. KEY ARCHITECTURAL CLAIMS
+## Boundary Enforcement (v3.0 Cleaning)
 
-### 6.1 Irreversibility vs. Anonymization
-Paper 17 explicitly distinguishes Architectural Irreversibility from:
-- **Anonymization**: Removes identifiers but preserves signals for re-identification.
-- **Pseudonymization**: Replaces identifiers with reversible tokens.
-- **Encryption**: Protects data but preserves full fidelity.
+> **CRITICAL RULE**: Paper 17 defines DOCTRINE — it states WHY and WHAT, never HOW or WHERE.
 
-**Architectural Irreversibility destroys information. It does not hide it.**
-
-### 6.2 Mathematical Non-Reconstructability
-- Transformation: $f: \mathbb{R}^{6,000,000} \rightarrow \mathbb{R}^{100}$
-- Conditional entropy $H(X|Y)$ remains near-maximal.
-- Inverse image $f^{-1}(y)$ is infinite; selecting the correct pre-image is structurally underdetermined.
-- Based on: Data Processing Inequality, Shannon's Information Theory.
-
-### 6.3 Governance as Runtime Property
-- Algorithm 1: Mandatory Governance Gate Logic
-- Ordering: `INFERENCE → COMPLIANCE → APPROVAL → OUTPUT`
-- Fail-closed: If governance unreachable, output blocked.
-
-### 6.4 Visible Privacy Mechanisms
-- **Skeleton-Only Interface**: No RGB ever rendered.
-- **Privacy LED**: Green (Privacy), Red (Active), Off (Halted).
-- **Skeleton Effect**: Empirically correlated with trust acceptance.
+| Forbidden Content | Status |
+|---|---|
+| 8-layer L1–L8 detailed descriptions | ❌ REMOVED — replaced with 4 doctrinal constraints |
+| TikZ 8-layer stack figure | ❌ REMOVED |
+| "disabling OS swap mechanisms" | ❌ REMOVED |
+| "modifying camera drivers" | ❌ REMOVED |
+| "disk storage, swap memory partitions, crash dumps" | ❌ REMOVED → "system caches or backup mechanisms" |
+| "An eight-layer architectural model" (abstract) | ❌ REMOVED |
+| Series-internal references | ❌ ZERO (fully standalone) |
 
 ---
 
-## 7. VERIFICATION REQUIREMENTS
+## Key Claims
 
-| Claim | Test Coverage | Status |
-|-------|---------------|--------|
-| 17.2 (Irreversibility) | `test_irreversibility.py` | ENFORCED |
-| 17.3 (Compression) | `test_audit_deficiencies.py::TestCompressionRatio` | ENFORCED |
-| 17.4 (Governance) | `test_governance_filter.py` | ENFORCED |
-| 17.5 (Visible Privacy) | `test_audit_deficiencies.py::TestPrivacyLEDBoot` | ENFORCED |
-| 17.6 (Fail-Closed) | `test_failsafe_dropout.py` | ENFORCED |
-| 17.8 (8-Layer) | `test_canonical_architecture.py` | ENFORCED |
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
-|---|---|---|
-| **Irreversibility Test** | `tests/test_irreversibility.py` | ✅ Verified (Structural Test) |
-| **Fail-Closed Test** | `tests/test_failsafe_dropout.py` | ✅ Verified (Watchdog Logic) |
-| **Arch Validator** | `tests/test_canonical_architecture.py` | ✅ Verified (8-Layer Constraints) |
-
+| ID | Claim | Section | Type |
+|----|-------|---------|------|
+| 17.1 | Privacy-by-Policy fails; capability precedes governance | §II | Doctrinal |
+| 17.2 | Architectural Irreversibility eliminates classes of harm by design | §IV | Doctrinal |
+| 17.3 | $f: X→Y$ non-invertible + raw destruction = structural impossibility | §IV.2 | Mathematical |
+| 17.4 | PETs don't eliminate capability — they secure existing data | §IV.3 | Doctrinal |
+| 17.5 | De-identification is illusory — reversible by design | §IV.4 | Doctrinal |
+| 17.6 | Governance must be architectural, not administrative | §V.1 | Doctrinal |
+| 17.7 | Epistemic Humility — AI judgment ≠ institutional authority | §V.2 | Doctrinal |
+| 17.8 | Fail-closed > fail-open under uncertainty | §V.3 | Doctrinal |
+| 17.9 | Visible privacy is necessary for social trust (transparency ≠ legibility) | §VI | Doctrinal |
+| 17.10 | Automated Stewardship contrasts with surveillance paradigm | §IX.2 | Ethical |
 
 ---
 
-## 8. ETHICAL NON-NEGOTIABLES
+## Paper Boundary (Clean Separation)
 
-Paper 17 codifies the following as **compiled invariants**, not policy choices:
-
-| Non-Negotiable | Enforcement |
-|----------------|-------------|
-| No Raw Persistence | Biometric data never touches non-volatile storage |
-| No Silent Operation | LED must visibly indicate state |
-| No Pixel-Space Reconstruction | All features must be abstract and aggregate; pixel-space reconstruction is structurally underdetermined (gait re-identification risk is acknowledged as residual) |
-
----
-
-## 9. SCOPE & LIMITATIONS
-
-| In Scope | Out of Scope |
-|----------|--------------|
-| Educational/campus environments | General surveillance contexts |
-| Institutional governance contexts | Consumer mobile deployments |
-| Privacy-preserving analytics | Fine-grained expression analysis |
-| Aggregate engagement metrics | Individual behavior profiling |
+| Layer | Paper | P17 Relationship |
+|-------|-------|------------------|
+| Architecture | P20 | P17 **motivates**; P20 **specifies** structure |
+| Enforcement | P18 | P17 **prescribes** constraints; P18 **enforces** them |
+| Security | P19 | P17 **frames** privacy philosophy; P19 **models** adversaries |
+| Foundations | P21 | P17 **argues** principles; P21 **proves** theorems |
+| Validation | P16 | P17 **defines** stewardship; P16 **validates** it empirically |
 
 ---
 
-## 10. IMPLEMENTATION CONSTRAINTS
+## §VII Replacement
 
-| Constraint | Requirement |
-|------------|-------------|
-| Memory Isolation | Strict volatile partitions (RAM disk) |
-| Sensor Isolation | Camera access only through L3 abstraction |
-| Hardware | NVIDIA Jetson, Raspberry Pi with custom kernels |
-| Exclusion | Locked-down consumer mobile OS |
+Old §VII contained full L1–L8 architectural descriptions with TikZ figure (~15 paragraphs). Replaced with:
 
----
-
-## 11. RELATIONSHIP TO OTHER CONTRACTS
-
-| Document | Relationship |
-|----------|--------------|
-| `ARCHITECTURE_CANONICAL.md` | P17 is the theoretical foundation |
-| `DEPLOYMENT_CONTRACT.md` | P17 justifies the hard gates |
-| `PRODUCT_BOUNDARY_AND_NON_NEGOTIABLES.md` | P17 provides the "why" |
-| `VERIFICATION_AND_AUDIT_READINESS.md` | P17 claims are verified there |
+- **2 paragraphs** stating the doctrinal principle of monotonic sensitivity reduction
+- Reference to "companion work on reference architecture design" (→ P20)
+- **4 bullet constraints**: monotonic sensitivity reduction, unidirectional flow, mandatory governance interposition, fail-closed default
 
 ---
 
-**Contract Status**: BINDING  
-**Version**: 1.1.0  
-**Generated**: 2026-02-10  
-**Updated**: 2026-02-18  
-**CC Audit**: Passed (zero overclaims)  
-**Authority**: Paper 17 LaTeX Source (Capstone)
+## Implementation Artifacts
+
+| File | Purpose |
+|------|---------|
+| `tests/test_irreversibility.py` | Irreversibility structural test |
+| `tests/test_failsafe_dropout.py` | Fail-closed watchdog logic test |
+| `tests/test_canonical_architecture.py` | 8-layer constraint validator |
+
+---
+
+## Venue Recommendations
+
+| Venue | Fit | Notes |
+|-------|-----|-------|
+| IEEE S&P | ★★★ | Privacy architecture philosophy |
+| ACM CCS (Workshop) | ★★★ | Security design principles |
+| USENIX Security | ★★ | Systems privacy design |
+| IEEE Computer | ★★ | Architectural critique |
+
+---
+
+## Fixes Applied (v3.0)
+
+| Fix | Severity | Status |
+|-----|----------|--------|
+| Remove 8-layer L1–L8 detail from §VII | 🔴 P0 | ✅ Fixed |
+| Remove TikZ 8-layer stack figure | 🔴 P0 | ✅ Fixed |
+| Remove "disabling OS swap" / "modifying camera drivers" | 🔴 P0 | ✅ Fixed |
+| Remove "swap memory partitions, crash dumps" specificity | 🟡 P1 | ✅ Fixed |
+| Remove "eight-layer" from abstract | 🟡 P1 | ✅ Fixed |
+
+---
+
+**Contract Version**: 3.0  
+**Last Updated**: 2026-04-15  
+**CC Audit**: Passed (zero overclaims, zero boundary violations)  
+**Authority**: Paper 17 LaTeX Source (Capstone Doctrine)

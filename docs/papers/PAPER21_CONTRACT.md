@@ -4,8 +4,8 @@
 **Author:** Dr. S. Suresh Kumar  
 **Layer:** 0 (Pure Theoretical Foundation)  
 **Target Venue:** FM / CAV / ATVA / ICTAC / IEEE CPS-Com  
-**Status:** Revision — Accept with Minor Fixes  
-**Contract Date:** 2026-04-12  
+**Status:** ✅ Submission Ready  
+**Contract Date:** 2026-04-14  
 
 ---
 
@@ -15,12 +15,13 @@ A unified axiomatic-deductive framework for spatiotemporal compliance verificati
 
 1. **Kinematic axioms** (Spatial Exclusivity, Kinematic Continuity, Topological Adjacency, Spatiotemporal Inertia)
 2. **Event Calculus** state persistence (discrete→continuous)
-3. **Measure-theoretic compliance predicates** (Lebesgue-integrable duration bounds)
-4. **Noise-robust soundness** (Chebyshev metric, η < δ condition)
-5. **Sampling-theoretic completeness boundary** (Nyquist reduction)
-6. **Decidability classification** (FSA/PSPACE via Savitch)
-7. **Distributed causal monotonicity** (Vector Clock theorem)
-8. **Adversarial equilibrium** (MDP + Nash under kinematic constraints)
+3. **Absorbing Failure State** ($\bot$) — fail-closed formalization
+4. **Measure-theoretic compliance predicates** (Lebesgue-integrable duration bounds)
+5. **Noise-robust soundness** (Chebyshev metric, η < δ condition)
+6. **Sampling-theoretic completeness boundary** (Nyquist reduction)
+7. **Decidability classification** (FSA/PSPACE via Savitch)
+8. **Distributed causal monotonicity** (Vector Clock theorem)
+9. **Adversarial equilibrium** (MDP + Nash under kinematic constraints)
 
 ---
 
@@ -38,6 +39,7 @@ A unified axiomatic-deductive framework for spatiotemporal compliance verificati
 | EC-8 | MDP-based adversarial spoofing with Bellman + Nash | ✅ Only P21 |
 | EC-9 | Distributed integrity preservation via Atomicity ∧ Monotonicity | ✅ Only P21 |
 | EC-10 | Topological metric space (Z, d_Z) with Cauchy completion | ✅ Only P21 |
+| EC-11 | Absorbing Failure State (⊥) — fail-closed sink formalization | ✅ Only P21 |
 
 ---
 
@@ -46,6 +48,7 @@ A unified axiomatic-deductive framework for spatiotemporal compliance verificati
 ### P21 OWNS
 
 - Spatiotemporal axioms (Axioms 1-4)
+- Absorbing Failure State (⊥) — fail-closed formalization
 - Event Calculus state persistence formalism
 - Compliance predicate Φ_comp and Lebesgue measure integration
 - Soundness/Completeness proofs
@@ -76,6 +79,7 @@ A unified axiomatic-deductive framework for spatiotemporal compliance verificati
 | **Provides to** P7 | Axioms 1-3, Bounded Reachability, Compliance Predicate | P7 instantiates into operational CSP |
 | **Provides to** P8 | State transition validity definition (σ→σ') | P8 secures via cryptographic ledger |
 | **Provides to** P9 | Φ_comp predicate, compliance duration metrics | P9 routes via governance scheduler |
+| **Provides to** P20 | Absorbing Failure State (⊥) for fail-safe architecture | P20 references as architectural principle |
 | **Consumes from** | Nothing | Layer 0 — foundational |
 
 ---
@@ -88,14 +92,14 @@ P21 is a **pure theory paper**. No production code is expected. Supporting artif
 
 ---
 
-## Remaining Fixes Required
+## Fixes Applied
 
-| Priority | Fix |
-|---|---|
-| 🔴 P0 | Add Related Work section (12-15 citations: timed automata, STL/MTL, runtime verification, CPS formal methods) |
-| 🟡 P1 | Add brief Introduction section before Mathematical Preliminaries |
-| 🟡 P1 | Consider restoring Absorbing Failure State (⊥) as standalone definition |
-| 🟢 P2 | Add limitation noting absence of mechanized proofs |
+| Priority | Fix | Status |
+|---|---|---|
+| 🔴 P0 | Related Work section added (timed automata, STL/MTL, runtime verification, CPS formal methods) | ✅ Applied |
+| 🟡 P1 | Introduction section added (motivation + 6-point contribution list) | ✅ Applied |
+| 🟡 P1 | Absorbing Failure State (⊥) restored as standalone definition | ✅ Applied |
+| 🟢 P2 | Mechanized proof limitation acknowledged in §VII | ✅ Applied |
 
 ---
 
