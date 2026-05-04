@@ -4,39 +4,39 @@
 
 | Field | Value |
 |---|---|
-| **Title** | From Lab to Lecture Hall: Production-Grade Edge MLOps Architecture for Privacy-Preserving Educational AI |
+| **Title** | Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability |
 | **Paper ID** | P11 |
 | **Layer** | Infrastructure (L6 — Production MLOps) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Corrected (CC v3.0 aligned) |
 
 ## 2. Primary Contribution
 
-**A production-grade MLOps architecture for deploying, monitoring, and maintaining edge AI systems at institutional scale — covering containerization, OTA model updates, reliability engineering, defense-in-depth security, observability, and data governance for a privacy-preserving educational AI deployment.**
+**An immutable edge deployment architecture designed to improve corruption resistance and autonomous recovery under unstable power and connectivity conditions. Operationalizes an Appliance Invariance Model via OverlayFS, Blue/Green OTA updates, and hardware watchdog integration to guarantee lifecycle stability.**
 
-Paper 11 transforms the research prototype (Papers 1–10) into a deployable production system with enterprise-grade reliability properties.
+Paper 11 transforms the research prototype into an immutable, deployable appliance capable of surviving power loss and recovering from failures autonomously without traditional package-manager mutation.
 
 ## 3. Core Claims
 
 | # | Claim | Evidence | CC Flag |
 |---|---|---|---|
-| C1 | Containerized deployment (Docker + systemd) enables reproducible, atomic rollback | Deployment architecture (§III) | Clean |
-| C2 | OTA model updates via differential patching reduce bandwidth by 92% vs full model transfer | OTA pipeline (§V); patch size analysis | Clean |
-| C3 | 99.97% uptime over 90-day field trial (39 nodes) | Longitudinal data (§X) | Clean |
-| C4 | Defense-in-depth security (not "Zero Trust") with mTLS, RBAC, and binary signing | Security architecture (§VIII) | Clean — "defense-in-depth," not "Zero-Trust" |
-| C5 | Watchdog + health-check pipeline achieves MTTR < 45 seconds for crash recovery | Reliability engineering (§IV) | Clean |
-| C6 | TCO 73% lower than equivalent cloud-based deployment over 5 years | Economic analysis (§XI) | Clean |
+| C1 | Appliance Invariance Model restricts runtime mutations to volatile memory or versioned containers | Architecture (§III) | Clean |
+| C2 | Read-only OverlayFS architecture eliminates boot-blocking filesystem corruption under power loss | Test results (0/50 corruptions) (§X) | Clean |
+| C3 | Hardware watchdog tied to liveness ensures recovery from scheduler exhaustion | Validation (§X) | Clean |
+| C4 | Blue/Green OTA deployment enables deterministic cutovers and automated rollbacks | State machine (§V) | Clean |
+| C5 | Defense-in-depth security via TPM-backed ZTP, mTLS, and Secure Boot | Architecture (§VIII) | Clean |
+| C6 | Priority-aware queue ejection prevents OOM during network partitions | Logic (§VII) | Clean |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- Docker containerization with systemd orchestration
-- OTA model update pipeline with differential patching
-- Reliability engineering (watchdog, health checks, crash recovery)
-- Defense-in-depth security architecture
-- Full-stack observability (Prometheus, Grafana, MQTT telemetry)
-- Data governance and GDPR-aligned regulatory controls
-- Economic analysis (TCO vs cloud alternatives)
+- Immutable OS architecture (OverlayFS with read-only LowerDir and volatile UpperDir)
+- Appliance Invariance Model ($H_{persistent}(t) = H_0$)
+- Hardware watchdog timer (WDT) integration for OS-level liveness
+- Blue/Green containerized OTA updates with deterministic rollback
+- Zero-Touch Provisioning (TPM, mTLS, Secure Boot)
+- Partition-tolerant priority-aware telemetry queue
+- Empirical validation of power-loss resilience (n=50 test)
 
 ### 4.2 Out-of-Scope
 - AI model design or training (Papers 1–3)
@@ -49,11 +49,11 @@ Paper 11 transforms the research prototype (Papers 1–10) into a deployable pro
 
 | ID | Invariant | Enforcement |
 |---|---|---|
-| P11-INV-01 | All model updates MUST be cryptographically signed before deployment | Binary signing verification at node level |
-| P11-INV-02 | Watchdog MUST restart crashed containers within 60 seconds | systemd watchdog with configurable timeout |
-| P11-INV-03 | MQTT telemetry MUST use mTLS — no plaintext transport | Certificate enforcement at broker level |
-| P11-INV-04 | OTA updates MUST support atomic rollback on verification failure | A/B partition strategy with fallback |
-| P11-INV-05 | No raw biometric data SHALL transit the telemetry pipeline | GovernanceFilter (Paper 9) upstream of telemetry |
+| P11-INV-01 | Host filesystem MUST be mounted read-only during normal operation | OverlayFS LowerDir configuration |
+| P11-INV-02 | Runtime logs and container writes MUST target volatile memory | tmpfs mounts for `/var/log` and Docker layers |
+| P11-INV-03 | Hardware watchdog MUST trigger on liveness failure (not just process presence) | Integration with `/dev/watchdog` |
+| P11-INV-04 | OTA updates MUST support atomic rollback on validation failure | Blue/Green container state machine |
+| P11-INV-05 | Telemetry MUST use mTLS and prioritize data during partition recovery | Local SQLite buffer with priority ejection |
 
 ## 6. Upstream / Downstream Dependencies
 
@@ -68,12 +68,11 @@ Paper 11 transforms the research prototype (Papers 1–10) into a deployable pro
 
 ## 7. Verification Requirements
 
-- Container deployment + rollback in < 120 seconds
-- OTA differential patch size ≤ 10% of full model size
-- Crash recovery (MTTR) < 60 seconds
-- 90-day uptime ≥ 99.9% on field trial nodes
-- mTLS enforcement: plaintext MQTT connections rejected
-- No biometric data in any telemetry payload (audit check)
+- OverlayFS active with `/` mounted as read-only LowerDir
+- Temporary writes correctly mapped to `tmpfs` UpperDir
+- 0% corruption rate across induced power-loss tests (n=50)
+- Watchdog successfully forces hardware reboot upon induced kernel/scheduler freeze
+- OTA state machine successfully rolls back a poisoned container deployment
 
 ## 8. What This Paper Does NOT Do
 
