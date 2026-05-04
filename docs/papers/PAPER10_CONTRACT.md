@@ -4,38 +4,36 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Bridging the Deployment Gap: System-Level Validation of Smart Campus Intelligence Under Adversarial Institutional Constraints |
+| **Title** | Integrated Stress Validation of an Edge-Native Academic Analytics Architecture |
 | **Paper ID** | P10 |
 | **Layer** | Validation (L8 — System Integration Testing) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Corrected (CC v3.0 aligned) |
 
 ## 2. Primary Contribution
 
-**A comprehensive system-level adversarial validation of the integrated ScholarMaster architecture, subjecting the fully assembled pipeline (Papers 1–9) to institutional-scale stress: 100K synthetic identities, 30 FPS continuous input, thermal saturation, and network partition — demonstrating system survivability where isolated SOTA components fail.**
+**A comprehensive evaluation of the integrated edge-native analytics architecture under a compound Integrated Stress Matrix (ISM) combining 100K synthetic identities, 30 FPS continuous input, 35°C thermal saturation, and 15–30% packet loss — demonstrating strict bounded degradation that preserves sub-33 ms destruction deadlines and 99.82% retrieval consistency where baseline architectures fail.**
 
-Paper 10 is the validation capstone for the core engine. It contributes no new algorithms — its value is proving that independently validated subsystems remain operational when combined under hostile constraints.
+Paper 10 serves as the operational validation capstone. It contributes no new algorithms; its value is empirical proof that isolated subsystems (Perception, Policy, Privacy, Audit) remain operational when subjected to simultaneous compound stress.
 
 ## 3. Core Claims
 
 | # | Claim | Evidence | CC Flag |
 |---|---|---|---|
-| C1 | Integrated system maintains sub-33 ms end-to-end latency at 100K-identity scale under adversarial load | Latency benchmarks (Table II); p99 < 33 ms | Clean |
-| C2 | 99.82% open-set retrieval correctness under 20% unknown injection at 30 FPS | Stress test results (§IV) | Clean — scoped as synthetic retrieval correctness, not face-recognition accuracy |
-| C3 | Cloud-based (Arch A) and naive-edge (Arch B) architectures fail under identical conditions | Comparative failure analysis (§IV) | Clean |
-| C4 | 7-day burn-in demonstrates thermal stability (<65°C), memory stability (100 MB drift), zero crashes | Longitudinal reliability data (Table III) | Clean |
-| C5 | Pareto operating region: architecture achieves favorable trade-off across accuracy, privacy, and throughput axes | Pareto frontier analysis (§VIII) | Clean — "favorable operating region," not "Pareto dominance" |
+| C1 | Integrated system maintains $L_{p99.9} < 33$ ms latency at 100K scale under compound stress | Latency benchmarks (Table II); $32.8$ ms | Clean |
+| C2 | Maintains 99.82% open-set retrieval consistency under 20% unknown injection at 30 FPS | Stress test results (§V, §VIII) | Clean |
+| C3 | Cloud-based (Arch A) and naive-edge (Arch B) architectures fail deadlines under identical conditions | Comparative failure analysis (§V) | Clean |
+| C4 | 168-hour burn-in demonstrates thermal stability ($\approx 64$°C), memory stability ($\pm 0.02$ GB drift), zero watchdog resets | Longitudinal reliability data (§X) | Clean |
+| C5 | Bounded degradation preserves memory isolation deadlines over audit availability under network partition | Survivability evaluation (§IX, §XI) | Clean |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- System-level integration testing (not component testing)
-- Adversarial stress protocol: 100K identities, 30 FPS, 35°C ambient
-- Comparative failure analysis (Cloud vs Naive Edge vs ScholarMaster)
-- Thermal equilibrium and longitudinal reliability
-- Sensitivity analysis (registry scaling to 500K)
-- Security penetration testing (Sybil, replay, cold-boot)
-- Economic cost analysis (TCO projection)
+- System-level integration testing via Integrated Stress Matrix (ISM)
+- Compound stress protocol: 100K identities, 30 FPS, 35°C ambient, packet loss
+- Comparative failure analysis (Cloud vs Naive Edge vs Evaluated Configuration)
+- 168-hour (7-day) longitudinal burn-in reliability
+- Network partition survivability and bounded degradation sequencing
 
 ### 4.2 Out-of-Scope
 - New algorithms or architectures (uses Papers 1–9 as black boxes)
@@ -64,11 +62,9 @@ Paper 10 is the validation capstone for the core engine. It contributes no new a
 
 ## 7. Verification Requirements
 
-- Full 10-run average: latency < 33 ms, correctness > 99%
-- 7-day burn-in: zero crashes, <200 MB RSS drift, thermal < 65°C
-- All three security penetration tests pass (Sybil, replay, cold-boot)
-- Pareto analysis confirms favorable region vs alternatives
-- Scaling experiments validate sub-33 ms to 500K identities on UMA hardware
+- Full stress run under ISM: $L_{p99.9} < 33$ ms, $C_{retrieval} > 99\%$
+- 168-hour burn-in: zero watchdog resets, $<0.05$ GB RSS drift, thermal $\approx 64$°C
+- Bounded degradation sequencing validated under 30% packet loss and full partition
 
 ## 8. What This Paper Does NOT Do
 
