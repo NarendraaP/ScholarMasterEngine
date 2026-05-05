@@ -32,7 +32,7 @@
 % ==========================================
 % TITLE
 % ==========================================
-\title{Jitter-Bounded State Isolation for Low-Latency Stateful Stream Evaluation}
+\title{Algorithmic Model for Stateful Event Stream Evaluation under Bounded Jitter}
 
 % ==========================================
 % AUTHOR
@@ -83,7 +83,7 @@ Conversely, large-scale trajectory and spatial analysis has historically been tr
 
 Handling temporal disorder in distributed event streams requires a disciplined strategy for bounding historical state. We refer to this constraint as \textbf{Jitter-Bounded State Isolation}. The engine tolerates bounded arrival disorder while ensuring that events within the admissible jitter window are evaluated in logically consistent order. Events exceeding this bound are typically discarded at ingress.
 
-This approach seeks to balance correctness with disciplined memory usage: by retaining only a finite temporal window per entity, the engine avoids unbounded accumulation of historical state that would otherwise accompany fully asynchronous assumptions \cite{b26}.
+This approach seeks to balance correctness with disciplined memory usage: by retaining only a finite temporal window per entity, the model avoids unbounded accumulation of historical state that would otherwise accompany fully asynchronous assumptions \cite{b26}.
 
 \subsection{Design Constraints}
 Designing a model capable of meeting these constraints requires coordinated solutions across routing, state storage, and cluster elasticity without relying on heavy external infrastructure:
@@ -104,10 +104,10 @@ This paper abstracts away specific hardware implementations or application-layer
 We assume a distributed topology consistent with existing shared-nothing reference designs. The system model presented here defines only the algorithmic preconditions required for the proposed state management mechanisms.
 
 \subsection{Network and Node Model}
-The system consists of stateless ingress gateways $\mathcal{G}$ and a collection of stateful worker nodes $\mathcal{N} = \{N_1, N_2, \dots, N_k\}$. 
+The abstract model assumes a topology of stateless ingress gateways $\mathcal{G}$ routing to logical partitions $\mathcal{N} = \{N_1, N_2, \dots, N_k\}$. 
 \begin{itemize}
     \item \textbf{Asynchrony:} We assume a fully asynchronous network model. There are no theoretical bounds on message transmission delays or relative processor speeds between any two nodes in $\mathcal{N}$.
-    \item \textbf{Failure Model:} Nodes operate under a \textit{Crash-Recovery} failure model. A stateful worker node may halt execution unexpectedly and lose its entire volatile memory state ($\sigma_i$), but may later recover, reboot, and rejoin the cluster. We assume Byzantine failures do not occur at the internal node level.
+    \item \textbf{Failure Model:} Partitions operate under a \textit{Crash-Recovery} failure model. A logical partition may fail unexpectedly and lose its volatile state ($\sigma_i$), but may later recover. We assume Byzantine failures do not occur at the internal level.
     \item \textbf{Partitions:} The network is susceptible to partitions. Messages between subsets of $\mathcal{N}$ may be dropped or delayed indefinitely.
 \end{itemize}
 
@@ -121,27 +121,27 @@ An individual event is formalized as a tuple $e = \langle \epsilon, \zeta, \tau_
     \item $\tau_{arr}$ is the arrival timestamp, recorded at the moment the event hits the ingress gateway $\mathcal{G}$.
 \end{itemize}
 
-Due to the nature of distributed sensing, we define network jitter as the temporal inversion between occurrence and arrival: $J(e) = \tau_{arr} - \tau_{occ}$. While the network is formally asynchronous, we assume the maximum acceptable delay for a valid event is bounded by a strict system parameter $\Delta_{jitter}$. Any event where $J(e) > \Delta_{jitter}$ is classified as a severe straggler and is dropped by the system's ingestion layer. Consequently, the system therefore operates under a partially synchronous assumption bounded by the configurable $\Delta_{jitter}$ parameter \cite{b26}.
+Due to the nature of distributed sensing, we define network jitter as the temporal inversion between occurrence and arrival: $J(e) = \tau_{arr} - \tau_{occ}$. While the network is formally asynchronous, we assume the maximum acceptable delay for a valid event is bounded by a strict parameter $\Delta_{jitter}$. Any event where $J(e) > \Delta_{jitter}$ is classified as a severe straggler and is dropped by the ingestion logic. Consequently, the model therefore operates under a partially synchronous assumption bounded by the configurable $\Delta_{jitter}$ parameter \cite{b26}.
 
 \subsection{State Partitioning Model (Shared-Nothing)}
-To avoid the scalability limitations of centralized databases, the system adheres to a strict Shared-Nothing model \cite{b2, b22}. The global state vector $\Sigma$, which maps every entity $\epsilon$ to its evaluated temporal history, must be disjointly partitioned. 
+To avoid the scalability limitations of centralized databases, the model assumes a strict Shared-Nothing topology \cite{b2, b22}. The global state vector $\Sigma$, which maps every entity $\epsilon$ to its evaluated temporal history, must be disjointly partitioned. 
 
 Let $\mathcal{R}$ be a continuous, circular hash ring defined on the integer space $[0, 2^{32}-1]$. 
 
-The mapping function $\Phi: \mathcal{E} \to \mathcal{N}$ uniquely assigns the authoritative state of entity $\epsilon$ to exactly one live node $N_i$ at any given logical time. This strict affinity routing ensures that $\Sigma = \bigcup_{i=1}^{|\mathcal{N}|} \sigma_i$ and that the intersection $\sigma_i \cap \sigma_j = \emptyset$ for any $i \neq j$. Consequently, any evaluation logic applied to $\epsilon$ requires zero cross-node communication.
+The mapping function $\Phi: \mathcal{E} \to \mathcal{N}$ uniquely assigns the authoritative state of entity $\epsilon$ to exactly one logical partition $N_i$ at any given logical time. This strict affinity routing ensures that $\Sigma = \bigcup_{i=1}^{|\mathcal{N}|} \sigma_i$ and that the intersection $\sigma_i \cap \sigma_j = \emptyset$ for any $i \neq j$. Consequently, any evaluation logic applied to $\epsilon$ requires zero cross-partition communication.
 
 % ==========================================
 % III. ALGORITHMS
 % ==========================================
 \section{Distributed Algorithms}
 
-The functionality of the stream engine emerges from the interaction of several distributed algorithms responsible for routing, temporal ordering, elasticity, and durability.
+The functionality of the evaluation approach emerges from the interaction of several distributed algorithms responsible for routing, temporal ordering, elasticity, and durability.
 
 \subsection{Consistent Hashing and Gossip-Based Routing}
 
-Ensuring state locality across a distributed cluster requires a deterministic routing mechanism that maps events belonging to the same entity to a single processing node without relying on a centralized coordination service (like Apache ZooKeeper). The ingress gateways $\mathcal{G}$ apply Consistent Hashing with Virtual Nodes \cite{b3, b28}. To ensure uniform load distribution even if the hardware cluster is small, each physical node $N_i$ is mapped to $V$ virtual nodes distributed randomly across the hash ring $\mathcal{R}$. 
+Ensuring state locality across a distributed space requires a deterministic routing mechanism that maps events belonging to the same entity to a single logical partition without relying on a centralized coordination service (like Apache ZooKeeper). The ingress gateways $\mathcal{G}$ apply Consistent Hashing with Virtual Nodes \cite{b3, b28}. To ensure uniform load distribution, each logical partition $N_i$ is mapped to $V$ virtual nodes distributed randomly across the hash ring $\mathcal{R}$. 
 
-The nodes independently maintain an eventually consistent view of the cluster topology using an assumed membership service such as a SWIM-based gossip protocol \cite{b7, b24}. In this protocol, each node periodically sends direct UDP ping messages to a randomly selected subset of peers. If a direct ping times out, the node requests indirect probes via intermediary peers. If all indirect probes fail, the target peer is officially marked as dead. The detecting node updates its local hash ring $\mathcal{R}$ and disseminates this topology change via epidemic propagation. 
+The partitions independently maintain an eventually consistent view of the topology using an assumed membership service such as a SWIM-based gossip protocol \cite{b7, b24}. In this protocol, each partition periodically sends direct UDP ping messages to a randomly selected subset of peers. If a direct ping times out, the partition requests indirect probes via intermediary peers. If all indirect probes fail, the target peer is marked as failed. The detecting partition updates its local hash ring $\mathcal{R}$ and disseminates this topology change via epidemic propagation. 
 
 In practice, transient false-positive failure detections were observed under bursty UDP packet loss, requiring minor tuning of the probe timeout interval.
 
@@ -178,13 +178,13 @@ A Skip List is a probabilistic data structure offering $O(\log K)$ insertion and
 \label{alg:window}
 \end{algorithm}
 
-As shown in Algorithm \ref{alg:window}, the system effectively defers finality. By continuously maintaining the $\Delta_{jitter}$ window and garbage collecting stale data, the algorithm operates identically to the "Watermark" concept established in the Google MillWheel Dataflow model \cite{b13}, ensuring memory growth remains bounded under configured jitter assumptions while safely accommodating network delays.
+As shown in Algorithm \ref{alg:window}, the algorithm effectively defers finality. By continuously maintaining the $\Delta_{jitter}$ window and garbage collecting stale data, the algorithm operates identically to the "Watermark" concept established in the Google MillWheel Dataflow model \cite{b13}, ensuring memory growth remains bounded under configured jitter assumptions while safely accommodating network delays.
 
 \subsection{Lazy State Migration Protocol}
 
 Cluster elasticity introduces additional complexity since state partitions must be redistributed whenever nodes join or leave the system. Topology changes occur frequently in elastic clusters. When a new node joins, portions of the hash space must be reassigned. Traditional approaches often migrate entire key ranges immediately, often introducing noticeable latency spikes as donor nodes stall to transfer state \cite{b32}.
 
-We instead adopt a Lazy State Migration strategy \cite{b23}. Instead of preemptively copying all reassigned state, the system transfers historical data only when a newly assigned entity becomes active. Inactive entities remain unmoved.
+We instead adopt a Lazy State Migration strategy \cite{b23}. Instead of preemptively copying all reassigned state, the algorithm transfers historical data only when a newly assigned entity becomes active. Inactive entities remain unmoved.
 
 \begin{algorithm}[h]
 \caption{Lazy State Migration (On Node $N_{new}$)}
@@ -206,7 +206,7 @@ We instead adopt a Lazy State Migration strategy \cite{b23}. Instead of preempti
 \label{alg:migration}
 \end{algorithm}
 
-As detailed in Algorithm \ref{alg:migration}, the newly provisioned node $N_{new}$ assumes routing responsibility immediately. The state is only migrated over the network at the exact microsecond an active entity triggers a new event.
+As detailed in Algorithm \ref{alg:migration}, the newly mapped partition $N_{new}$ assumes responsibility immediately. The state is only migrated over the network at the exact microsecond an active entity triggers a new event.
 
 \subsection{Formal Amortization of Lazy Migration}
 
@@ -214,7 +214,7 @@ Under realistic skewed workloads—particularly those approximating Zipfian dist
 
 \subsection{Asynchronous Snapshotting via OS Copy-On-Write}
 
-Fault tolerance in a distributed stream processor requires periodic persistence of in-memory state. To tolerate crashes, the system must periodically serialize its state to durable storage. We utilize an abstract asynchronous snapshot mechanism adapted from the principles of Chandy-Lamport \cite{b4, b25}, conceptualized here via OS-level Copy-On-Write (COW) semantics \cite{b30}. Runtime execution semantics and process lifecycle management are treated separately.
+Fault tolerance in a distributed stream processor requires periodic persistence of in-memory state. To tolerate crashes, the model assumes periodic serialization of state to durable storage. We utilize an abstract asynchronous snapshot mechanism adapted from the principles of Chandy-Lamport \cite{b4, b25}, conceptualized here via OS-level Copy-On-Write (COW) semantics \cite{b30}. Runtime execution semantics and process lifecycle management are treated separately.
 
 \begin{algorithm}[h]
 \caption{Abstract Fork-Based State Snapshot}
@@ -241,13 +241,13 @@ The fork-based snapshot provides shard-local prefix consistency; cross-shard glo
 % ==========================================
 % IV. CORRECTNESS DISCUSSION
 % ==========================================
-\section{Correctness Discussion}
+\section{Algorithmic Behavior}
 
 We now examine the safety and consistency properties that arise from the interaction of the proposed algorithms. We provide operational arguments detailing the safety, liveness, and consistency properties of the described architecture.
 
 \subsection{Serialized Ownership Invariant}
 
-The system maintains what we describe as a Serialized Ownership Invariant: at any moment, authoritative mutable state for a given entity resides on at most one node. During lazy migration, the previous owner serves the historical state exactly once and immediately marks it read-only before deletion. This prevents concurrent mutation across nodes while preserving continuity \cite{b29}.
+The model operationally maintains what we describe as a Serialized Ownership Invariant: at any moment, authoritative mutable state for a given entity resides on at most one node. During lazy migration, the previous owner serves the historical state exactly once and immediately marks it read-only before deletion. This informally preserves continuity \cite{b29}.
 
 Crucially, $N_{old}$ utilizes a write-fence to prevent concurrent mutations during the transient fetch-before-delete window. Ownership transfer is guarded by a versioned lease token to prevent concurrent mutation during the handoff window.
 
@@ -255,7 +255,7 @@ Crucially, $N_{old}$ utilizes a write-fence to prevent concurrent mutations duri
 The fork-based snapshot leverages OS-level Copy-On-Write (COW) semantics to capture a mathematically consistent in-memory prefix without pausing the main event loop. When the `fork()` system call is executed, it briefly freezes the parent process state for a few microseconds and creates a virtual memory clone. The serialized file written to disk by the child thread represents a true, atomic point-in-time state of the entire system partition. However, global snapshot consistency across all shards is not guaranteed without introducing distributed coordination markers \cite{b4}.
 
 \subsection{Partition Tolerance Strategy}
-Under network partitions, if the gossip protocol assigns an entity to $N_{new}$, but $N_{new}$ cannot retrieve the entity's history because $N_{old}$ is unreachable, the system rejects evaluation under incomplete causal history. Initializing an empty state without history would violate application-defined validation routines. Instead, the system prioritizes state consistency over availability, dropping the event or returning a partition error. This behavior explicitly sacrifices availability to preserve state continuity under partition \cite{b14}, though this behavior is configurable for use cases prioritizing availability.
+Under network partitions, if the gossip protocol assigns an entity to $N_{new}$, but $N_{new}$ cannot retrieve the entity's history because $N_{old}$ is unreachable, the algorithm rejects evaluation under incomplete causal history. Initializing an empty state without history would violate application-defined validation routines. Instead, the approach informally prioritizes state consistency over availability, dropping the event or returning a partition error. This behavior explicitly sacrifices availability to preserve state continuity under partition \cite{b14}, though this behavior is configurable for use cases prioritizing availability.
 
 % ==========================================
 % V. COMPLEXITY ANALYSIS
@@ -267,12 +267,12 @@ The efficiency of the model can be analyzed by examining the computational and c
 \subsection{Time Complexity}
 \begin{itemize}
     \item \textbf{Normal Evaluation:} The expected algorithmic time to locate the temporal neighbors ($e_{prev}, e_{next}$) in the Time-Indexed Skip List is $O(\log K)$. The subsequent application validation executes in constant time, $O(1)$. Therefore, the total critical-path processing time can be bounded to $\mathbf{O(\log K)}$.
-    \item \textbf{Migration Evaluation:} If the incoming event triggers the Lazy Migration protocol, the system incurs the base evaluation time plus exactly one synchronous network Round Trip Time (RTT). Total time: $\mathbf{O(\log K + \text{RTT}_{net})}$.
+    \item \textbf{Migration Evaluation:} If the incoming event triggers the Lazy Migration protocol, the algorithm incurs the base evaluation time plus exactly one synchronous network Round Trip Time (RTT). Total time: $\mathbf{O(\log K + \text{RTT}_{net})}$.
     \item \textbf{Snapshotting:} The abstract `fork()` operation executes in $O(P_{active})$ time, where $P_{active}$ is the number of active memory pages in the kernel page table. Because the serialization is deferred to the child thread, it yields a critical-path blocking time that is \textbf{constant with respect to the number of entities processed per event}, shielding the stream throughput from total memory size.
 \end{itemize}
 
 \subsection{Space Complexity and Garbage Collection}
-Let $N_{active}$ be the number of unique entities actively assigned to a specific physical node. Each entity maintains a Skip List of size $\le K$. The total volatile memory footprint per node is bounded as a function of $\Delta_{jitter}$ and active entity count:
+Let $N_{active}$ be the number of unique entities actively assigned to a specific logical partition. Each entity maintains a Skip List of size $\le K$. The total volatile memory footprint per node is bounded as a function of $\Delta_{jitter}$ and active entity count:
 \begin{equation}
     Space(N_i) = \mathbf{O(N_{active} \cdot K)}
 \end{equation}
@@ -280,34 +280,34 @@ Because the value $K$ is pruned by the garbage collection routine, memory growth
 
 \subsection{Network Message Complexity}
 \begin{itemize}
-    \item \textbf{Gossip Protocols:} Each node sends background UDP ping messages to its peers. The global network overhead is amortized $\mathbf{O(1)}$ per node per interval, which remains highly scalable and consumes negligible bandwidth even in clusters containing hundreds of nodes.
+    \item \textbf{Gossip Protocols:} Each partition sends background probes to its peers. The global network overhead is amortized $\mathbf{O(1)}$ per partition per interval, which remains highly scalable and consumes negligible bandwidth even in clusters containing hundreds of nodes.
     \item \textbf{State Migration:} Traditional bulk migration requires transferring entire partitions instantly. Lazy migration amortizes this data transfer, sending messages strictly when an entity acts. The network message complexity shifts from unpredictable bursts to a smooth $\mathbf{O(1)}$ overhead per migrating entity.
 \end{itemize}
 
 % ==========================================
 % VI. ENGINE MICROBENCHMARKS
 % ==========================================
-\section{Engine Microbenchmarks}
+\section{Algorithmic Microbenchmarks}
 
 To evaluate the operational behavior of the algorithms, we conducted a series of targeted microbenchmarks focusing on throughput scalability and latency stability.
 
 \begin{center}
 \fbox{\parbox{0.9\columnwidth}{
-\textbf{Scope of Evaluation:} This section evaluates the isolated algorithmic components of the distributed engine via targeted microbenchmarks. Full-system integrated stress testing and application-layer database persistence are explicitly out of scope for this algorithmic evaluation. 
+\textbf{Scope of Evaluation:} This section evaluates algorithmic behavior under synthetic workloads. Full-system integrated stress testing and application-layer database persistence are explicitly out of scope. 
 }}
 \end{center}
 
 \subsection{Implementation and Setup}
-Experiments were conducted on a 10-node commodity computing cluster. The core algorithms were implemented utilizing Lock-Free Skip Lists and asynchronous I/O APIs. To bypass external I/O bottlenecks and purely evaluate the algorithmic logic, a local workload generator was deployed. It produced a synthetic stream of encoded events modeling 1,000,000 active entities injected directly into the ingress gateways. The workload followed a Zipfian distribution, mirroring real-world conditions where a small subset of entities generates the majority of the events. Results are averaged over 5 independent load runs, with standard deviation $<3.2\%$.
+Experiments were conducted on a 10-node synthetic local environment. The core algorithms were implemented utilizing Lock-Free Skip Lists and asynchronous I/O APIs. To bypass external I/O bottlenecks and purely evaluate the algorithmic logic, a local workload generator was deployed. It produced a synthetic stream of encoded events modeling 1,000,000 active entities injected directly into the ingress gateways. The workload followed a Zipfian distribution, mirroring real-world conditions where a small subset of entities generates the majority of the events. Results are averaged over 5 independent load runs, with standard deviation $<3.2\%$.
 
 \subsection{Throughput and Horizontal Scaling}
-To validate the $O(1)$ node-isolation properties of the shared-nothing architecture, we measured the maximum sustained throughput of the cluster before the 99th percentile (P99) latency exceeded a strict 10ms threshold.
+To validate the $O(1)$ node-isolation properties of the shared-nothing model, we measured the maximum sustained throughput of the cluster before the 99th percentile (P99) latency exceeded a strict 10ms threshold.
 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-    title={Engine Throughput vs. Shard Count},
+    title={Throughput vs. Shard Count},
     xlabel={Number of Physical Nodes ($|\mathcal{N}|$)},
     ylabel={Events Processed per Second},
     width=0.9\columnwidth,
@@ -326,7 +326,7 @@ To validate the $O(1)$ node-isolation properties of the shared-nothing architect
 \addlegendentry{Ideal Linear Scaling}
 \end{axis}
 \end{tikzpicture}
-\caption{Throughput scalability analysis under a Zipfian workload. The distributed stream processor achieves near-ideal linear scaling ($R^2=0.985$). The absence of global distributed locks allows the cluster to seamlessly process 51,000 events per second at 10 nodes.}
+\caption{Throughput scalability analysis under a Zipfian workload. The algorithmic evaluation achieves near-ideal linear scaling ($R^2=0.985$). The absence of global distributed locks allows the cluster to seamlessly process 51,000 events per second at 10 nodes.}
 \label{fig:throughput}
 \end{figure}
 
