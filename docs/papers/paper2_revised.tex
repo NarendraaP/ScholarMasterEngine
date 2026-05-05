@@ -47,9 +47,9 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 \begin{abstract}
 Automated engagement models frequently encounter a structural ambiguity in context-dependent classification settings. Facial expressions commonly associated with negative affect—such as furrowed brows or sustained gaze—also appear during periods of intense cognitive concentration. As instructional complexity increases, unimodal vision-based models therefore risk systematically misinterpreting focused effort as disengagement. Conventional cost-sensitive learning approaches attempt to compensate for this asymmetry during training, yet the reasoning behind individual predictions often remains difficult to interpret.
 
-To address this ambiguity, this study proposes a contextual probabilistic interpretation layer that explicitly models the imbalance between observed facial valence and instructional context. The framework integrates facial valence estimation with schedule metadata and semantic density. During segments characterized by high instructional load, the model re-weights the posterior probability of engagement. We describe this recurring misinterpretation as a ``Valence Discrepancy'' and treat lexical density as a context-conditioned Bayesian prior.
+To address this ambiguity, this study proposes a contextual probabilistic interpretation layer that explicitly models the imbalance between observed facial valence and instructional context. The model considers facial valence estimation, schedule metadata, and semantic density. During segments characterized by high instructional load, the model re-weights the posterior probability of engagement. We describe this recurring misinterpretation as a ``Valence Discrepancy'' and treat lexical density as a context-conditioned Bayesian prior.
 
-Across randomized splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\% (95\% CI [4.1\%, 7.9\%]), compared with 42.0\% for a vision-only baseline. Instead of relying exclusively on opaque deep fusion architectures, the framework emphasizes structured and auditable risk control. These results suggest that contextual priors grounded in instructional semantics can substantially reduce asymmetric classification errors while preserving interpretability in pedagogical analytics frameworks.
+Across randomized splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\% (95\% CI [4.1\%, 7.9\%]), compared with 42.0\% for a vision-only baseline. Instead of relying exclusively on opaque deep probabilistic re-weighting architectures, the framework emphasizes structured and auditable risk control. These results suggest that contextual priors grounded in instructional semantics can substantially reduce asymmetric classification errors while preserving interpretability in pedagogical analytics frameworks.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -115,7 +115,7 @@ Negative valence is not ignored; it is evaluated relative to environmental load.
 % ==========================================
 % III. ASYMMETRIC RISK MINIMIZATION
 % ==========================================
-\section{Asymmetric Risk Minimization via Fusion}
+\section{Asymmetric Risk Minimization via Probabilistic Re-weighting}
 
 Because engagement monitoring occurs in instructional environments, classification errors carry asymmetric consequences. The central contribution of this work is to treat contextual re-weighting as a formal asymmetric risk minimization problem rather than an implicit training adjustment.
 
@@ -175,7 +175,7 @@ This re-weighting aligns logic behavior with institutional priorities rather tha
 
 \subsection{Bayesian Prior Shift Interpretation}
 
-The contextual logic layer can be interpreted as a prior adjustment within a Bayesian decision framework.
+The contextual probabilistic interpretation layer can be interpreted as a prior adjustment within a Bayesian decision framework.
 
 Rather than retraining the visual model or modifying its weights, we adjust the effective prior probability of engagement during high-load periods. As instructional lexical density increases, the prior probability of engagement rises proportionally \cite{b19}.
 
@@ -240,7 +240,7 @@ This analytical formulation makes the decision path inspectable. Each component�
 Empirical validation requires controlled observation of the engagement ambiguity described above. To evaluate the probabilistic logic without exposing real student data during early prototyping, we constructed a controlled dataset referred to as Sim-Class-24.
 
 \subsection{Simulation Protocol}
-The dataset consists of 24 staged evaluation sessions, each lasting approximately 60 minutes, yielding $N = 1,440$ evaluated temporal windows. Rather than collecting naturalistic evaluation recordings at this stage, we scripted controlled behavioral conditions to isolate the logic layer under reproducible circumstances.
+The dataset consists of 24 staged evaluation sessions, each lasting approximately 60 minutes, yielding $N = 1,440$ evaluated temporal windows. Rather than collecting naturalistic evaluation recordings at this stage, we scripted controlled behavioral conditions to isolate the interpretation layer under reproducible circumstances.
 
 Three scenario types were defined:
 \begin{enumerate}
@@ -251,7 +251,7 @@ Three scenario types were defined:
 
 During early pilot recordings, we observed exaggerated facial tension during simulated “concentration.” To prevent unrealistic valence inflation, we conducted rehearsal calibration sessions to constrain expressions within ranges observed in real context-dependent classification settings.
 
-Ground truth labels were determined according to scripted engagement states. Five-fold cross-validation was applied across randomized splits of the sessions. The goal of this dataset is not immediate ecological generalization, but controlled validation of the fusion hypothesis.
+Ground truth labels were determined according to scripted engagement states. Five-fold cross-validation was applied across randomized splits of the sessions. The goal of this dataset is not immediate ecological generalization, but controlled validation of the re-weighting hypothesis.
 
 \subsection{Noise Injection and Environmental Variability}
 To avoid overfitting to ideal recording conditions, environmental perturbations were introduced synthetically:
@@ -320,7 +320,7 @@ The raw visual engagement score (0.28) is re-weighted to 0.81 through contextual
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{terminal_logs.png}
-\caption{Console output from the fusion engine demonstrating real-time contextual re-weighting. A visually negative valence ($V_{neg}=0.72$) is dynamically re-weighted to an engagement score of 0.81 upon detection of high-density STEM terminology.}
+\caption{Console output from the re-weighting engine demonstrating real-time contextual updates. A visually negative valence ($V_{neg}=0.72$) is dynamically re-weighted to an engagement score of 0.81 upon detection of high-density STEM terminology.}
 \label{fig:terminal_logs}
 \end{figure}
 
@@ -341,7 +341,7 @@ The key metric, Simulation False Negative Rate under High Load (Sim-FNR-HL), was
 \end{itemize}
 to
 \begin{itemize}
-    \item 6.0\% (Proposed Logic Layer)
+    \item 6.0\% (Proposed Interpretation Layer)
 \end{itemize}
 
 The 95\% confidence interval [4.1\%, 7.9\%] indicates statistical robustness across cross-validation folds. A paired t-test confirms significant reduction in Type-II errors ($N = 1,440$, $p < 0.001$).
@@ -430,7 +430,7 @@ Extraction (Small) & 244M & 210 & 94.8\% \\
     Act Pos & \node[fill=red!30]{FN: 6\%}; & \node[fill=green!30]{TP: 94\%}; \\
 };
 \end{tikzpicture}
-\caption{Performance Heatmap: The logic layer significantly reduces the False Negative rate to 6\% during high-load STEM simulations.}
+\caption{Performance Heatmap: The probabilistic interpretation layer significantly reduces the False Negative rate to 6\% during high-load STEM simulations.}
 \label{fig:confusion}
 \end{figure}
 
@@ -441,15 +441,15 @@ Extraction (Small) & 244M & 210 & 94.8\% \\
 
 Taken together, the results illustrate how contextual signals reshape the interpretation of visual affect during instructional activity. 
 
-\subsection{Comparison with Prosodic Fusion Approaches}
+\subsection{Comparison with Prosodic Re-weighting Approaches}
 Many multimodal systems emphasize prosodic signals such as pitch variation and speech rate \cite{b9}. While useful in conversational contexts, these cues may remain relatively flat during technically dense lectures delivered in a steady tone.
 
-Lexical density, in contrast, tends to reflect semantic complexity more directly. In academic settings where instruction involves domain-specific terminology, lexical cues align more closely with cognitive load than prosodic fluctuations. This structural alignment explains the measurable improvement over standard prosodic fusion systems.
+Lexical density, in contrast, tends to reflect semantic complexity more directly. In academic settings where instruction involves domain-specific terminology, lexical cues align more closely with cognitive load than prosodic fluctuations. This structural alignment explains the measurable improvement over standard prosodic re-weighting systems.
 
 \subsection{Explainability and Pedagogical Transparency}
 End-to-end multimodal Transformers optimize classification objectives but obscure the rationale behind individual predictions \cite{b11}. In educational systems, interpretability is particularly important.
 
-The proposed logic layer encodes pedagogical assumptions explicitly. Each alert can be traced to:
+The proposed probabilistic interpretation layer encodes pedagogical assumptions explicitly. Each alert can be traced to:
 \begin{itemize}
     \item Visual valence score
     \item Acoustic density value
