@@ -254,7 +254,7 @@ Processing time decomposes into $T_{fft} \approx 10–15ms$ and $T_{gcc} \approx
 \begin{equation}
 T_{total} = T_{frame} + T_{proc} < 120ms
 \end{equation}
-This bound was measured empirically under single-stream load. By constraining latency explicitly, the architecture avoids queue accumulation and ensures near-immediate response for downstream modules. Once spectral and periodicity features are extracted—and either accepted or rejected—the corresponding PCM segment is marked for overwrite. The acoustic module does not retain raw audio beyond the processing window.
+This bound was measured empirically under single-stream load. By constraining latency explicitly, the architecture avoids queue accumulation and ensures near-immediate response for subsequent processing stages. Once spectral and periodicity features are extracted—and either accepted or rejected—the corresponding PCM segment is marked for overwrite. The acoustic module does not retain raw audio beyond the processing window.
 
 \subsection{Computational Complexity}
 The processing pipeline was intentionally designed to remain computationally lightweight. For a frame of $N$ samples:
@@ -387,7 +387,7 @@ These results illustrate the practical reach of diffraction-based propagation. W
 Performance under increasing ambient noise provides a more realistic view of operational viability. Table \ref{tab:snr} reports Precision, Recall, and F1 scores under progressively elevated ambient floors.
 
 \begin{table}[htbp]
-\caption{Pipeline Performance Metrics vs. Ambient Noise (SNR)}
+\caption{Signal-Processing Model Performance Metrics vs. Ambient Noise (SNR)}
 \begin{center}
 \begin{tabular}{lcccc}
 \toprule
