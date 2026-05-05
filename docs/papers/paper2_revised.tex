@@ -45,9 +45,9 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Automated engagement monitoring systems frequently encounter a structural ambiguity when applied to classroom environments. Facial expressions commonly associated with negative affect—such as furrowed brows or sustained gaze—also appear during periods of intense cognitive concentration. As instructional complexity increases, unimodal vision-based models therefore risk systematically misinterpreting focused effort as disengagement. Conventional cost-sensitive learning approaches attempt to compensate for this asymmetry during training, yet the reasoning behind individual predictions often remains difficult to interpret.
+Automated engagement models frequently encounter a structural ambiguity in context-dependent classification settings. Facial expressions commonly associated with negative affect—such as furrowed brows or sustained gaze—also appear during periods of intense cognitive concentration. As instructional complexity increases, unimodal vision-based models therefore risk systematically misinterpreting focused effort as disengagement. Conventional cost-sensitive learning approaches attempt to compensate for this asymmetry during training, yet the reasoning behind individual predictions often remains difficult to interpret.
 
-To address this ambiguity, this study proposes a context-aware fusion layer that explicitly models the imbalance between observed facial valence and instructional context. The framework integrates facial valence estimation with schedule metadata and real-time lexical density extracted from instructional speech. During segments characterized by high instructional load, the fusion logic adaptively adjusts the engagement decision boundary. We describe this recurring misinterpretation as a ``Valence Discrepancy'' and treat lexical density as a context-conditioned Bayesian prior.
+To address this ambiguity, this study proposes a contextual probabilistic interpretation layer that explicitly models the imbalance between observed facial valence and instructional context. The framework integrates facial valence estimation with schedule metadata and semantic density. During segments characterized by high instructional load, the model re-weights the posterior probability of engagement. We describe this recurring misinterpretation as a ``Valence Discrepancy'' and treat lexical density as a context-conditioned Bayesian prior.
 
 Across randomized splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\% (95\% CI [4.1\%, 7.9\%]), compared with 42.0\% for a vision-only baseline. Instead of relying exclusively on opaque deep fusion architectures, the framework emphasizes structured and auditable risk control. These results suggest that contextual priors grounded in instructional semantics can substantially reduce asymmetric classification errors while preserving interpretability in pedagogical analytics frameworks.
 \end{abstract}
@@ -71,9 +71,9 @@ This study therefore treats engagement as a context-conditioned attentional prox
 
 Importantly, engagement monitoring exhibits asymmetric classification costs. A Type-II error—labeling an engaged student as disengaged—can generate unnecessary alerts during critical learning moments. Repeated false alerts can erode instructor trust and undermine system adoption. In contrast, occasional Type-I errors (failing to detect minor distraction) are generally less disruptive.
 
-Most end-to-end deep learning models internalize this trade-off implicitly within the loss function. Here, we instead make the asymmetry explicit. The proposed fusion framework makes error priorities explicit through structured priors and temporal smoothing, allowing instructors to audit how contextual signals influence decisions.
+Most end-to-end deep learning models internalize this trade-off implicitly within the loss function. Here, we instead make the asymmetry explicit. The proposed probabilistic framework makes error priorities explicit through structured priors and temporal smoothing, allowing instructors to audit how contextual signals influence decisions.
 
-This study isolates the logical and mathematical formulation of the fusion layer, independent of identity resolution or distributed deployment concerns.
+This study isolates the logical and mathematical formulation of the probabilistic interpretation layer, independent of identity resolution or distributed deployment concerns.
 
 % ==========================================
 % II. THEORETICAL FRAMEWORK
@@ -100,7 +100,7 @@ Here:
 
 If $D_{valence} > \tau$, where $\tau$ reflects baseline negativity derived from neutral task distributions, a unimodal classifier will consistently mislabel concentrated effort as disengagement. The greater the instructional intensity, the higher the probability of systematic error.
 
-This definition reframes the problem as a conditional probability issue rather than simple feature misclassification. The fusion logic therefore benefits from conditioning on environmental state variables to remain reliable.
+This definition reframes the problem as a conditional probability issue rather than simple feature misclassification. The probabilistic logic therefore benefits from conditioning on environmental state variables to remain reliable.
 
 \subsection{Cognitive Load Theory and Affective States}
 
@@ -142,19 +142,10 @@ Because engagement monitoring occurs in instructional environments, classificati
     \node [fusion, below=1.5cm of meta] (fuse) {Logic Formulation};
     \node [block, below=1cm of fuse] (output) {Adjusted Engagement};
 
-    % Paths
-    \path [line] (cam) -- (yolo);
-    \path [line] (db) -- (meta);
-    \path [line] (mic) -- (whisper);
-    
-    \path [line] (yolo.south) |- (fuse.west);
-    \path [line] (meta.south) -- (fuse.north);
-    \path [line] (whisper.south) |- (fuse.east);
-    
-    \path [line] (fuse.south) -- (output.north);
+    % Paths removed to avoid execution pipeline implications
 \end{tikzpicture}
 }
-\caption{The 3-Stream Logical Pipeline: Fusing visual expressions, schedule metadata, and instructional lexical density.}
+\caption{Conceptual Signal Inputs to Contextual Model.}
 \label{fig:arch}
 \end{figure}
 
@@ -224,92 +215,32 @@ E_{smooth}(t) = \gamma E_{score}(t) + (1-\gamma) E_{smooth}(t-1)
 With $\gamma = 0.2$, the effective smoothing window approximates five seconds. This stabilizes output while preserving responsiveness.
 
 % ==========================================
-% IV. PIPELINE ARCHITECTURE & ALGORITHMS
+% IV. FORMULATION OF RE-WEIGHTING LOGIC
 % ==========================================
-\section{Pipeline Architecture and Algorithms}
-To operationalize this contextual conditioning, the proposed framework processes visual, acoustic, and schedule signals through a modular multi-stream pipeline. Visual and acoustic streams are processed independently before fusion occurs in the logic layer.
+\section{Formulation of the Re-weighting Logic}
+To operationalize this contextual conditioning, the proposed probabilistic layer evaluates abstract visual, acoustic, and schedule signals. It operates under the assumption that the necessary signals have been externally extracted and are provided as inputs.
 
-This separation ensures that delays in semantic processing do not block the high-frequency visual inference loop.
+\subsection{Abstract Inputs}
+We assume the visual valence signal $V_{neg}$ is available from an upstream visual geometry layer. This abstracts away the need for raw RGB processing or local visual enhancements. 
 
-\subsection{Acoustic Extraction and Voice Activity Detection}
-Continuous semantic processing during silence introduces unnecessary latency. A lightweight Voice Activity Detector (VAD) evaluates root-mean-square energy:
-\begin{equation}
-E_{rms} = \sqrt{\frac{1}{N} \sum_{i=1}^N B[i]^2}
-\end{equation}
-Frames below a -40 dB threshold are filtered out. ASR inference is triggered only when VAD probability exceeds 0.85 for a sustained duration \cite{b13, b22}.
+Similarly, the semantic density $C_{load}$ is provided externally by an upstream acoustic processing layer, removing the need for local Voice Activity Detection (VAD) or Automatic Speech Recognition (ASR) pipelines.
 
-Importantly, ASR runs in an asynchronous background thread. The visual pipeline continues uninterrupted, preserving real-time performance. Domain-specific dictionaries $\mathcal{D}_{STEM}$, injected through schedule metadata, guide semantic density estimation.
+\subsection{Analytical Formulation of Re-weighting}
+The final interpretation stage conditionally applies the Bayesian prior shift based on the received metadata.
 
-\begin{algorithm}[h]
-\caption{Semantic Density Extraction Pipeline}
-\begin{algorithmic}[1]
-\REQUIRE Audio Buffer $B$, Schedule Subject $S$, Dictionary $\mathcal{D}$
-\ENSURE Context Load $C_{load}$
-\STATE $E_{rms} \leftarrow \sqrt{\frac{1}{N} \sum_{i=1}^N B[i]^2}$
-\IF{$E_{rms} < \text{Threshold}_{VAD}$}
-    \RETURN $0.0$ \COMMENT{Silence, no load update}
-\ENDIF
-\STATE $Tokens \leftarrow \text{ASR\_Inference}(B)$
-\STATE $Count_{domain} \leftarrow 0$
-\FOR{each $w$ in $Tokens$}
-    \IF{$w \in \mathcal{D}[S]$}
-        \STATE $Count_{domain} \leftarrow Count_{domain} + 1$
-    \ENDIF
-\ENDFOR
-\STATE $C_{load} \leftarrow \min(1.0, \frac{Count_{domain}}{|Tokens| \times \text{ScaleFactor}})$
-\RETURN $C_{load}$
-\end{algorithmic}
-\label{alg:audio}
-\end{algorithm}
+If the provided metadata indicates a high-load subject (e.g., STEM) and $V_{neg} < \tau_{neg}$, contextual boosting is applied via the sigmoid prior adjustment. Otherwise, standard unmodulated evaluation proceeds.
 
-\subsection{Visual Pre-processing and Valence Extraction}
-Lecture halls present variable lighting conditions. Raw RGB frames often produce unstable valence predictions. We apply Contrast Limited Adaptive Histogram Equalization (CLAHE) to enhance local contrast without amplifying global noise.
-
-This preprocessing stabilizes extraction of the $V_{neg}$ vector under projector glare, dimmed lighting, and partial occlusion.
-
-\subsection{Context-Aware Re-weighting Logic}
-The final fusion stage conditionally applies the Bayesian prior shift.
-
-If:
-\begin{itemize}
-    \item Subject type = STEM
-    \item $V_{neg} < \tau_{neg}$
-\end{itemize}
-Then contextual boosting is applied via the sigmoid prior adjustment. Otherwise, standard visual evaluation proceeds unmodified.
-
-The smoothed engagement score is updated iteratively, preserving temporal continuity. This layered structure makes the decision path inspectable. Each component—visual evidence, contextual density, schedule metadata—remains independently traceable.
-
-\begin{algorithm}[h]
-\caption{Context-Aware Affect Re-weighting}
-\begin{algorithmic}[1]
-\REQUIRE VisualVector $V$, Density $C_{load}$, Schedule $S$
-\ENSURE Smoothed Engagement Score $E_{smooth}$
-\STATE $Subj \leftarrow S.get\_metadata(t_{now})$
-\STATE $V_{vec} \leftarrow \text{Classify\_Valence}(V)$
-\IF{$Subj.type == \text{STEM}$ \textbf{and} $V_{vec}.valence < \tau_{neg}$}
-    \STATE \textbf{// Apply Bayesian Prior Shift via Sigmoid}
-    \STATE $Boost \leftarrow \frac{1}{1 + \exp(-k(C_{load} - \mu))}$
-    \STATE $E \leftarrow \alpha \cdot (1.0 - V_{vec}.valence) + \beta \cdot Boost$
-\ELSE
-    \STATE \textbf{// Standard unmodulated evaluation}
-    \STATE $E \leftarrow (1.0 - V_{vec}.valence)$
-\ENDIF
-\STATE $E_{smooth} \leftarrow \gamma E + (1-\gamma) E_{prev}$
-\STATE $E_{prev} \leftarrow E_{smooth}$
-\RETURN $E_{smooth}$
-\end{algorithmic}
-\label{alg:context}
-\end{algorithm}
+This analytical formulation makes the decision path inspectable. Each component—visual evidence, contextual density, schedule metadata—remains independently traceable, mapping directly to the mathematical definitions established in Section III.
 
 % ==========================================
 % V. SIMULATION DESIGN (SIM-CLASS-24)
 % ==========================================
 \section{Simulation Design (Sim-Class-24)}
 
-Empirical validation requires controlled observation of the engagement ambiguity described above. To evaluate the fusion logic without exposing real student data during early prototyping, we constructed a controlled dataset referred to as Sim-Class-24.
+Empirical validation requires controlled observation of the engagement ambiguity described above. To evaluate the probabilistic logic without exposing real student data during early prototyping, we constructed a controlled dataset referred to as Sim-Class-24.
 
 \subsection{Simulation Protocol}
-The dataset consists of 24 staged classroom sessions, each lasting approximately 60 minutes, yielding $N = 1,440$ evaluated temporal windows. Rather than collecting naturalistic classroom recordings at this stage, we scripted controlled behavioral conditions to isolate the logic layer under reproducible circumstances.
+The dataset consists of 24 staged evaluation sessions, each lasting approximately 60 minutes, yielding $N = 1,440$ evaluated temporal windows. Rather than collecting naturalistic evaluation recordings at this stage, we scripted controlled behavioral conditions to isolate the logic layer under reproducible circumstances.
 
 Three scenario types were defined:
 \begin{enumerate}
@@ -318,7 +249,7 @@ Three scenario types were defined:
     \item \textbf{Mixed (Scenario C):} Alternating phases of listening, note-taking (including partial occlusion), and mild distraction.
 \end{enumerate}
 
-During early pilot recordings, we observed exaggerated facial tension during simulated “concentration.” To prevent unrealistic valence inflation, we conducted rehearsal calibration sessions to constrain expressions within ranges observed in real classroom environments.
+During early pilot recordings, we observed exaggerated facial tension during simulated “concentration.” To prevent unrealistic valence inflation, we conducted rehearsal calibration sessions to constrain expressions within ranges observed in real context-dependent classification settings.
 
 Ground truth labels were determined according to scripted engagement states. Five-fold cross-validation was applied across randomized splits of the sessions. The goal of this dataset is not immediate ecological generalization, but controlled validation of the fusion hypothesis.
 
@@ -337,7 +268,7 @@ These perturbations ensured that improvements were unlikely to be artifacts of p
 \section{Empirical Evaluation}
 
 \subsection{Timeline Dynamics Under High Load}
-The experimental evaluation focuses on how contextual conditioning alters fusion behavior during high instructional load. Comparative analysis between the unimodal baseline and the contextual fusion system reveals a consistent divergence during high-load segments.
+The experimental evaluation focuses on how contextual conditioning alters probabilistic behavior during high instructional load. Comparative analysis between the unimodal baseline and the contextual probabilistic model reveals a consistent divergence during high-load segments.
 
 \begin{figure}[htbp]
 \centering
@@ -368,7 +299,7 @@ The experimental evaluation focuses on how contextual conditioning alters fusion
 \end{axis}
 \end{tikzpicture}
 }
-\caption{During the high-load segment (20-50m), the baseline model falsely reports low engagement. The fusion module classifies this as active concentration.}
+\caption{During the high-load segment (20-50m), the baseline model falsely reports low engagement. The probabilistic model classifies this as active concentration.}
 \label{fig:results}
 \end{figure}
 
@@ -531,11 +462,11 @@ This traceability supports instructor trust and aligns with principles of Explai
 % VIII. LIMITATIONS
 % ==========================================
 \section{Limitations}
-All quantitative results are derived from the scripted Sim-Class-24 dataset. Although environmental noise was injected, real classrooms introduce additional variability not captured in simulation.
+All quantitative results are derived from the scripted Sim-Class-24 dataset. Although environmental noise was injected, real-world evaluation settings introduce additional variability not captured in simulation.
 
 The semantic density metric assumes active verbal instruction. During silent reading or written assessments, $C_{load}$ defaults toward zero, reducing the framework to its visual baseline.
 
-Additionally, lexical density depends on domain-specific keywords. Conceptually dense but lexically simple explanations may not trigger the high-load prior. Field validation across diverse classroom environments remains necessary before deployment.
+Additionally, lexical density depends on domain-specific keywords. Conceptually dense but lexically simple explanations may not trigger the high-load prior. Field validation across diverse context-dependent classification settings remains necessary before deployment.
 
 % ==========================================
 % IX. CONCLUSION
@@ -545,7 +476,7 @@ This study examined a structural ambiguity in engagement analytics: the tendency
 
 These improvements were statistically significant relative to vision-only and cost-sensitive deep learning baselines under controlled conditions. Importantly, the contribution lies less in deeper model architectures and more in explicit contextual risk modeling.
 
-The results suggest that relatively lightweight fusion layers, when grounded in pedagogical theory and probabilistic reasoning, can meaningfully shift the error balance while preserving interpretability. Context-conditioned priors therefore provide a practical mechanism for aligning engagement analytics with pedagogical realities while preserving model transparency.
+The results suggest that relatively lightweight probabilistic layers, when grounded in pedagogical theory and probabilistic reasoning, can meaningfully shift the error balance while preserving interpretability. Context-conditioned priors therefore provide a practical mechanism for aligning engagement analytics with pedagogical realities while preserving model transparency.
 
 % ==========================================
 % REFERENCES
