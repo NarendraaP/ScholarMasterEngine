@@ -4,17 +4,17 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Trust-Aware Metadata Provenance Using an Immutable Ledger Approach for Privacy-Preserving Smart Campus Systems |
+| **Title** | A Cryptographic Provenance Model with Erasure-Compatible Immutability |
 | **Paper ID** | P8 |
 | **Layer** | Trust (L7 — Audit & Provenance) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Corrected (CC v3.0 aligned) |
 
 ## 2. Primary Contribution
 
-**An immutable ledger-based provenance layer that records cryptographic hashes of system events (compliance decisions, privacy assertions, anomaly detections) for non-repudiation and GDPR-aligned auditability — without storing raw biometric data.**
+**A Cryptographic Provenance Layer (CPL) that separates attestation from disclosure via a dual-layer model: encrypted payloads remain off-chain while batched Merkle roots are committed to a permissioned ledger. Erasure-Compatible Immutability is achieved through Per-Identity Symmetric Key (PISK) cryptographic shredding.**
 
-Paper 8 provides the trust substrate that makes all other system decisions auditable. It stores only hashes and metadata, never raw data.
+Paper 8 provides the trust substrate. It stores only hash commitments on-chain, never raw data.
 
 ## 3. Core Claims
 

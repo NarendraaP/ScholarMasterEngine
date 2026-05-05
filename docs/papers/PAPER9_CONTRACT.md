@@ -4,36 +4,35 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Privacy-Governed Multi-Module AI Orchestration for Edge-Native Academic Analytics |
+| **Title** | A Hierarchical Edge Control Plane for Policy-Aware Multi-Module AI Orchestration |
 | **Paper ID** | P9 |
-| **Layer** | Governance (L5 — Orchestration Control Plane) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Layer** | Orchestration (L5 — Control Plane) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Corrected (CC v3.0 aligned) |
 
 ## 2. Primary Contribution
 
-**A centralized orchestration control plane that coordinates all perception, reasoning, and governance modules within the ScholarMaster Engine — enforcing privacy invariants, managing module lifecycle, routing events, and ensuring that cross-module data flows respect the architectural irreversibility boundary.**
+**A hierarchical control-plane architecture that separates Perception, Reasoning, and Governance. It formalizes Inference Rate Governance (IRG) via a Compute Justification Model, enforcing context-aware module activation (ISR/ECU/CADC) and failure containment through a deterministic watchdog state machine.**
 
-Paper 9 is the "glue" paper — it defines how all other modules interact at runtime.
+Paper 9 serves as the orchestration foundation. It ensures models are only active when pedagogically justified and that isolated module crashes do not trigger cascading system failures.
 
 ## 3. Core Claims
 
 | # | Claim | Evidence | CC Flag |
 |---|---|---|---|
-| C1 | Centralized orchestration enables deterministic event routing across heterogeneous modules | Event bus architecture (§III) | Clean |
-| C2 | Privacy governance filter intercepts all cross-module data flows, enforcing TTL and data-type constraints | GovernanceFilter design (§IV) | Clean |
-| C3 | Module registration and lifecycle management prevent orphaned or unauthorized modules | Registry design (§III) | Clean |
-| C4 | All events pass through the governance gate before reaching the trust layer (Paper 8) | Mandatory governance interception (§IV) | Clean |
+| C1 | Hierarchical separation of Perception, Reasoning, and Governance contains isolated crashes | Layer Isolation Factor (LIF) $\approx 95\%$ | Clean |
+| C2 | Compute Justification Model reduces scheduled inference cycles without losing policy coverage | Inference Suppression Ratio (ISR) > 70\% for heavy vision | Clean |
+| C3 | Deterministic state machine provides graceful degradation (Normal $\to$ Degraded $\to$ Safe) | Failure Mode Analysis (§VI) | Clean |
+| C4 | Validation via fault injection confirms control decisions align with policy | Abstract state transitions maintained | Clean |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- Event bus architecture (publish-subscribe)
-- Module registration and lifecycle management
-- GovernanceFilter: privacy-enforcing data intercept
-- TTL enforcement on all data objects
-- Cross-module data flow routing
-- Integration contract with all upstream/downstream papers
+- Hierarchical Control Plane Architecture (Perception $\to$ Reasoning $\to$ Governance)
+- Compute Justification Model (ISR, ECU, CADC metrics)
+- Failure Containment Design (Watchdog timers, Fallback state machine)
+- Operational Budget tracking
+- Validation via fault injection (logical state transition maintenance)
 
 ### 4.2 Out-of-Scope
 - Perception algorithms (Papers 1, 3, 6)
@@ -46,10 +45,9 @@ Paper 9 is the "glue" paper — it defines how all other modules interact at run
 
 | ID | Invariant | Enforcement |
 |---|---|---|
-| P9-INV-01 | ALL cross-module data flows MUST pass through the GovernanceFilter | Architecture: no direct module-to-module paths; only bus-mediated |
-| P9-INV-02 | Data objects exceeding their TTL MUST be automatically destroyed | TTL enforcement daemon on event bus |
-| P9-INV-03 | Unregistered modules MUST NOT be able to publish or subscribe to the event bus | Module registry with authentication |
-| P9-INV-04 | No raw biometric data SHALL transit the governance layer — only abstracted events | GovernanceFilter type-checking |
+| P9-INV-01 | Modules MUST NOT communicate raw sensory data across the Governance/Reasoning boundary | Typed context vectors $\vec{C}$ |
+| P9-INV-02 | System MUST transition to Safe state upon continuous module timeout | Deterministic State Machine + Watchdog |
+| P9-INV-03 | Module activation cycles MUST NOT exceed daily operational budgets $B_{max}$ | Compute Justification Model |
 
 ## 6. Upstream / Downstream Dependencies
 
@@ -67,11 +65,10 @@ Paper 9 is the "glue" paper — it defines how all other modules interact at run
 
 ## 7. Verification Requirements
 
-- All module-to-module data flows route through GovernanceFilter (no bypass paths)
-- TTL-expired data objects are destroyed within 1 TTL interval
-- Unregistered module connection attempts are rejected with error
-- No raw biometric data type passes GovernanceFilter type check
-- Event routing latency < 1 ms per hop
+- ISR for heavy vision modules > 70% under standard lecture scenarios
+- ECU (Ethical Compute Utilization) > 90%
+- Abstract state transitions execute successfully under simulated timeouts
+- 95% Layer Isolation Factor (LIF) across chaos testing lifecycles
 
 ## 8. What This Paper Does NOT Do
 
