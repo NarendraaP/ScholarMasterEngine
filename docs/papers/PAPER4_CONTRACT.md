@@ -4,81 +4,57 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Spatiotemporal Adherence Evaluation System Using Constraint Satisfaction Programming |
+| **Title** | Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup |
 | **Paper ID** | P4 |
-| **Layer** | Reasoning (L4 — Compliance Logic) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Layer** | Data Fusion / Relational Evaluation Layer |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Finalized (Boundary Enforced) |
 
 ## 2. Primary Contribution
 
-**A Constraint Evaluation Framework (CEF) that models campus regulations as Constraint Satisfaction Problems (CSPs), fusing real-time vision detections with schedule repositories to evaluate spatiotemporal alignment of student presence.**
+**A relational predicate model (CPEM) and temporal debounce filter (PCVF) that evaluates real-time physical presence events against statically scheduled database records using optimized PostgreSQL queries.**
 
-Paper 4 formalizes the compliance-checking logic: given a detected identity at location $L$ and time $T$, does this satisfy the institutional schedule constraints?
+Paper 4 operates strictly as the logical bridge between incoming sensory events and static database records. It focuses entirely on defining schedule compliance mathematically as a streaming predicate, and optimizing the relational database queries (PostgreSQL partitioning, composite indexing, connection pooling) necessary to evaluate those predicates under burst campus traffic.
 
 ## 3. Core Claims
 
-| # | Claim | Evidence | CC Flag |
+| # | Claim | Evidence | Boundary Check |
 |---|---|---|---|
-| C1 | Campus regulations can be modeled as CSP variables with temporal and spatial domains | Formal CSP formulation (§III) | Clean |
-| C2 | The "Teleportation Heuristic" filters physically impossible detections (same student at two locations within Δt) | Algorithm description (§IV) | Clean |
-| C3 | PCVF (Privacy-Compliant Validation Filter) ensures only schedule-relevant events propagate | Architecture (§V) | Clean |
-| C4 | PostgreSQL-backed production deployment supports institutional-scale constraint checking | Proposed deployment strategy (§VII) | Clean — framed as proposed, not validated |
+| C1 | Schedule compliance can be evaluated continuously as a relational predicate (CPEM) over streaming event tuples | Eq 1-2 | Clean |
+| C2 | A temporal low-pass filter (PCVF) effectively suppresses spurious multi-zone detections and transient sensor noise | Eq 4-6 / Alg 1 | Clean |
+| C3 | Relational schema partitioning and composite temporal indexing dramatically reduce search space for rapid schedule lookup | Listing 1 / Section VI | Clean |
+| C4 | Transaction-level connection pooling prevents latency spikes ($T_{conn}$) during thundering herd transition events | Figure 3 | Clean |
 
-## 4. Scope
+## 5. Scope
 
-### 4.1 In-Scope
-- CSP formulation of schedule constraints (time, location, role)
-- Data fusion: vision detections × schedule repository
-- Teleportation Heuristic for false-positive rejection
-- PCVF for privacy-compliant event filtering
-- Production deployment proposal (PostgreSQL)
+### 5.1 In-Scope
+- CPEM formalization (Mathematical formulation of schedule adherence)
+- PCVF temporal filtering algorithms and state machines
+- PostgreSQL database optimization (Partitioning, Indexing)
+- Relational query latency profiling and connection pooling analysis
 
-### 4.2 Out-of-Scope
-- Identity retrieval (Paper 1)
-- Privacy enforcement at sensing layer (Paper 3)
-- Schedule rule definition language (Paper 7 extends this)
-- Trust/audit logging (Paper 8)
-- System-level integration testing (Paper 10)
+### 5.2 Out-of-Scope (Strictly Forbidden)
+- **Message Broker & Middleware Architecture** (Owned by P18)
+- **Container / Worker Execution Flow** (Owned by P20)
+- **Stream Algorithm Jitter / Migration** (Owned by P7)
 
-## 5. Enforcement Invariants
+## 6. Enforcement Invariants
 
 | ID | Invariant | Enforcement |
 |---|---|---|
-| P4-INV-01 | Compliance decisions MUST be deterministic given the same (identity, location, time) tuple | CSP solver is stateless per-query |
-| P4-INV-02 | Events failing the Teleportation Heuristic MUST be rejected before reaching downstream | Pre-filter gate in data fusion layer |
-| P4-INV-03 | Only schedule-relevant metadata SHALL propagate beyond the PCVF boundary | PCVF strips non-compliant fields |
+| P4-INV-01 | Must NOT claim system architecture | Rewrote "layered middleware architecture" to "layered evaluation pipeline" |
+| P4-INV-02 | Must NOT claim stream execution logic | Kept focus on relational database lookups rather than stateful stream topologies |
+| P4-INV-03 | Must NOT claim edge perception | Treat incoming edge data as an abstract opaque tuple `(ID, Zone, Timestamp)` |
 
-## 6. Upstream / Downstream Dependencies
+## 7. Upstream / Downstream Dependencies
 
 | Direction | Paper | Interface |
 |---|---|---|
-| **Upstream** | P1 (Identity) | Identity vector for person-location binding |
-| **Upstream** | P3 (Pose) | Presence signal (anonymized) |
-| **Upstream** | P7 (Schedule Rules) | CSP constraint definitions |
-| **Downstream** | P2 (Engagement) | Schedule context for engagement fusion |
-| **Downstream** | P8 (Provenance) | Compliance events logged to trust layer |
-| **Downstream** | P9 (Orchestrator) | Compliance events published to orchestration bus |
-
-## 7. Verification Requirements
-
-- CSP solver produces correct compliance label for all test scenarios in schedule matrix
-- Teleportation Heuristic correctly rejects ≥ 99% of physically impossible detections
-- PCVF strips all non-schedule metadata before downstream emission
-- Decision latency < 5 ms per constraint evaluation
+| **Upstream** | P3, P6 (Perception) | Consumes resolved `(ID, Zone, Timestamp)` tuples blindly |
+| **Downstream** | P20 (Runtime) | Relies on the Runtime to physically execute the workers that run these queries |
 
 ## 8. What This Paper Does NOT Do
 
-- Does **not** detect or track individuals (defers to Paper 1)
-- Does **not** enforce privacy at the sensing boundary (defers to Paper 3)
-- Does **not** define rule syntax or reasoning formalism (extended in Paper 7)
-- Does **not** provide audit/trust claims (defers to Paper 8)
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
-|---|---|---|
-| **Constraint Solver** | `modules_legacy/context_manager.py` | ✅ Verified (Spatial & Temporal Checks) |
-| **PCVF Filter** | `modules_legacy/context_manager.py` | ✅ Verified (`check_compliance` filters metadata) |
-| **Deployment** | `modules_legacy/master_engine.py` | ✅ Verified (Integration with Orchestrator) |
-
+- Does **not** design the publish-subscribe broker or define system-wide messaging topologies.
+- Does **not** evaluate complex streaming states like moving average drift or lazy migration (that is P7).
+- Does **not** detect people (that is P3 and P6).
