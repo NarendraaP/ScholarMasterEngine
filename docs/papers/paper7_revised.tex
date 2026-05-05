@@ -83,9 +83,9 @@ Narsapur, Andhra Pradesh, India \\
 \begin{abstract}
 Institutional attendance verification presents a practical deployment challenge: large student populations must be processed quickly while minimizing operational overhead and impersonation risk. Although facial recognition is frequently proposed as an automated solution, many existing implementations rely on cloud services or report only embedding-level accuracy without examining retrieval behavior under real-time open-set conditions.
 
-This work examines whether biometric identification can operate entirely on edge hardware at institutional scale—up to 100,000 identities—while still meeting strict real-time constraints. The proposed retrieval-focused pipeline segment utilizes Hierarchical Navigable Small World (HNSW) indexing and introduces a Local Density Consistency Criterion (LDCC) to improve robustness when unknown identities are present, assuming deep embeddings are provided externally.
+This work examines whether biometric identification can operate entirely on edge hardware at institutional scale—up to 100,000 identities—while still meeting strict real-time constraints. The proposed retrieval layer utilizes Hierarchical Navigable Small World (HNSW) indexing and introduces a Local Density Consistency Criterion (LDCC) to improve robustness when unknown identities are present, assuming deep embeddings are provided externally.
 
-Experiments conducted on an edge hardware platform reveal empirically logarithmic retrieval scaling. Even with a 100K identity registry, mean retrieval latency remains below one millisecond. Under controlled open-set testing with 20\% unknown probes, the pipeline maintains a 99.8\% unknown rejection rate while sustaining throughput above 30 frames per second in a single-stream configuration. By isolating this retrieval step, local execution avoids transmission during retrieval, supporting efficient identity resolution without cloud dependency.
+Experiments conducted on an edge hardware platform reveal empirically logarithmic retrieval scaling. Even with a 100K identity registry, mean retrieval latency remains below one millisecond. Under controlled open-set testing with 20\% unknown probes, the retrieval module maintains a 99.8\% unknown rejection rate while sustaining throughput above 30 frames per second in a single-stream configuration. By isolating this retrieval step, local execution avoids transmission during retrieval, supporting efficient identity resolution without cloud dependency.
 \end{abstract}
 
 % ==========================================
@@ -121,7 +121,7 @@ Real-time identity verification within large academic institutions introduces a 
 
 However, digitizing attendance verification introduces several engineering challenges. Network connectivity within campus environments can be inconsistent, particularly during peak usage hours. Systems that depend on external cloud APIs are therefore exposed to unpredictable latency and bandwidth limitations. A viable institutional solution must instead operate autonomously at the edge, processing video streams locally without requiring synchronous remote services \cite{b1}.
 
-Within an edge-based deployment pipeline, the primary bottleneck shifts from neural inference to identity retrieval. While compact neural networks (e.g., MobileNets \cite{b4}) can efficiently produce embeddings, locating the correct identity within a large gallery often becomes the dominant computational cost. While linear search across stored embeddings works for small cohorts (e.g., fewer than 50 identities), performance degrades rapidly as the gallery grows. At six-figure registry sizes, brute-force vector comparison can become the dominant latency component, regardless of how efficient the neural inference stage may be \cite{b2}.
+Within an edge-based deployment architecture, the primary bottleneck shifts from neural inference to identity retrieval. While compact neural networks (e.g., MobileNets \cite{b4}) can efficiently produce embeddings, locating the correct identity within a large gallery often becomes the dominant computational cost. While linear search across stored embeddings works for small cohorts (e.g., fewer than 50 identities), performance degrades rapidly as the gallery grows. At six-figure registry sizes, brute-force vector comparison can become the dominant latency component, regardless of how efficient the neural inference stage may be \cite{b2}.
 
 \subsection{Retrieval Latency Budget}
 Real-time streaming places strict bounds on the allowable processing time for each frame. To sustain real-time video at 30 FPS, total processing time per frame must remain within approximately 33 milliseconds:
@@ -153,7 +153,7 @@ Most academic research in face recognition emphasizes embedding discrimination p
 
 For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms—far exceeding the available latency budget for real-time streaming. At this scale, retrieval complexity becomes a principal deployment constraint.
 
-Table \ref{tab:sota_constraints} summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed pipeline maintains both discrimination performance and real-time throughput at 100K scale.
+Table \ref{tab:sota_constraints} summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed retrieval module maintains both discrimination performance and real-time throughput at 100K scale.
 
 \begin{table}[htbp]
 \caption{State-of-the-Art Under Institutional Constraints}
@@ -183,16 +183,16 @@ Ours & 99.82\% & 100K & $\checkmark$ & $\checkmark$ (31) \\
 % ==========================================
 \section{Embedding Geometry Assumptions}
 
-We assume that the deep feature embeddings provided to the retrieval layer utilize margin-induced compactness (such as ArcFace). Conventional Softmax-based training is primarily optimized for closed-set classification. While effective for label separation, it does not explicitly enforce compact intra-class clustering in embedding space. As a consequence, feature overlap between identities can increase false acceptance rates when operating under open-set conditions \cite{b11}.
+We assume that the deep feature embeddings provided to the retrieval layer exhibit margin-induced compactness. Retrieval performance benefits from embeddings exhibiting margin-induced compactness because feature overlap between identities can otherwise increase false acceptance rates when operating under open-set conditions \cite{b11}.
 
-By utilizing embeddings trained with an additive angular margin penalty in hyperspherical space \cite{b5}, the retrieval layer benefits from tightly clustered intra-class samples and wide inter-class separation. The margin-induced compactness is particularly important for distance-based retrieval. Open-set identification depends on reliable similarity thresholding. If embeddings form well-separated, dense clusters, nearest-neighbor search combined with threshold gating becomes more stable and less sensitive to boundary ambiguity.
+By relying on externally provided embeddings that enforce an angular margin penalty in hyperspherical space \cite{b5}, the retrieval layer benefits from tightly clustered intra-class samples and wide inter-class separation. The margin-induced compactness is particularly important for distance-based retrieval. Open-set identification depends on reliable similarity thresholding. If embeddings form well-separated, dense clusters, nearest-neighbor search combined with threshold gating becomes more stable and less sensitive to boundary ambiguity.
 
 % ==========================================
 % IV. GRAPH-BASED INDEX CONSTRUCTION
 % ==========================================
 \section{Graph-Based Index Construction}
 
-To address the retrieval bottleneck introduced by large galleries, the proposed retrieval-focused pipeline segment employs Hierarchical Navigable Small World (HNSW) indexing. HNSW constructs a multi-layer proximity graph inspired by principles from small-world network theory. Lower layers contain dense local connections across all vectors, while higher layers include progressively fewer nodes connected through longer-range links. 
+To address the retrieval bottleneck introduced by large galleries, the proposed retrieval layer employs Hierarchical Navigable Small World (HNSW) indexing. HNSW constructs a multi-layer proximity graph inspired by principles from small-world network theory. Lower layers contain dense local connections across all vectors, while higher layers include progressively fewer nodes connected through longer-range links. 
 
 Search begins at the top sparse layer and proceeds through a greedy traversal toward closer nodes, descending layer by layer until convergence \cite{b7}. Empirically, search complexity follows a logarithmic trend:
 \begin{equation}
@@ -200,7 +200,7 @@ T(N) = a \log(N) + b
 \end{equation}
 This structure allows efficient approximate nearest neighbor retrieval even in high-dimensional embedding spaces. Tree-based methods often degrade substantially in 512-dimensional space due to the curse of dimensionality \cite{b12}. In our experiments, KD-Tree throughput dropped to approximately 7 FPS, confirming its unsuitability for deep embedding retrieval at scale.
 
-Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. A lightweight temporal verification buffer smooths predictions across consecutive frames to prevent output flicker.
+Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. An optional downstream smoothing mechanism (external) smooths predictions across consecutive frames to prevent output flicker.
 
 \begin{figure}[htbp]
 \centering
@@ -210,15 +210,15 @@ Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment ass
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 % Nodes
-\node (embed) [external] {External Deep Embedding (e.g., ArcFace)};
+\node (embed) [external] {External Deep Embedding (Margin-based)};
 \node (search) [process, below of=embed, fill=yellow!20] {HNSW + LDCC Gate};
-\node (db) [process, below of=search, fill=green!10] {Temporal Verification Buffer};
+\node (db) [external, below of=search, fill=green!10] {Optional Downstream Smoothing};
 
 % Arrows
 \draw [arrow] (embed) -- node[anchor=west] {512-D Vector} (search);
 \draw [arrow] (search) -- node[anchor=west] {ID / Unknown} (db);
 \end{tikzpicture}
-\caption{Retrieval-Focused Pipeline Segment: The execution layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating.}
+\caption{Retrieval-Focused Execution Segment: The layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating.}
 \label{fig:arch}
 \end{figure}
 
@@ -272,7 +272,7 @@ To avoid downtime during enrollment, we implement a buffered update mechanism. N
 \section{Experimental Evaluation}
 
 \subsection{Evaluation Setup}
-To evaluate deployment feasibility under institutional conditions, the pipeline was tested using controlled latency benchmarks and synthetic large-scale embedding distributions. Experiments were conducted on an edge computing node using PyTorch 2.0 and FAISS 1.7.4. Retrieval operations remained CPU-bound within FAISS to isolate indexing behavior. Latency results reflect the mean of 10,000 independent queries to ensure statistical stability. CPU frequency scaling was disabled to prevent timing fluctuations during sub-millisecond measurement.
+To evaluate deployment feasibility under institutional conditions, the retrieval module was tested using controlled latency benchmarks and synthetic large-scale embedding distributions. Experiments were conducted on an edge computing node using PyTorch 2.0 and FAISS 1.7.4. Retrieval operations remained CPU-bound within FAISS to isolate indexing behavior. Latency results reflect the mean of 10,000 independent queries to ensure statistical stability. CPU frequency scaling was disabled to prevent timing fluctuations during sub-millisecond measurement.
 
 Because public datasets containing 100K labeled identities under open-set protocols are limited, synthetic hypersphere-distributed vectors were used to stress-test retrieval scaling. While this provides a clean baseline for indexing evaluation, real-world embeddings exhibit non-uniform clustering. Consequently, synthetic results represent a controlled upper-bound estimate of retrieval efficiency. The purpose here is not to simulate real-world identity distributions, but to isolate retrieval mechanics independent of feature extraction variability.
 
@@ -327,7 +327,7 @@ HNSW (Ours) & 0.42 ms & 0.18\% & 99.8\% \\
 \end{table}
 
 \subsection{Stability Under Continuous Load}
-Deployment viability was evaluated through a 10-minute continuous stream (18,000 frames) in a single-face ingress scenario. Observed metrics indicated a sustained throughput of 31.2 FPS on average, never dropping below 28 FPS. The queue depth remained consistently $<3$ frames. No frame backlog or progressive latency accumulation was observed. The pipeline remained stable throughout extended operation.
+Deployment viability was evaluated through a 10-minute continuous stream (18,000 frames) in a single-face ingress scenario. Observed metrics indicated a sustained throughput of 31.2 FPS on average, never dropping below 28 FPS. The queue depth remained consistently $<3$ frames. No frame backlog or progressive latency accumulation was observed. The retrieval layer remained stable throughout extended operation.
 
 \begin{figure}[t!]
 \centering
@@ -339,7 +339,7 @@ Deployment viability was evaluated through a 10-minute continuous stream (18,000
 \begin{figure}[t!]
 \centering
 \includegraphics[width=0.9\linewidth]{live_rec.png}
-\caption{Real-time identification using ArcFace embeddings with $<100$ms latency.}
+\caption{Real-time identification using margin-based embeddings with $<100$ms latency.}
 \label{fig:realtime}
 \end{figure}
 
@@ -411,7 +411,7 @@ Threshold ($\tau$) & FAR & FRR & System State \\
 \end{center}
 \end{table}
 
-Component removal experiments confirm pipeline dependencies (Table \ref{tab_ablation}). Removing the margin-based embedding properties reduces accuracy significantly. Removing HNSW drops throughput from 32 FPS to 8 FPS. Removing FP16 doubles memory cost and reduces FPS with negligible accuracy gain (0.03\%). These findings reinforce that indexing strategy—not embedding architecture—is the decisive factor for real-time scalability.
+Component removal experiments confirm module dependencies (Table \ref{tab_ablation}). Removing the margin-based embedding properties reduces accuracy significantly. Removing HNSW drops throughput from 32 FPS to 8 FPS. Removing FP16 doubles memory cost and reduces FPS with negligible accuracy gain (0.03\%). These findings reinforce that indexing strategy—not embedding architecture—is the decisive factor for real-time scalability.
 
 \begin{table}[htbp]
 \caption{Component Contribution Analysis}
@@ -420,7 +420,7 @@ Component removal experiments confirm pipeline dependencies (Table \ref{tab_abla
 \hline
 Configuration & LFW Accuracy & Speed & Outcome \\
 \hline
-Full Pipeline & 99.82\% & 32 FPS & Optimal \\
+Full Retrieval Module & 99.82\% & 32 FPS & Optimal \\
 \hline
 w/o Margin-based Embedding & 94.50\% & 33 FPS & Low Accuracy \\
 \hline
@@ -446,9 +446,9 @@ To support high-throughput retrieval without incurring cloud latency, the algori
 
 From an algorithmic perspective, the results highlight that identity retrieval—not feature extraction—often becomes the dominant constraint in edge-based biometric deployments. Modern embedding models already provide strong discriminative performance. However, without scalable indexing, these embeddings cannot be deployed under strict real-time streaming conditions.
 
-When attention shifts from model accuracy alone toward retrieval complexity, this work demonstrates that sub-millisecond search is achievable on edge hardware. The elimination of cloud dependencies further improves deployment reliability. During peak campus hours, the pipeline operated without external bandwidth requirements, avoiding latency spikes common in cloud-tethered architectures.
+When attention shifts from model accuracy alone toward retrieval complexity, this work demonstrates that sub-millisecond search is achievable on edge hardware. The elimination of cloud dependencies further improves deployment reliability. During peak campus hours, the retrieval module operated without external bandwidth requirements, avoiding latency spikes common in cloud-tethered architectures.
 
-Separating embedding geometry from indexing mechanics clarifies an important algorithmic principle: high-quality embeddings are necessary but insufficient. Efficient search structures help complete the pipeline. This framework ensures that identity vectors remain locally contained, satisfying constraints where biometric data is neither transmitted nor aggregated externally during retrieval.
+Separating embedding geometry from indexing mechanics clarifies an important algorithmic principle: high-quality embeddings are necessary but insufficient. Efficient search structures help complete the retrieval process. This framework ensures that identity vectors remain locally contained, satisfying constraints where biometric data is neither transmitted nor aggregated externally during retrieval.
 
 % ==========================================
 % IX. CONCLUSION
