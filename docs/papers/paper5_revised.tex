@@ -34,7 +34,7 @@
 % ==========================================
 % TITLE
 % ==========================================
-\title{Unified Memory Architectures Under Continuous Edge Inference: An Analytical Envelope Model}
+\title{Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model}
 
 % ==========================================
 % AUTHOR & AFFILIATION
@@ -55,7 +55,7 @@ Edge-native computing platforms often operate under strict latency and resource 
 
 This study develops an analytical framework termed the Memory-Bound Edge Efficiency Envelope (MBEEE) to characterize how latency, energy, and thermal constraints jointly bound sustained edge inference. Rather than relying solely on benchmark comparisons, the analysis models the physics of data movement ($pJ/bit$), queueing behavior ($M/M/1$ versus $M/D/1$ abstractions), and steady-state thermodynamics to derive architectural operating bounds.
 
-The resulting analysis suggests that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an estimated 5.4× improvement in energy efficiency relative to discrete systems. The analysis demonstrates that unified hardware selection can maintain consistent node-level performance. This remains true even in constrained deployment environments.
+The resulting analysis suggests that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an estimated 5.4× improvement in energy efficiency relative to discrete systems. The analysis suggests that unified hardware selection can mathematically support consistent node-level performance. This remains true even under constrained power envelopes.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -80,7 +80,7 @@ Hardware organizes computational functions across distinct execution units. The 
 % --- PLACEHOLDER FOR IMAGE ---
 % [Image comparing discrete CPU-GPU architectures across a PCIe bus with Unified Memory Architectures (UMA)]
 
-For compressed tabular or textual workloads, the interconnect is rarely a bottleneck. Vision workloads differ. High-resolution frames constitute dense, uncompressed multidimensional arrays processed at 30–60 FPS. During sustained operation, the PCIe bus may become a serialized chokepoint, giving rise to the classical “Memory Wall.” Arithmetic logic units may idle while awaiting tensor payloads. The system's theoretical compute capacity can become secondary to its data delivery rate. Hardware data-paths determine the rate at which workloads access computational resources.
+For compressed tabular or textual workloads, the interconnect is rarely a bottleneck. Vision workloads differ. High-resolution frames constitute dense, uncompressed multidimensional arrays processed at 30–60 FPS. The analytical model captures this phenomenon: the PCIe bus becomes a serialized chokepoint, mathematically capping throughput, giving rise to the classical “Memory Wall.” Arithmetic logic units idle while awaiting tensor payloads. The theoretical compute capacity is bounded by the data delivery rate. Hardware data-paths determine the rate at which workloads access computational resources.
 
 \subsection{Unified Memory Architectures (UMA)}
 Unified Memory Architectures attempt to address interconnect bottlenecks by collapsing heterogeneous compute units onto a shared memory fabric. Rather than maintaining isolated memory pools, these cores access a common high-bandwidth memory fabric ($>100$ GB/s), typically backed by LPDDR \cite{b16, b11}.
@@ -135,7 +135,7 @@ Let:
     \item $BW_{ext}$ = effective external bus bandwidth
 \end{itemize}
 
-We define the feasible efficiency envelope $\mathcal{E}$ for sustained edge deployment as:
+We define the feasible efficiency envelope $\mathcal{E}$ for sustained edge constraints as:
 \begin{equation}
 \mathcal{E} = \{ (E, L) \mid L \le L_{RT},\ T_{junc} \le T_{max},\ E \le E_{budget} \}
 \end{equation}
@@ -186,7 +186,7 @@ In discrete architectures, as external data transfer approaches bus capacity ($B
 
 \end{axis}
 \end{tikzpicture}
-\caption{The Memory-Bound Edge Efficiency Envelope (MBEEE). The shaded region represents feasible edge deployment constraints ($<30$W, $<33$ms). Discrete architectures rapidly break the envelope due to bus power and contention, stalling throughput. UMA platforms scale throughput while remaining inside the envelope.}
+\caption{The Memory-Bound Edge Efficiency Envelope (MBEEE). The shaded region represents theoretical edge constraints ($<30$W, $<33$ms). Discrete architectures rapidly break the envelope due to bus power and contention, stalling throughput. UMA platforms scale throughput while remaining inside the envelope.}
 \label{fig:mbeee}
 \end{figure}
 
@@ -227,12 +227,12 @@ The serial term does not vanish entirely—DRAM access and page mapping introduc
 % ==========================================
 \section{Microarchitectural Implications}
 
-The analytical advantages of unified memory depend strongly on how heterogeneous execution units interact with the underlying memory subsystem. Without tight integration, the expected gains do not fully materialize.
+The modeled advantages of unified memory assume specific analytical interactions between execution units and the underlying memory subsystem. Without tight integration, the expected gains do not fully materialize.
 
 \subsection{IOMMU and Zero-Copy Semantics}
-In conventional discrete hardware, data flow explicitly spans host memory and device memory via a blocking transfer across the system bus.
+In conventional discrete hardware, the data transfer is modeled as a blocking payload spanning host and device memory across the peripheral bus.
 
-On UMA platforms, hardware APIs expose zero-copy semantics. Instead of copying tensors, heterogeneous compute units map the same physical memory pages into their respective virtual address spaces. The memory controller pins the relevant memory region to prevent paging and exposes that address directly to the NPU or GPU execution engine. 
+On UMA platforms, the analysis assumes zero-copy semantics. Instead of modeling a physical data copy, the tensor is mapped onto a shared physical memory space. The memory controller pinning prevents paging and exposes that address directly to the NPU or GPU execution engine. 
 
 The operational distinction is subtle but meaningful in practice: the hardware does not explicitly move the tensor; it changes who can see it. As a result, measured latency becomes predominantly computational rather than transfer-dominated. Copy overhead does not disappear entirely—page locking and address translation still occur—but the expensive off-chip traversal phase is eliminated \cite{b24}.
 
@@ -254,7 +254,7 @@ We model frame processing time by separating microarchitectural phases. Assuming
 \centering
 \begin{tabular}{lcc}
 \toprule
-\textbf{Pipeline Phase} & \textbf{Discrete (PCIe Gen3 x4)} & \textbf{UMA (Zero-Copy)} \\
+\textbf{Latency Component} & \textbf{Discrete (PCIe Gen3 x4)} & \textbf{UMA (Zero-Copy)} \\
 \midrule
 Bus Transfer (H2D) & 6.5 ms & \textbf{$\sim$0.1 ms} \\
 Matrix Inference & 24.1 ms & 26.2 ms \\
@@ -344,7 +344,7 @@ The magnitude of this difference is noticeable in practice. A 12 ms jitter windo
 % ==========================================
 \section{Thermodynamic and Reliability Modeling}
 
-Thermal dynamics become a dominant constraint when inference nodes execute continuously rather than in short bursts. Thermal behavior is not merely a secondary consideration in edge deployments. Unlike data centers, many edge nodes operate without active cooling or with minimal airflow. Under continuous inference, steady-state junction temperature becomes a governing operational constraint rather than a transient condition.
+Thermal dynamics become a dominant constraint when inference nodes execute continuously rather than in short bursts. Thermal behavior acts as a primary constraint in edge modeling. Unlike data centers, many edge nodes operate without active cooling or with minimal airflow. Under continuous inference, steady-state junction temperature becomes a governing operational limit rather than a transient condition.
 
 \subsection{RC Equivalent Thermal Model}
 We approximate silicon thermal dynamics using a lumped RC model. Let $C_{th}$ be thermal capacitance, $R_{th}$ thermal resistance to ambient, $T_{amb}$ ambient temperature, and $P_{dyn}(t)$ dynamic power. The temperature evolution is described by:
@@ -388,7 +388,7 @@ Dynamic power follows:
 \begin{equation}
 P_{dyn} \propto C_{eff} V_{dd}^2 f
 \end{equation}
-Because voltage appears quadratically, even modest reductions in $V_{dd}$ produce substantial energy savings. UMA nodes typically implement aggressive DVFS. If the inference pipeline exceeds the required throughput target, the governor reduces voltage and frequency to meet—but not exceed—the real-time boundary. Discrete systems can also implement DVFS, but the energy floor imposed by peripheral transfer often limits the extent of downscaling under sustained load. In continuous edge inference, excess performance is wasted energy.
+Because voltage appears quadratically, even modest reductions in $V_{dd}$ produce substantial energy savings. UMA nodes typically implement aggressive DVFS. If the modeled throughput exceeds the required target, the governor reduces voltage and frequency to meet—but not exceed—the real-time boundary. Discrete systems can also implement DVFS, but the energy floor imposed by peripheral transfer often limits the extent of downscaling under sustained load. In continuous edge inference, excess performance is wasted energy.
 
 \subsection{Performance-Per-Watt (PPW)}
 We define efficiency as:
@@ -401,7 +401,7 @@ Under the modeled workload:
     \item \textbf{Discrete:} $28.4 \text{ FPS} / 65\text{W} = 0.43 \text{ FPS/W}$
     \item \textbf{UMA:} $33.1 \text{ FPS} / 14\text{W} = 2.36 \text{ FPS/W}$
 \end{itemize}
-The ratio implies approximately \textbf{5.4× higher energy efficiency}. This is not merely a peak benchmark difference; it reflects sustained operation within a constrained power envelope.
+The ratio implies that the model estimates approximately \textbf{5.4× higher energy efficiency} under the assumed conditions. This is not merely a peak benchmark difference; it reflects theoretically sustained operation within a constrained power envelope.
 
 \subsection{Total Cost of Ownership (TCO)}
 Institutional hardware decisions rarely hinge on benchmark charts alone. Total cost of ownership integrates hardware acquisition, operational energy, and maintenance:
@@ -440,10 +440,10 @@ INT8 & 25\% & 2.9x & $\approx 1.5\%$ \\
 \label{tab:quantization}
 \end{table}
 
-FP16 emerges as a practical Pareto point for UMA node deployments. It halves bandwidth pressure and more than doubles throughput with negligible accuracy degradation. INT8 offers further gains but introduces nonlinear accuracy loss in some models \cite{b37, b38}. Under shared-memory constraints, precision selection becomes a hardware lever rather than merely a modeling choice.
+FP16 emerges as a practical Pareto point within the UMA model. It halves bandwidth pressure and more than doubles throughput with negligible accuracy degradation. INT8 offers further gains but introduces nonlinear accuracy loss in some models \cite{b37, b38}. Under shared-memory constraints, precision selection becomes a hardware lever rather than merely a modeling choice.
 
 \subsection{Limits of the Analytical Model}
-The MBEEE defines structural bounds, not exact real-world predictions. Practical node deployments introduce variability: scheduler jitter, thermal interface imperfections, and power delivery fluctuations. Nevertheless, certain constraints remain physics-bound: $pJ/bit$ transfer energy, queueing variance behavior, and exponential temperature acceleration. These are not software artifacts but hardware realities.
+The MBEEE defines structural bounds, not exact real-world predictions. Practical operation introduces variability: scheduler jitter, thermal interface imperfections, and power delivery fluctuations. Nevertheless, certain constraints remain physics-bound: $pJ/bit$ transfer energy, queueing variance behavior, and exponential temperature acceleration. These are not software artifacts but hardware realities.
 
 % ==========================================
 % IX. CONCLUSION
@@ -453,7 +453,7 @@ This study analyzed how memory architecture influences the feasible operating en
 
 Discrete heterogeneous nodes remain effective in throughput-oriented data center environments. However, their dependence on peripheral interconnects introduces serial bottlenecks and energy overheads that can constrain viability under strict edge power envelopes. Unified Memory Architectures reduce transfer-induced serialization, narrow latency variance, and lower steady-state thermal load.
 
-Within the modeled hardware constraints, UMA nodes demonstrate higher performance-per-watt and a broader feasible operating envelope. The evaluation confirms that the hardware architecture can sustain stable performance under realistic deployment conditions. Node responsiveness remains consistent across varying workloads.
+Within the modeled hardware constraints, UMA nodes demonstrate higher performance-per-watt and a broader feasible operating envelope. The physical modeling suggests that UMA can sustain stable node-level performance under strict latency constraints. Theoretical responsiveness remains consistent across varying analytical workloads.
 
 % ==========================================
 % REFERENCES
