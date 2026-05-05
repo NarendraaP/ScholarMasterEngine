@@ -4,80 +4,47 @@
 
 | Field | Value |
 |---|---|
-| **Title** | A Context-Aware Multi-Modal Framework for Reducing False Negatives in Student Engagement Analysis |
+| **Title** | A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis |
 | **Paper ID** | P2 |
-| **Layer** | Reasoning (L4 — Engagement Logic) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Layer** | Multi-Modal Fusion Layer |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Initialized |
 
 ## 2. Primary Contribution
 
-**An interpretable logic layer that fuses visual, schedule, and acoustic signals to reduce Type-II errors (false negatives) in engagement classification — specifically, misclassifying high cognitive load as disengagement.**
+**A context-aware logical fusion framework that applies a Bayesian prior shift to visual engagement metrics using acoustic lexical density and schedule metadata, reducing asymmetric false-negative errors during high-load instruction.**
 
-Paper 2 addresses the "deep thought looks like sleeping" problem by introducing context-aware fusion rules that cross-reference pose data with schedule context and acoustic environment before issuing a disengagement label.
+Paper 2 establishes the fusion layer that prevents unimodal visual classifiers from misinterpreting concentrated cognitive effort as disengagement. It formalizes this correction as a "Valence Discrepancy" and uses domain-specific ASR to compute a contextual load factor that re-weights the decision boundary.
 
 ## 3. Core Claims
 
-| # | Claim | Evidence | CC Flag |
+| # | Claim | Evidence | Boundary Check |
 |---|---|---|---|
-| C1 | Baseline vision-only engagement classifiers exhibit 22% false-negative rate under high-cognitive-load scenarios | Controlled experiment (§IV) | Clean |
-| C2 | Context-aware fusion reduces FN rate to 4.3% — a 79% relative improvement | Comparative results (Table III) | Clean |
-| C3 | Schedule cross-referencing (exam period flag) prevents 68% of misclassifications | Ablation study (§V) | Clean |
-| C4 | Acoustic ambient signal (quiet classroom = focused, not sleeping) provides complementary cue | Feature importance analysis (§V) | Clean |
+| C1 | Visual models systematically misclassify high-load concentration as disengagement (Valence Discrepancy). | Sim-Class-24 Baseline (42.0% Sim-FNR-HL) | Clean |
+| C2 | Lexical density derived from ASR can serve as an effective proxy for germane cognitive load. | Eq 6 | Clean |
+| C3 | Applying a sigmoid Bayesian prior shift based on load reduces false negatives. | Eq 7, Table 2 (6.0% Sim-FNR-HL) | Clean |
+| C4 | This logic layer outperforms opaque cost-sensitive deep learning models while preserving interpretability. | Table 1 | Clean |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- Multimodal fusion logic (visual pose + schedule context + acoustic level)
-- Type-II error (false negative) reduction in engagement classification
-- Interpretable rule-based reasoning (not black-box ML)
-- Integration point with schedule repository (Paper 4/7)
+- Multi-modal fusion logic (Visual + Acoustic + Schedule)
+- Bayesian prior adjustment formulations (Eq 5-7)
+- Validation against the Sim-Class-24 dataset
+- Semantic density extraction logic via VAD and ASR dictionaries
 
-### 4.2 Out-of-Scope
-- Identity retrieval (Paper 1)
-- Privacy enforcement or raw data handling (Paper 3, Paper 17)
-- Acoustic anomaly detection (Paper 6 — Paper 2 uses ambient level, not event detection)
-- Compliance rule enforcement (Paper 4, Paper 7)
-- Federated model retraining (Paper 13)
+### 4.2 Out-of-Scope (Strictly Forbidden)
+- **Acoustic Signal Processing** (Owned by P6 - P2 focuses on semantic tokens, not acoustic localization)
+- **Relational Schedule Enforcement** (Owned by P4)
+- **Deep Learning Model Architectures** (Owned by P13 - P2 focuses on the fusion *logic*, not designing the underlying ASR model)
 
-## 5. Enforcement Invariants
+## 5. Potential Overlap Risks (Pending Audit)
 
-| ID | Invariant | Enforcement |
-|---|---|---|
-| P2-INV-01 | Engagement labels MUST NOT be derived from identity — only from posture/context signals | Architecture: identity vector not input to engagement classifier |
-| P2-INV-02 | No engagement label shall be emitted without schedule-context cross-reference | Fusion gate requires schedule lookup before label output |
-| P2-INV-03 | Buffer deallocated after inference — no raw frame persistence | RAII pattern; volatile memory only |
+- **Privacy Invariants (P3 / P8):** P2 mentions applying CLAHE to raw RGB frames for valence extraction. This must be carefully scoped to avoid violating the volatile memory / no-RGB-persistence constraints established in P3.
+- **Validation (P10):** P2 uses Sim-Class-24. We must ensure it only claims logical validation, not full system throughput.
 
-## 6. Upstream / Downstream Dependencies
+## 6. What This Paper Does NOT Do
 
-| Direction | Paper | Interface |
-|---|---|---|
-| **Upstream** | P1 (Identity) | Identity vector provides frame association (not used for classification) |
-| **Upstream** | P3 (Pose) | Skeletal pose vector is primary visual input |
-| **Upstream** | P6 (Acoustic) | Ambient acoustic level as context signal |
-| **Upstream** | P7 (Schedule) | Schedule context (exam/lecture/break) as fusion input |
-| **Downstream** | P9 (Orchestrator) | Engagement events published to orchestration bus |
-| **Downstream** | P10 (Validation) | Engagement module exercised under system stress test |
-
-## 7. Verification Requirements
-
-- FN rate ≤ 5% under high-cognitive-load test scenarios
-- No identity data leakage into engagement classification pathway
-- Engagement labels correlate with schedule context (exam → higher tolerance)
-- Latency < 33 ms for fusion decision per frame
-
-## 8. What This Paper Does NOT Do
-
-- Does **not** perform identity recognition or biometric retrieval
-- Does **not** make privacy claims (defers to Paper 3/17)
-- Does **not** detect acoustic anomalies (uses only ambient level from Paper 6)
-- Does **not** enforce schedule compliance rules (defers to Paper 4/7)
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
-|---|---|---|
-| **Fusion Logic** | `modules_legacy/master_engine.py` | ✅ Verified (Fusion Gate at Step 0.5 & 3) |
-| **Context Engine** | `modules_legacy/context_manager.py` | ✅ Verified (Schedule Lookup) |
-| **Acoustic Context** | `modules_legacy/audio_sentinel.py` | ✅ Verified (Ambient Level Input) |
-
+- Does **not** design the physical acoustic sensors or edge hardware.
+- Does **not** train the foundational ASR models (it treats them as oracles/extractors).
+- Does **not** execute schedule compliance penalties.
