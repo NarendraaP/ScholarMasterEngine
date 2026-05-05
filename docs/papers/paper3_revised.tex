@@ -70,13 +70,13 @@ Pose Estimation, Geometric Sensing, Edge Computing, Volatile Memory, Dimensional
 
 Numerous vision-based sensing systems process high-dimensional image tensors even when the final inference task depends primarily on low-dimensional geometric relationships. This mismatch between input representation and analytical requirement introduces an unnecessary exposure surface for biometric texture during intermediate computation. Optical sensors provide highly detailed geometric information, but they simultaneously capture high-resolution texture data that far exceeds what is required for kinematic inference. In conventional pipelines, even detecting a simple gesture necessitates decoding and processing the full RGB frame, although only a sparse subset of spatial relationships is ultimately used \cite{b1}.
 
-This mismatch becomes particularly visible in action-sensing pipelines. Although these systems are technically effective, they accumulate detailed biometric information during intermediate processing stages. This intermediate exposure can introduce privacy and regulatory concerns, particularly within institutional environments where persistent recording is neither necessary nor desirable \cite{b25}.
+This mismatch becomes particularly visible in action-sensing pipelines. Although these systems are technically effective, they accumulate detailed biometric information during intermediate processing stages. This intermediate exposure can introduce data persistence risks, particularly within institutional environments where persistent recording is neither necessary nor desirable \cite{b25}.
 
 Lower-fidelity sensing alternatives avoid capturing texture entirely. Passive Infrared (PIR) detectors, ultrasonic motion sensors, and break-beam systems can signal motion without encoding facial detail. However, these sensors lack the spatial resolution required to distinguish specific geometric actions in crowded or complex environments \cite{b2}. A practical gap therefore remains between high-fidelity optical sensing and low-fidelity physical detection systems.
 
 The vision pipeline proposed in this work addresses the representation mismatch. It accomplishes this by separating geometric inference from persistent pixel storage. A pose estimation network operating on edge hardware projects the dense RGB matrix into a sparse coordinate representation. Immediately following vectorization, the raw frame buffer is explicitly overwritten in memory. The perception layer never persists or analyzes facial texture beyond this bounded interval.
 
-Unlike post-hoc anonymization strategies—such as blurring, masking, or noise injection \cite{b3, b4}—which may remain vulnerable to inversion or super-resolution attacks, this approach constrains the lifetime of raw pixels at the systems level. Privacy enforcement is implemented through memory confinement rather than image manipulation.
+Unlike post-hoc data protection strategies—such as blurring, masking, or noise injection \cite{b3, b4}—which may remain vulnerable to inversion or super-resolution attacks, this approach limits the lifetime of raw pixels at the systems level. Data minimization is implemented through memory confinement rather than image manipulation.
 
 The core technical elements include:
 \begin{itemize}
@@ -115,7 +115,7 @@ Instead, we adopt the classical Perspective-n-Point (PnP) formulation \cite{b15,
 \section{Sensing Constraints and Threat Modeling}
 
 \subsection{Signal Isolation Objective}
-To evaluate the privacy implications of geometric projection, we first define the signal-separation objective of the sensing pipeline. In conventional pipelines, these signals remain tightly entangled: the same RGB tensor carries both geometric structure and identity-bearing detail.
+To evaluate the exposure reduction of geometric projection, we first define the signal-separation objective of the sensing pipeline. In conventional pipelines, these signals remain tightly entangled: the same RGB tensor carries both geometric structure and identity-bearing detail.
 
 The perception pipeline introduced here enforces a deliberate separation (isolating spatial topology from textural features). The pose estimator acts as a compressive transformation, allowing only low-frequency spatial topology (joint coordinates) to pass downstream. High-frequency components—skin texture, pigmentation gradients, microstructure—are discarded prior to persistence. In signal-processing terms, the pipeline behaves like a spatial abstraction filter. It transmits coordinate relationships while eliminating pixel-level content.
 
@@ -300,9 +300,9 @@ A finite-state persistence constraint further filters transient motion:
 This enforces temporal stability before emitting an event.
 
 % ==========================================
-% V. MEMORY SYSTEMS ENGINEERING
+% V. MEMORY-AWARE SENSING CONSTRAINTS
 % ==========================================
-\section{Memory Systems Engineering}
+\section{Memory-Aware Sensing Constraints}
 
 Maintaining a bounded exposure window requires coordination between application logic and the underlying operating system memory manager. Without explicit safeguards, operating systems may retain sensitive frame data within swap space, cache hierarchies, or freed memory regions \cite{b21, b22}. The confinement guarantee therefore depends heavily on disciplined memory management rather than application-level logic alone.
 
@@ -316,7 +316,7 @@ Deallocation via \texttt{free()} or \texttt{delete} does not overwrite memory. T
 
 Nevertheless, naive use of \texttt{memset()} is insufficient. Modern compilers may eliminate redundant memory writes through optimization passes—a behavior known as Dead Store Elimination (DSE). During early testing, builds compiled with \texttt{clang -O2} removed zeroization calls when the buffer was immediately freed, leaving residual data observable during inspection.
 
-To guarantee execution of the overwrite operation, we employ secure routines such as \texttt{explicit\_bzero()} or \texttt{memset\_s()}, which are designed to resist DSE. Where necessary, buffer pointers are cast to volatile to prevent compiler removal. Additionally, cache line flush instructions (e.g., \texttt{\_mm\_clflush}) are invoked when supported by the hardware architecture. While complete elimination of microarchitectural residue cannot be formally guaranteed, these steps substantially reduce the probability of data persistence beyond the intended window. 
+To guarantee execution of the overwrite operation, we employ secure routines such as \texttt{explicit\_bzero()} or \texttt{memset\_s()}, which are designed to resist DSE. Where necessary, buffer pointers are cast to volatile to prevent compiler removal. Additionally, cache line flush instructions (e.g., \texttt{\_mm\_clflush}) are invoked when supported by the local design. While complete elimination of microarchitectural residue cannot be formally guaranteed, these steps substantially reduce the probability of data persistence beyond the intended window. 
 
 The combination of page locking, explicit zeroization, and optional cache flush primitives renders the volatile boundary operationally measurable rather than theoretical.
 
@@ -362,7 +362,7 @@ Algorithm 1 reflects this ordering:
 \STATE $E_R \leftarrow V_{filtered}[8]$  \COMMENT{Right Ear}
 \STATE $D_{sh} \leftarrow \text{ComputeShoulderDist}(V_{filtered})$
 \STATE
-\STATE \textbf{// Phase 3: Topological Logic Evaluation}
+\STATE \textbf{// Phase 3: Geometric Event Detection Heuristic}
 \IF{$W_R.y < (E_R.y - \alpha D_{sh}) \land conf_{16} > \tau_c$}
     \STATE $timer \leftarrow timer + \Delta t$
 \ELSE
@@ -372,7 +372,7 @@ Algorithm 1 reflects this ordering:
 \STATE \textbf{// Phase 4: Orientation and Emission}
 \STATE $(\psi, \theta, \phi) \leftarrow SolvePnP(V_{filtered}[cranial\_indices])$
 \IF{$|\psi| < 45^{\circ}$ \AND $timer > \delta$}
-    \STATE $L.append(\{ timestamp, "elevation\_event", \psi \})$
+    \STATE $L.append(\{ timestamp, "geometric\_event", \psi \})$
     \STATE $timer \leftarrow 0$
 \ENDIF
 \RETURN $L$ \COMMENT{Emitted to Persistent Region}
@@ -438,12 +438,12 @@ PnP Optimization & 1.1 & Persistent (Logic) \\
 
 The zeroization overhead ($\sim$1.2 ms) represents a deliberate trade-off between performance and memory hygiene. Attempts to parallelize the wipe operation produced little measurable improvement, suggesting that secure erasure is not a computational bottleneck under the current configuration.
 
-Crucially, inference throughput remained above 30 FPS throughout sustained testing, confirming that the confinement guarantee does not compromise real-time processing.
+Crucially, experimental evaluation indicates $\sim$30 FPS throughout sustained testing, confirming that the confinement constraint is operationally viable.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{terminal_logs.png}
-\caption{Real-time monitoring output demonstrating sustained edge inference throughput ($>30$ FPS) and stable resource utilization.}
+\caption{Real-time monitoring output indicating $\sim$30 FPS inference throughput and stable computational bounds.}
 \label{fig:terminal_logs}
 \end{figure}
 
