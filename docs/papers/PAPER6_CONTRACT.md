@@ -4,80 +4,67 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Zero-Retention Acoustic Sentinel for Privacy-Preserving Safety Monitoring in Educational Environments |
+| **Title** | Edge-Based NLOS Acoustic Safety Monitoring via Spectral Gating and GCC-PHAT |
 | **Paper ID** | P6 |
-| **Layer** | Perception (L2 — Acoustic Sensing) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Layer** | Edge Signal Processing (L3 — Acoustic Sensor Layer) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Finalized (Boundary Enforced) |
 
 ## 2. Primary Contribution
 
-**A privacy-preserving acoustic anomaly detection pipeline that classifies safety-critical sounds (screams, glass breaks, gunshots) from spectral features alone, with zero retention of raw audio — all processing occurs in volatile memory and raw waveforms are destroyed after feature extraction.**
+**An edge-native acoustic monitoring pipeline capable of detecting high-decibel impulsive events originating from visually occluded regions (NLOS) within reverberant environments, utilizing deterministic physics-based signal processing rather than deep semantic classification.**
 
-Paper 6 provides the acoustic perception channel complementary to the visual pipeline (Papers 1/3), extending campus safety monitoring without introducing audio surveillance capabilities.
+Paper 6 operates strictly at the signal processing layer. It bridges the gap between raw physical sensor hardware and high-level evaluation engines by filtering and interpreting raw audio waves into structural metadata.
 
 ## 3. Core Claims
 
-| # | Claim | Evidence | CC Flag |
+| # | Claim | Evidence | Boundary Check |
 |---|---|---|---|
-| C1 | Mel-spectrogram features are sufficient for safety-event classification (≥ 94% accuracy) | Classification results (§V) | Clean |
-| C2 | Raw audio waveforms are destroyed after spectral extraction — zero retention | Architecture (§III); volatile memory lifecycle | Clean — scoped as "technical property of the memory lifecycle" |
-| C3 | Speech content is not captured or reconstructable from Mel-spectrograms at the system's resolution | Information-theoretic analysis (§IV) | Clean |
-| C4 | Acoustic triggers preempt visual processing when safety-critical events are detected | Priority scheduler (§III) | Clean |
+| C1 | Logarithmic Spectral Gating ($\delta$) effectively separates broadband impulsive events from low-frequency mechanical impacts | Algorithm 1 + Fig 1 | Clean |
+| C2 | Autocorrelation-derived Periodic Rejection ($\rho$) reduces recurring mechanical false positives | Algorithm 1 | Clean |
+| C3 | GCC-PHAT accurately estimates source azimuth in multipath-dominant indoor reverberant environments ($\mathcal{R}_{rev}$) | Eq 10-11 | Clean |
+| C4 | Immediate PCM overwrite from bounded buffers inherently provides privacy without semantic retention | §IV.B Buffer Management | Clean (Runtime API generalized) |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- Mel-spectrogram feature extraction from microphone input
-- Safety-event classification (scream, glass break, gunshot, crowd distress)
-- Volatile memory confinement of raw audio
-- Priority preemption of visual pipeline for safety events
-- Source localization via multi-microphone delay estimation
+- Signal processing transformations (FFT, STFT, Autocorrelation, Cross-Correlation)
+- Physical modeling of corridor acoustics ($RT_{60}$, $D_c$, SPL bounds)
+- Microbenchmarks of spectral vs. amplitude triggering
+- Algorithm complexity and deterministic latency bounding ($\le 120ms$)
 
-### 4.2 Out-of-Scope
-- Speech recognition or transcription (explicitly excluded)
-- Visual anomaly detection (Paper 1, Paper 3)
-- Engagement analysis (Paper 2 uses acoustic *level*, not events)
-- Trust/audit logging (Paper 8)
-- AR visualization of acoustic events (Paper 15)
+### 4.2 Out-of-Scope (Strictly Forbidden)
+- **Deep Learning / Semantic Audio Classification** (Violates latency/privacy constraints)
+- **System Architecture** (Owned by P18)
+- **OS-Level Thread/Memory Management** (Owned by P20)
+- **Application Validation Logic** (Owned by P10)
 
 ## 5. Enforcement Invariants
 
 | ID | Invariant | Enforcement |
 |---|---|---|
-| P6-INV-01 | Raw audio buffers MUST be destroyed after Mel-spectrogram extraction | RAII deallocation; no disk-write path |
-| P6-INV-02 | No speech-content features SHALL be extracted or stored | Feature pipeline limited to spectral energy bands |
-| P6-INV-03 | Safety-critical acoustic events MUST preempt visual processing | Priority scheduler with interrupt-level override |
+| P6-INV-01 | Must NOT claim runtime scheduling ownership | Replaced "mutex" and "operating system tasks" with abstract threading references |
+| P6-INV-02 | Must NOT claim deep learning evaluation | Explicitly defined against AST/CNN approaches |
+| P6-INV-03 | Must NOT claim formal architectural design | ARM Cortex-A72 scoped purely as an experimental prototype |
 
 ## 6. Upstream / Downstream Dependencies
 
 | Direction | Paper | Interface |
 |---|---|---|
-| **Upstream** | P5 (Hardware) | Hardware platform providing audio input and Neural Engine |
-| **Downstream** | P2 (Engagement) | Ambient acoustic level as context signal |
-| **Downstream** | P9 (Orchestrator) | Acoustic safety events on orchestration bus |
-| **Downstream** | P10 (Validation) | Acoustic module exercised under system stress test |
-| **Downstream** | P15 (AR) | Acoustic alerts rendered as spatial AR overlays |
+| **Upstream** | P18 (Architecture) | Operates on the edge sensing nodes defined by P18 |
+| **Upstream** | P20 (Runtime) | Relies on P20 to provide the actual isolated OS execution environment |
+| **Downstream** | P7 (Stream Engine) | Passes lightweight `[TIMESTAMP, CONFIDENCE, AZIMUTH]` tuples up to the stream evaluation layer |
 
-## 7. Verification Requirements
+## 7. What This Paper Does NOT Do
 
-- Safety-event classification accuracy ≥ 94% on test set
-- Zero raw audio recoverable from heap post-extraction
-- Priority preemption triggers within 10 ms of safety-event detection
-- No speech-content features present in feature pipeline output
+- Does **not** categorize what the sound actually is (e.g., "screaming woman", "breaking glass"). It only detects "high-energy, chaotic, non-periodic anomaly".
+- Does **not** manage the system lifecycle or clustering mechanisms.
+- Does **not** provide mathematical proofs of safety logic.
 
-## 8. What This Paper Does NOT Do
+## 8. Verified Implementation Components
 
-- Does **not** perform speech recognition or NLP
-- Does **not** retain any audio recordings
-- Does **not** make privacy claims beyond volatile confinement (defers to Paper 17)
-- Does **not** address visual anomaly detection (complementary to, not replacement for, visual pipeline)
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
+| Component | Status | Note |
 |---|---|---|
-| **Audio Sentinel** | `modules_legacy/audio_sentinel.py` | ✅ Verified (Spectral Analysis & VAD) |
-| **Privacy Wipe** | `modules_legacy/audio_sentinel.py` | ✅ Verified (`indata.fill(0)` barrier) |
-| **Impulse Logic** | `modules_legacy/audio_sentinel.py` | ✅ Verified (Ratio-based Trigger) |
-
+| **Spectral Gating Filter ($\delta$)** | ✅ Verified | Ablation study confirmed FPR reduction |
+| **Periodic Rejection Filter ($\rho$)** | ✅ Verified | Tested against HVAC signatures |
+| **GCC-PHAT Implementation** | ✅ Verified | Tested via RIR convolution datasets |
