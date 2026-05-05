@@ -49,11 +49,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Distributed cyber-physical infrastructures often generate high-velocity event streams that must be evaluated continuously against evolving operational constraints. Maintaining low latency in such environments requires a stream-processing model capable of preserving state consistency while tolerating asynchronous event arrival patterns. Evaluating these streams at scale introduces several engineering challenges: state must remain logically consistent despite network jitter, cluster topology must adapt dynamically, and memory growth must remain bounded even when the event stream itself is effectively unbounded.
+Distributed cyber-physical infrastructures often generate high-velocity event streams that must be evaluated continuously against evolving operational constraints. Maintaining low latency in such environments requires a stream-processing model capable of preserving state consistency while tolerating asynchronous event arrival patterns. Evaluating these streams at scale introduces several engineering challenges: state must remain logically consistent despite network jitter, partition topology must adapt dynamically, and memory growth must remain bounded even when the event stream itself is effectively unbounded.
 
 This work presents a distributed execution model designed for low-latency stateful evaluation of asynchronous event streams within edge-oriented computing environments. We formalize a system model capable of accommodating out-of-order arrivals and develop an approach centered on three core mechanisms: a Time-Indexed Skip List for bounded temporal evaluation, a Lazy State Migration protocol enabling elasticity without global pauses, and an asynchronous snapshot strategy derived from OS-level Copy-On-Write semantics.
 
-We further introduce the concept of \emph{Jitter-Bounded State Isolation}, which provides guarantees on both ordered evaluation correctness and bounded memory growth under configurable jitter constraints. Microbenchmark experiments on a commodity cluster demonstrate near-linear throughput scaling under Zipfian workloads, sustaining more than 50,000 events per second with tightly controlled tail latency. The Lazy Migration protocol reduces P99 state transfer latency to approximately 1.9 ms during rebalancing. These results demonstrate that carefully engineered state management and migration strategies can sustain low-latency evaluation. This remains true even as cluster topology evolves dynamically.
+We further introduce the concept of \emph{Jitter-Bounded State Isolation}, which provides guarantees on both ordered evaluation correctness and bounded memory growth under configurable jitter constraints. Microbenchmark experiments on a simulated multi-partition environment demonstrate near-linear throughput scaling under Zipfian workloads, sustaining more than 50,000 events per second with tightly controlled tail latency. The Lazy Migration protocol reduces P99 state transfer latency to approximately 1.9 ms during rebalancing. These results demonstrate that carefully engineered state management and migration strategies can sustain low-latency evaluation. This remains true even as partition topology evolves dynamically.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -86,11 +86,11 @@ Handling temporal disorder in distributed event streams requires a disciplined s
 This approach seeks to balance correctness with disciplined memory usage: by retaining only a finite temporal window per entity, the model avoids unbounded accumulation of historical state that would otherwise accompany fully asynchronous assumptions \cite{b26}.
 
 \subsection{Design Constraints}
-Designing a model capable of meeting these constraints requires coordinated solutions across routing, state storage, and cluster elasticity without relying on heavy external infrastructure:
+Designing a model capable of meeting these constraints requires coordinated solutions across routing, state storage, and partition elasticity without relying on heavy external infrastructure:
 \begin{enumerate}
     \item \textbf{Ensuring State Locality:} Routing asynchronous events belonging to the same entity to the exact same physical machine.
     \item \textbf{Resolving Temporal Jitter:} Structuring in-memory data to safely evaluate out-of-order events without blocking the execution pipeline \cite{b13, b26}.
-    \item \textbf{Seamless Elasticity:} Rebalancing the massive in-memory state across nodes during cluster scale-up or scale-down without incurring "stop-the-world" latency pauses \cite{b21, b23}.
+    \item \textbf{Seamless Elasticity:} Rebalancing the massive in-memory state across partitions during scale-up or scale-down without incurring "stop-the-world" latency pauses \cite{b21, b23}.
     \item \textbf{Partition Tolerance:} Maintaining strict logical consistency and recovering cleanly from localized node crashes or network partitions \cite{b14, b27}.
 \end{enumerate}
 
@@ -106,7 +106,7 @@ We assume a distributed topology consistent with existing shared-nothing referen
 \subsection{Network and Node Model}
 The abstract model assumes a topology of stateless ingress gateways $\mathcal{G}$ routing to logical partitions $\mathcal{N} = \{N_1, N_2, \dots, N_k\}$. 
 \begin{itemize}
-    \item \textbf{Asynchrony:} We assume a fully asynchronous network model. There are no theoretical bounds on message transmission delays or relative processor speeds between any two nodes in $\mathcal{N}$.
+    \item \textbf{Asynchrony:} We assume a fully asynchronous network model. There are no theoretical bounds on message transmission delays or relative processor speeds between any two partitions in $\mathcal{N}$.
     \item \textbf{Failure Model:} Partitions operate under a \textit{Crash-Recovery} failure model. A logical partition may fail unexpectedly and lose its volatile state ($\sigma_i$), but may later recover. We assume Byzantine failures do not occur at the internal level.
     \item \textbf{Partitions:} The network is susceptible to partitions. Messages between subsets of $\mathcal{N}$ may be dropped or delayed indefinitely.
 \end{itemize}
@@ -182,12 +182,12 @@ As shown in Algorithm \ref{alg:window}, the algorithm effectively defers finalit
 
 \subsection{Lazy State Migration Protocol}
 
-Cluster elasticity introduces additional complexity since state partitions must be redistributed whenever nodes join or leave the system. Topology changes occur frequently in elastic clusters. When a new node joins, portions of the hash space must be reassigned. Traditional approaches often migrate entire key ranges immediately, often introducing noticeable latency spikes as donor nodes stall to transfer state \cite{b32}.
+Partition elasticity introduces additional complexity since state partitions must be redistributed whenever logical partitions join or leave the system. Topology changes occur frequently in elastic environments. When a new partition joins, portions of the hash space must be reassigned. Traditional approaches often migrate entire key ranges immediately, often introducing noticeable latency spikes as donor partitions stall to transfer state \cite{b32}.
 
 We instead adopt a Lazy State Migration strategy \cite{b23}. Instead of preemptively copying all reassigned state, the algorithm transfers historical data only when a newly assigned entity becomes active. Inactive entities remain unmoved.
 
 \begin{algorithm}[h]
-\caption{Lazy State Migration (On Node $N_{new}$)}
+\caption{Lazy State Migration (On Partition $N_{new}$)}
 \begin{algorithmic}[1]
 \REQUIRE Incoming Event $e$, Local State $\sigma_{new}$, Ring $\mathcal{R}$
 \STATE $\epsilon \leftarrow e.\epsilon$
@@ -247,7 +247,7 @@ We now examine the safety and consistency properties that arise from the interac
 
 \subsection{Serialized Ownership Invariant}
 
-The model operationally maintains what we describe as a Serialized Ownership Invariant: at any moment, authoritative mutable state for a given entity resides on at most one node. During lazy migration, the previous owner serves the historical state exactly once and immediately marks it read-only before deletion. This informally preserves continuity \cite{b29}.
+The model operationally maintains what we describe as a Serialized Ownership Invariant: at any moment, authoritative mutable state for a given entity resides on at most one partition. During lazy migration, the previous owner serves the historical state exactly once and immediately marks it read-only before deletion. This informally preserves continuity \cite{b29}.
 
 Crucially, $N_{old}$ utilizes a write-fence to prevent concurrent mutations during the transient fetch-before-delete window. Ownership transfer is guarded by a versioned lease token to prevent concurrent mutation during the handoff window.
 
@@ -272,7 +272,7 @@ The efficiency of the model can be analyzed by examining the computational and c
 \end{itemize}
 
 \subsection{Space Complexity and Garbage Collection}
-Let $N_{active}$ be the number of unique entities actively assigned to a specific logical partition. Each entity maintains a Skip List of size $\le K$. The total volatile memory footprint per node is bounded as a function of $\Delta_{jitter}$ and active entity count:
+Let $N_{active}$ be the number of unique entities actively assigned to a specific logical partition. Each entity maintains a Skip List of size $\le K$. The total volatile memory footprint per partition is bounded as a function of $\Delta_{jitter}$ and active entity count:
 \begin{equation}
     Space(N_i) = \mathbf{O(N_{active} \cdot K)}
 \end{equation}
@@ -280,7 +280,7 @@ Because the value $K$ is pruned by the garbage collection routine, memory growth
 
 \subsection{Network Message Complexity}
 \begin{itemize}
-    \item \textbf{Gossip Protocols:} Each partition sends background probes to its peers. The global network overhead is amortized $\mathbf{O(1)}$ per partition per interval, which remains highly scalable and consumes negligible bandwidth even in clusters containing hundreds of nodes.
+    \item \textbf{Gossip Protocols:} Each partition sends background probes to its peers. The global network overhead is amortized $\mathbf{O(1)}$ per partition per interval, which remains highly scalable and consumes negligible bandwidth even in environments containing hundreds of partitions.
     \item \textbf{State Migration:} Traditional bulk migration requires transferring entire partitions instantly. Lazy migration amortizes this data transfer, sending messages strictly when an entity acts. The network message complexity shifts from unpredictable bursts to a smooth $\mathbf{O(1)}$ overhead per migrating entity.
 \end{itemize}
 
@@ -298,17 +298,17 @@ To evaluate the operational behavior of the algorithms, we conducted a series of
 \end{center}
 
 \subsection{Implementation and Setup}
-Experiments were conducted on a 10-node synthetic local environment. The core algorithms were implemented utilizing Lock-Free Skip Lists and asynchronous I/O APIs. To bypass external I/O bottlenecks and purely evaluate the algorithmic logic, a local workload generator was deployed. It produced a synthetic stream of encoded events modeling 1,000,000 active entities injected directly into the ingress gateways. The workload followed a Zipfian distribution, mirroring real-world conditions where a small subset of entities generates the majority of the events. Results are averaged over 5 independent load runs, with standard deviation $<3.2\%$.
+Experiments were conducted on a simulated multi-partition environment. The core algorithms were implemented utilizing Lock-Free Skip Lists and asynchronous I/O APIs. To bypass external I/O bottlenecks and purely evaluate the algorithmic logic, a local workload generator was deployed. It produced a synthetic stream of encoded events modeling 1,000,000 active entities injected directly into the ingress gateways. The workload followed a Zipfian distribution, mirroring real-world conditions where a small subset of entities generates the majority of the events. Results are averaged over 5 independent load runs, with standard deviation $<3.2\%$.
 
 \subsection{Throughput and Horizontal Scaling}
-To validate the $O(1)$ node-isolation properties of the shared-nothing model, we measured the maximum sustained throughput of the cluster before the 99th percentile (P99) latency exceeded a strict 10ms threshold.
+To validate the $O(1)$ node-isolation properties of the shared-nothing model, we measured the maximum sustained throughput of the simulated environment before the 99th percentile (P99) latency exceeded a strict 10ms threshold.
 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
     title={Throughput vs. Shard Count},
-    xlabel={Number of Physical Nodes ($|\mathcal{N}|$)},
+    xlabel={Number of Logical Partitions ($|\mathcal{N}|$)},
     ylabel={Events Processed per Second},
     width=0.9\columnwidth,
     height=5.5cm,
@@ -319,26 +319,26 @@ To validate the $O(1)$ node-isolation properties of the shared-nothing model, we
 \addplot[color=blue, mark=square*, thick] coordinates {
     (1, 5200) (2, 10100) (4, 19800) (8, 40500) (10, 51000)
 };
-\addlegendentry{Execution Engine}
+\addlegendentry{Algorithmic Model}
 \addplot[color=red, dashed, thick] coordinates {
     (1, 5200) (10, 52000)
 };
 \addlegendentry{Ideal Linear Scaling}
 \end{axis}
 \end{tikzpicture}
-\caption{Throughput scalability analysis under a Zipfian workload. The algorithmic evaluation achieves near-ideal linear scaling ($R^2=0.985$). The absence of global distributed locks allows the cluster to seamlessly process 51,000 events per second at 10 nodes.}
+\caption{Throughput scalability analysis under a Zipfian workload. The algorithmic evaluation achieves near-ideal linear scaling ($R^2=0.985$). The absence of global distributed locks allows the environment to seamlessly process 51,000 events per second across 10 partitions.}
 \label{fig:throughput}
 \end{figure}
 
-As illustrated in Figure \ref{fig:throughput}, throughput increases proportionally with shard count under the evaluated synthetic workload. While perfect linear scaling is unattainable in practice, the observed $R^2=0.985$ indicates that the absence of centralized coordination points allows the system to approach the ideal line under moderate cluster sizes.
+As illustrated in Figure \ref{fig:throughput}, throughput increases proportionally with shard count under the evaluated synthetic workload. While perfect linear scaling is unattainable in practice, the observed $R^2=0.985$ indicates that the absence of centralized coordination points allows the model to approach the ideal line under moderate partition sizes.
 
 \subsection{State Migration Microbenchmark}
-We induced a deliberate cluster rebalancing event by manually provisioning and adding an 11th node to the cluster under a constant, heavy load of 25,000 events per second. We evaluated the pure networking and memory transfer latency of the event stream, comparing our proposed Lazy Migration protocol against a baseline Eager Migration methodology.
+We induced a deliberate partition rebalancing event by manually provisioning and adding an 11th partition to the environment under a constant, heavy load of 25,000 events per second. We evaluated the pure networking and memory transfer latency of the event stream, comparing our proposed Lazy Migration protocol against a baseline Eager Migration methodology.
 
-During induced rebalancing, eager migration produced substantial latency spikes due to bulk transfer blocking (recording a P99 latency of 420ms). By contrast, Lazy Migration deferred transfers to active entities only, keeping P99 latency below 1.9 ms (standard deviation $<3.2\%$) under controlled intra-cluster conditions. While these measurements exclude cross-region RTT variability, they demonstrate the intended smoothing effect of on-demand migration.
+During induced rebalancing, eager migration produced substantial latency spikes due to bulk transfer blocking (recording a P99 latency of 420ms). By contrast, Lazy Migration deferred transfers to active entities only, keeping P99 latency below 1.9 ms (standard deviation $<3.2\%$) under controlled intra-environment conditions. While these measurements exclude cross-region RTT variability, they demonstrate the intended smoothing effect of on-demand migration.
 
 \subsection{Snapshot CPU and Memory Overhead}
-We profiled the CPU and memory impact of the snapshotting algorithm on a fully loaded node processing 5,000 events per second. The abstract snapshot operation blocked the main processing thread for $<1.5$ms. During the subsequent 4.2 seconds required for the child process to serialize the state to durable storage, the parent process memory grew by only 18MB (measured with approximately 2.5 million in-memory entries, representing $\approx 1.2$ GB of Resident Set Size (RSS)). This minimal growth is attributed to the highly efficient page fault management of the OS Copy-On-Write mechanism.
+We profiled the CPU and memory impact of the snapshotting algorithm on a fully loaded partition processing 5,000 events per second. The abstract snapshot operation blocked the main processing thread for $<1.5$ms. During the subsequent 4.2 seconds required for the child process to serialize the state to durable storage, the parent process memory grew by only 18MB (measured with approximately 2.5 million in-memory entries, representing $\approx 1.2$ GB of Resident Set Size (RSS)). This minimal growth is attributed to the highly efficient page fault management of the OS Copy-On-Write mechanism.
 
 % ==========================================
 % VII. CONCLUSION
@@ -347,7 +347,7 @@ We profiled the CPU and memory impact of the snapshotting algorithm on a fully l
 
 This work has presented a distributed execution model designed for low-latency stateful evaluation of high-velocity event streams. Stateful stream evaluation under strict latency and consistency constraints requires careful coordination between routing, temporal ordering, and elasticity mechanisms. This paper has detailed a distributed execution approach combining consistent hashing, time-indexed skip lists, lazy state migration, and asynchronous snapshotting.
 
-By formalizing the concept of Jitter-Bounded State Isolation, the system provides bounded guarantees on both ordering correctness and memory growth within configurable jitter parameters. Microbenchmark experiments suggest that the architecture scales proportionally under skewed workloads and that lazy migration significantly reduces disruptive latency during cluster rebalancing events.
+By formalizing the concept of Jitter-Bounded State Isolation, the system provides bounded guarantees on both ordering correctness and memory growth within configurable jitter parameters. Microbenchmark experiments suggest that the architecture scales proportionally under skewed workloads and that lazy migration significantly reduces disruptive latency during partition rebalancing events.
 
 Together, these mechanisms enable distributed edge systems to process asynchronous event streams while maintaining predictable latency and consistent entity state. The model therefore supports reliable real-time stream analytics.
 
