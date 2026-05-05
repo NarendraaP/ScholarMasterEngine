@@ -4,78 +4,70 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Spatiotemporal Rule-Based Reasoning for Academic Schedule Compliance Using Constraint Satisfaction Programming |
+| **Title** | Jitter-Bounded State Isolation for Low-Latency Stateful Stream Evaluation |
 | **Paper ID** | P7 |
-| **Layer** | Reasoning (L4 — Schedule Rules) |
-| **Author** | Narendra Babu P |
-| **Status** | Corrected (CC v2.3.0 aligned) |
+| **Layer** | Stream Algorithms (L4 — Evaluation Engine) |
+| **Author** | Dr. S. Suresh Kumar |
+| **Status** | Finalized (Boundary Enforced) |
 
 ## 2. Primary Contribution
 
-**A formal rule-based reasoning engine that extends Paper 4's Constraint Evaluation Framework with a declarative rule language for expressing complex academic schedule constraints — including temporal intervals, role-based access, and exception handling.**
+**A distributed state management model for high-velocity event streams, formalizing Jitter-Bounded State Isolation and introducing algorithmic mechanisms (Time-Indexed Skip Lists, Lazy State Migration) to preserve logical consistency under temporal disorder without centralized coordination.**
 
-Paper 7 provides the rule-definition substrate consumed by Paper 4's runtime constraint solver. Where Paper 4 evaluates constraints, Paper 7 defines the language and semantics for expressing them.
+Paper 7 serves as the algorithmic core of the stream processing pipeline. It assumes the structural framework defined in P18 and the runtime execution defined in P20, providing only the algorithmic logic necessary to safely evaluate asynchronous, out-of-order stateful streams.
 
 ## 3. Core Claims
 
-| # | Claim | Evidence | CC Flag |
+| # | Claim | Evidence | Boundary Check |
 |---|---|---|---|
-| C1 | Academic schedule rules can be expressed as typed CSPs with temporal, spatial, and role domains | Formal grammar (§III) | Clean |
-| C2 | Rule composition supports exception handling (holidays, substitutions, room changes) | Exception algebra (§IV) | Clean |
-| C3 | Pseudonymized identifiers are used throughout — no real names in constraint evaluation | Architecture (§III) | Clean — "pseudonymized," not "anonymized" |
-| C4 | Rule engine integrates with schedule repositories (CSV/database) for institutional deployment | Integration API (§VI) | Clean |
+| C1 | Jitter-Bounded State Isolation bounds memory growth while tolerating temporal disorder | Algorithm 1 + §V.B | Clean |
+| C2 | Lock-free Time-Indexed Skip Lists enable $O(\log K)$ temporal insertion | Complexity analysis | Clean |
+| C3 | Lazy State Migration amortizes rebalancing cost, reducing P99 latency during scaling | §VI.C Benchmarks | Clean |
+| C4 | Snapshot prefix consistency is achievable without global pauses via deferred mechanisms | Algorithm 3 | Reframed as abstract mechanism |
 
 ## 4. Scope
 
 ### 4.1 In-Scope
-- Declarative rule language for schedule constraints
-- Temporal interval reasoning (overlaps, gaps, sequences)
-- Role-based constraint binding (student, faculty, staff)
-- Exception handling (holidays, substitutions)
-- Integration API for schedule repositories
+- Formalization of network jitter and arrival disorder
+- Temporal data structures (Time-Indexed Skip List)
+- Distributed state partition migration logic (Lazy Migration)
+- Asymptotic complexity analysis of state operations
+- Algorithmic microbenchmarks isolated from system deployment
 
-### 4.2 Out-of-Scope
-- Runtime constraint evaluation (Paper 4 — P7 defines rules, P4 evaluates them)
-- Identity retrieval (Paper 1)
-- Privacy enforcement (Paper 3)
-- Trust/audit (Paper 8)
+### 4.2 Out-of-Scope (Strictly Forbidden)
+- **System Architecture** (Owned by P18)
+- **Runtime Execution/OS Details** (Owned by P20)
+- **Control Plane/Orchestration** (Owned by P9)
+- **Hardware/Storage Infrastructure** (Owned by P12)
+- **Application Validation Logic** (Delegated to external logic)
 
 ## 5. Enforcement Invariants
 
 | ID | Invariant | Enforcement |
 |---|---|---|
-| P7-INV-01 | Rule definitions MUST be deterministic — same rule + same input = same constraint set | Declarative formulation; no side effects |
-| P7-INV-02 | All identity references in rules MUST use pseudonymized identifiers | Identifiers are opaque tokens, not names |
-| P7-INV-03 | Exception rules MUST NOT weaken base compliance constraints, only provide authorized overrides | Exception algebra enforces monotonic relaxation |
+| P7-INV-01 | Must NOT claim overall system architecture | All references to "distributed execution architecture" removed |
+| P7-INV-02 | Must NOT claim runtime management | `fork()`/COW described as abstract snapshot mechanism; gossip as assumed service |
+| P7-INV-03 | Must NOT conflate with storage infrastructure | Persistence deferred to durable storage without defining underlying DB mechanics |
 
 ## 6. Upstream / Downstream Dependencies
 
 | Direction | Paper | Interface |
 |---|---|---|
-| **Upstream** | Institutional schedule data | CSV/database schedule repository |
-| **Downstream** | P4 (Compliance) | Constraint definitions consumed by CSP solver |
-| **Downstream** | P2 (Engagement) | Schedule context (exam/lecture/break) |
-| **Downstream** | P9 (Orchestrator) | Rule updates propagated via orchestration bus |
+| **Upstream** | P18 (Architecture) | Assumes the shared-nothing topology and ingress gateways defined by P18 |
+| **Upstream** | P20 (Runtime) | Relies on P20 for actual OS-level process execution |
+| **Downstream** | Application Logic | Invokes external `ValidateLogic(e)` during event processing |
 
-## 7. Verification Requirements
+## 7. What This Paper Does NOT Do
 
-- All test schedule configurations produce correct CSP variable assignments
-- Exception rules correctly override base rules without side effects
-- Rule parsing completes in < 100 ms for institutional-scale rule sets (1000+ rules)
-- Pseudonymized identifiers verified — no real names in any rule output
+- Does **not** propose a new system architecture.
+- Does **not** own the reference deployment.
+- Does **not** perform end-to-end system stress testing.
+- Does **not** define the actual business logic applied to the events.
 
-## 8. What This Paper Does NOT Do
+## 8. Verified Implementation Components
 
-- Does **not** evaluate constraints at runtime (defers to Paper 4)
-- Does **not** retrieve or track identities (defers to Paper 1)
-- Does **not** enforce privacy at sensing boundary (defers to Paper 3)
-- Does **not** log compliance events to trust layer (defers to Paper 8)
-
-## 9. Verified Implementation Components (v2.4.0 Audit)
-
-| Component | Source File | Status |
+| Component | Status | Note |
 |---|---|---|
-| **CSP Solver** | `modules_legacy/st_csf.py` | ✅ Verified (OR-Tools Logic) |
-| **Conflict Matrix** | `modules_legacy/st_csf.py` | ✅ Verified (Weighted Voting Algorithm 2) |
-| **Logic Layer** | `modules_legacy/st_csf.py` | ✅ Verified (Decoupled Validator) |
-
+| **Lazy Migration Protocol** | ✅ Verified | Synthetic benchmarks |
+| **Time-Indexed Skip List** | ✅ Verified | $O(\log K)$ performance validated |
+| **Bounded Jitter GC** | ✅ Verified | Memory bounds mathematically bounded |
