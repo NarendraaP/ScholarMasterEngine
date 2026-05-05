@@ -150,7 +150,7 @@ The volatile exposure duration is defined as:
 \begin{equation}
 \Delta T_{volatile} = T_{wipe} - T_{capture}
 \end{equation}
-To prevent queue accumulation or swap-induced persistence, the perception logic enforces:
+To prevent queue accumulation or swap-induced persistence, the pipeline constrains:
 \begin{equation}
 \Delta T_{volatile} \le 33ms
 \end{equation}
@@ -309,7 +309,7 @@ Maintaining a bounded exposure window requires coordination between application 
 \subsection{OS-Level Page Locking}
 Modern operating systems rely on virtual memory paging. Under memory pressure, inactive pages may be written to persistent storage (e.g., Linux swap partitions). If raw RGB buffers were paged out before zeroization, the confinement guarantee would be invalidated.
 
-To prevent this, allocated frame buffers are pinned in physical memory using POSIX \texttt{mlock()}. This prohibits the kernel’s memory manager from swapping the pages to disk. The lock is established during initialization and released only after secure zeroization. By ensuring that frame buffers remain resident in RAM throughout their lifetime, the pipeline eliminates disk-level persistence risk.
+To prevent this, allocated frame buffers are pinned in physical memory using POSIX \texttt{mlock()}. This prohibits the kernel’s memory manager from swapping the pages to disk. The lock is established during initialization and released only after secure zeroization. By ensuring that frame buffers remain resident in RAM throughout their lifetime, the pipeline reduces disk-level persistence risk under assumptions.
 
 \subsection{Secure Zeroization and Compiler Behavior}
 Deallocation via \texttt{free()} or \texttt{delete} does not overwrite memory. The underlying physical pages may retain intact pixel data until reused by another process \cite{b22}. Consequently, explicit zeroization is mandatory.
@@ -484,7 +484,7 @@ Future extensions could incorporate lightweight 3D estimation models to reduce d
 % IX. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This work analyzed the feasibility of performing real-time action sensing while strictly constraining the lifetime of raw optical data within the processing pipeline. By enforcing a measurable exposure window ($\Delta T_{volatile} \le 33$ ms) through OS-level page locking and secure zeroization, the perception logic limits the lifetime of raw biometric data within the memory subsystem.
+This work analyzed the feasibility of performing real-time action sensing while strictly constraining the lifetime of raw optical data within the processing pipeline. By enforcing a measurable exposure window ($\Delta T_{volatile} \le 33$ ms) through OS-level page locking and secure zeroization, the pipeline constrains the lifetime of raw biometric data within the memory subsystem.
 
 A rank-based projection analysis shows that skeletal vectors represent a substantial dimensional collapse, making deterministic pixel-space reconstruction infeasible under the defined threat model. Experimental evaluation demonstrates that combining pose-based dimensional reduction, confidence-adaptive Kalman filtering, and geometric PnP orientation enables reliable event detection while maintaining real-time performance.
 
