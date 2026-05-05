@@ -1,9 +1,4 @@
 \documentclass[conference]{IEEEtran}
-\IEEEoverridecommandlockouts
-
-% ==========================================
-% PACKAGES
-% ==========================================
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
@@ -11,18 +6,46 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{tikz}
 \usepackage{booktabs}
 \usepackage{multirow}
-\usepackage{url}
 \usepackage{float}
-\usepackage{tikz}
-\usepackage{pgfplots}
+\usepackage{nomencl}
+\usepackage{url}
 
-\pgfplotsset{compat=1.17}
-\usetikzlibrary{automata, positioning, arrows.meta, patterns, shapes, fit, backgrounds, decorations.pathreplacing, calc}
+% ==========================================
+% TIKZ SETUP
+% ==========================================
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+\tikzset{
+  process/.style={
+    rectangle, 
+    minimum width=2.8cm, 
+    minimum height=1cm, 
+    text width=2.8cm,
+    text centered, 
+    draw=black, 
+    fill=blue!10
+  },
+  external/.style={
+    rectangle, 
+    minimum width=2.8cm, 
+    minimum height=1cm, 
+    text width=2.8cm,
+    text centered, 
+    draw=gray, 
+    fill=gray!10,
+    dashed
+  },
+  arrow/.style={
+    thick, 
+    ->, 
+    >=stealth
+  }
+}
 
-% --- SAFE COMMAND DEFINITION ---
-\providecommand{\RETURN}{\STATE \textbf{return} }
+% Define \RETURN command for algorithmic package
+\newcommand{\RETURN}{\STATE \textbf{return} }
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -32,15 +55,24 @@
 % ==========================================
 % TITLE
 % ==========================================
-\title{Algorithmic Model for Stateful Event Stream Evaluation under Bounded Jitter}
+\title{Sub-Millisecond Identity Retrieval via HNSW + LDCC}
 
 % ==========================================
-% AUTHOR
+% AUTHORS (Shared Affiliation)
 % ==========================================
-\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
-\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-Seetharampuram, Narsapur, Andhra Pradesh, India}
+\author{
+\IEEEauthorblockN{
+Polisetti Narendra\IEEEauthorrefmark{1}, 
+Suresh Kumar Sreedharan\IEEEauthorrefmark{2}, 
+Vijaya Raju Motru\IEEEauthorrefmark{3}, and 
+Praveena Mallampalli\IEEEauthorrefmark{4}
+}
+\IEEEauthorblockA{\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+Narsapur, Andhra Pradesh, India \\
+\IEEEauthorrefmark{1}ORCID: 0009-0002-6355-138X, 
+\IEEEauthorrefmark{2}ORCID: 0000-0001-9912-5927 \\
+\IEEEauthorrefmark{3}vijayaraju.m@gmail.com, 
+\IEEEauthorrefmark{4}praveena.iduri@gmail.com}
 }
 
 \maketitle
@@ -49,345 +81,413 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Distributed cyber-physical infrastructures often generate high-velocity event streams that must be evaluated continuously against evolving operational constraints. Maintaining low latency in such environments requires a stream-processing model capable of preserving state consistency while tolerating asynchronous event arrival patterns. Evaluating these streams at scale introduces several engineering challenges: state must remain logically consistent despite network jitter, partition topology must adapt dynamically, and memory growth must remain bounded even when the event stream itself is effectively unbounded.
+Institutional attendance verification presents a practical deployment challenge: large student populations must be processed quickly while minimizing operational overhead and impersonation risk. Although facial recognition is frequently proposed as an automated solution, many existing implementations rely on cloud services or report only embedding-level accuracy without examining retrieval behavior under real-time open-set conditions.
 
-This work presents a distributed execution model designed for low-latency stateful evaluation of asynchronous event streams within edge-oriented computing environments. We formalize a system model capable of accommodating out-of-order arrivals and develop an approach centered on three core mechanisms: a Time-Indexed Skip List for bounded temporal evaluation, a Lazy State Migration protocol enabling elasticity without global pauses, and an asynchronous snapshot strategy derived from OS-level Copy-On-Write semantics.
+This work examines whether biometric identification can operate entirely on edge hardware at institutional scale—up to 100,000 identities—while still meeting strict real-time constraints. The proposed retrieval-focused pipeline segment utilizes Hierarchical Navigable Small World (HNSW) indexing and introduces a Local Density Consistency Criterion (LDCC) to improve robustness when unknown identities are present, assuming deep embeddings are provided externally.
 
-We further introduce the concept of \emph{Jitter-Bounded State Isolation}, which provides guarantees on both ordered evaluation correctness and bounded memory growth under configurable jitter constraints. Microbenchmark experiments on a simulated multi-partition environment demonstrate near-linear throughput scaling under Zipfian workloads, sustaining more than 50,000 events per second with tightly controlled tail latency. The Lazy Migration protocol reduces P99 state transfer latency to approximately 1.9 ms during rebalancing. These results demonstrate that carefully engineered state management and migration strategies can sustain low-latency evaluation. This remains true even as partition topology evolves dynamically.
+Experiments conducted on an edge hardware platform reveal empirically logarithmic retrieval scaling. Even with a 100K identity registry, mean retrieval latency remains below one millisecond. Under controlled open-set testing with 20\% unknown probes, the pipeline maintains a 99.8\% unknown rejection rate while sustaining throughput above 30 frames per second in a single-stream configuration. By isolating this retrieval step, local execution avoids transmission during retrieval, supporting efficient identity resolution without cloud dependency.
 \end{abstract}
 
+% ==========================================
+% KEYWORDS
+% ==========================================
 \begin{IEEEkeywords}
-Distributed Algorithms, Stream Processing, Consistent Hashing, State Migration, Chandy-Lamport, Edge Computing, Concurrency.
+Biometrics, Edge Computing, HNSW Indexing, Edge AI, Approximate Nearest Neighbor Search.
 \end{IEEEkeywords}
+
+% ==========================================
+% NOMENCLATURE
+% ==========================================
+\section*{Nomenclature}
+\begin{description}
+    \item[$N$] Total number of identities in the database.
+    \item[$d$] Dimensionality of the feature vector (512).
+    \item[$x_i$] Deep feature vector of the $i$-th sample.
+    \item[$W_j$] Weight vector of the $j$-th class.
+    \item[$\theta_j$] Angle between feature $x_i$ and weight $W_j$.
+    \item[$s$] Scaling parameter for the hypersphere radius.
+    \item[$m$] Additive angular margin penalty.
+    \item[$L$] Loss function value.
+    \item[$\tau$] Cosine similarity decision threshold.
+    \item[\text{FPS}] Frames Per Second.
+\end{description}
 
 % ==========================================
 % I. INTRODUCTION
 % ==========================================
 \section{Introduction}
 
-\subsection{The Challenge of High-Velocity Stream Evaluation}
-Modern cyber-physical monitoring platforms increasingly rely on continuous event streams produced by distributed sensors and edge devices. Evaluating these streams in real time requires processing models capable of preserving entity-level state while sustaining strict latency bounds under high event arrival rates. Within distributed monitoring environments, each incoming event must be interpreted relative to the historical context associated with the entity that generated it. That context is rarely static: events arrive late, occasionally out of order, and often in bursts driven by skewed workload patterns.
+Real-time identity verification within large academic institutions introduces a practical systems constraint: attendance must be validated quickly while avoiding operational disruption inside classrooms. Traditional roll-call procedures scale poorly as enrollment increases and remain vulnerable to impersonation. Automated biometric verification therefore represents a natural technological alternative, provided that the system can operate within strict latency limits.
 
-Maintaining consistent event evaluation becomes challenging when large volumes of asynchronous events arrive from geographically distributed sources. If networks were perfectly synchronous, maintaining event ordering would be trivial. In practice, however, even modest network jitter can invert event arrival sequences. A stream processor must therefore reconcile temporal disorder while maintaining efficient evaluation.
+However, digitizing attendance verification introduces several engineering challenges. Network connectivity within campus environments can be inconsistent, particularly during peak usage hours. Systems that depend on external cloud APIs are therefore exposed to unpredictable latency and bandwidth limitations. A viable institutional solution must instead operate autonomously at the edge, processing video streams locally without requiring synchronous remote services \cite{b1}.
 
-This work addresses distributed algorithmic mechanisms for stateful stream evaluation. It does not define system architecture, runtime process management, or application-layer evaluation logic.
+Within an edge-based deployment pipeline, the primary bottleneck shifts from neural inference to identity retrieval. While compact neural networks (e.g., MobileNets \cite{b4}) can efficiently produce embeddings, locating the correct identity within a large gallery often becomes the dominant computational cost. While linear search across stored embeddings works for small cohorts (e.g., fewer than 50 identities), performance degrades rapidly as the gallery grows. At six-figure registry sizes, brute-force vector comparison can become the dominant latency component, regardless of how efficient the neural inference stage may be \cite{b2}.
 
-\subsection{The State Management Bottleneck}
-State management represents one of the primary bottlenecks in large-scale stream-processing systems. It directly influences throughput and latency stability. General-purpose stream processing frameworks such as Apache Flink \cite{b1} and Spark Streaming \cite{b10} provide strong aggregate throughput but are primarily architected for micro-batch aggregations and windowed analytics rather than microsecond-level discrete event evaluation. They often rely on checkpointing mechanisms and external state stores (e.g., embedded RocksDB instances or external Memcached clusters) to manage entity state \cite{b22}. 
-
-Dependence on external state stores introduces substantial serialization and deserialization overhead during runtime evaluation. Furthermore, executing a network call to a remote database for every incoming event may violate strict latency bounds required for real-time edge processing \cite{b31}. Relational databases incur significant connection pooling and transaction locking overheads when subjected to tens of thousands of concurrent, point-in-time state mutations per second.
-
-Conversely, large-scale trajectory and spatial analysis has historically been treated as an offline batch process \cite{b11, b12}. Real-time stream evaluation typically requires ultra-low latency, purely memory-resident state lookups to continuously compare an asynchronous current event against an entity's precise historical state in $O(1)$ or $O(\log K)$ time. 
-
-\subsection{Jitter-Bounded State Isolation}
-
-Handling temporal disorder in distributed event streams requires a disciplined strategy for bounding historical state. We refer to this constraint as \textbf{Jitter-Bounded State Isolation}. The engine tolerates bounded arrival disorder while ensuring that events within the admissible jitter window are evaluated in logically consistent order. Events exceeding this bound are typically discarded at ingress.
-
-This approach seeks to balance correctness with disciplined memory usage: by retaining only a finite temporal window per entity, the model avoids unbounded accumulation of historical state that would otherwise accompany fully asynchronous assumptions \cite{b26}.
-
-\subsection{Design Constraints}
-Designing a model capable of meeting these constraints requires coordinated solutions across routing, state storage, and partition elasticity without relying on heavy external infrastructure:
-\begin{enumerate}
-    \item \textbf{Ensuring State Locality:} Routing asynchronous events belonging to the same entity to the exact same physical machine.
-    \item \textbf{Resolving Temporal Jitter:} Structuring in-memory data to safely evaluate out-of-order events without blocking the execution pipeline \cite{b13, b26}.
-    \item \textbf{Seamless Elasticity:} Rebalancing the massive in-memory state across partitions during scale-up or scale-down without incurring "stop-the-world" latency pauses \cite{b21, b23}.
-    \item \textbf{Partition Tolerance:} Maintaining strict logical consistency and recovering cleanly from localized node crashes or network partitions \cite{b14, b27}.
-\end{enumerate}
-
-This paper abstracts away specific hardware implementations or application-layer logic to focus purely on the distributed systems algorithms. We structure our contribution as follows: Section II defines the formal System Model, Section III details the interconnected Distributed Algorithms, Section IV provides a rigorous Correctness Discussion, Section V presents Complexity Analysis, and Section VI validates the model via targeted Engine Microbenchmarks.
-
-% ==========================================
-% II. SYSTEM MODEL
-% ==========================================
-\section{System Model}
-
-We assume a distributed topology consistent with existing shared-nothing reference designs. The system model presented here defines only the algorithmic preconditions required for the proposed state management mechanisms.
-
-\subsection{Network and Node Model}
-The abstract model assumes a topology of stateless ingress gateways $\mathcal{G}$ routing to logical partitions $\mathcal{N} = \{N_1, N_2, \dots, N_k\}$. 
-\begin{itemize}
-    \item \textbf{Asynchrony:} We assume a fully asynchronous network model. There are no theoretical bounds on message transmission delays or relative processor speeds between any two partitions in $\mathcal{N}$.
-    \item \textbf{Failure Model:} Partitions operate under a \textit{Crash-Recovery} failure model. A logical partition may fail unexpectedly and lose its volatile state ($\sigma_i$), but may later recover. We assume Byzantine failures do not occur at the internal level.
-    \item \textbf{Partitions:} The network is susceptible to partitions. Messages between subsets of $\mathcal{N}$ may be dropped or delayed indefinitely.
-\end{itemize}
-
-\subsection{Data Stream and Temporal Model}
-The input to the system is an unbounded stream of discrete events denoted as $S = \langle e_1, e_2, \dots \rangle$.
-An individual event is formalized as a tuple $e = \langle \epsilon, \zeta, \tau_{occ}, \tau_{arr} \rangle$, where:
-\begin{itemize}
-    \item $\epsilon \in \mathcal{E}$ is the unique, opaque entity identifier generating the event.
-    \item $\zeta$ is the arbitrary operational payload.
-    \item $\tau_{occ}$ is the occurrence timestamp, recorded at the upstream edge sensor.
-    \item $\tau_{arr}$ is the arrival timestamp, recorded at the moment the event hits the ingress gateway $\mathcal{G}$.
-\end{itemize}
-
-Due to the nature of distributed sensing, we define network jitter as the temporal inversion between occurrence and arrival: $J(e) = \tau_{arr} - \tau_{occ}$. While the network is formally asynchronous, we assume the maximum acceptable delay for a valid event is bounded by a strict parameter $\Delta_{jitter}$. Any event where $J(e) > \Delta_{jitter}$ is classified as a severe straggler and is dropped by the ingestion logic. Consequently, the model therefore operates under a partially synchronous assumption bounded by the configurable $\Delta_{jitter}$ parameter \cite{b26}.
-
-\subsection{State Partitioning Model (Shared-Nothing)}
-To avoid the scalability limitations of centralized databases, the model assumes a strict Shared-Nothing topology \cite{b2, b22}. The global state vector $\Sigma$, which maps every entity $\epsilon$ to its evaluated temporal history, must be disjointly partitioned. 
-
-Let $\mathcal{R}$ be a continuous, circular hash ring defined on the integer space $[0, 2^{32}-1]$. 
-
-The mapping function $\Phi: \mathcal{E} \to \mathcal{N}$ uniquely assigns the authoritative state of entity $\epsilon$ to exactly one logical partition $N_i$ at any given logical time. This strict affinity routing ensures that $\Sigma = \bigcup_{i=1}^{|\mathcal{N}|} \sigma_i$ and that the intersection $\sigma_i \cap \sigma_j = \emptyset$ for any $i \neq j$. Consequently, any evaluation logic applied to $\epsilon$ requires zero cross-partition communication.
-
-% ==========================================
-% III. ALGORITHMS
-% ==========================================
-\section{Distributed Algorithms}
-
-The functionality of the evaluation approach emerges from the interaction of several distributed algorithms responsible for routing, temporal ordering, elasticity, and durability.
-
-\subsection{Consistent Hashing and Gossip-Based Routing}
-
-Ensuring state locality across a distributed space requires a deterministic routing mechanism that maps events belonging to the same entity to a single logical partition without relying on a centralized coordination service (like Apache ZooKeeper). The ingress gateways $\mathcal{G}$ apply Consistent Hashing with Virtual Nodes \cite{b3, b28}. To ensure uniform load distribution, each logical partition $N_i$ is mapped to $V$ virtual nodes distributed randomly across the hash ring $\mathcal{R}$. 
-
-The partitions independently maintain an eventually consistent view of the topology using an assumed membership service such as a SWIM-based gossip protocol \cite{b7, b24}. In this protocol, each partition periodically sends direct UDP ping messages to a randomly selected subset of peers. If a direct ping times out, the partition requests indirect probes via intermediary peers. If all indirect probes fail, the target peer is marked as failed. The detecting partition updates its local hash ring $\mathcal{R}$ and disseminates this topology change via epidemic propagation. 
-
-In practice, transient false-positive failure detections were observed under bursty UDP packet loss, requiring minor tuning of the probe timeout interval.
-
-\subsection{Temporal Skip Lists and Windowed Evaluation}
-
-Out-of-order arrival patterns require a data structure capable of supporting efficient temporal insertion without blocking concurrent processing (a key property of probabilistic skip lists). Because $\tau_{arr}$ does not strictly correspond to $\tau_{occ}$, a naive FIFO processor would incorrectly reject some out-of-order events. To resolve this, the state $\sigma(\epsilon)$ for an entity is maintained as a \textbf{Time-Indexed Skip List} \cite{b8, b20}, bounded temporally by $\Delta_{jitter}$. 
-
-A Skip List is a probabilistic data structure offering $O(\log K)$ insertion and search complexity. Under high-concurrency insertion workloads, probabilistic skip lists avoid the global rotation locks typically required by tree-based rebalancing structures (like Red-Black trees), which can make them well suited for high-velocity stream processing workloads \cite{b17, b20}. Early prototypes using coarse-grained locks around skip list insertions resulted in visible tail-latency spikes under skewed workloads, motivating the transition to a lock-free variant.
-
-\begin{algorithm}[h]
-\caption{Temporal Routing and Windowed Evaluation}
-\begin{algorithmic}[1]
-\REQUIRE Event $e$, Local State $\sigma_i$, Window $\Delta_{jitter}$
-\STATE $\epsilon \leftarrow e.\epsilon$
-\STATE $L_{skip} \leftarrow \sigma_i.\text{get\_or\_create}(\epsilon)$
-\STATE
-\STATE \textbf{// Step 1: Garbage Collection (Liveness Enforcement)}
-\STATE $L_{skip}.\text{remove\_older\_than}(\text{now}() - \Delta_{jitter})$
-\STATE
-\STATE \textbf{// Step 2: Temporal Insertion ($O(\log K)$)}
-\STATE $e_{prev}, e_{next} \leftarrow L_{skip}.\text{find\_temporal\_neighbors}(e.\tau_{occ})$
-\STATE
-\STATE \textbf{// Step 3: Application Validation Logic}
-\IF{$\text{ValidateLogic}(e_{prev}, e) == \text{FAIL}$}
-    \RETURN \textbf{VIOLATION}
-\ENDIF
-\IF{$e_{next} \neq \text{NULL} \land \text{ValidateLogic}(e, e_{next}) == \text{FAIL}$}
-    \RETURN \textbf{VIOLATION}
-\ENDIF
-\STATE \textbf{// Step 4: Commit to Local Memory}
-\STATE $L_{skip}.\text{insert}(e)$
-\RETURN \textbf{VALID}
-\end{algorithmic}
-\label{alg:window}
-\end{algorithm}
-
-As shown in Algorithm \ref{alg:window}, the algorithm effectively defers finality. By continuously maintaining the $\Delta_{jitter}$ window and garbage collecting stale data, the algorithm operates identically to the "Watermark" concept established in the Google MillWheel Dataflow model \cite{b13}, ensuring memory growth remains bounded under configured jitter assumptions while safely accommodating network delays.
-
-\subsection{Lazy State Migration Protocol}
-
-Partition elasticity introduces additional complexity since state partitions must be redistributed whenever logical partitions join or leave the system. Topology changes occur frequently in elastic environments. When a new partition joins, portions of the hash space must be reassigned. Traditional approaches often migrate entire key ranges immediately, often introducing noticeable latency spikes as donor partitions stall to transfer state \cite{b32}.
-
-We instead adopt a Lazy State Migration strategy \cite{b23}. Instead of preemptively copying all reassigned state, the algorithm transfers historical data only when a newly assigned entity becomes active. Inactive entities remain unmoved.
-
-\begin{algorithm}[h]
-\caption{Lazy State Migration (On Partition $N_{new}$)}
-\begin{algorithmic}[1]
-\REQUIRE Incoming Event $e$, Local State $\sigma_{new}$, Ring $\mathcal{R}$
-\STATE $\epsilon \leftarrow e.\epsilon$
-\IF{$\epsilon \notin \sigma_{new}.keys()$}
-    \IF{$H(\epsilon) \in \text{Newly\_Assigned\_Range}(\mathcal{R})$}
-        \STATE $N_{old} \leftarrow \text{GetPreviousOwner}(\mathcal{R}, \epsilon)$
-        \STATE $e_{hist} \leftarrow \text{SyncRPC}(N_{old}, \text{"FetchState"}, \epsilon)$
-        \IF{$e_{hist} \neq \text{NULL}$}
-            \STATE $\sigma_{new}[\epsilon] \leftarrow e_{hist}$
-            \STATE $\text{AsyncRPC}(N_{old}, \text{"DeleteState"}, \epsilon)$
-        \ENDIF
-    \ENDIF
-\ENDIF
-\STATE \textbf{Execute Validation Logic} (Algorithm 1)
-\end{algorithmic}
-\label{alg:migration}
-\end{algorithm}
-
-As detailed in Algorithm \ref{alg:migration}, the newly mapped partition $N_{new}$ assumes responsibility immediately. The state is only migrated over the network at the exact microsecond an active entity triggers a new event.
-
-\subsection{Formal Amortization of Lazy Migration}
-
-Under realistic skewed workloads—particularly those approximating Zipfian distributions—the active subset $|A|$ is typically far smaller than the full remapped key space $M$. In such scenarios, migration cost is effectively amortized across actual activity rather than imposed upfront. The practical consequence is a smoother latency profile during scaling events \cite{b23}.
-
-\subsection{Asynchronous Snapshotting via OS Copy-On-Write}
-
-Fault tolerance in a distributed stream processor requires periodic persistence of in-memory state. To tolerate crashes, the model assumes periodic serialization of state to durable storage. We utilize an abstract asynchronous snapshot mechanism adapted from the principles of Chandy-Lamport \cite{b4, b25}, conceptualized here via OS-level Copy-On-Write (COW) semantics \cite{b30}. Runtime execution semantics and process lifecycle management are treated separately.
-
-\begin{algorithm}[h]
-\caption{Abstract Fork-Based State Snapshot}
-\begin{algorithmic}[1]
-\REQUIRE Process Memory $M$, Interval $T_{snap}$
-\WHILE{System Running}
-    \STATE $\text{Sleep}(T_{snap})$
-    \STATE $pid \leftarrow \text{fork}()$ 
-    \IF{$pid == 0$}
-        \STATE \textbf{// Child Process: Isolated State Serialization}
-        \STATE $\text{Serialize}(M \to \text{DurableStorage})$
-        \STATE $\text{exit}(0)$
-    \ELSE
-        \STATE \textbf{// Parent Process: Zero Downtime Continuation}
-        \STATE $\text{ContinueProcessing}(S)$ 
-    \ENDIF
-\ENDWHILE
-\end{algorithmic}
-\label{alg:snapshot}
-\end{algorithm}
-
-The fork-based snapshot provides shard-local prefix consistency; cross-shard global consistency relies on the disjoint partitioning model.
-
-% ==========================================
-% IV. CORRECTNESS DISCUSSION
-% ==========================================
-\section{Algorithmic Behavior}
-
-We now examine the safety and consistency properties that arise from the interaction of the proposed algorithms. We provide operational arguments detailing the safety, liveness, and consistency properties of the described architecture.
-
-\subsection{Serialized Ownership Invariant}
-
-The model operationally maintains what we describe as a Serialized Ownership Invariant: at any moment, authoritative mutable state for a given entity resides on at most one partition. During lazy migration, the previous owner serves the historical state exactly once and immediately marks it read-only before deletion. This informally preserves continuity \cite{b29}.
-
-Crucially, $N_{old}$ utilizes a write-fence to prevent concurrent mutations during the transient fetch-before-delete window. Ownership transfer is guarded by a versioned lease token to prevent concurrent mutation during the handoff window.
-
-\subsection{Snapshot Prefix Consistency}
-The fork-based snapshot leverages OS-level Copy-On-Write (COW) semantics to capture a mathematically consistent in-memory prefix without pausing the main event loop. When the `fork()` system call is executed, it briefly freezes the parent process state for a few microseconds and creates a virtual memory clone. The serialized file written to disk by the child thread represents a true, atomic point-in-time state of the entire system partition. However, global snapshot consistency across all shards is not guaranteed without introducing distributed coordination markers \cite{b4}.
-
-\subsection{Partition Tolerance Strategy}
-Under network partitions, if the gossip protocol assigns an entity to $N_{new}$, but $N_{new}$ cannot retrieve the entity's history because $N_{old}$ is unreachable, the algorithm rejects evaluation under incomplete causal history. Initializing an empty state without history would violate application-defined validation routines. Instead, the approach informally prioritizes state consistency over availability, dropping the event or returning a partition error. This behavior explicitly sacrifices availability to preserve state continuity under partition \cite{b14}, though this behavior is configurable for use cases prioritizing availability.
-
-% ==========================================
-% V. COMPLEXITY ANALYSIS
-% ==========================================
-\section{Complexity Analysis}
-
-The efficiency of the model can be analyzed by examining the computational and communication complexity along the critical event-processing path. Let $K$ be the maximum number of events retained in a single entity's sliding window (which is directly proportional to the $\Delta_{jitter}$ parameter).
-
-\subsection{Time Complexity}
-\begin{itemize}
-    \item \textbf{Normal Evaluation:} The expected algorithmic time to locate the temporal neighbors ($e_{prev}, e_{next}$) in the Time-Indexed Skip List is $O(\log K)$. The subsequent application validation executes in constant time, $O(1)$. Therefore, the total critical-path processing time can be bounded to $\mathbf{O(\log K)}$.
-    \item \textbf{Migration Evaluation:} If the incoming event triggers the Lazy Migration protocol, the algorithm incurs the base evaluation time plus exactly one synchronous network Round Trip Time (RTT). Total time: $\mathbf{O(\log K + \text{RTT}_{net})}$.
-    \item \textbf{Snapshotting:} The abstract `fork()` operation executes in $O(P_{active})$ time, where $P_{active}$ is the number of active memory pages in the kernel page table. Because the serialization is deferred to the child thread, it yields a critical-path blocking time that is \textbf{constant with respect to the number of entities processed per event}, shielding the stream throughput from total memory size.
-\end{itemize}
-
-\subsection{Space Complexity and Garbage Collection}
-Let $N_{active}$ be the number of unique entities actively assigned to a specific logical partition. Each entity maintains a Skip List of size $\le K$. The total volatile memory footprint per partition is bounded as a function of $\Delta_{jitter}$ and active entity count:
+\subsection{Retrieval Latency Budget}
+Real-time streaming places strict bounds on the allowable processing time for each frame. To sustain real-time video at 30 FPS, total processing time per frame must remain within approximately 33 milliseconds:
 \begin{equation}
-    Space(N_i) = \mathbf{O(N_{active} \cdot K)}
+T_{total} = T_{detect} + T_{align} + T_{embed} + T_{retrieve}
 \end{equation}
-Because the value $K$ is pruned by the garbage collection routine, memory growth is primarily determined by concurrent active entities.
+Empirical profiling on edge hardware indicates that detection and alignment consume approximately 4 ms, while embedding extraction requires 28 ms. This leaves only a narrow margin for retrieval. In practice, once embedding time approaches 28 ms, even an additional 5 ms retrieval delay can destabilize the video stream. The requirement for sub-millisecond retrieval arises primarily from operational constraints rather than theoretical optimization.
 
-\subsection{Network Message Complexity}
-\begin{itemize}
-    \item \textbf{Gossip Protocols:} Each partition sends background probes to its peers. The global network overhead is amortized $\mathbf{O(1)}$ per partition per interval, which remains highly scalable and consumes negligible bandwidth even in environments containing hundreds of partitions.
-    \item \textbf{State Migration:} Traditional bulk migration requires transferring entire partitions instantly. Lazy migration amortizes this data transfer, sending messages strictly when an entity acts. The network message complexity shifts from unpredictable bursts to a smooth $\mathbf{O(1)}$ overhead per migrating entity.
-\end{itemize}
+The present analysis focuses specifically on the retrieval stage under strict latency constraints. We demonstrate that graph-based indexing via HNSW achieves a mean retrieval latency of 0.419 ms at 100K scale. Open-set stress testing confirms stable streaming performance in a single-face gate deployment scenario.
+
+\textbf{Ethics Statement:} This research utilized public datasets (LFW) and synthetic vectors. No personally identifiable information (PII) from real students was used for model training or benchmarking. All experiments align with institutional data privacy policies.
+
+\subsection{Relation to the Ecosystem and Scope Limitation}
+Within the broader ScholarMaster edge analytics ecosystem, this study focuses specifically on the execution and retrieval layer responsible for identity retrieval under strict latency constraints. To adhere to academic integrity and avoid scope overlap with companion studies, we explicitly focus on \textbf{algorithmic scalability} (HNSW vs. Linear) and \textbf{retrieval accuracy} under streaming constraints. This module focuses exclusively on identity retrieval and does not own the vision detection models or deep learning architectures. While local processing provides inherent data-transmission boundaries, the formal cryptographic protocols and volatile-memory privacy architectures required for GDPR-aligned deployment are outside the scope of this specific algorithmic evaluation. 
+
+\subsection{Reproducibility}
+To facilitate peer validation, the core indexing logic and evaluation scripts are available as an open-source artifact \cite{scholarmaster_repo}. Note that the repository contains code only; no PII or biological data is hosted.
 
 % ==========================================
-% VI. ENGINE MICROBENCHMARKS
+% II. RETRIEVAL BOTTLENECK AT INSTITUTIONAL SCALE
 % ==========================================
-\section{Algorithmic Microbenchmarks}
+\section{Retrieval Bottleneck at Institutional Scale}
 
-To evaluate the operational behavior of the algorithms, we conducted a series of targeted microbenchmarks focusing on throughput scalability and latency stability.
+Biometric retrieval behavior changes substantially once identity registries reach institutional scale. This work focuses on institutional-scale deployments involving approximately $10^4$--$10^5$ identities, which differ fundamentally from web-scale systems designed for billions of vectors. At the campus level, early automation initiatives often relied on RFID or NFC-based attendance systems. Although these solutions improved speed compared to manual roll calls, they introduced a proxy vulnerability: possession of a card does not confirm the identity of its holder \cite{b1}. Min-Allah et al. \cite{b8} noted that biometric verification is an effective countermeasure to attendance fraud. However, contact-based systems such as fingerprint scanners raise hygiene concerns in high-traffic environments.
 
+Cloud-based APIs provide recognition capabilities but are poorly suited for continuous real-time video streams. Transmitting high-resolution frames across campus networks introduces unavoidable latency. Reported round-trip delays can range from several hundred milliseconds to multiple seconds per face, particularly during peak usage \cite{b9}. For live ingress monitoring, such delays are unacceptable. Zhou et al. \cite{b2} advocated for processing data closer to the source to reduce this bandwidth load. 
+
+Most academic research in face recognition emphasizes embedding discrimination performance, reporting high benchmark accuracy on datasets such as LFW or MegaFace. However, retrieval cost is often omitted from evaluation. When the gallery size grows beyond 10,000 identities, exhaustive cosine comparison quickly becomes the dominant computational burden.
+
+For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms—far exceeding the available latency budget for real-time streaming. At this scale, retrieval complexity becomes a principal deployment constraint.
+
+Table \ref{tab:sota_constraints} summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed pipeline maintains both discrimination performance and real-time throughput at 100K scale.
+
+\begin{table}[htbp]
+\caption{State-of-the-Art Under Institutional Constraints}
 \begin{center}
-\fbox{\parbox{0.9\columnwidth}{
-\textbf{Scope of Evaluation:} This section evaluates algorithmic behavior under synthetic workloads. Full-system integrated stress testing and application-layer database persistence are explicitly out of scope. 
-}}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+System & Acc & Gallery & Open-Set & FPS@100K \\
+\hline
+ArcFace \cite{b5} & 99.83\% & 5.7K & $\times$ & $\times$ (est. 14) \\
+\hline
+CosFace \cite{cosface} & 99.73\% & 5.7K & $\times$ & $\times$ (est. 14) \\
+\hline
+FaceNet \cite{b18} & 99.63\% & 5.7K & $\times$ & $\times$ (est. 7) \\
+\hline
+MegaFace \cite{megaface} & 98.36\% & 1M$^*$ & $\times$ & $\times$ \\
+\hline
+Ours & 99.82\% & 100K & $\checkmark$ & $\checkmark$ (31) \\
+\hline
+\end{tabular}
 \end{center}
+\label{tab:sota_constraints}
+\textit{$^*$MegaFace uses distractors (closed-set), not true open-set unknowns}
+\end{table}
 
-\subsection{Implementation and Setup}
-Experiments were conducted on a simulated multi-partition environment. The core algorithms were implemented utilizing Lock-Free Skip Lists and asynchronous I/O APIs. To bypass external I/O bottlenecks and purely evaluate the algorithmic logic, a local workload generator was deployed. It produced a synthetic stream of encoded events modeling 1,000,000 active entities injected directly into the ingress gateways. The workload followed a Zipfian distribution, mirroring real-world conditions where a small subset of entities generates the majority of the events. Results are averaged over 5 independent load runs, with standard deviation $<3.2\%$.
+% ==========================================
+% III. EMBEDDING GEOMETRY ASSUMPTIONS
+% ==========================================
+\section{Embedding Geometry Assumptions}
 
-\subsection{Throughput and Horizontal Scaling}
-To validate the $O(1)$ node-isolation properties of the shared-nothing model, we measured the maximum sustained throughput of the simulated environment before the 99th percentile (P99) latency exceeded a strict 10ms threshold.
+We assume that the deep feature embeddings provided to the retrieval layer utilize margin-induced compactness (such as ArcFace). Conventional Softmax-based training is primarily optimized for closed-set classification. While effective for label separation, it does not explicitly enforce compact intra-class clustering in embedding space. As a consequence, feature overlap between identities can increase false acceptance rates when operating under open-set conditions \cite{b11}.
+
+By utilizing embeddings trained with an additive angular margin penalty in hyperspherical space \cite{b5}, the retrieval layer benefits from tightly clustered intra-class samples and wide inter-class separation. The margin-induced compactness is particularly important for distance-based retrieval. Open-set identification depends on reliable similarity thresholding. If embeddings form well-separated, dense clusters, nearest-neighbor search combined with threshold gating becomes more stable and less sensitive to boundary ambiguity.
+
+% ==========================================
+% IV. GRAPH-BASED INDEX CONSTRUCTION
+% ==========================================
+\section{Graph-Based Index Construction}
+
+To address the retrieval bottleneck introduced by large galleries, the proposed retrieval-focused pipeline segment employs Hierarchical Navigable Small World (HNSW) indexing. HNSW constructs a multi-layer proximity graph inspired by principles from small-world network theory. Lower layers contain dense local connections across all vectors, while higher layers include progressively fewer nodes connected through longer-range links. 
+
+Search begins at the top sparse layer and proceeds through a greedy traversal toward closer nodes, descending layer by layer until convergence \cite{b7}. Empirically, search complexity follows a logarithmic trend:
+\begin{equation}
+T(N) = a \log(N) + b
+\end{equation}
+This structure allows efficient approximate nearest neighbor retrieval even in high-dimensional embedding spaces. Tree-based methods often degrade substantially in 512-dimensional space due to the curse of dimensionality \cite{b12}. In our experiments, KD-Tree throughput dropped to approximately 7 FPS, confirming its unsuitability for deep embedding retrieval at scale.
+
+Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. A lightweight temporal verification buffer smooths predictions across consecutive frames to prevent output flicker.
 
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    title={Throughput vs. Shard Count},
-    xlabel={Number of Logical Partitions ($|\mathcal{N}|$)},
-    ylabel={Events Processed per Second},
-    width=0.9\columnwidth,
-    height=5.5cm,
-    grid=major,
-    ymin=0, ymax=60000,
-    legend pos=north west
-]
-\addplot[color=blue, mark=square*, thick] coordinates {
-    (1, 5200) (2, 10100) (4, 19800) (8, 40500) (10, 51000)
-};
-\addlegendentry{Algorithmic Model}
-\addplot[color=red, dashed, thick] coordinates {
-    (1, 5200) (10, 52000)
-};
-\addlegendentry{Ideal Linear Scaling}
-\end{axis}
+\begin{tikzpicture}[node distance=1.5cm]
+\tikzstyle{process} = [rectangle, minimum width=2.8cm, minimum height=1cm, text width=2.8cm, text centered, draw=black, fill=blue!10]
+\tikzstyle{external} = [rectangle, minimum width=2.8cm, minimum height=1cm, text width=2.8cm, text centered, draw=gray, fill=gray!10, dashed]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Nodes
+\node (embed) [external] {External Deep Embedding (e.g., ArcFace)};
+\node (search) [process, below of=embed, fill=yellow!20] {HNSW + LDCC Gate};
+\node (db) [process, below of=search, fill=green!10] {Temporal Verification Buffer};
+
+% Arrows
+\draw [arrow] (embed) -- node[anchor=west] {512-D Vector} (search);
+\draw [arrow] (search) -- node[anchor=west] {ID / Unknown} (db);
 \end{tikzpicture}
-\caption{Throughput scalability analysis under a Zipfian workload. The algorithmic evaluation achieves near-ideal linear scaling ($R^2=0.985$). The absence of global distributed locks allows the environment to seamlessly process 51,000 events per second across 10 partitions.}
-\label{fig:throughput}
+\caption{Retrieval-Focused Pipeline Segment: The execution layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating.}
+\label{fig:arch}
 \end{figure}
 
-As illustrated in Figure \ref{fig:throughput}, throughput increases proportionally with shard count under the evaluated synthetic workload. While perfect linear scaling is unattainable in practice, the observed $R^2=0.985$ indicates that the absence of centralized coordination points allows the model to approach the ideal line under moderate partition sizes.
-
-\subsection{State Migration Microbenchmark}
-We induced a deliberate partition rebalancing event by manually provisioning and adding an 11th partition to the environment under a constant, heavy load of 25,000 events per second. We evaluated the pure networking and memory transfer latency of the event stream, comparing our proposed Lazy Migration protocol against a baseline Eager Migration methodology.
-
-During induced rebalancing, eager migration produced substantial latency spikes due to bulk transfer blocking (recording a P99 latency of 420ms). By contrast, Lazy Migration deferred transfers to active entities only, keeping P99 latency below 1.9 ms (standard deviation $<3.2\%$) under controlled intra-environment conditions. While these measurements exclude cross-region RTT variability, they demonstrate the intended smoothing effect of on-demand migration.
-
-\subsection{Snapshot CPU and Memory Overhead}
-We profiled the CPU and memory impact of the snapshotting algorithm on a fully loaded partition processing 5,000 events per second. The abstract snapshot operation blocked the main processing thread for $<1.5$ms. During the subsequent 4.2 seconds required for the child process to serialize the state to durable storage, the parent process memory grew by only 18MB (measured with approximately 2.5 million in-memory entries, representing $\approx 1.2$ GB of Resident Set Size (RSS)). This minimal growth is attributed to the highly efficient page fault management of the OS Copy-On-Write mechanism.
+\subsection{Precision Optimization}
+To further optimize edge performance, we employ half-precision (FP16) representation:
+\begin{equation}
+v_{fp16} = \text{cast}_{fp16}(v_{fp32})
+\end{equation}
+Since embeddings are normalized to unit magnitude, the reduction from 32-bit to 16-bit precision introduces only minor numerical distortion. In our ablation study, the observed accuracy difference was only 0.03\%, while memory throughput effectively doubled. This reduction tends to improve indexing efficiency and retrieval efficiency on unified-memory architectures, aligning with principles established by Gholami et al. \cite{b14}.
 
 % ==========================================
-% VII. CONCLUSION
+% V. LOCAL DENSITY CONSISTENCY CRITERION
+% ==========================================
+\section{Local Density Consistency Criterion (LDCC)}
+
+Open-set biometric identification introduces an additional challenge beyond nearest-neighbor retrieval. In high-dimensional embedding spaces, relying solely on nearest-neighbor similarity may be insufficient for reliable identification. A single high cosine similarity score does not necessarily guarantee a correct identity match. In sparse regions of the embedding space, hubness effects may produce misleading neighbors, especially when dealing with large galleries.
+
+To improve robustness, we introduce the Local Density Consistency Criterion (LDCC). Instead of accepting a match purely on similarity, we additionally verify that the candidate identity lies within a locally coherent neighborhood structure. A probe is accepted only if both conditions are satisfied:
+\begin{equation}
+\cos(q, v_1) > \tau \quad \land \quad \frac{1}{k}\sum_{i=1}^{k} ||v_i - \bar{v}||^2 < \epsilon
+\end{equation}
+where $v_i$ are the top-$k$ nearest neighbors of probe $q$, $\bar{v}$ is their centroid, $k=5$ in all experiments, $\tau=0.75$, and $\epsilon=0.02$. 
+
+The first condition ensures sufficient angular similarity. The second verifies that the neighborhood forms a compact cluster rather than an isolated point. Together, these gates help reduce false acceptance caused by structural irregularities in the embedding space.
+
+\begin{algorithm}[H]
+\caption{High-Throughput Retrieval Logic}
+\begin{algorithmic}[1]
+\small
+\STATE Input: Vector $vector_{norm}$, Index $HNSW$
+\STATE Output: Identity $ID$, Confidence
+\STATE $(neighbors, sims) \leftarrow HNSW.search(vector_{norm}, k=5)$
+\STATE $id \leftarrow neighbors[0]$
+\STATE $similarity \leftarrow sims[0]$
+\STATE $density \leftarrow Variance(neighbors)$
+\IF{$similarity > \tau$ and $density < \epsilon$}
+    \RETURN $id, similarity$
+\ELSE
+    \RETURN Unknown, 0.0
+\ENDIF
+\end{algorithmic}
+\label{fig:algo}
+\end{algorithm}
+
+\subsection{Index Maintenance Strategy}
+To avoid downtime during enrollment, we implement a buffered update mechanism. New embeddings are temporarily stored in a flat structure. Once the buffer accumulates 50 entries, a background thread merges them into the primary HNSW index. During early testing, merging occasionally introduced brief inference stalls. This was mitigated by assigning the merge process to a lower-priority CPU core. Deletions are handled via a soft-delete bitmask to prevent index reconstruction. This strategy ensures continuous operation during incremental growth.
+
+% ==========================================
+% VI. EXPERIMENTAL EVALUATION
+% ==========================================
+\section{Experimental Evaluation}
+
+\subsection{Evaluation Setup}
+To evaluate deployment feasibility under institutional conditions, the pipeline was tested using controlled latency benchmarks and synthetic large-scale embedding distributions. Experiments were conducted on an edge computing node using PyTorch 2.0 and FAISS 1.7.4. Retrieval operations remained CPU-bound within FAISS to isolate indexing behavior. Latency results reflect the mean of 10,000 independent queries to ensure statistical stability. CPU frequency scaling was disabled to prevent timing fluctuations during sub-millisecond measurement.
+
+Because public datasets containing 100K labeled identities under open-set protocols are limited, synthetic hypersphere-distributed vectors were used to stress-test retrieval scaling. While this provides a clean baseline for indexing evaluation, real-world embeddings exhibit non-uniform clustering. Consequently, synthetic results represent a controlled upper-bound estimate of retrieval efficiency. The purpose here is not to simulate real-world identity distributions, but to isolate retrieval mechanics independent of feature extraction variability.
+
+\subsection{Latency Scaling}
+Gallery sizes of $N \in \{100, 1K, 10K, 50K, 100K\}$ were evaluated. Measured latency follows a largely logarithmic trend. Even at 100K identities, average retrieval latency remains 0.419 ms, with p99 latency below 1.1 ms (Table \ref{tab_scalability}). This suggests that HNSW preserves sub-millisecond performance at institutional scale. Unlike brute-force search, retrieval time does not grow linearly with gallery size, making real-time operation feasible within the 33 ms frame budget.
+
+\begin{table}[htbp]
+\caption{Latency Scaling Behavior}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Gallery Size (N) & UIRR & Avg Latency & p99 Latency \\
+\hline
+100 & 100\% & 0.03 ms & 0.12 ms \\
+\hline
+1,000 & 100\% & 0.08 ms & 0.21 ms \\
+\hline
+10,000 & 100\% & 0.26 ms & 1.05 ms \\
+\hline
+50,000 & 100\% & 0.38 ms & 1.25 ms \\
+\hline
+100,000 & 100\% & 0.419 ms & 1.10 ms \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab_scalability}
+\end{table}
+
+\subsection{Operational Accuracy vs. Retrieval Cost}
+To simulate institutional conditions, we evaluated a 100K identity gallery with a 20\% unknown probe ratio under a 30 FPS streaming requirement. Under synthetic open-set injection, unknown rejection reached 100\%. In practical embedding distributions, minor degradation is expected due to cluster overlap.
+
+Comparative evaluation (Table \ref{tab:baseline_collapse}) reveals the deployment limitations of traditional approaches. Linear Search exceeds the latency budget (55 ms retrieval). KD-Tree suffers from high-dimensional degradation (124.5 ms). IVF-Flat improves speed but introduces additional identification error. HNSW reduces retrieval latency by two orders of magnitude while preserving embedding-level discrimination. This confirms that scalability is primarily an indexing problem, not a feature extraction limitation.
+
+\begin{table}[htbp]
+\caption{Operational Accuracy vs Retrieval Cost}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Algorithm & Retrieval Time & OSIE & UIRR \\
+\hline
+Linear Search & 55.0 ms & 0.18\% & 99.1\% \\
+\hline
+KD-Tree & 124.5 ms & 12.4\% & 65.0\% \\
+\hline
+IVF-Flat & 6.2 ms & 0.35\% & 98.5\% \\
+\hline
+HNSW (Ours) & 0.42 ms & 0.18\% & 99.8\% \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:baseline_collapse}
+\end{table}
+
+\subsection{Stability Under Continuous Load}
+Deployment viability was evaluated through a 10-minute continuous stream (18,000 frames) in a single-face ingress scenario. Observed metrics indicated a sustained throughput of 31.2 FPS on average, never dropping below 28 FPS. The queue depth remained consistently $<3$ frames. No frame backlog or progressive latency accumulation was observed. The pipeline remained stable throughout extended operation.
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.9\linewidth]{enrollment.png} 
+\caption{Administrative Enrollment Interface for secure biometric registration.}
+\label{fig:enrollment}
+\end{figure}
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.9\linewidth]{live_rec.png}
+\caption{Real-time identification using ArcFace embeddings with $<100$ms latency.}
+\label{fig:realtime}
+\end{figure}
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.9\linewidth]{terminal.png}
+\caption{Inference latency logs validating high-speed algorithmic execution performance.}
+\label{fig:benchmark}
+\end{figure}
+
+\subsection{Hyperparameter and Component Analysis}
+We compared feature vector size and inference speed against existing baselines in Table \ref{tab_compare}. The HNSW index was configured with $M = 16$, $efConstruction = 200$, and $efSearch = 50$. At 100K scale, memory footprint reached 214 MB, with full index construction completed in 4.2 seconds using 8 threads (Table \ref{tab_index_metrics}). 
+
+\begin{table}[htbp]
+\caption{Latency Comparison Across Frameworks}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Framework & Backbone & Vector Dim & Inf. Time \\
+\hline
+OpenFace \cite{b17} & ResNet-34 & 128-d & 150 ms \\
+\hline
+FaceNet \cite{b18} & Inception & 128-d & 85 ms \\
+\hline
+Our Implementation & ResNet-100 & 512-d & 28 ms \\
+\hline
+\end{tabular}
+\label{tab_compare}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Index Performance Metrics (N=100,000)}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Metric & Value \\
+\hline
+Memory Footprint & 214 MB \\
+\hline
+Build Time (8 threads) & 4.2 seconds \\
+\hline
+Insert Latency (Single) & 1.2 ms \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab_index_metrics}
+\end{table}
+
+ROC analysis on LFW determined $\tau = 0.75$ as the operational threshold balancing FAR and FRR (Table \ref{tab_roc}). Lower thresholds increased false acceptance, while stricter thresholds raised false rejection.
+
+\begin{table}[htbp]
+\caption{ROC Analysis for Threshold Selection}
+\begin{center}
+\begin{tabular}{|c|c|c|l|}
+\hline
+Threshold ($\tau$) & FAR & FRR & System State \\
+\hline
+0.60 & 1.25\% & 0.01\% & Insecure \\
+\hline
+0.70 & 0.10\% & 0.15\% & Balanced \\
+\hline
+0.75 & 0.01\% & 0.50\% & Optimal \\
+\hline
+0.80 & 0.00\% & 4.50\% & Strict \\
+\hline
+\end{tabular}
+\label{tab_roc}
+\end{center}
+\end{table}
+
+Component removal experiments confirm pipeline dependencies (Table \ref{tab_ablation}). Removing the margin-based embedding properties reduces accuracy significantly. Removing HNSW drops throughput from 32 FPS to 8 FPS. Removing FP16 doubles memory cost and reduces FPS with negligible accuracy gain (0.03\%). These findings reinforce that indexing strategy—not embedding architecture—is the decisive factor for real-time scalability.
+
+\begin{table}[htbp]
+\caption{Component Contribution Analysis}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Configuration & LFW Accuracy & Speed & Outcome \\
+\hline
+Full Pipeline & 99.82\% & 32 FPS & Optimal \\
+\hline
+w/o Margin-based Embedding & 94.50\% & 33 FPS & Low Accuracy \\
+\hline
+w/o HNSW & 99.82\% & 8 FPS & Severe Lag \\
+\hline
+w/o FP16 & 99.85\% & 12 FPS & Slow FPS \\
+\hline
+\end{tabular}
+\label{tab_ablation}
+\end{center}
+\end{table}
+
+% ==========================================
+% VII. DEPLOYMENT AND DATA HANDLING
+% ==========================================
+\section{Deployment and Data Handling}
+To support high-throughput retrieval without incurring cloud latency, the algorithm utilizes a strictly local processing model. Video frames are loaded into memory, processed, and immediately overwritten. Local execution avoids transmission during retrieval. Embeddings are stored encrypted at rest; privacy architecture is detailed in companion studies \cite{p3}. By enforcing a single-frame execution window, the algorithm is architecturally constrained to momentary retrieval.
+
+% ==========================================
+% VIII. DISCUSSION
+% ==========================================
+\section{Discussion}
+
+From an algorithmic perspective, the results highlight that identity retrieval—not feature extraction—often becomes the dominant constraint in edge-based biometric deployments. Modern embedding models already provide strong discriminative performance. However, without scalable indexing, these embeddings cannot be deployed under strict real-time streaming conditions.
+
+When attention shifts from model accuracy alone toward retrieval complexity, this work demonstrates that sub-millisecond search is achievable on edge hardware. The elimination of cloud dependencies further improves deployment reliability. During peak campus hours, the pipeline operated without external bandwidth requirements, avoiding latency spikes common in cloud-tethered architectures.
+
+Separating embedding geometry from indexing mechanics clarifies an important algorithmic principle: high-quality embeddings are necessary but insufficient. Efficient search structures help complete the pipeline. This framework ensures that identity vectors remain locally contained, satisfying constraints where biometric data is neither transmitted nor aggregated externally during retrieval.
+
+% ==========================================
+% IX. CONCLUSION
 % ==========================================
 \section{Conclusion}
+This work examined whether institutional-scale biometric identification can operate entirely on edge hardware when retrieval latency is treated as a primary algorithmic constraint. By integrating margin-based embeddings with HNSW indexing and LDCC gating, the proposed algorithm maintains 99.82\% LFW accuracy while achieving sub-millisecond retrieval at 100K scale. 
 
-This work has presented a distributed execution model designed for low-latency stateful evaluation of high-velocity event streams. Stateful stream evaluation under strict latency and consistency constraints requires careful coordination between routing, temporal ordering, and elasticity mechanisms. This paper has detailed a distributed execution approach combining consistent hashing, time-indexed skip lists, lazy state migration, and asynchronous snapshotting.
-
-By formalizing the concept of Jitter-Bounded State Isolation, the system provides bounded guarantees on both ordering correctness and memory growth within configurable jitter parameters. Microbenchmark experiments suggest that the architecture scales proportionally under skewed workloads and that lazy migration significantly reduces disruptive latency during partition rebalancing events.
-
-Together, these mechanisms enable distributed edge systems to process asynchronous event streams while maintaining predictable latency and consistent entity state. The model therefore supports reliable real-time stream analytics.
+Real-time performance above 30 FPS is sustained without reliance on cloud connectivity. The primary contribution lies not in improving embedding discrimination itself but in addressing the retrieval bottleneck that often limits practical deployment. Graph-based indexing therefore enables practical biometric identification at institutional scale while maintaining fully local processing on edge devices.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} P. Carbone et al., "Apache Flink: Stream and Batch Processing in a Single Engine," \textit{IEEE Data Eng. Bull.}, vol. 38, no. 4, pp. 28-38, 2015.
-\bibitem{b2} M. Stonebraker, "The Case for Shared Nothing," \textit{IEEE Database Engineering Bulletin}, vol. 9, no. 1, pp. 4-9, 1986.
-\bibitem{b3} D. Karger et al., "Consistent Hashing and Random Trees: Distributed Caching Protocols for Relieving Hot Spots on the World Wide Web," in \textit{Proc. STOC}, 1997, pp. 654-663.
-\bibitem{b4} K. M. Chandy and L. Lamport, "Distributed Snapshots: Determining Global States of Distributed Systems," \textit{ACM Trans. Comput. Syst.}, vol. 3, no. 1, pp. 63-75, 1985.
-\bibitem{b5} E. Brewer, "CAP Twelve Years Later: How the 'Rules' Have Changed," \textit{Computer}, vol. 45, no. 2, pp. 22-29, 2012.
-\bibitem{b6} G. DeCandia et al., "Dynamo: Amazon's Highly Available Key-Value Store," in \textit{Proc. SOSP}, 2007, pp. 205-220.
-\bibitem{b7} A. Das et al., "SWIM: Scalable Weakly-consistent Infection-style Process Group Membership Protocol," in \textit{Proc. DSN}, 2002.
-\bibitem{b8} W. Pugh, "Skip Lists: A Probabilistic Alternative to Balanced Trees," \textit{Communications of the ACM}, vol. 33, no. 6, pp. 668-676, 1990.
-\bibitem{b9} W. Shi et al., "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-\bibitem{b10} M. Zaharia et al., "Discretized Streams: Fault-Tolerant Streaming Computation at Scale," in \textit{Proc. SOSP}, 2013, pp. 423-438.
-\bibitem{b11} R. H. Güting et al., "A foundation for representing and querying moving objects," \textit{ACM Transactions on Database Systems (TODS)}, vol. 25, no. 1, pp. 1-42, 2000.
-\bibitem{b12} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM Transactions on Intelligent Systems and Technology (TIST)}, vol. 6, no. 3, pp. 1-41, 2015.
-\bibitem{b13} T. Akidau et al., "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing," \textit{Proc. VLDB Endow.}, vol. 8, no. 12, pp. 1792-1803, 2015.
-\bibitem{b14} S. Gilbert and N. Lynch, "Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services," \textit{ACM SIGACT News}, vol. 33, no. 2, pp. 51-59, 2002.
-\bibitem{b15} D. Ongaro and J. Ousterhout, "In Search of an Understandable Consensus Algorithm," in \textit{Proc. USENIX ATC}, 2014, pp. 305-319.
-\bibitem{b16} P. Hunt et al., "ZooKeeper: Wait-free Coordination for Internet-scale Systems," in \textit{Proc. USENIX ATC}, 2010.
-\bibitem{b17} M. Herlihy et al., "A Provably Correct Scalable Concurrent Skip List," \textit{OPODIS}, 2006.
-\bibitem{b18} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56-66.
-\bibitem{b19} J. Su et al., "Stateful Serverless Computing at the Edge," \textit{IEEE Internet of Things Journal}, vol. 10, no. 4, pp. 3210-3225, 2023.
-\bibitem{b20} L. Wang et al., "Low-Latency State Migration for Distributed Stream Processing," \textit{IEEE Transactions on Parallel and Distributed Systems}, vol. 35, no. 2, pp. 210-224, 2024.
-\bibitem{b21} K. Sato et al., "Lock-free temporal indexing for high-throughput edge analytics," \textit{IEEE International Conference on Data Engineering (ICDE)}, 2025.
-\bibitem{b22} A. Nocentini et al., "State Management in Stream Processing Engines," \textit{ACM Transactions on Database Systems}, vol. 47, no. 3, pp. 1-45, 2022.
-\bibitem{b23} Y. Zhang et al., "Zero-downtime scaling for stateful stream processing," \textit{USENIX Annual Technical Conference (ATC)}, 2023.
-\bibitem{b24} M. Ali et al., "Gossip-based membership protocols for volatile edge clusters," \textit{IEEE INFOCOM}, 2024.
-\bibitem{b25} C. Curino et al., "Exactly-once semantics and lightweight checkpointing in modern stream engines," \textit{SIGMOD Record}, vol. 52, no. 1, pp. 18-29, 2023.
-\bibitem{b26} R. Chen et al., "Memory-efficient out-of-order event processing," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 36, no. 5, pp. 1950-1964, 2024.
-\bibitem{b27} D. Peng et al., "Fault tolerance in edge-native stream processing architectures," \textit{IEEE Cloud Computing}, vol. 12, no. 1, pp. 45-56, 2025.
-\bibitem{b28} X. Li et al., "Consistent Hashing with Bounded Loads," \textit{IEEE/ACM Transactions on Networking}, vol. 30, no. 6, pp. 2451-2465, 2022.
-\bibitem{b29} T. Das et al., "Distributed State Machine Replication for Real-time Analytics," \textit{ACM Symposium on Operating Systems Principles (SOSP)}, 2023.
-\bibitem{b30} E. Kohler et al., "Copy-on-write based asynchronous state snapshots," \textit{European Conference on Computer Systems (EuroSys)}, 2024.
-\bibitem{b31} M. Hirzel et al., "A Catalog of Stream Processing Optimizations," \textit{ACM Computing Surveys}, vol. 46, no. 4, pp. 1-34, 2014.
-\bibitem{b32} S. Zeuch et al., "The Strymon Group: Stream Processing at the Edge," \textit{Proc. VLDB Endow.}, vol. 12, no. 12, pp. 1834-1837, 2019.
+\bibitem{b1} T. S. Lim, S. C. Sim, and M. M. Mansor, "RFID based attendance system," in \textit{2009 IEEE Symposium on Industrial Electronics \& Applications}, vol. 2, pp. 778-782, 2009.
+\bibitem{b2} Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
+\bibitem{b3} Q. Zhang, "Privacy-preserving deep learning based face recognition on the cloud," \textit{IEEE Trans. Ind. Info.}, vol. 16, 2019.
+\bibitem{b4} A. G. Howard et al., "MobileNets: Efficient convolutional neural networks for mobile vision applications," \textit{arXiv preprint arXiv:1704.04861}, 2017.
+\bibitem{b5} J. Deng, J. Guo, N. Xue, and S. Zafeiriou, "ArcFace: Additive angular margin loss for deep face recognition," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2019, pp. 4690-4699.
+\bibitem{b6} J. Johnson, M. Douze, and H. Jégou, "Billion-scale similarity search with GPUs," \textit{IEEE Transactions on Big Data}, vol. 7, no. 3, pp. 535-547, 2019.
+\bibitem{b7} Y. A. Malkov and D. A. Yashunin, "Efficient and robust approximate nearest neighbor search using HNSW graphs," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 42, no. 4, pp. 824-836, 2018.
+\bibitem{scholarmaster_repo} Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}. [Accessed: 2026].
+\bibitem{b8} N. Min-Allah and S. Alrashed, "Smart campus: A sketch," \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
+\bibitem{b9} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Comm. Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
+\bibitem{b10} S. Komkov and A. Petiushko, "AdvHat: Real-world adversarial attack on ArcFace Face ID system," in \textit{Proceedings of the 25th International Conference on Pattern Recognition (ICPR)}, 2021, pp. 819-826.
+\bibitem{b11} M. Wang and W. Deng, "Deep face recognition: A survey," \textit{Neurocomputing}, vol. 429, pp. 215-244, 2021.
+\bibitem{b12} W. Li, Y. Zhang, Y. Sun, W. Wang, M. Li, W. Zhang, and X. Lin, "Approximate nearest neighbor search on high dimensional data — Experiments, analyses, and improvement," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 32, no. 8, pp. 1475-1488, 2020.
+\bibitem{b13} K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, "Joint Face Detection and Alignment Using Multitask Cascaded Convolutional Networks," \textit{IEEE Signal Processing Letters}, vol. 23, no. 10, pp. 1499-1503, 2016.
+\bibitem{b14} A. Gholami, S. Kim, Z. Dong, Z. Yao, M. W. Mahoney, and K. Keutzer, "A Survey of Quantization Methods for Efficient Neural Network Inference," \textit{arXiv preprint arXiv:2103.13630}, 2021.
+\bibitem{b15} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+\bibitem{b16} N. Babu P., "Architectural Modeling of UMA for High-Throughput Edge AI," \textit{ScholarMaster Series}, Paper 5, 2026.
+\bibitem{b17} B. Amos, B. Ludwiczuk, and M. Satyanarayanan, "OpenFace: A general-purpose face recognition library with mobile applications," \textit{Technical Report CMU-CS-16-118}, Carnegie Mellon University, 2016.
+\bibitem{b18} F. Schroff, D. Kalenichenko, and J. Philbin, "FaceNet: A unified embedding for face recognition and clustering," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2015, pp. 815-823.
+\bibitem{b19} D. Padillo, "Privacy-Preserving Selective Video Surveillance," \textit{IEEE Access}, vol. 8, pp. 15432-15445, 2020.
+\bibitem{b20} M. Fredrikson, S. Jha, and T. Ristenpart, "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security (CCS)}, 2015, pp. 1322-1333.
+\bibitem{b21} Y. Liu, A. Jourabloo, and X. Liu, "Learning Deep Models for Face Anti-Spoofing: Binary or Auxiliary Supervision," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 389-398.
+\bibitem{cosface} H. Wang et al., "CosFace: Large Margin Cosine Loss for Deep Face Recognition," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 5265-5274.
+\bibitem{megaface} I. Kemelmacher-Shlizerman et al., "The MegaFace Benchmark: 1 Million Faces for Recognition at Scale," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 4873-4882.
+\bibitem{p3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics via Pose-Only Architectural Irreversibility," \textit{ScholarMaster Series}, Paper 3, 2026.
 
 \end{thebibliography}
 
