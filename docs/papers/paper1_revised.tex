@@ -197,76 +197,144 @@ Computation resolves entirely on localized, volatile hardware. By severing cloud
 Predictability is achieved by treating lower-layer outputs as immutable, deterministic inputs. Bypassing a layer to access deeper raw states is explicitly prohibited. Consequently, the system’s emergent behavior becomes formally traceable, removing the "black box" behavior associated with end-to-end deep learning.
 
 % ==========================================
-% IV. ARCHITECTURAL DECOMPOSITION
+% IV. THE SCHOLARMASTER REFERENCE MODEL
 % ==========================================
-\section{Cross-Layer Consistency and the ScholarMaster Ecosystem}
-The ScholarMaster ecosystem intentionally distributes responsibility across independently verifiable papers rather than embedding all functionality into a monolithic specification. Each manuscript isolates one architectural responsibility domain under explicit ownership constraints. This decomposition mirrors the boundary philosophy enforced within the runtime architecture itself.
+\section{The ScholarMaster Reference Model: A 4-Stratum Architecture}
+The architecture is structured into four distinct strata, each representing a discrete domain of operational responsibility and data sensitivity. This stratification ensures that raw physical observations never mix with institutional governance logic.
 
-\subsection{Functional Ownership Mapping}
-Operational consistency is maintained by delegating specific domain expertise to isolated papers (Figure \ref{fig:ecosystem}):
 \begin{itemize}
-    \item \textbf{Probabilistic Interpretation (Paper 2):} Manages the conversion of raw geometric abstractions into bounded uncertainty states.
-    \item \textbf{Logical Evaluation (Paper 4):} Enforces deterministic predicate logic, converting probabilities into Boolean operational states.
-    \item \textbf{Identity Retrieval (Paper 7):} Confines high-speed identity extraction to an isolated execution layer, preventing leakage into sensing or logic.
-    \item \textbf{Runtime Scheduling (Paper 20):} Guarantees the temporal budget required for sub-millisecond execution across the entire stack.
+    \item \textbf{Physics Stratum (L1-L2):} Manages raw sensing and geometric abstraction. Subsystems in this stratum extract objective coordinates while remaining agnostic to institutional identity.
+    \item \textbf{Logic Stratum (L3-L4):} Converts geometric abstractions into probabilistic states and logical predicates. This stratum handles uncertainty propagation and enforces the rigid Boolean rules governing system behavior.
+    \item \textbf{Verification Stratum (L5-L6):} Ensures the system operates within its temporal and formal bounds, enforcing sub-millisecond scheduling and architectural isolation.
+    \item \textbf{Governance Stratum (L7-L8):} Handles auditing, privacy preservation, and institutional reporting, managing the SHA-256 chains that allow auditing without exposing raw data.
 \end{itemize}
 
-This separation prevents architectural ownership ambiguity and allows each subsystem to evolve under independently auditable constraints while preserving global operational consistency. It also serves as a structural defense against "salami-slicing" by proving that each paper occupies a unique, non-overlapping coordinate within the system's operational space.
+Figure \ref{fig:layers} visualizes the required abstraction contracts and illustrates the architectural hazards of bypassing them. 
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.48\textwidth}{!}{
+\begin{tikzpicture}[node distance=1.6cm]
+  
+  % Layers
+  \node (L0) [layer] {Governance Stratum (Audit/Execution)};
+  \node (L1) [layer, below of=L0] {Verification Stratum (Runtime/Foundations)};
+  \node (L2) [layer, below of=L1] {Logic Stratum (Interpretation/Logic)};
+  \node (L3) [layer, below of=L2] {Physics Stratum (Sensing/Geometry)};
+  \node (L4) [layer, below of=L3] {Hardware \& Runtime Foundations};
+
+  % Valid Arrows (Left Side)
+  \draw[arrow] (L4.north west) ++(1cm,0) -- node[left, payload] {Hardware\\Allocations} ([xshift=1cm]L3.south west);
+  \draw[arrow] (L3.north west) ++(1cm,0) -- node[left, payload] {Geometric\\Abstraction} ([xshift=1cm]L2.south west);
+  \draw[arrow] (L2.north west) ++(1cm,0) -- node[left, payload] {Probabilistic\\State} ([xshift=1cm]L1.south west);
+  \draw[arrow] (L1.north west) ++(1cm,0) -- node[left, payload] {Logical\\Predicates} ([xshift=1cm]L0.south west);
+
+  % Invalid Arrows (Right Side - Cross Layer Leakage)
+  \draw[forbidden] (L3.east) to[bend right=45] node[right, align=center, text=red, font=\footnotesize] {Forbidden:\\Direct sensor to logic\\(Breaks state isolation)} node[midway, cross] {} (L1.east);
+  
+  \draw[forbidden] (L2.east) to[bend right=45] node[right, align=center, text=red, font=\footnotesize] {Forbidden:\\Probability to control\\(Bypasses predicates)} node[midway, cross] {} (L0.east);
+
+\end{tikzpicture}
+}
+\caption{The ScholarMaster Layered Architecture. Allowed interfaces mandate progressive abstraction (left). Lateral or skip-level communication is explicitly forbidden to prevent cross-layer leakage (right).}
+\label{fig:layers}
+\end{figure}
+
+\subsection{Constraint-First Architectural Synthesis (CFAS)}
+ScholarMaster was designed using a Constraint-First Architectural Synthesis (CFAS) methodology. Rather than beginning with a feature set and attempting to bolt on privacy and real-time guarantees, we first defined the absolute boundary invariants ($B_i$) and then synthesized the functional features that could exist within those constraints. 
+
+\subsection{Schema-Constrained Semantic Firewalls}
+The architecture enforces an "Irreversibility Boundary" through schema-constrained semantic firewalls. By utilizing strictly typed serialization (e.g., Protobuf), the system makes it structurally impossible to pass a raw image tensor or an absolute coordinate across a layer boundary. For example, the interface between the Sensing and Reasoning layers is constrained to categorical IDs and logical spatial zones, precluding the possibility of identity leakage through high-dimensional raw features.
+
+% ==========================================
+% V. CROSS-LAYER CONSISTENCY
+% ==========================================
+\section{Cross-Layer Consistency and the Research Ecosystem}
+The ScholarMaster ecosystem decomposes architectural responsibility into independently verifiable domains spanning sensing, reasoning, runtime enforcement, and governance. This separation prevents architectural ownership ambiguity and allows each subsystem to evolve under independently auditable constraints while preserving global operational consistency. Individual subsystem formalizations are distributed across the broader ScholarMaster research program (Table \ref{tab:subsystem_mapping}).
+
+\begin{table}[htbp]
+\caption{Subsystem Ownership Mapping}
+\label{tab:subsystem_mapping}
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Subsystem Domain} & \textbf{Ownership Formalization} \\
+\midrule
+Vision Geometry & Paper 3 \\
+Acoustic Sensing & Paper 6 \\
+Probabilistic Interpretation & Paper 2 \\
+Logical Evaluation & Paper 4 \\
+Runtime Scheduling & Paper 20 \\
+Formal Foundations & Paper 21 \\
+Privacy Governance & Paper 8 \\
+Identity Retrieval & Paper 7 \\
+Reference Architecture & Paper 18 \\
+Threat Modeling & Paper 19 \\
+Control Dispatch & Paper 9 \\
+State Management & Paper 11 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure*}[htbp]
 \centering
-\begin{tikzpicture}[node distance=1.2cm, 
-  group/.style={rectangle, draw=black!40, fill=gray!5, dashed, inner sep=10pt, rounded corners},
-  paper/.style={rectangle, draw=black, fill=white, minimum width=2.2cm, font=\footnotesize, align=center}
+\begin{tikzpicture}[
+  group/.style={rectangle, draw=black!40, fill=gray!5, dashed, inner sep=0pt, rounded corners, minimum width=6.2cm, minimum height=3.8cm},
+  paper/.style={rectangle, draw=black, fill=white, minimum width=2.6cm, minimum height=0.8cm, font=\footnotesize, align=center}
 ]
 
-  % Groups
-  \node (G_sensing) [group, minimum width=5cm, minimum height=3cm] {};
-  \node at (G_sensing.north) [above, font=\bfseries] {Sensing \& Geometry};
+  % PHYSICS STRATUM
+  \node (G_sensing) [group] {};
+  \node [above=0.1cm of G_sensing.north, font=\bfseries] {Physics Stratum (Sensing/Geometry)};
   
-  \node (G_reasoning) [group, right=1.5cm of G_sensing, minimum width=5cm, minimum height=3cm] {};
-  \node at (G_reasoning.north) [above, font=\bfseries] {Interpretation \& Logic};
+  \node (P3)  [paper, anchor=north west] at ([xshift=0.3cm, yshift=-0.4cm]G_sensing.north west) {Vision Geometry};
+  \node (P6)  [paper, anchor=north east] at ([xshift=-0.3cm, yshift=-0.4cm]G_sensing.north east) {Acoustic Sensing};
+  \node (P12) [paper, anchor=south west] at ([xshift=0.3cm, yshift=0.4cm]G_sensing.south west) {Storage Adaptation};
+  \node (P13) [paper, anchor=south east] at ([xshift=-0.3cm, yshift=0.4cm]G_sensing.south east) {Learning Signals};
 
-  \node (G_runtime) [group, below=1.5cm of G_sensing, minimum width=5cm, minimum height=3cm] {};
-  \node at (G_runtime.north) [above, font=\bfseries] {Runtime \& Foundations};
+  % LOGIC STRATUM
+  \node (G_reasoning) [group, right=2.2cm of G_sensing] {}; 
+  \node [above=0.1cm of G_reasoning.north, font=\bfseries] {Logic Stratum (Interpretation/Logic)};
 
-  \node (G_governance) [group, right=1.5cm of G_runtime, minimum width=5cm, minimum height=3cm] {};
-  \node at (G_governance.north) [above, font=\bfseries] {Governance \& Execution};
+  \node (P2)  [paper, anchor=north west] at ([xshift=0.3cm, yshift=-0.4cm]G_reasoning.north west) {Probabilistic\\Interpretation};
+  \node (P4)  [paper, anchor=north east] at ([xshift=-0.3cm, yshift=-0.4cm]G_reasoning.north east) {Predicate\\Evaluation};
+  \node (P11) [paper, anchor=south west] at ([xshift=0.3cm, yshift=0.4cm]G_reasoning.south west) {State Management};
+  \node (P14) [paper, anchor=south east] at ([xshift=-0.3cm, yshift=0.4cm]G_reasoning.south east) {Federation};
 
-  % Papers - Sensing
-  \node (P3) [paper, xshift=-1cm, yshift=0.2cm] at (G_sensing) {P3: Vision};
-  \node (P6) [paper, xshift=1cm, yshift=0.2cm] at (G_sensing) {P6: Acoustic};
-  \node (P12) [paper, below=0.4cm of P3] {P12: Storage};
+  % VERIFICATION STRATUM
+  \node (G_runtime) [group, below=2.5cm of G_sensing] {};
+  \node [above=0.1cm of G_runtime.north, font=\bfseries] {Verification Stratum (Runtime/Foundations)};
 
-  % Papers - Reasoning
-  \node (P2) [paper, xshift=-1cm, yshift=0.2cm] at (G_reasoning) {P2: Probabilistic};
-  \node (P4) [paper, xshift=1cm, yshift=0.2cm] at (G_reasoning) {P4: Logic Rules};
-  \node (P11) [paper, below=0.4cm of P2] {P11: State Engine};
+  \node (P20) [paper, anchor=north west] at ([xshift=0.3cm, yshift=-0.4cm]G_runtime.north west) {Runtime Scheduling};
+  \node (P21) [paper, anchor=north east] at ([xshift=-0.3cm, yshift=-0.4cm]G_runtime.north east) {Formal Foundations};
+  \node (P5)  [paper, anchor=south west] at ([xshift=0.3cm, yshift=0.4cm]G_runtime.south west) {Hardware Constraints};
+  \node (P18) [paper, anchor=south east] at ([xshift=-0.3cm, yshift=0.4cm]G_runtime.south east) {Reference Contracts};
 
-  % Papers - Runtime
-  \node (P20) [paper, xshift=-1cm, yshift=0.2cm] at (G_runtime) {P20: Scheduling};
-  \node (P21) [paper, xshift=1cm, yshift=0.2cm] at (G_runtime) {P21: Foundations};
-  \node (P5) [paper, below=0.4cm of P20] {P5: Hardware};
+  % GOVERNANCE STRATUM
+  \node (G_governance) [group, right=2.2cm of G_runtime] {};
+  \node [above=0.1cm of G_governance.north, font=\bfseries] {Governance Stratum (Audit/Execution)};
 
-  % Papers - Governance
-  \node (P8) [paper, xshift=-1cm, yshift=0.2cm] at (G_governance) {P8: Privacy};
-  \node (P7) [paper, xshift=1cm, yshift=0.2cm] at (G_governance) {P7: Retrieval};
-  \node (P9) [paper, below=0.4cm of P8] {P9: Control};
+  \node (P8)  [paper, anchor=north west] at ([xshift=0.3cm, yshift=-0.4cm]G_governance.north west) {Privacy Preservation};
+  \node (P7)  [paper, anchor=north east] at ([xshift=-0.3cm, yshift=-0.4cm]G_governance.north east) {Identity Retrieval};
+  \node (P9)  [paper, anchor=south west] at ([xshift=0.3cm, yshift=0.4cm]G_governance.south west) {Control Dispatch};
+  \node (P19) [paper, anchor=south east] at ([xshift=-0.3cm, yshift=0.4cm]G_governance.south east) {Threat Modeling};
 
-  % Synthesis Center
-  \node (P1) [paper, fill=blue!10, thick, minimum width=3cm, minimum height=1cm, font=\small\bfseries] at ($(G_sensing.east)!0.5!(G_reasoning.west) + (0, -2.5cm)$) {P1: System Synthesis};
+  % SYNTHESIS CENTER
+  \path (G_sensing.south east) -- (G_governance.north west) coordinate[midway] (center);
+  \node (P1) [paper, fill=blue!10, thick, minimum width=3.8cm, minimum height=1.2cm, font=\small\bfseries] at (center) {ScholarMaster Synthesis};
 
-  % Connections
-  \draw[->, thick, gray] (G_sensing) -- (G_reasoning);
-  \draw[->, thick, gray] (G_reasoning) -- (G_governance);
-  \draw[->, thick, gray] (G_runtime) -- (G_sensing);
-  \draw[->, thick, gray, dashed] (P1.north) -- (G_sensing.south);
-  \draw[->, thick, gray, dashed] (P1.north) -- (G_reasoning.south);
-  \draw[->, thick, gray, dashed] (P1.north) -- (G_runtime.south);
-  \draw[->, thick, gray, dashed] (P1.north) -- (G_governance.south);
+  % ARROW CONNECTIONS
+  \draw[->, thick, gray] (G_sensing) -- node[above, font=\tiny\itshape] {Geometric Abstractions} (G_reasoning);
+  \draw[->, thick, gray] (G_reasoning) -- node[above, font=\tiny\itshape] {Logical Predicates} (G_governance);
+  \draw[->, thick, gray] (G_runtime.north) to[bend left=15] node[left, font=\tiny\itshape] {Temporal Budgets} (G_sensing.south);
+  
+  \draw[->, thick, gray, dashed] (P1) -- (G_sensing);
+  \draw[->, thick, gray, dashed] (P1) -- (G_reasoning);
+  \draw[->, thick, gray, dashed] (P1) -- (G_runtime);
+  \draw[->, thick, gray, dashed] (P1) -- (G_governance);
 
 \end{tikzpicture}
-\caption{The ScholarMaster Research Ecosystem. The project decomposes complex intelligent behavior into 21 independently verifiable Papers, each owning a strict functional domain. Paper 1 serves as the unified architectural blueprint governing these ownership flows.}
+\caption{The ScholarMaster Research Ecosystem Map. The architecture decomposes architectural responsibility into four independently verifiable strata (Physics, Logic, Verification, Governance). This structural decomposition provides the evidence that functional boundaries can be enforced without cross-layer leakage.}
 \label{fig:ecosystem}
 \end{figure*}
 
@@ -280,16 +348,6 @@ These abstractions propagate to the \textbf{Probabilistic Interpretation Layer},
 The resulting probability state is consumed by the \textbf{Logical Evaluation Layer}, which tests institution-specific predicates—such as duration thresholds or authorized schedule compliance. Only after deterministic predicate satisfaction does the \textbf{Control Layer} emit an operational action, such as updating a ledger or granting access.
 
 At no point does the control layer access raw sensor tensors, nor does the sensing layer interpret institutional policy semantics. If a decision is later questioned, an auditor can reconstruct the exact logical predicate and the specific probabilistic state that triggered it, without needing to re-watch hours of raw video.
-
-% ==========================================
-% V. INTERFACE CONTRACTS AND ADMISSIBLE STATE
-% ==========================================
-\section{Interface Contracts and Admissible State}
-A defining property of ScholarMaster is that layer communication is governed by admissible state contracts rather than arbitrary serialization. Each layer exports only the minimal state required for the immediately adjacent layer to operate.
-
-For example, the sensing layer exports geometric abstractions rather than dense pixel tensors. Similarly, the probabilistic interpretation layer exports contextual confidence states rather than raw temporal histories. This sharply bounded interface design prevents higher layers from becoming implicitly dependent on lower-layer implementation details. 
-
-If a perception model upgrades from producing a 2D bounding box to a multi-point 3D skeletal mesh, the intermediate interface layer down-samples this back into the standard geometric contract. The logical layer remains entirely unaware of the perception upgrade, ensuring that behavioral logic never requires re-validation merely because a camera driver was updated.
 
 % ==========================================
 % VI. WHY LAYER VIOLATIONS ARE DANGEROUS
