@@ -121,7 +121,7 @@ Modern intelligent systems increasingly operate under strict real-time, privacy,
 
 ScholarMaster treats architectural decomposition itself as a verifiable systems property rather than a mere software engineering convenience. This paper presents an edge-native framework that fractures the context-aware pipeline into rigidly isolated domains: sensing, geometric abstraction, probabilistic interpretation, logical evaluation, and control. 
 
-By enforcing strict abstraction admissibility between these stages, the architecture permanently eliminates cross-layer leakage. Modularity emerges as a direct consequence of these boundary invariants. We synthesize a multi-paper research program into a single coherent framework, demonstrating how deterministic composition outperforms monolithic fusion when interpretability, fault isolation, and deployment auditability are the primary operational metrics.
+By enforcing strict abstraction admissibility between these stages, the architecture substantially constrains cross-layer leakage. Modularity emerges as a direct consequence of these boundary invariants. We synthesize a multi-paper research program into a single coherent framework, demonstrating how deterministic composition outperforms monolithic fusion when interpretability, fault isolation, and deployment auditability are the primary operational metrics.
 \end{abstract}
 
 % ==========================================
@@ -191,7 +191,7 @@ L_i : X_i \to X_{i+1}
 where $X_i$ represents the \textit{minimal abstraction admissible} for upward propagation. A sensing layer may output geometric coordinates, but it is structurally incapable of emitting a logical predicate. This constraint prevents higher-level logic from becoming implicitly dependent on lower-level implementation details \cite{b12, b20}.
 
 \subsection{Edge-Native Memory Confinement}
-Computation resolves entirely on localized, volatile hardware. By severing cloud dependencies, we eliminate network jitter and natively enforce data sovereignty. The system treats all external network paths as hostile or unavailable, forcing critical path logic to operate in absolute isolation.
+Computation resolves entirely on localized, volatile hardware. By severing cloud dependencies, we eliminate network jitter and natively enforce data sovereignty. The system treats all external network paths as hostile or unavailable, forcing critical path logic to operate in functional isolation.
 
 \subsection{Deterministic Composition}
 Predictability is achieved by treating lower-layer outputs as immutable, deterministic inputs. Bypassing a layer to access deeper raw states is explicitly prohibited. Consequently, the system’s emergent behavior becomes formally traceable, removing the "black box" behavior associated with end-to-end deep learning.
@@ -258,20 +258,20 @@ The ScholarMaster ecosystem decomposes architectural responsibility into indepen
 \centering
 \begin{tabular}{@{}ll@{}}
 \toprule
-\textbf{Subsystem Domain} & \textbf{Ownership Formalization} \\
+\textbf{Subsystem Domain} & \textbf{Primary Formalization Source} \\
 \midrule
-Vision Geometry & Paper 3 \\
-Acoustic Sensing & Paper 6 \\
-Probabilistic Interpretation & Paper 2 \\
-Logical Evaluation & Paper 4 \\
-Runtime Scheduling & Paper 20 \\
-Formal Foundations & Paper 21 \\
-Privacy Governance & Paper 8 \\
-Identity Retrieval & Paper 7 \\
-Reference Architecture & Paper 18 \\
-Threat Modeling & Paper 19 \\
-Control Dispatch & Paper 9 \\
-State Management & Paper 11 \\
+Vision Geometry & SM-P3 \\
+Acoustic Sensing & SM-P6 \\
+Probabilistic Interpretation & SM-P2 \\
+Logical Evaluation & SM-P4 \\
+Runtime Scheduling & SM-P20 \\
+Formal Foundations & SM-P21 \\
+Privacy Governance & SM-P8 \\
+Identity Retrieval & SM-P7 \\
+Reference Architecture & SM-P18 \\
+Threat Modeling & SM-P19 \\
+Control Dispatch & SM-P9 \\
+State Management & SM-P11 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -334,7 +334,7 @@ State Management & Paper 11 \\
   \draw[->, thick, gray, dashed] (P1) -- (G_governance);
 
 \end{tikzpicture}
-\caption{The ScholarMaster Research Ecosystem Map. The architecture decomposes architectural responsibility into four independently verifiable strata (Physics, Logic, Verification, Governance). This structural decomposition provides the evidence that functional boundaries can be enforced without cross-layer leakage.}
+\caption{The ScholarMaster Research Ecosystem Map. The architecture decomposes architectural responsibility into four independently verifiable strata (Physics, Logic, Verification, Governance). This structural decomposition illustrates how functional boundaries may be enforced without introducing uncontrolled cross-layer leakage.}
 \label{fig:ecosystem}
 \end{figure*}
 
@@ -467,7 +467,7 @@ For example, a geometric sensing subsystem may transition from a CNN-based detec
 \section{Institutional Deployment and Multi-Tenant Realities}
 Institutional intelligent systems rarely operate in isolation. Universities, hospitals, and industrial facilities frequently require multiple independent operational policies to coexist on shared hardware infrastructure. ScholarMaster addresses this through its rigorous functional ownership boundaries. 
 
-Because operational logic remains isolated from sensing infrastructure, institutions may independently update policy layers without requiring recertification of lower-level perception modules. This separation is especially valuable in regulated environments where governance logic evolves more rapidly than physical sensing hardware. Furthermore, multi-tenant operation becomes feasible because logical evaluation remains totally isolated from sensing and runtime execution, allowing independent policy domains to operate concurrently without exposing raw sensor streams across organizational boundaries.
+Because operational logic remains isolated from sensing infrastructure, institutions may independently update policy layers without requiring recertification of lower-level perception modules. This separation is especially valuable in regulated environments where governance logic evolves more rapidly than physical sensing hardware. Furthermore, multi-tenant operation becomes feasible because logical evaluation remains isolated from sensing and runtime execution, allowing independent policy domains to operate concurrently without exposing raw sensor streams across organizational boundaries.
 
 This decomposition also permits selective recertification. A modification to institutional logic (e.g., changing attendance compliance rules) does not require re-validation of sensing hardware or probabilistic interpretation models. This substantially reduces operational governance complexity, allowing business logic to iterate faster than physical hardware.
 
@@ -482,7 +482,7 @@ ScholarMaster decomposes operational responsibility into independently auditable
 \section{Architectural Economics, Scars, and Non-Goals}
 
 \subsection{Architectural Non-Goals}
-ScholarMaster does not attempt to maximize benchmark-specific accuracy metrics or replace all tightly coupled inference systems. The framework instead targets environments where auditability, lifecycle maintainability, deterministic composition, and bounded operational behavior are prioritized over unconstrained throughput optimization. We intentionally sacrifice the theoretical latency floor of fused pipelines to achieve verifiable operational transparency.
+ScholarMaster does not attempt to maximize benchmark-specific accuracy metrics or replace all tightly coupled inference systems. The framework instead targets environments where auditability, lifecycle maintainability, deterministic composition, and bounded operational behavior are prioritized over unconstrained throughput optimization. We intentionally sacrifice the theoretical latency floor of fused pipelines to achieve high operational transparency.
 
 \subsection{Longitudinal Deployment Reality}
 A practical intelligent system is rarely static over its five-to-ten-year operational lifespan. Cameras fail, microphones degrade, institutional policies evolve, and hardware procurement cycles force heterogeneous deployments across multiple generations of edge devices. ScholarMaster is designed under the assumption that architectural evolution is inevitable. The framework therefore prioritizes subsystem survivability under incremental replacement rather than assuming synchronized full-stack upgrades.
@@ -499,15 +499,15 @@ ScholarMaster intentionally externalizes architectural complexity through explic
 Early architectural prototypes of ScholarMaster explored shared-memory fusion between the sensing and logic layers. The premise was that passing raw memory pointers rather than serialized geometric abstractions would eliminate copy overhead. Although this approach reduced end-to-end latency by a few milliseconds, it produced insidious, hidden coupling. The logic layer became implicitly dependent on the specific memory layout of the vision pipeline. When the vision model was quantized for deployment, the downstream logic silently failed. The final architecture intentionally rejects shared-memory fusion, accepting the associated serialization overhead as the necessary price of true independent verifiability.
 
 \subsection{Hard Architectural Limitations}
-This framework is not a universal panacea. The architecture intentionally prioritizes modularity and auditability over absolute peak throughput optimization. In environments where ultra-low latency dominates all other constraints—such as high-frequency automated trading or low-level drone motor stabilization—tightly coupled, fused pipelines will inevitably achieve marginally lower latency bounds. ScholarMaster is explicitly mapped to domains where interpretability, deterministic containment, and lifecycle maintainability are operationally more valuable than shaving microseconds off maximum theoretical throughput.
+This framework is not a universal panacea. The architecture intentionally prioritizes modularity and auditability over peak throughput optimization. In environments where ultra-low latency dominates all other constraints—such as high-frequency automated trading or low-level drone motor stabilization—tightly coupled, fused pipelines will inevitably achieve marginally lower latency bounds. ScholarMaster is explicitly mapped to domains where interpretability, deterministic containment, and lifecycle maintainability are operationally more valuable than shaving microseconds off maximum theoretical throughput.
 
 % ==========================================
 % X. CONCLUSION
 % ==========================================
 \section{Conclusion}
-The ScholarMaster architecture demonstrates that scaling complex intelligent systems at the edge requires discipline, not just algorithmic optimization. By formalizing boundary invariants and enforcing strict abstraction admissibility, we eradicate the brittleness inherent in monolithic designs. 
+The ScholarMaster architecture demonstrates that scaling complex intelligent systems at the edge requires discipline, not just algorithmic optimization. By formalizing boundary invariants and enforcing strict abstraction admissibility, we substantially reduce the brittleness inherent in monolithic designs. 
 
-This is not merely a software convenience; it is a structural necessity for long-term deployment. Forcing perception, interpretation, logic, and control to interact exclusively through narrow, verifiable interfaces introduces engineered friction. However, as demonstrated by the systemic failures of alternative monoliths, this precise friction is what guarantees resilience. ScholarMaster synthesizes a multi-paper research trajectory into a unified blueprint, proving that edge-native systems can achieve both high throughput and absolute architectural transparency.
+This is not merely a software convenience; it is a structural necessity for long-term deployment. Forcing perception, interpretation, logic, and control to interact exclusively through narrow, verifiable interfaces introduces engineered friction. However, as demonstrated by the systemic failures of alternative monoliths, this precise friction is what contributes to resilience. ScholarMaster synthesizes a multi-paper research trajectory into a unified blueprint, proving that edge-native systems can achieve both high throughput and high architectural transparency.
 
 % ==========================================
 % REFERENCES
