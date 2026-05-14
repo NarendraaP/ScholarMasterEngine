@@ -63,7 +63,7 @@ System resilience is evaluated via fault injection that subjects the orchestrato
 \end{abstract}
 
 \begin{IEEEkeywords}
-Edge Computing, AI Orchestration, Failure Containment, Inference Rate Governance, Hierarchical Control Plane, Chaos Testing.
+Hierarchical Orchestration, Policy-Aware Control Plane, Inference Rate Governance, Deterministic Degradation, Fault Containment, Edge-Native Activation.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -71,27 +71,21 @@ Edge Computing, AI Orchestration, Failure Containment, Inference Rate Governance
 % ==========================================
 \section{Introduction}
 
-Edge-based intelligent environments increasingly rely on multiple specialized AI modules operating concurrently. In classroom analytics deployments, these modules may include biometric recognition, pose estimation, and speech interpretation, each producing independent streams of inference signals. Although each component can be trained and optimized independently, coordinating them within a shared runtime constraint introduces a distinct systems-level challenge \cite{b14, b21}.
+The dominant thesis of this paper is that \textbf{hierarchical policy-aware orchestration enables deterministic and fault-contained coordination of heterogeneous edge AI modules under shared operational constraints}. Edge-based intelligent environments increasingly rely on multiple specialized AI modules operating concurrently, such as biometric recognition, pose estimation, and speech interpretation. Although each component can be optimized independently, coordinating them within a shared runtime introduces a distinct orchestration control problem \cite{b14, b21}.
 
-Although each module may function reliably in isolation, coordinating them under shared runtime constraints introduces a distinct orchestration challenge. In practical deployments, orchestration failures are often architectural rather than algorithmic. When modules are tightly coupled, a localized crash in one heavy model can propagate across the entire pipeline. 
+\subsection{Architectural Fragility in Flat Multi-Model Pipelines}
+When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention destabilizes otherwise independent modules, while cloud-mediated orchestration introduces unpredictable network latency that cannot support real-time interaction modeling \cite{b4, b15}. Furthermore, naive always-on sensing wastes operational resources by executing compute-intensive models when they are not contextually required. Orchestration instability emerges fundamentally from coordination topology, not merely from underlying model inefficiency.
 
-Existing orchestration strategies typically fall into two categories. These include tightly coupled edge pipelines and cloud-mediated coordination. Delegating orchestration responsibilities to remote cloud services introduces network dependence and unpredictable latency that simply cannot support real-time pedagogical contexts \cite{b4, b15}.
-
-This work investigates whether a logical control-plane abstraction can address these orchestration limitations. Rather than treating the smart classroom as a single monolithic inference task, we assume a layered execution environment: Perception (raw sensor processing), Reasoning (temporal context aggregation), and Governance (policy enforcement). Each layer maintains independent logical states, and communication across these boundaries relies strictly on typed context vectors that carry only abstracted event signals.
-
-To contextualize this work within the current state of the art, we distinguish our orchestration approach from traditional model optimization or federated representation learning. Unlike generic microservice orchestrators that focus primarily on compute resource availability and load balancing \cite{b26}, our hierarchical control plane explicitly enforces operational suppression and semantic isolation across execution layers by design. Similarly, while cloud orchestration platforms introduce latency bottlenecks unsuitable for real-time interaction modeling \cite{b6}, and monolithic Facial Expression Recognition (FER) systems offer very limited module-level graceful degradation when a single component crashes \cite{b7}, the proposed system attempts to isolate faults locally.
-
-The central control-plane contribution of this paper is the hierarchical isolation of these logical layers, which natively enables graceful degradation when individual modules fail. We validate this robustness by subjecting the orchestrator to fault injection \cite{b28}, deliberately injecting deterministic faults to verify orchestration layer isolation. 
-
-The primary contributions of this work are control-plane abstractions as well as operational:
+\subsection{Contributions and Subsystem Scope}
+This work investigates whether a logical control-plane abstraction can address these coordination limits. We assume a layered execution environment—Perception, Reasoning, and Governance—that enforces structured isolation. Specifically, our contributions are:
 \begin{itemize}
-    \item A hierarchical control-plane abstraction that divides execution into Perception, Reasoning, and Governance layers communicating via typed context vectors \cite{b17}.
-    \item A Compute Justification Model that formalizes Inference Rate Governance (IRG) as a policy-aligned gating mechanism for module activation.
-    \item Explicit failure containment strategies utilizing abstract state transitions and degradation logic \cite{b18}.
+    \item A hierarchical control-plane abstraction relying on typed context vectors for orchestration isolation \cite{b17}.
+    \item A Compute Justification Model formalizing Inference Rate Governance (IRG) for policy-aligned module activation.
+    \item Explicit failure containment strategies ensuring graceful degradation when individual modules fail \cite{b18}.
     \item Validation via fault injection to confirm orchestration resilience under deterministic failure scenarios \cite{b28}.
 \end{itemize}
 
-It is important to note that this work investigates control-plane orchestration logic; it does not attempt to evaluate underlying model accuracy or cryptographic auditing mechanisms.
+Within the ScholarMaster architecture, this subsystem coordinates module activation, governs orchestration logic, and enforces deterministic degradation only. It does not evaluate survivability envelopes (Paper 10), optimize flash endurance (Paper 12), optimize federated adaptation (Paper 13), derive runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
 
 % ==========================================
 % II. RELATED WORK
@@ -155,12 +149,12 @@ This establishes a formal state machine in which module activation is resolved d
 % --- LOGICAL ABSTRACTION ---
 The Logical Control Abstraction separates responsibilities vertically. Raw perception data is restricted entirely to the lowest logical boundary, ensuring that Governance only processes aggregated statistics.
 
-\subsection{Typed Context Vectors}
-Maintaining strict separation between architectural layers requires a constrained communication interface (implemented here as a typed context vector). Communication across layers is restricted to typed and bounded context vectors:
+\subsection{Typed Context Vectors as Coordination Boundaries}
+Maintaining strict separation between architectural layers requires more than an interface; it requires a \textbf{coordination-boundary mechanism}. Communication across layers is restricted to typed and bounded context vectors:
 \begin{equation}
 \vec{C}_{Perc \to Reas} = \{(event\_type, zone, timestamp)\}
 \end{equation}
-By receiving only abstracted event tuples via $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers operate without direct exposure to raw sensory data. Integrity validation of these context vectors is assumed to occur by the lower-layer security architecture.
+By receiving only abstracted event tuples via $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers operate without direct exposure to raw sensory data. Typed vectors constrain semantic propagation so that upper layers receive bounded abstractions instead of high-fidelity signals. Orchestration isolation structurally depends on this restricted cross-layer visibility.
 
 \subsection{Layer Isolation Factor (LIF)}
 To evaluate the success of the orchestration topology, we introduce the Layer Isolation Factor (LIF). Measured per fault injection lifecycle, LIF captures containment topology rather than overall uptime probability; it identifies whether an isolated crash propagates into a cascading failure:
@@ -174,10 +168,10 @@ In our evaluations, LIF averaged 95\%, demonstrating strong boundary confinement
 % ==========================================
 \section{Compute Justification Model}
 
-Continuous activation of all perception modules seldom reflects the operational needs of instructional environments. Because continuous activation of all sensing modules is rarely operationally necessary, sensing intensity should generally reflect the instructional context. The Governance layer accomplishes this by gating module execution based on predefined heuristic schedules that correspond to lecture phases.
+Continuous activation of all perception modules seldom reflects the operational needs of instructional environments. The Compute Justification Model dictates that compute allocation is governed by policy context, not merely energy optimization. The Governance layer gates module execution based on predefined heuristic schedules corresponding to lecture phases, ensuring that inference suppression is driven by contextual operational relevance.
 
-\subsection{Scheduling Formalism and ISR}
-Let $C_{sched}(t)$ denote the scheduled inference cycles at time $t$ for a continuous, full-session baseline. Let $J(t) \in \{0,1\}$ denote the binary policy justification signal, where $1$ indicates a phase requiring active sensing (e.g., a Q\&A session) and $0$ indicates a rest phase. The executed inference cycles $C_{exec}(t)$ are defined as:
+\subsection{Scheduling Formalism and IRG}
+We formalize Inference Rate Governance (IRG) as an orchestration-aware compute restraint mechanism rather than generic power-saving logic. IRG constrains unnecessary sensing activation, and this scheduling suppression directly reduces orchestration pressure. Let $C_{sched}(t)$ denote the scheduled inference cycles at time $t$ for a continuous, full-session baseline. Let $J(t) \in \{0,1\}$ denote the binary policy justification signal, where $1$ indicates a phase requiring active sensing (e.g., a Q\&A session) and $0$ indicates a rest phase. The executed inference cycles $C_{exec}(t)$ are defined as:
 \begin{equation}
 C_{exec}(t) = C_{sched}(t) \cdot J(t)
 \end{equation}
@@ -208,7 +202,7 @@ Under this model, computationally heavy models are restricted to minimal CADC pr
 \section{Failure Containment Design}
 
 \subsection{Failure Mode Analysis}
-Since multi-module systems inevitably experience localized component faults, the orchestration layer must provide explicit containment mechanisms. Table I formalizes the failure scenarios and our containment strategies, drawing on dependable computing taxonomies \cite{b18} and common microservice degradation patterns \cite{b24}.
+Because edge runtimes inevitably experience localized component faults, asynchronous health-report lag, and scheduling jitter, the orchestration layer must provide explicit containment mechanisms. Table I formalizes the failure scenarios and our containment strategies, drawing on dependable computing taxonomies \cite{b18} and common microservice degradation patterns \cite{b24}. Graceful degradation is an orchestration objective, not merely a side effect of modularity. The system prioritizes operational continuity over sensing completeness; fallback sensing preserves partial functionality when primary modules crash.
 
 \begin{table}[htbp]
 \caption{Failure Mode Analysis and Mitigation}
@@ -344,8 +338,18 @@ It is worth noting that initial system tuning yielded suppression rates exceedin
 
 Figure \ref{fig:timeline} visualizes the varying module activation patterns throughout the course of the simulated lecture. Heavy vision modules were activated for only 25 out of the 60 minutes, yielding a 42\% Context-Aware Duty Cycle (CADC). In contrast, the lightweight pose modules maintained a steady 75\% CADC, providing continuous geometric context without heavy processing overhead.
 
+\subsection{Limitations}
+The orchestration framework exposes several operational limitations:
+\begin{itemize}
+    \item \textbf{Heuristic-Policy Dependence:} The model relies on defined heuristic schedules; spontaneous classroom interaction shifts or organic deviation may result in unintended sensing suppression.
+    \item \textbf{Calibration Sensitivity:} Tuning the Inference Suppression Ratio (ISR) to balance operational savings with interactive responsiveness requires site-specific empirical calibration.
+    \item \textbf{Scheduling Rigidity:} Rigid enforcement of lecture session boundaries struggles with overlapping room utilization or ad-hoc interactions.
+    \item \textbf{Asynchronous Race-Condition Risk:} The abstract state transitions are evaluated via fault injection rather than formal methods; unexpected race conditions may exist within asynchronous health monitoring loops under high edge-runtime contention.
+    \item \textbf{Workload Unpredictability:} Heavy vision modules exhibit variable execution times depending on frame complexity, introducing scheduling jitter that synchronous timeout boundaries may misinterpret as module failure.
+\end{itemize}
+
 % ==========================================
-% X. DISCUSSION
+% XI. DISCUSSION
 % ==========================================
 \section{Discussion}
 
@@ -356,15 +360,15 @@ However, deployment calibration remains a practical engineering challenge. Setti
 Future extensions of this work may incorporate predictive IRG scaling, leveraging machine learning to preemptively anticipate lecture phases and scale module readiness before explicit triggers occur. Additionally, expanding the control plane to handle multi-classroom orchestration across a federated cluster of edge nodes represents a logical next step.
 
 % ==========================================
-% XI. CONCLUSION
+% XII. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This study examined the orchestration challenges that arise when multiple AI modules operate concurrently within a single edge deployment. By separating Perception, Reasoning, and Governance responsibilities and restricting cross-layer communication to typed context vectors, the architecture limits fault propagation and supports structured degradation when individual modules fail.
+This study investigated whether heterogeneous AI modules operating at the edge can be coordinated through a layered control-plane abstraction that preserves policy-aware activation, fault containment, and deterministic degradation. By separating Perception, Reasoning, and Governance responsibilities and restricting cross-layer communication to typed context vectors, the architecture isolates orchestration faults and prevents localized module crashes from causing cascading pipeline failure.
 
-The Compute Justification Model aligns module activation with predefined operational phases rather than relying on continuous sensing. Fault injection conducted within a deterministic harness confirmed that the orchestration logic maintains structural isolation under localized module failures.
+The Compute Justification Model explicitly aligns module activation with predefined operational phases, confirming that hierarchical orchestration enables deterministic coordination under shared operational constraints. Fault injection within the evaluated orchestration environment confirmed that the control plane reduces unnecessary activation and gracefully degrades functionality when primary perception pipelines fail.
 
-The proposed metrics—ISR, ECU, CADC, and LIF—provide a quantitative framework for analyzing orchestration behavior independently of downstream task accuracy. The hierarchical control-plane abstraction demonstrates that structured orchestration can align compute activation with policy constraints. At the same time, it maintains resilience to localized module failures.
+The proposed metrics---ISR, ECU, CADC, and LIF---provide a quantitative framework for analyzing activation governance. Within the ScholarMaster architecture, this framework operates exclusively as the runtime-governance orchestration subsystem---managing deterministic module coordination and activation transitions without evaluating survivability envelopes (Paper 10), proposing new federated models (Paper 13), or defining irreversible privacy architectures (Paper 17).
 
 % ==========================================
 % REFERENCES

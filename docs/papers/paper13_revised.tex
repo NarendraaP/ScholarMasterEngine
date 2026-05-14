@@ -54,7 +54,7 @@ Extensive simulations modeling environmental lighting decay, demographic shifts,
 \end{abstract}
 
 \begin{IEEEkeywords}
-Model Drift, Active Learning, Convergence Analysis, Bayesian Disagreement, Monte Carlo Dropout, Covariate Shift, Edge AI.
+Federated Drift Compensation, Active Learning Stability, Bayesian Uncertainty, Epistemic Disagreement, Sparse-Label Adaptation, Non-IID Stabilization.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -62,27 +62,27 @@ Model Drift, Active Learning, Convergence Analysis, Bayesian Disagreement, Monte
 % ==========================================
 \section{Introduction}
 
-Edge AI systems are increasingly tasked with operating autonomously as embedded components within persistent, dynamic physical environments \cite{b1}. Unlike controlled inference conditions evaluated over static benchmark datasets, edge environments naturally evolve over time. This evolution systematically alters the statistical properties of the sensory data received by the deployed inference models \cite{b2}. As environmental conditions drift, the predictive certainty and classification accuracy of static neural networks steadily deteriorate, a phenomenon formally recognized as concept drift \cite{b28}. 
+The dominant thesis of this paper is that \textbf{epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints}. Edge AI systems operate autonomously within persistent, dynamic physical environments \cite{b1}. Unlike controlled benchmark conditions, edge environments naturally evolve, systematically altering the statistical properties of sensory data and degrading the predictive accuracy of static neural networks---a phenomenon formally recognized as concept drift \cite{b28}.
 
-Historically, machine-learning practitioners have arrested this degradation via centralized, cloud-scale retraining pipelines where all edge-captured stream data is pooled, relabeled, and optimized iteratively. However, continuous, persistent raw data aggregation spanning organizational boundaries introduces insurmountable legal, economic, and infrastructural constraints in sensitive settings such as academic campuses or corporate governance partitions \cite{b3, b35}. Consequently, modern distributed frameworks must enforce rigid data-minimization rules which forbid transmitting raw inputs beyond local edge devices \cite{b4}.
+\subsection{The Drift Adaptation Problem Under Label Scarcity}
+Federated synchronization alone does not provide fresh supervision. When an edge node encounters a drifted distribution, it lacks ground-truth annotations to orient the optimization trajectory. Static edge models progressively diverge from evolving environments, and naive continuous annotation is operationally infeasible---randomly requesting human verification for ongoing streams generates unmanageable annotation bottlenecks \cite{b19}. The core bottleneck is therefore selective supervision acquisition, not distributed optimization.
 
-In practical deployments, temporal distribution shifts predominantly manifest across three orthogonal vectors:
+In practical deployments, temporal distribution shifts manifest across three operationally distinct vectors:
 \begin{itemize}
-    \item \textbf{High-Frequency Covariate Shift (Lighting/Weather):} Daily or seasonal variations in sunlight, progressive window tinting, or changes to ambient artificial lighting environments skew coordinate input distributions. Our longitudinal studies indicate these shifts can impose catastrophic accuracy reductions ranging between 10\% and 15\% over a trailing six-month window \cite{b7}.
-    \item \textbf{Low-Frequency Prior Probability Shift (Demographics):} Gradual, organic population turnover, evolving behavioral norms, or seasonal wardrobe variations slowly but persistently shift the underlying categorical subject representations expected by downstream classifiers.
-    \item \textbf{Structural Hardware Degradation (Occlusion/Focal):} Progressive lens scratching, microscopic shifts in mounting architecture, and thermal degradation alter bounding box topologies and internal spatial geometries, corrupting local abstraction integrity \cite{b8}.
+    \item \textbf{High-Frequency Covariate Shift (Lighting/Weather):} Daily or seasonal illumination variations skew coordinate input distributions. These shifts can impose accuracy reductions of 10--15\% over six-month windows \cite{b7}. Covariate drift primarily affects feature-space geometry without altering class semantics.
+    \item \textbf{Low-Frequency Prior Probability Shift (Demographics):} Gradual population turnover and evolving behavioral norms shift underlying categorical representations. Prior shift alters uncertainty differently from covariate drift---the model encounters genuinely novel class configurations rather than merely distorted features.
+    \item \textbf{Structural Hardware Degradation (Occlusion/Focal):} Lens scratching, mounting shifts, and thermal degradation corrupt bounding box topologies and spatial geometries \cite{b8}. Hardware degradation corrupts abstraction quality rather than semantic distributions directly.
 \end{itemize}
 
-Given the infeasibility of centralized aggregation, distributed mechanisms relying on the exchange of parameter updates rather than data payloads provide the foundational architecture for drift compensation. However, federated orchestration alone fails to solve the critical "label scarcity" challenge: when an edge node encounters a drifted distribution, it completely lacks ground-truth annotations to correctly orient the optimization trajectory. Randomly requesting human verification for ongoing video streams generates unmanageable annotation bottlenecks \cite{b19}.
-
-This research proposes an epistemic uncertainty-aware adaptation framework. We treat local drift mitigation not merely as an optimization synchronization problem, but specifically as a resource-constrained \textit{active data acquisition} problem.
-
-The primary contributions of this work are summarized as follows:
+\subsection{Contributions and Subsystem Scope}
+This research proposes an epistemic uncertainty-aware adaptation framework that treats local drift mitigation specifically as a resource-constrained \textit{active data acquisition} problem. The primary contributions are:
 \begin{enumerate}
-    \item We formulate a temporal adaptation strategy using Bayesian Active Learning by Disagreement (BALD) executed via Monte Carlo (MC) dropout, formally separating structural epistemic uncertainty (model ignorance) from aleatoric noise (environmental blur) directly on the edge node.
-    \item We empirically map the relationship between sparse acquisition constraints and federated learning stability, definitively demonstrating that updating extreme multi-million parameter dimensions inevitably destabilizes the adaptation target under privacy-preserving mechanisms.
-    \item We provide a comprehensive simulated empirical demonstration showing that selective sampling can effectively restore up to 79.6\% of drift-induced degradation via highly compressed labeling requests, making long-term edge autonomy sustainable.
+    \item We formulate temporal adaptation using Bayesian Active Learning by Disagreement (BALD) executed via Monte Carlo dropout, separating epistemic uncertainty (model ignorance) from aleatoric noise (environmental blur) directly on the edge node.
+    \item We empirically demonstrate that strict layer-freezing geometries are not merely communication optimizations but stability-preservation constraints required under privacy-noise amplification.
+    \item We show that selective sampling can restore up to 79.6\% of drift-induced degradation via highly compressed labeling requests.
 \end{enumerate}
+
+Within the ScholarMaster architecture, this subsystem performs uncertainty-guided drift adaptation, sparse-label acquisition, and federated adaptation stabilization only. It does not optimize hierarchical aggregation (Paper 14), synthesize deployment architecture (Paper 20), validate runtime enforcement (Paper 18), derive formal verification theorems (Paper 21), or define irreversible privacy doctrine (Paper 17).
 
 % ==========================================
 % II. RELATED WORK
@@ -142,9 +142,9 @@ In this equation:
 Subtracting expected internal entropy from the global predictive entropy elegantly strips away Aleatoric noise. High mutual information signifies that individual parameter states are extremely confident in their predictions, but violently disagree with one another regarding the specific class. This disagreement pinpoints \textit{Epistemic Uncertainty}—the precise boundary of the temporal distribution shift where the model explicitly lacks data structure.
 
 \subsection{Monte Carlo Dropout Integration}
-Exact Bayesian integration over modern deep network spaces is mathematically intractable. Therefore, we deploy Monte Carlo (MC) dropout as a rigorous variational Bayes approximation.
+Exact Bayesian integration over modern deep network weight spaces is computationally intractable under edge-resource constraints. MC Dropout provides an operationally tractable approximation: by maintaining active randomized dropout layers (rate $p_{drop}$) during inference, the network generates stochastic posterior samples without the memory and compute overhead of full variational inference \cite{b21, b33}.
 
-During runtime inference across the incoming stream $S$, we maintain active randomized dropout layers (rate $p_{drop}$). For an input $x_t$, the node executes $K$ independent stochastic forward passes, generating a sample distribution of probability vectors $\{\hat{y}^{(1)}, \dots, \hat{y}^{(K)}\}$. 
+For an input $x_t$, the node executes $K$ independent stochastic forward passes, generating a sample distribution $\{\hat{y}^{(1)}, \dots, \hat{y}^{(K)}\}$. This approximation provides useful uncertainty estimates but should not be interpreted as exact posterior fidelity---the dropout distribution is a simplified variational family that may underestimate true epistemic uncertainty in regions far from the training manifold.
 
 Algorithm \ref{alg:mc_bald} details how this directly translates into an on-device sample acquisition engine.
 
@@ -183,7 +183,7 @@ Algorithm \ref{alg:mc_bald} details how this directly translates into an on-devi
 \label{alg:mc_bald}
 \end{algorithm}
 
-Setting $K=10$ provided optimal variance bounds while ensuring the active learning pipeline did not induce thermal throttling on standard ARM Cortex processing arrays during real-time edge streaming.
+Setting $K=10$ provided acceptable variance bounds while ensuring the active learning pipeline did not induce thermal throttling on standard ARM Cortex processing arrays during real-time edge streaming. Increasing $K$ beyond 10 improved uncertainty estimates marginally but introduced latency spikes incompatible with continuous stream processing under thermal limits.
 
 % ==========================================
 % V. NOISY DRIFT ADAPTATION STABILITY
@@ -201,11 +201,12 @@ If we unfreeze the full model space (e.g., $d \approx 11 \times 10^6$ parameters
 \text{Stationary Error} \propto \frac{\sigma \cdot \sqrt{d}}{|B_{train}|}
 \end{equation}
 
-\subsection{Constraint Enforcement via Layer Freezing}
-The prevailing view historically posits layer freezing exclusively as a mechanism to minimize transmission payload sizes and conserve WAN bandwidth. Within an active edge-deployed setting subjected to structural perturbation, we formally redefine layer freezing as an absolute requirement for learning optimization stability.
+\subsection{Layer Freezing as Stability-Preservation Constraint}
+The prevailing view posits layer freezing exclusively as a communication optimization technique. Within an active edge-deployed setting subjected to privacy-noise perturbation, we formally elevate layer freezing to a \textbf{stability-preservation principle}.
 
-By structurally immobilizing the early deep convolutional feature extractor strata, and forcefully restricting optimization updates exclusively to the final three Multi-Layer Perceptron (MLP) classification layers, we explicitly slash dimensional scope to $d_{train} \approx 5.5 \times 10^6$. 
-This rigid constraint bounds the variance of the injected noise matrices, guaranteeing that the fragile gradient direction vectors harvested via Epistemic Mutual Information are accurately preserved and broadcast into the global trajectory. 
+Sparse active-learning gradients are inherently fragile---derived from handfuls of highly informative vectors. DP perturbation scales with the dimensionality $d$ of the updated parameter vector. Unrestricted updates amplify stochastic noise across the full parameter space, overwhelming the subtle gradient signals indicating drift boundaries. Constrained trainable geometry preserves adaptation directionality.
+
+By structurally immobilizing the early convolutional feature extractor and restricting optimization to the final three MLP classification layers, we reduce the trainable scope to $d_{train} \approx 5.5 \times 10^6$. This bounds the variance of injected noise matrices, ensuring that the fragile gradient signals harvested via epistemic mutual information are preserved through federated aggregation.
 
 % ==========================================
 % VI. EMPIRICAL EVALUATION
@@ -294,7 +295,7 @@ Positional Obscuration & 87.1\% & 93.5\% & +6.4pp \\
 \label{tab:drift}
 \end{table}
 
-Based on the quantitative outputs, the unadapted accuracy gap $\Delta_{acc}$ equates to an abysmal 9.8pp deduction (95.0\% standard degrading to 85.2\%). AL-guided optimization efficiently captures 7.8pp of that divergence, returning operational stability to 93.0\%. Tracking this empirically confirms $\rho = 7.8 / 9.8 \approx 0.796$. Reclaiming substantially \textbf{79.6\%} of all incurred drift degradation without exposing wide spatial datasets proves explicitly compelling for practical deployment.
+Within the evaluated drift scenarios, the unadapted accuracy gap $\Delta_{acc}$ equates to 9.8pp (95.0\% degrading to 85.2\%). Uncertainty-guided adaptation recovered 7.8pp, returning operational stability to 93.0\%. Tracking this yields $\rho = 7.8 / 9.8 \approx 0.796$. Reclaiming \textbf{79.6\%} of drift degradation under a 15\% annotation budget is consistent with the hypothesis that selective epistemic acquisition substantially outperforms uniform sampling. We note that simulated drift approximates but may not fully capture the compound complexity of organic environmental evolution.
 
 \subsection{Active Learning Pipeline Efficiency}
 A fundamental target of this work was minimizing operator intervention timelines. Without predictive targeting, a random sampling regimen mapped across a monthly drift cycle necessitated manually reviewing and verifying roughly 3,000 abstract records per discrete node location to obtain a robustly balanced dataset matching the environmental gradient footprint. 
@@ -322,29 +323,37 @@ Terminal Layer Isolation ($\approx$ 1M) & 87.5\% & Structural Underfitting Limit
 \label{tab:ablation_layers}
 \end{table}
 
-Exposing 11-million dimensions to standard protective aggregation obfuscation unconditionally overwhelmed the carefully mined active-learning labels, generating destructive feedback oscillations rendering the system less effective than partial stagnation limits. Constricting modifications exclusively to the final 5.5M classification geometries provided the necessary and rigid guardrails required to harness the pure information signal successfully.
+Under the simulated environmental conditions, exposing 11-million dimensions to privacy-preserving aggregation noise overwhelmed the carefully curated active-learning labels, generating destructive feedback oscillations. Restricting modifications to the final 5.5M classification layers provided the stability constraint necessary to preserve the information signal from epistemic acquisition. The terminal-layer-only configuration ($\approx$1M) achieved stability but suffered structural underfitting---insufficient capacity to capture the distributional shift. This confirms that layer freezing functions as a stability-preservation principle rather than merely a bandwidth optimization.
 
 % ==========================================
-% VII. DISCUSSION AND FUTURE CHALLENGES
+% VII. DISCUSSION
 % ==========================================
-\section{Discussion and Future Challenges}
+\section{Discussion}
 
-While the integration of Bayesian Active Learning provides an elegant countermeasure against extreme label sparsity on unmonitored edge stations, systemic limits demand recognition.
+While the integration of Bayesian Active Learning provides an elegant countermeasure against extreme label sparsity on unmonitored edge stations, systemic limits demand recognition. Consistent long-term temporal adaptation naturally courts catastrophic environmental forgetting. Re-orienting the geometric classification bounds aggressively toward novel operational conditions eventually overwrites structurally critical historical representations. For instance, drifting optimally into distinct summer lighting formulations progressively erodes systemic competency involving heavy winter occlusion constraints. 
 
-Consistent long-term temporal adaptation naturally courts catastrophic environmental forgetting. Re-orienting the geometric classification bounds aggressively toward novel operational conditions eventually overwrites structurally critical historical representations. For instance, drifting optimally into distinct summer lighting formulations progressively erodes systemic competency involving heavy winter occlusion constraints. 
-
-While generalized regularization terms slow decay mechanisms, true resistance fundamentally requires edge nodes bounding and defending small, structurally diverse historical "replay buffers." Successfully populating localized replay architectures while fiercely honoring hard data-retention schedules mandates complex time-to-live policy mechanisms left entirely outside the scope of current Bayesian evaluations. Furthermore, pseudo-labeling architectures suffer vulnerabilities if the underpinning structure remains highly confident but fundamentally incorrect, creating cyclical confirmation biases.
+\subsection{Limitations}
+The active learning adaptation framework exposes several systemic limitations within the evaluated drift scenarios:
+\begin{itemize}
+    \item \textbf{Catastrophic Forgetting:} Adapting to novel environmental conditions progressively erodes historical competence, necessitating replay buffers that may conflict with data-retention schedules.
+    \item \textbf{Pseudo-Labeling Confirmation Bias:} Automatic labeling routines suffer from confirmation bias; highly confident but structurally incorrect representations reinforce errors rather than correcting them.
+    \item \textbf{MC Dropout Approximation Limits:} MC Dropout provides tractable uncertainty approximation but does not represent a true posterior distribution. Uncertainty calibration may degrade in regions far from the training manifold.
+    \item \textbf{Synthetic Drift Simplification:} Evaluation relied upon abstracted synthetic vectors and simulated drift trajectories, which approximate but may not capture the full complexity of compound organic degradation.
+    \item \textbf{Federated-Noise Sensitivity:} Despite layer-freezing constraints, high DP noise still degrades sparse gradient signals.
+    \item \textbf{Annotation Fatigue:} The 15\% annotation budget assumes consistent human oracle availability; delayed verification, intermittent connectivity, and operator fatigue may reduce effective annotation throughput.
+    \item \textbf{No Long-Horizon Deployment Validation:} The simulated adaptation window does not validate multi-year drift trajectories or institutional personnel turnover effects on annotation quality.
+\end{itemize}
 
 % ==========================================
 % VIII. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This paper has aggressively addressed the specific operational vulnerabilities inflicted by long-term environmental drift across autonomous edge-learning arrays. Confronted by absolute limitations on raw-data centralization protocols, this research verified that decentralized models invariably experience slow performance decays.
+This paper addressed the operational challenge of temporal distribution drift in edge-deployed neural networks under sparse-label constraints. Within the evaluated drift scenarios, measuring epistemic uncertainty via BALD-guided Monte Carlo Dropout curated focused retraining datasets locally, reducing human verification requirements to approximately 15\% of the annotation burden required by uniform sampling.
 
-We demonstrated that systematically measuring Epistemic Uncertainty via targeted Monte Carlo Dropout (Bayesian Active Learning by Disagreement) accurately curates intensely focused retraining datasets locally, dropping manual verification constraints down to $\approx 15\%$ relative to randomized historical profiles. Critically, we validated that strict architectural layer freezing is not a peripheral bandwidth enhancement technique, but instead acts as a fundamental mathematical stabilizer necessary to prevent downstream aggregation obfuscation from systematically shattering localized parameter updates.
+The results are consistent with the hypothesis that selective uncertainty-guided acquisition substantially outperforms random sampling for drift adaptation. The framework recovered approximately 79.6\% of drift-induced accuracy degradation under the simulated conditions. Layer freezing was validated not as a peripheral bandwidth optimization but as a stability-preservation constraint---restricting trainable geometry to prevent privacy-noise amplification from overwhelming fragile active-learning gradients.
 
-Overall, the empirical simulations verified an ability to routinely reclaim $\approx 79.6\%$ of temporal performance deviations safely, cementing active learning as a prerequisite capability within modern long-horizon institutional federated structures.
+Within the ScholarMaster architecture, this framework operates exclusively as the federated drift-compensation and uncertainty-guided adaptation subsystem---isolating epistemic uncertainty and stabilizing sparse-label adaptation without optimizing hierarchical aggregation (Paper 14), modifying raw perception pipelines, synthesizing deployment architecture (Paper 20), or governing runtime enforcement lifecycles (Paper 18).
 
 % ==========================================
 % REFERENCES

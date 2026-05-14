@@ -84,15 +84,15 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Modern distributed environments increasingly deploy sensing infrastructure capable of identifying individuals and tracking spatial presence in real time. However, these sensing systems typically operate independently from institutional scheduling databases, preventing automated evaluation of whether detected presence aligns with scheduled obligations. This work presents a relational evaluation framework that reconciles spatial detection events with institutional schedules to enable continuous compliance evaluation.
+Sensing infrastructure capable of detecting spatial presence increasingly operates independently from institutional scheduling databases, preventing automated evaluation of whether observed presence aligns with scheduled obligations. This work presents a relational evaluation framework that continuously reconciles spatial detection events with institutional schedules through formally defined predicate logic.
 
-We introduce the Continuous Predicate Evaluation Model (CPEM), which represents institutional rules as relational predicates evaluated over streaming event tuples. To reduce spurious violations caused by short-lived sensor noise, the evaluation logic incorporates a Persistent Constraint Violation Filter (PCVF) that smooths logical state transitions over time. Spatial exclusivity constraints further prevent inconsistent multi-zone detections from propagating into the evaluation layer.
+The framework introduces the Continuous Predicate Evaluation Model (CPEM), which represents institutional rules as relational predicates evaluated over streaming event tuples. To reduce spurious violations caused by short-lived sensor noise and transit behavior, the evaluation logic incorporates a Persistent Constraint Violation Filter (PCVF) that temporally stabilizes logical state transitions through sustained violation integration. Spatial exclusivity constraints further prevent inconsistent multi-zone detections from propagating into the evaluation layer.
 
-To sustain synchronized burst traffic during class transitions, the evaluation logic integrates transaction-level connection pooling, list-based table partitioning, and composite temporal indexing within PostgreSQL. Experimental load testing demonstrates that continuous schedule reconciliation can be implemented using relational evaluation mechanisms while maintaining interactive latency under burst campus traffic conditions. The proposed analysis demonstrates that structured relational queries can process dynamic workloads at scale.
+To sustain synchronized burst traffic during class transitions, the relational pipeline integrates transaction-level connection pooling, list-based table partitioning, and composite temporal indexing within PostgreSQL. Experimental load testing demonstrates that the evaluation layer maintains sub-15 ms p99 latency at approximately 5,000 QPS under burst conditions, confirming that continuous schedule reconciliation can operate within bounded evaluation latency when relational access paths are systematically optimized.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Schedule Compliance, Data Fusion, Spatiotemporal Analysis, Relational Databases, PostgreSQL, Signal Processing.
+Continuous Predicate Evaluation, Spatiotemporal Compliance, Relational Stream Processing, Temporal Debounce Logic, Burst-Resilient Query Optimization.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -100,30 +100,29 @@ Schedule Compliance, Data Fusion, Spatiotemporal Analysis, Relational Databases,
 % ==========================================
 \section{Introduction}
 
-\subsection{The Semantic Gap in Spatiotemporal Monitoring}
-Large institutions increasingly rely on sensing infrastructure to observe movement across disjoint spatial zones. While these systems can detect presence with high reliability, they typically lack direct integration with institutional scheduling data. As a result, sensing systems report location events without determining whether those events correspond to legitimate scheduled activity.
+The dominant thesis of this paper is that \textbf{continuously evaluated relational predicates enable bounded-latency reconciliation between spatial event streams and institutional schedules under burst-concurrent conditions}. This paper functions as a relational stream-evaluation study, focusing strictly on spatiotemporal logic and query optimization rather than generalized institutional surveillance.
 
-This separation between sensing infrastructure and administrative scheduling creates an operational gap. In early deployments, this disconnect was immediately apparent. The sensing layer reliably reported location, but the schedule database had no mechanism to react dynamically. The two systems operated in parallel rather than in coordination. This separation can therefore be interpreted as a semantic gap: perception without logical evaluation, and schedule data without live feedback. Effective relational evaluation models therefore become critical for maintaining consistent logical states. 
+\subsection{The Temporal Blindness of Snapshot Attendance Systems}
+Traditional attendance procedures suffer from temporal blindness. Single-point verification—such as an RFID swipe or biometric check—implicitly assumes future compliance based on instantaneous confirmation. However, spatial state changes occur continuously after verification. Static attendance cannot capture mid-session deviations, transit delays, or early departures. Schedule legitimacy requires temporal continuity rather than discrete confirmation; the core challenge is continuous relational reconciliation over event streams, not merely presence detection accuracy.
 
-Attendance procedures further compound the issue. Faculty often record attendance at the start of a session, after which presence is typically assumed rather than continuously verified. Students may exit shortly after roll call while remaining marked “present” in static records. Without continuous reconciliation between schedule and location, mid-session deviations go undetected.
+\subsection{Subsystem Scope and Canonical Separation}
+Within the ScholarMaster architecture, this subsystem reconciles spatial events with schedules, evaluates compliance predicates continuously, stabilizes transient violations, and sustains bounded-latency query behavior. This subsystem does NOT detect localized acoustic anomalies (Paper 6), coordinate activation and orchestration policy (Paper 9), manage cryptographic provenance (Paper 8), perform sensing inference, or conduct behavioral analytics.
 
-\subsection{Continuous Logic Evaluation}
-Closing this operational gap requires rethinking how schedule compliance is evaluated. Traditional attendance systems typically rely on discrete, single-point verification events—an ID swipe or biometric check at entry. Such mechanisms confirm presence at one instant but provide no visibility into subsequent behavior.
-
-The evaluation function operates on presence as a continuous stream rather than a snapshot. The logical pipeline evaluates event tuples over time \cite{b14}, enabling detection of mid-session deviations and unauthorized zone occupancy. Instead of verifying “Was the student here at 9:00?”, the logic evaluates “Is the student where they are expected to be right now?” This shift from static verification to ongoing predicate evaluation broadly aligns with real-time stream processing principles \cite{b13}.
+\subsection{Continuous Predicate Evaluation}
+Closing the semantic gap between sensing layers and schedule databases requires rethinking compliance evaluation. The evaluation function proposed here operates on presence as a continuous stream rather than a snapshot. The logical pipeline evaluates event tuples over time \cite{b14}, representing compliance as a temporally evolving relational state. This aligns with established real-time stream processing principles \cite{b13}.
 
 \subsection{Contributions}
-Implementing continuous compliance evaluation required several adaptations within the relational pipeline. The primary focus of this work is the data evaluation logic necessary to make continuous compliance evaluation viable at institutional scale.
+Implementing continuous compliance evaluation required several adaptations within the relational pipeline. The primary focus is the evaluation logic necessary to make continuous reconciliation viable under institutional-scale burst traffic.
 
 Specifically, this paper:
 \begin{itemize}
-    \item Formalizes generic spatiotemporal compliance rules as continuously evaluated relational predicates (CPEM), enabling schedule comparison at event granularity.
-    \item Introduces a temporally smoothed violation mechanism (PCVF) to suppress short-lived mismatches caused by transit or sensor instability.
-    \item Establishes spatial exclusivity invariants to guard against inconsistent upstream detections.
+    \item Formalizes spatiotemporal compliance rules as continuously evaluated relational predicates (CPEM), enabling schedule comparison at event granularity.
+    \item Introduces a temporally stabilized violation mechanism (PCVF) to suppress short-lived mismatches caused by transit or sensor instability.
+    \item Establishes spatial exclusivity invariants to prevent logically inconsistent upstream detections from contaminating the evaluation layer.
     \item Optimizes relational read paths using connection pooling, table partitioning, and composite indexing to sustain burst concurrency.
 \end{itemize}
 
-Biometric extraction and identity resolution are treated as upstream dependencies; the present work isolates the relational fusion and evaluation layer.
+Sensing, identity resolution, and governance escalation are treated as external subsystem dependencies; this work isolates the relational predicate evaluation layer.
 
 % ==========================================
 % II. RELATED WORK
@@ -131,19 +130,19 @@ Biometric extraction and identity resolution are treated as upstream dependencie
 \section{Related Work}
 
 \subsection{Limitations of Passive Evaluation}
-Existing institutional monitoring systems often emphasize detection accuracy but provide limited mechanisms for real-time schedule reconciliation. Much institutional infrastructure is designed primarily for post-event analysis rather than live evaluation. Psychophysical studies suggest that sustained human monitoring degrades significantly over extended observation periods. Without automated filtering mechanisms, most relevant anomalies remain unnoticed \cite{b7}. Moreover, manually correlating observed identities with dynamic timetables is operationally impractical at scale.
+Existing institutional monitoring systems often emphasize detection accuracy but provide limited mechanisms for real-time schedule reconciliation. Much infrastructure is designed for post-event analysis rather than live evaluation. Without automated filtering, operationally relevant anomalies remain embedded in event streams that exceed human monitoring capacity \cite{b7}. Manually correlating observed identities with dynamic timetables is impractical at institutional scale.
 
-The approach developed here emphasizes exception-based evaluation. Human attention is engaged only when a formally defined deviation occurs \cite{b17}, reducing monitoring burden while preserving responsiveness.
+The approach developed here emphasizes exception-based evaluation. Human attention is engaged only when a formally defined deviation persists beyond the debounce threshold \cite{b17}, reducing monitoring burden while preserving operational responsiveness.
 
-\subsection{Automated Attendance vs. Continuous Evaluation}
-RFID badges and biometric entry systems verify presence at specific checkpoints \cite{b2, b3}. These systems log facility entry but do not track subsequent movement. Once marked present, a student’s status typically remains static until manually updated.
+\subsection{Discrete Verification versus Continuous Reconciliation}
+RFID badges and biometric entry systems verify presence at specific checkpoints \cite{b2, b3}. These systems log facility entry but do not evaluate subsequent spatial behavior. Once marked present, a student's compliance status typically remains static until manually updated.
 
-Continuous zone-based evaluation can extend this model. By integrating moving-object database principles \cite{b15, b16}, the logic dynamically evaluates adherence throughout the session rather than at a single timestamp.
+Continuous zone-based evaluation extends this model substantially. By integrating moving-object database principles \cite{b15, b16}, the evaluation logic dynamically reconciles spatial presence with scheduled expectations throughout the session rather than at a single timestamp. The distinction is architectural: discrete verification produces a snapshot, while continuous reconciliation produces a stream of evaluated predicates.
 
-\subsection{Spatiotemporal Data Fusion}
-Recent initiatives emphasize dense IoT integration to improve operational visibility \cite{b1}. Multimodal fusion approaches have enhanced situational awareness across domains \cite{b6}. The present work applies similar fusion principles specifically to schedule adherence, securely integrating detection events \cite{b23} with centralized relational records.
+\subsection{Stream Processing and Spatiotemporal Coordination}
+Recent work in edge-intelligent systems emphasizes dense IoT integration for operational visibility \cite{b1}. Multimodal fusion approaches have enhanced situational awareness across domains \cite{b6}. The present work applies similar coordination principles specifically to schedule adherence, integrating detection events \cite{b23} with centralized relational records.
 
-Rather than optimizing perception, the emphasis in this work is on logical reconciliation.
+The emphasis here is on relational reconciliation rather than perceptual optimization---a distinction that positions this work closer to stream-processing systems research \cite{b22} than to computer vision or behavioral analytics.
 
 % ==========================================
 % III. OPERATIONAL MODEL
@@ -162,7 +161,7 @@ Consider two identical physical observations at 14:30:
 From the sensor’s perspective, both observations are equivalent. The semantic difference emerges only when the spatial event is reconciled with the schedule. The predicate evaluation yields a formal compliance state.
 
 \subsection{Continuous Predicate Evaluation Model (CPEM)}
-Let the sensor event stream be defined as:
+Compliance is modeled not as a one-time attendance decision, but as a temporally evolving relational state. The CPEM formalizes this by translating schedule states into continuous predicates evaluated against event streams. Let the sensor event stream be defined as:
 \begin{equation}
 E = \{(s_i, z, t)\}
 \end{equation}
@@ -179,13 +178,13 @@ T(s_i, t) \iff \text{Loc}(s_i, t) \neq S(s_i, t) \land S(s_i, t) \notin \{\empty
 If the schedule is empty (e.g., free period or transit window), the presence is considered compliant unless it falls within a restricted zone. This formulation shifts adherence from a discrete check to a continuously evaluated relational predicate.
 
 \subsection{Spatial Exclusivity Invariant}
-Robust operation requires defensive handling of upstream inconsistencies. Sensors may occasionally generate conflicting detections due to signal bleed-through or optical misclassification.
+Robust relational operation requires defensive handling of upstream inconsistencies; spatial exclusivity is elevated as a fundamental logical consistency safeguard, not merely an anomaly heuristic. Contradictory spatial states contaminate downstream evaluation.
 
 We enforce the spatial exclusivity invariant:
 \begin{equation}
 |\{z : \text{Loc}(s_i,t)=z\}| \le 1
 \end{equation}
-An identity token cannot exist simultaneously in disjoint zones. If conflicting detections arrive for the same timestamp, the evaluation layer flags a teleportation anomaly and suspends evaluation for that token until the state stabilizes. This helps prevent contamination of the relational layer with logically inconsistent states.
+An identity token cannot exist simultaneously in disjoint zones. If conflicting detections arrive for the same timestamp, the evaluation layer flags a teleportation anomaly, which inherently violates relational coherence, and suspends evaluation for that token until the state stabilizes. This exclusivity enforcement preserves predicate validity and prevents contamination of the relational layer.
 
 % ==========================================
 % IV. ABSTRACT PROCESSING MODEL
@@ -206,7 +205,7 @@ Zone identifiers are statically mapped via a central configuration registry. The
 \section{Data Sanitization \& Debounce Logic}
 
 \subsection{Persistent Constraint Violation Filter (PCVF)}
-Sensor-driven zone transitions frequently contain transient noise that can lead to unstable compliance evaluations. Individuals crossing boundaries or triggering adjacent sensors can generate brief mismatches that do not reflect meaningful deviations. Evaluating each event independently could unnecessarily inflate false alerts.
+Sensor-driven zone transitions frequently contain transient noise that can lead to unstable compliance evaluations. Transient mismatches emerge naturally from movement and sensing instability. Evaluating each event independently could unnecessarily inflate false alerts. PCVF stabilizes logical state transitions over time rather than merely smoothing noisy data, recognizing that sustained deviations are operationally more meaningful than instantaneous mismatches.
 
 Instead, deviation is treated as a time-accumulated state. We define the sustained violation integral:
 \begin{equation}
@@ -277,7 +276,7 @@ This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across 
 % ==========================================
 \section{Burst-Elastic Read Optimization}
 
-Synchronized class transitions generate short bursts of extremely high event traffic. Relational evaluation can be optimized using specific query techniques to maintain low latency under these conditions.
+Synchronized class transitions generate short bursts of extremely high event traffic. Latency reduction emerges from controlled relational-access behavior rather than fundamentally novel database theory. Throughput improvements emerge from relational access-path reduction, where pooling stabilizes concurrency pressure and partitioning narrows lookup scope.
 
 \subsection{Schema Partitioning Strategy}
 
@@ -370,11 +369,11 @@ Predicate Logic Check & $<0.1$ ms & CPU \\
 The majority of latency originates from the relational lookup stage. Predicate evaluation itself contributes only a small portion of total latency relative to network and I/O costs. This reinforces an important design observation: compliance complexity does not meaningfully affect response time once the relational access path is optimized. Even under moderate concurrency, the evaluation layer consistently remained within single-digit millisecond latency.
 
 \subsection{Throughput and Concurrency Stress Testing}
-To evaluate burst resilience, the database was flooded with pre-generated identity tokens. Load was increased incrementally to 6,000 QPS.
+To evaluate burst resilience, the database was flooded with pre-generated identity tokens representing synthetic institutional burst conditions. Load was increased incrementally to 6,000 QPS.
 
 Without connection pooling, the system began to degrade past 3,000 QPS. Tail latency rose sharply as connection overhead accumulated, confirming the expected $T_{conn}$ bottleneck.
 
-With transaction-level pooling enabled, the latency curve flattened substantially. The evaluation layer demonstrates the ability to sustain approximately 5,000 QPS while maintaining sub-15 ms p99 latency ($\pm 1.2$ ms standard deviation). At $\sim$5,500 QPS, minor garbage collection pauses began contributing to the tail.
+With transaction-level pooling enabled, the latency curve flattened substantially. Within the evaluated burst conditions and the observed database configuration, the evaluation layer sustains approximately 5,000 QPS while maintaining sub-15 ms p99 latency ($\pm 1.2$ ms standard deviation). QPS scaling ultimately depends on deployment-specific hardware and network topology; these results reflect evaluated workload assumptions rather than universally guaranteed scalability.
 
 % --- FIGURE 2: THROUGHPUT ---
 \begin{figure}[htbp]
@@ -457,35 +456,30 @@ These controlled tests suggest that the evaluation logic remains stable under co
 \section{Discussion}
 
 \subsection{Logic Decoupling and Extensibility}
-From a data evaluation perspective, isolating compliance checks within relational logic significantly improves extensibility across heterogeneous sensing technologies.
-
-The compliance engine is agnostic to how identity is resolved. Optical recognition, RFID badges, WiFi triangulation, or future modalities can all feed the same tuple:
+Isolating compliance evaluation within relational predicate logic yields a significant extensibility benefit: the evaluation layer is agnostic to how identity is resolved. Optical recognition, RFID badges, WiFi triangulation, or future sensing modalities can all feed the same tuple:
 \begin{equation}
 (ID, Zone, Timestamp)
 \end{equation}
-As long as this abstraction is respected, the relational predicate layer functions identically. This separation also simplifies logic evolution. Improvements to detection quality generally do not require modification of the evaluation query.
+As long as this abstraction is respected, the relational predicate layer functions identically regardless of the upstream sensing technology. This separation also simplifies logic evolution---improvements to detection quality do not require modification of the evaluation query, and new compliance rules can be expressed as additional predicates without altering the processing pipeline.
 
-\subsection{Limits of Relational Evaluation}
-The present system evaluates schedule compliance strictly through relational comparison. It does not attempt behavioral inference beyond zone adherence. While this constraint preserves clarity and auditability, it also limits scope.
+\subsection{Predicate Auditability}
+A practical advantage of continuous relational evaluation is that every compliance decision can be reconstructed from its constituent inputs. For any flagged deviation, the system can produce the original event tuple, the schedule record it was evaluated against, the PCVF integration state at the time of escalation, and the spatial exclusivity check result. This traceability is a structural property of predicate-based evaluation rather than a post-hoc logging feature.
 
-For example:
-\begin{itemize}
-    \item Short-term collaborative movement between students is not analyzed.
-    \item Behavioral intent is not inferred.
-    \item Historical trajectory mining is not incorporated.
-\end{itemize}
+In institutional environments where compliance decisions may face administrative review, the ability to reconstruct the evaluation path is operationally significant. Opaque behavioral inference models, by contrast, cannot typically provide equivalent decision traceability.
 
-Future work could integrate temporal pattern analysis or trajectory clustering. However, such extensions would introduce additional complexity and potentially alter latency guarantees. The current design intentionally favors predictability over analytical breadth.
+\subsection{Limitations}
+The present system evaluates schedule compliance strictly through relational comparison. It does not attempt behavioral inference beyond zone adherence. This constraint preserves logical clarity and evaluation latency but explicitly limits the system's analytical scope.
 
-% ==========================================
-% IX. CONCLUSION
-% ==========================================
+All evaluation results are derived from synthetic workload testing rather than live institutional traffic. While the load profiles approximate burst patterns during class transitions, real deployment introduces variability---network jitter, transaction spikes during synchronized transitions, schedule-update propagation lag, sensor timestamp drift, and temporary backend interruptions---that synthetic testing cannot fully replicate.
+
+Furthermore, the evaluation layer maintains absolute dependence on upstream sensing quality. If the sensing subsystem produces systematically delayed or inaccurate zone labels, the PCVF may absorb genuine deviations as transient noise. The debounce threshold ($\tau_{debounce}$) represents a highly sensitive calibration tradeoff between transient suppression and detection responsiveness.
+
 \section{Conclusion}
-This study presented a data evaluation pipeline for continuously evaluating institutional schedule compliance using spatiotemporal predicate logic. By representing institutional rules as spatiotemporal predicates (CPEM) and applying a temporally smoothed violation filter (PCVF), the logic distinguishes sustained deviations from short-lived sensor noise.
+This relational stream-evaluation study presented a pipeline for continuously reconciling spatial detection events with institutional schedule constraints through formally defined predicate logic. By representing institutional rules as continuously evaluated spatiotemporal predicates (CPEM) and applying a temporally stabilized violation filter (PCVF), the evaluation logic distinguishes sustained deviations from transient sensor noise while maintaining relational state coherence.
 
-From a performance perspective, sustained responsiveness depends less on predicate complexity and more on relational evaluation optimizations. Partitioned schema design, composite indexing, and transaction-level connection pooling enable the relational lookup to sustain burst traffic approaching 5,000 QPS while maintaining sub-15 ms tail latency.
+From an infrastructure perspective, latency reduction emerges from controlled relational-access behavior. Partitioned schema design, composite temporal indexing, and transaction-level connection pooling enable the relational lookup layer to sustain burst traffic approaching 5,000 QPS while maintaining sub-15 ms p99 latency---confirming that the relational coordination overhead remains bounded under evaluated burst conditions.
 
-The evaluation demonstrates that structured relational coordination can maintain stable lookup performance under distributed workloads. Relational responsiveness remains consistent across varying conditions.
+The design intentionally favors operational predictability over analytical breadth. Within the broader ScholarMaster ecosystem, this subsystem functions exclusively to evaluate continuous compliance predicates and perform bounded-latency relational reconciliation. It does not orchestrate activation governance (Paper 9) or perform acoustic anomaly sensing (Paper 6). It consumes abstract spatial event tuples and emits evaluated predicate states, prioritizing temporal stabilization and burst-resilient lookup behavior over universal institutional monitoring.
 
 % ==========================================
 % REFERENCES

@@ -50,17 +50,15 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Real-time vision pipelines routinely process full RGB frames even when downstream inference depends only on geometric relationships. This coupling exposes high-resolution biometric texture during intermediate computation, although the final decision logic often relies exclusively on sparse spatial structure.
+Real-time vision pipelines routinely process full RGB frames even when downstream inference depends only on geometric relationships. This representational mismatch exposes high-resolution biometric texture during intermediate computation, although the final decision logic operates exclusively on sparse spatial structure.
 
-We present a pose-only computer vision model designed for edge inference under explicitly bounded volatile memory constraints. Rather than retaining texture-level RGB matrices, the perception layer extracts sparse skeletal coordinates and overwrites the source frame buffer within a bounded interval ($\Delta T_{volatile} \le 33$ ms).
+This work presents a pose-only sensing architecture designed for edge inference under explicitly bounded volatile memory constraints. Rather than retaining texture-level RGB matrices, the perception layer extracts sparse skeletal coordinates and overwrites the source frame buffer within a measurable interval ($\Delta T_{volatile} \le 33$ ms). A rank-based projection analysis demonstrates why deterministic reconstruction from skeletal vectors to original pixel-space identity is structurally underdetermined under defined adversarial assumptions. Head orientation is estimated through a classical Perspective-n-Point (PnP) formulation, while coordinate fluctuation is mitigated using a confidence-adaptive Kalman filter with measurement covariance $R_k = \sigma^2 / (c_i + \epsilon)$.
 
-A rank-based projection analysis shows why deterministic reconstruction from skeletal vectors to original pixel-space identity becomes structurally underdetermined under clearly defined adversarial assumptions. Head orientation is estimated through a classical Perspective-n-Point (PnP) formulation, while coordinate fluctuation is mitigated using a confidence-adaptive Kalman filter defined by $R_k = \sigma^2 / (c_i + \epsilon)$.
-
-Across 1,200 labeled kinematic events, the perception logic achieves 97.4\% detection accuracy (Precision: 0.98 $\pm$ 0.01, Recall: 0.96 $\pm$ 0.02). Concurrently, it maintains sub-33 ms end-to-end latency. This study analyzes whether spatial event detection can be implemented while strictly constraining both the lifetime and structural exposure of raw pixel data within the sensing pipeline. These results demonstrate that geometric edge analytics can operate within explicitly bounded exposure windows when dimensional projection and memory confinement are treated as coordinated constraints.
+Across 1,200 labeled kinematic events, the perception layer achieves 97.4\% detection accuracy (Precision: 0.98 $\pm$ 0.01, Recall: 0.96 $\pm$ 0.02) while maintaining sub-33 ms end-to-end latency. These results demonstrate that geometric edge analytics can operate within bounded exposure windows when dimensional projection and memory confinement are treated as coordinated architectural constraints rather than independent optimizations.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Pose Estimation, Geometric Sensing, Edge Computing, Volatile Memory, Dimensionality Reduction, Perspective-n-Point, Signal Processing, Kalman Filtering.
+Constrained Edge Perception, Geometric Abstraction, Volatile Memory Confinement, Dimensional Projection, Pose Estimation, Bounded Exposure Sensing.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -68,24 +66,25 @@ Pose Estimation, Geometric Sensing, Edge Computing, Volatile Memory, Dimensional
 % ==========================================
 \section{Introduction}
 
-Numerous vision-based sensing systems process high-dimensional image tensors even when the final inference task depends primarily on low-dimensional geometric relationships. This mismatch between input representation and analytical requirement introduces an unnecessary exposure surface for biometric texture during intermediate computation. Optical sensors provide highly detailed geometric information, but they simultaneously capture high-resolution texture data that far exceeds what is required for kinematic inference. In conventional pipelines, even detecting a simple gesture necessitates decoding and processing the full RGB frame, although only a sparse subset of spatial relationships is ultimately used \cite{b1}.
+The dominant thesis of this paper is that \textbf{bounded volatile-memory confinement combined with sparse geometric projection materially reduces persistent biometric exposure during edge-based visual inference}. This paper functions strictly as a constrained perception-systems study, evaluating geometric abstraction and memory-boundary enforcement rather than generalized privacy governance.
 
-This mismatch becomes particularly visible in action-sensing pipelines. Although these systems are technically effective, they accumulate detailed biometric information during intermediate processing stages. This intermediate exposure can introduce data persistence risks, particularly within institutional environments where persistent recording is neither necessary nor desirable \cite{b25}.
+\subsection{Representational Excess in Conventional Vision Pipelines}
+Many edge inference tasks consume only spatial relationships, yet conventional vision pipelines decode full RGB frames. Dense RGB tensors contain substantially more biometric information than downstream logic requires, expanding the attack surface unnecessarily. Geometric abstraction can satisfy kinematic inference requirements without preserving identity-bearing texture. The core issue is representational mismatch, not merely storage duration: capturing detailed texture data far exceeds what kinematic event detection requires \cite{b1}.
 
-Lower-fidelity sensing alternatives avoid capturing texture entirely. Passive Infrared (PIR) detectors, ultrasonic motion sensors, and break-beam systems can signal motion without encoding facial detail. However, these sensors lack the spatial resolution required to distinguish specific geometric actions in crowded or complex environments \cite{b2}. A practical gap therefore remains between high-fidelity optical sensing and low-fidelity physical detection systems.
+\subsection{Subsystem Scope and Canonical Separation}
+Within the ScholarMaster architecture, this subsystem performs geometric projection, constrains volatile optical exposure, and emits sparse coordinate abstractions. This subsystem does NOT perform identity retrieval (Paper 7), orchestrate activation governance (Paper 9), manage cryptographic provenance (Paper 8), derive runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17). 
 
-The vision pipeline proposed in this work addresses the representation mismatch. It accomplishes this by separating geometric inference from persistent pixel storage. A pose estimation network operating on edge hardware projects the dense RGB matrix into a sparse coordinate representation. Immediately following vectorization, the raw frame buffer is explicitly overwritten in memory. The perception layer never persists or analyzes facial texture beyond this bounded interval.
+\subsection{Geometric Abstraction and Volatile Confinement}
+To address the representational mismatch, the perception layer projects dense optical input into sparse geometric structure and constrains raw-frame lifetime. A pose estimation network operating on edge hardware extracts sparse coordinate representation, after which the raw frame buffer is explicitly overwritten. Memory lifetime itself acts as a security boundary.
 
-Unlike post-hoc data protection strategies—such as blurring, masking, or noise injection \cite{b3, b4}—which may remain vulnerable to inversion or super-resolution attacks, this approach limits the lifetime of raw pixels at the systems level. Data minimization is implemented through memory confinement rather than image manipulation.
+This approach differs structurally from post-hoc protection strategies---blurring, masking, or noise injection \cite{b3, b4}---which operate on retained data. Here, exposure reduction depends on lifetime minimization rather than post-processing concealment; zeroization constrains retrospective persistence risk, and confinement boundaries are operationally measurable.
 
 The core technical elements include:
 \begin{itemize}
     \item A formally bounded volatile memory window enforced through OS-level mechanisms.
-    \item A rank-based dimensionality analysis demonstrating structural non-invertibility of the pose projection.
+    \item A rank-based dimensionality analysis demonstrating structural underdetermination of the pose projection.
     \item A rule-based geometric event classifier stabilized via confidence-adaptive Kalman filtering and classical PnP orientation estimation.
 \end{itemize}
-
-The objective is not concealment after capture, but strict limitation of exposure during capture.
 
 % ==========================================
 % II. RELATED WORK
@@ -93,16 +92,16 @@ The objective is not concealment after capture, but strict limitation of exposur
 \section{Related Work}
 
 \subsection{Topological and Geometric Sensing}
-Existing approaches to privacy-aware sensing typically fall into two broad categories: hardware abstraction and post-processing anonymization. These systems operate primarily within the depth domain, capturing distance fields rather than RGB texture, thereby inherently reducing the risk of facial reconstruction \cite{b5}.
+Existing approaches to exposure-constrained sensing broadly fall into two categories: hardware abstraction and post-processing anonymization. Depth-domain systems capture distance fields rather than RGB texture, inherently reducing the biometric surface available for reconstruction \cite{b5}.
 
-Despite these advantages, active depth sensors carry practical limitations. Hardware cost, power consumption, and limited range constrain their deployment in large environments such as lecture halls or transit hubs. The approach explored here attempts to approximate topological sensing using standard RGB hardware, replacing hardware abstraction with aggressive software-level dimensional reduction \cite{b23}.
+Despite these advantages, active depth sensors carry practical limitations. Hardware cost, power consumption, and limited effective range constrain their deployment in environments such as lecture halls or transit hubs. The approach explored here approximates topological sensing using standard RGB hardware, replacing hardware-level abstraction with aggressive software-level dimensional reduction \cite{b23}.
 
-Ryoo et al. \cite{b2} demonstrated activity recognition from extremely low-resolution imagery (e.g., 16x12 pixels). Although this destroys high-frequency facial features, low-resolution matrices remain pixel-based and may still be subject to generative upsampling attacks. Advances in GANs and diffusion models have shown that even degraded inputs can yield plausible reconstructions. By contrast, a skeletal vector representation eliminates the matrix structure entirely, significantly narrowing the inversion surface.
+Ryoo et al. \cite{b2} demonstrated activity recognition from extremely low-resolution imagery (e.g., 16$\times$12 pixels). Although this destroys high-frequency facial features, low-resolution matrices remain pixel-based and may still be subject to generative upsampling. Advances in GANs and diffusion models have shown that degraded pixel inputs can yield plausible reconstructions. A skeletal vector representation eliminates the matrix structure entirely, reducing the inversion surface from pixel-space recovery to coordinate-constrained synthesis---a substantially more constrained problem.
 
 \subsection{Lightweight Pose Estimation for Edge Deployment}
-Pose extraction has evolved from computationally intensive bottom-up architectures such as OpenPose \cite{b6} toward lightweight, edge-oriented frameworks including YOLOv8-pose \cite{b10}, BlazePose \cite{b8}, and ViTPose \cite{b9}. These models achieve real-time inference ($>30$ FPS) on integrated SoCs by combining depthwise separable convolutions with efficient anchor mechanisms.
+Pose extraction has evolved from computationally intensive bottom-up architectures such as OpenPose \cite{b6} toward lightweight, edge-oriented frameworks including YOLOv8-pose \cite{b10}, BlazePose \cite{b8}, and ViTPose \cite{b9}. These models achieve real-time inference ($>$30 FPS) on integrated SoCs by combining depthwise separable convolutions with efficient anchor mechanisms.
 
-Most existing literature emphasizes maximizing detection accuracy (e.g., mAP on COCO \cite{b11}). In this work, the emphasis shifts from accuracy optimization to systems containment. The pose network is treated strictly as a projection operator: its output is consumed as geometric data, and its input buffer is destroyed immediately after inference. The contribution in this work lies less in pose accuracy improvements, but in constraining the memory boundary surrounding the inference stage.
+Most existing literature emphasizes maximizing detection accuracy (e.g., mAP on COCO \cite{b11}). In this work, the emphasis shifts from accuracy optimization to systems containment. The pose network is treated as a projection operator: its output is consumed as geometric data, and its input buffer is destroyed immediately after inference. The contribution lies in constraining the memory boundary surrounding the inference stage rather than in pose accuracy improvements.
 
 \subsection{Head Pose Estimation Without Texture}
 Head orientation estimation is commonly addressed through deep regression models operating on cropped facial images \cite{b14}. Such approaches require dense texture processing, which conflicts with the design constraints of the present system.
@@ -154,7 +153,7 @@ To prevent queue accumulation or swap-induced persistence, the pipeline constrai
 \begin{equation}
 \Delta T_{volatile} \le 33ms
 \end{equation}
-This bound aligns with a 30 FPS real-time processing constraint. By ensuring that raw frames are overwritten before subsequent capture cycles accumulate, the exposure window remains measurable and operationally repeatable. Under the defined adversarial model, reconstruction from historical storage becomes highly impractical because no raw frames are ever committed beyond this interval.
+This bound aligns with a 30 FPS real-time processing constraint. By ensuring that raw frames are overwritten before subsequent capture cycles accumulate, the exposure window remains measurable and operationally repeatable. Under the defined adversarial model, reconstruction from historical storage becomes structurally impractical because no raw frames persist beyond this interval.
 
 % ==========================================
 % IV. SIGNAL PROCESSING METHODOLOGY
@@ -163,9 +162,9 @@ This bound aligns with a 30 FPS real-time processing constraint. By ensuring tha
 
 \subsection{One-Way Pipeline Structure}
 
-From a signal-processing perspective, the sensing pipeline can be interpreted as a one-way projection from a high-dimensional pixel space to a sparse geometric representation. Raw optical data flows through a volatile region, undergoes vectorization, and is then explicitly destroyed. Only the resulting coordinate vectors are permitted to enter the persistent evaluation stage—typically 34 scalar values under the COCO convention.
+From an architectural perspective, the sensing pipeline enforces a strict one-way projection boundary, elevating vectorization as an architectural irreversibility boundary rather than merely a preprocessing stage. Raw optical data flows through a volatile region, undergoes vectorization, and is explicitly destroyed. Downstream systems never regain access to dense optical tensors; coordinate emission is intentionally lossy, and persistence occurs only after projection and destruction. Only the resulting coordinate vectors are permitted to enter the persistent evaluation stage—typically 34 scalar values under the COCO convention.
 
-There are no feedback paths or secondary buffers capable of reintroducing raw pixels into downstream components. This structural isolation plays an important role in maintaining the confinement guarantee.
+There are no feedback paths or secondary buffers capable of reintroducing raw pixels into downstream components. This structural isolation prevents the reconstitution of texture-space information.
 
 % --- FIGURE 1: ARCHITECTURE ---
 \begin{figure}[htbp]
@@ -227,7 +226,7 @@ H_{event}(t) = \mathbb{I}(y_{W_R} < y_{E_R} - \alpha D_{shoulder})
 \end{equation}
 This relative formulation removes dependence on absolute pixel location and improves robustness across camera distances.
 
-\subsection{Rank-Based Projection and Structural Irreversibility}
+\subsection{Rank-Based Projection and Structural Underdetermination}
 To evaluate reconstruction feasibility, we treat the pose extractor as a non-linear projection:
 \begin{equation}
 f: \mathbb{R}^{37632} \rightarrow \mathbb{R}^{34}
@@ -242,12 +241,12 @@ By the Rank-Nullity Theorem:
 \begin{equation}
 \dim(\ker(f)) \ge 37,598
 \end{equation}
-The dimensional collapse is therefore substantial. Even if an adversary knows the projection mapping, the null space contains an enormous set of possible inputs consistent with a single output vector. 
+Underdetermination emerges from this fundamental dimensional collapse, not merely from adversarial impossibility. The geometric topology is preserved while texture-space information is structurally discarded. Even if an adversary knows the projection mapping, the null-space ambiguity contains an enormous set of inputs consistent with a single output vector.
 
-Generative models could synthesize a plausible human pose from the skeleton, but deterministic reconstruction of the original high-frequency biometric texture is not uniquely solvable without additional constraints \cite{b18}. The transformation removes identity-bearing detail rather than merely obscuring it.
+Generative models could synthesize a plausible human pose from the skeleton, but deterministic reconstruction of the original high-frequency biometric texture is not uniquely solvable without additional constraints \cite{b18}. The transformation structurally discards identity-bearing detail rather than obfuscating it cosmetically.
 
 \subsection{Perspective-n-Point (PnP) Orientation Estimation}
-Head orientation is computed via classical PnP geometry. Sparse 2D landmark coordinates are mapped to a standardized 3D cranial model:
+Head orientation is computed via classical PnP geometry, emphasizing that geometric stabilization supports bounded sensing reliability rather than advanced semantic understanding. PnP enables orientation recovery without requiring dense texture processing. Sparse 2D landmark coordinates are mapped to a standardized 3D cranial model:
 
 \begin{equation}
 \lambda \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} = K [R | t] \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix}
@@ -264,7 +263,7 @@ In evaluation, mean reprojection error remained below 2.5 pixels. Euler angles a
 \theta &= \arctan2(-R_{31}, \sqrt{R_{32}^2 + R_{33}^2}) \\
 \phi &= \arctan2(R_{32}, R_{33})
 \end{align}
-Orientation is therefore inferred entirely from geometry, without referencing facial texture.
+Orientation is therefore inferred entirely from geometry, without referencing facial texture, stabilizing inference.
 
 \subsection{Confidence-Adaptive Kalman Filtering}
 Edge-based pose estimators can exhibit high-frequency jitter, especially under occlusion. We model joint dynamics as:
@@ -304,10 +303,10 @@ This enforces temporal stability before emitting an event.
 % ==========================================
 \section{Memory-Aware Sensing Constraints}
 
-Maintaining a bounded exposure window requires coordination between application logic and the underlying operating system memory manager. Without explicit safeguards, operating systems may retain sensitive frame data within swap space, cache hierarchies, or freed memory regions \cite{b21, b22}. The confinement guarantee therefore depends heavily on disciplined memory management rather than application-level logic alone.
+Memory lifetime itself acts as a security boundary. Maintaining a bounded exposure window requires coordination between application logic and the underlying operating system memory manager. Without explicit safeguards, operating systems may retain sensitive frame data within swap space, cache hierarchies, or freed memory regions \cite{b21, b22}. The confinement boundaries are operationally measurable and depend heavily on disciplined memory management rather than application-level logic alone.
 
 \subsection{OS-Level Page Locking}
-Modern operating systems rely on virtual memory paging. Under memory pressure, inactive pages may be written to persistent storage (e.g., Linux swap partitions). If raw RGB buffers were paged out before zeroization, the confinement guarantee would be invalidated.
+Modern operating systems rely on virtual memory paging. Under memory pressure, embedded-memory pressure conditions, inactive pages may be written to persistent storage (e.g., Linux swap partitions). If raw RGB buffers were paged out before zeroization, the confinement boundary would be breached.
 
 To prevent this, allocated frame buffers are pinned in physical memory using POSIX \texttt{mlock()}. This prohibits the kernel’s memory manager from swapping the pages to disk. The lock is established during initialization and released only after secure zeroization. By ensuring that frame buffers remain resident in RAM throughout their lifetime, the pipeline reduces disk-level persistence risk under assumptions.
 
@@ -390,7 +389,7 @@ Notably, the secure deletion routine executes immediately after vectorization. T
 \section{Experimental Evaluation}
 
 \subsection{Dataset and Evaluation Conditions}
-Empirical evaluation focuses on two independent properties: geometric detection reliability and enforcement of the volatile exposure constraint. Evaluation was conducted using a dataset of 1,200 manually labeled kinematic events captured under varied lighting and occlusion conditions. The objective was to evaluate geometric event detection accuracy independently of identity or texture analysis. Five-fold cross-validation was applied to reduce variance in performance estimates.
+Empirical evaluation assumes a constrained adversarial model and focuses on two independent properties: geometric detection reliability and enforcement of the volatile exposure constraint. Evaluation was conducted using a dataset of 1,200 manually labeled kinematic events captured under varied lighting and occlusion conditions. The objective was to evaluate geometric event detection accuracy independently of identity or texture analysis, under the evaluated threat assumptions. Five-fold cross-validation was applied to reduce variance in performance estimates.
 
 \subsection{Geometric Event Detection Performance}
 Across all scenarios, precision remains high. Under ideal lighting, performance approaches near-saturation levels (F1 = 0.97 $\pm$ 0.01). Performance degradation under low light and partial occlusion primarily affects recall rather than precision.
@@ -465,30 +464,28 @@ The dynamic scaling of $R_k$ in response to network confidence proved essential 
 \section{Discussion}
 
 \subsection{Residual Behavioral Signatures}
-Although the pipeline removes raw pixel persistence, geometric signals may still encode residual behavioral patterns over time. Gait and movement trajectories may function as soft biometric identifiers under certain conditions.
+Although the pipeline eliminates raw pixel persistence, geometric signals may still encode residual behavioral patterns over extended observation periods. Gait signatures, habitual posture, and characteristic movement trajectories can function as soft biometric identifiers under conditions where an adversary possesses prior behavioral templates.
 
-The perception layer therefore reduces, but does not completely eliminate, identity risk. Mitigation strategies include:
-\begin{itemize}
-    \item Periodic regeneration of internal tracking identifiers
-    \item Session-level isolation
-    \item Aggregation of spatial trajectories to prevent long-term correlation
-\end{itemize}
-The model should therefore be interpreted as dimensional risk reduction rather than a guarantee of absolute anonymity.
+The perception layer therefore reduces the biometric retention surface substantially but does not eliminate identity risk entirely. Practical mitigation strategies include periodic regeneration of internal tracking identifiers, session-level isolation preventing cross-session trajectory correlation, and spatial aggregation that limits the temporal resolution available for behavioral fingerprinting. The framework should be interpreted as measurable dimensional risk reduction operating within a defined threat boundary, not as a claim of absolute anonymity.
 
-\subsection{Limitations of Monocular 2D Estimation}
-All geometric reasoning in the current setup is derived from 2D pose vectors. In crowded or heavily occluded scenes, confidence degradation affects both orientation accuracy and event detection stability. 
+\subsection{Geometric Sufficiency for Event Inference}
+A recurring question in constrained sensing architectures is whether dimensional collapse sacrifices operationally necessary information. The evaluation results suggest that for kinematic event detection---spatial gestures, postural transitions, orientation changes---sparse skeletal coordinates provide sufficient geometric structure. The information discarded during projection (skin texture, pigmentation, microstructure) is orthogonal to the spatial relationships that downstream event logic evaluates.
 
-Future extensions could incorporate lightweight 3D estimation models to reduce depth ambiguity. However, additional computation must be balanced carefully against the 33 ms confinement constraint.
+This observation has architectural implications beyond the present system. It suggests that a meaningful class of institutional sensing tasks can be served by geometric abstractions alone, without the representational overhead of full-resolution texture retention. The tradeoff is not costless: fine-grained facial affect analysis, lip-reading, and micro-expression classification require precisely the high-frequency texture that this pipeline discards. The architecture is therefore explicitly scoped to geometric event detection rather than general-purpose visual analytics.
 
-% ==========================================
-% IX. CONCLUSION
-% ==========================================
+\subsection{Limitations}
+All geometric reasoning in the current implementation derives from monocular 2D pose vectors. In crowded or heavily occluded scenes, occlusion instability and scheduler-induced latency variance affect both orientation accuracy and event detection stability. Monocular depth ambiguity---particularly distinguishing between raised and extended limbs at oblique camera angles---represents a fundamental limitation of 2D skeletal projection.
+
+The memory confinement model assumes a Trusted Computing Base that strictly excludes real-time DMA interception, cold-boot attacks, and kernel-level memory snooping. These assumptions reflect an inability to resist privileged kernel compromise or hardware attackers. Cache-line residue, while addressed through flush primitives, cannot be formally eliminated across all microarchitectures. Furthermore, there is a lack of hardware-rooted attestation guarantees in this layer.
+
+Residual gait-signature leakage and soft biometric leakage through movement patterns remain limitations that the geometric projection alone cannot address. The confinement strategy reduces texture exposure but does not prevent behavioral correlation by a sufficiently motivated adversary with extended observation windows. Future work should evaluate lightweight 3D estimation models that may reduce depth ambiguity while remaining within the 33 ms confinement constraint.
+
 \section{Conclusion}
-This work analyzed the feasibility of performing real-time action sensing while strictly constraining the lifetime of raw optical data within the processing pipeline. By enforcing a measurable exposure window ($\Delta T_{volatile} \le 33$ ms) through OS-level page locking and secure zeroization, the pipeline constrains the lifetime of raw biometric data within the memory subsystem.
+This constrained geometric perception study analyzed the feasibility of performing real-time geometric event sensing while constraining the lifetime and structural exposure of raw optical data. By enforcing a measurable volatile-memory confinement window ($\Delta T_{volatile} \le 33$ ms) through OS-level page locking and secure zeroization, the pipeline achieves bounded optical exposure, limiting raw biometric persistence.
 
-A rank-based projection analysis shows that skeletal vectors represent a substantial dimensional collapse, making deterministic pixel-space reconstruction infeasible under the defined threat model. Experimental evaluation demonstrates that combining pose-based dimensional reduction, confidence-adaptive Kalman filtering, and geometric PnP orientation enables reliable event detection while maintaining real-time performance.
+The rank-based projection analysis demonstrates that sparse geometric projection represents a substantial dimensional collapse---from $\mathbb{R}^{37632}$ to $\mathbb{R}^{34}$---making deterministic pixel-space reconstruction structurally underdetermined under the defined threat model. This structurally reduced reconstruction feasibility is a geometric property of the projection rather than a claim about adversarial impossibility.
 
-By combining dimensional projection with explicit memory confinement, the perception layer demonstrates that practical edge analytics can be achieved. High-fidelity biometric texture is never retained beyond the inference boundary.
+Experimental evaluation confirms that combining pose-based dimensional reduction, confidence-adaptive Kalman filtering, and geometric PnP orientation enables operationally stable event detection (F1: 0.93 $\pm$ 0.01) within the confinement bound. Residual risks---residual gait-signature leakage, monocular depth ambiguity, and dependence on TCB assumptions---remain explicitly acknowledged. Within the broader ScholarMaster ecosystem, this subsystem functions strictly to perform geometric projection and emit sparse coordinate abstractions, explicitly excluding identity retrieval (Paper 7) and orchestration governance (Paper 9).
 
 % ==========================================
 % REFERENCES

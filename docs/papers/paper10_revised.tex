@@ -56,7 +56,7 @@ The evaluation suggests that subsystem co-design can improve deployment survivab
 \end{abstract}
 
 \begin{IEEEkeywords}
-System Validation, Edge Computing, Smart Campus, Adversarial Stress Testing, Integrated Systems, Bounded Degradation.
+Integrated Stress Validation, Survivability Envelope, Compound Stress Matrix, Bounded Degradation, Thermal Amplification, Edge-System Stability.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -64,15 +64,23 @@ System Validation, Edge Computing, Smart Campus, Adversarial Stress Testing, Int
 % ==========================================
 \section{Introduction}
 
-Institutional edge deployments increasingly operate as integrated processing pipelines instead of isolated machine-learning components. In smart-campus environments, perception systems, policy logic, privacy safeguards, and cryptographic auditing must execute concurrently on shared edge hardware. A typical deployment may simultaneously perform biometric indexing, acoustic anomaly detection, policy enforcement, and cryptographic logging. 
+The dominant thesis of this paper is that \textbf{subsystem co-design materially improves survivability under compound operational stress compared with isolated optimization approaches}. Institutional edge deployments increasingly operate as integrated processing pipelines where perception, policy enforcement, privacy safeguards, and cryptographic auditing execute concurrently on shared hardware \cite{b12, b25}.
 
-Even though individual subsystems may demonstrate strong laboratory benchmarks, operational reliability often depends on how these components interact under shared resource constraints. Laboratory evaluations rarely expose this type of subsystem coupling. 
+\subsection{Why Isolated Benchmarks Fail to Predict Deployment Survivability}
+Independent module benchmarks systematically conceal deployment failure modes. A perception model that achieves sub-millisecond inference in isolation may still violate deadlines when retrieval scales nonlinearly with registry size, scheduler priority is misaligned, or thermal throttling compounds CPU saturation. The core problem is that compound stress creates nonlinear subsystem interaction: thermal, network, and scheduling effects co-amplify latency in ways that single-variable evaluations cannot capture. Survivability failure is typically interaction-driven, not merely a consequence of insufficient inference throughput.
 
-Real-world edge deployments operate under practical environmental and hardware constraints. These limits shape achievable system performance, such as limited airflow, fixed thermal envelopes, constrained memory bandwidth, and occasionally unstable network connectivity \cite{b12, b25}. Under these conditions, survivability tends to depend less on peak FLOPS and more on coordination between modules \cite{b15}.
+Cloud-mediated systems mitigate local hardware limitations but introduce network variability into the critical path \cite{b4, b21}. Packet retransmissions, jitter amplification, and transient partitions produce tail-latency spikes exceeding real-time thresholds. Conversely, naive edge-only systems lacking optimized indexing frequently saturate CPU resources, triggering thermal throttling and deadline violations \cite{b18}.
 
-Cloud-mediated systems mitigate local hardware limitations but introduce network variability into the critical path \cite{b4, b21}. Empirical evidence shows that packet retransmissions, jitter amplification, and transient partitions may produce tail-latency spikes exceeding real-time thresholds. Conversely, naive edge-only systems that lack optimized indexing or scheduling frequently saturate CPU resources, triggering thermal throttling and deadline violations \cite{b18}.
+\subsection{Contributions and Subsystem Scope}
+This study does not propose a new recognition model. Instead, it evaluates whether a co-designed, edge-native architecture can maintain real-time and privacy guarantees when subjected to compound stressors. Specifically:
+\begin{itemize}
+    \item We introduce an Integrated Stress Matrix (ISM) to model multidimensional deployment pressure.
+    \item We evaluate survivability as joint preservation of destruction deadlines and retrieval consistency.
+    \item We characterize bounded degradation sequencing under overload.
+    \item We profile cross-subsystem interaction effects under shared resource constraints.
+\end{itemize}
 
-This study does not propose a new recognition model. Instead, it evaluates whether a co-designed, edge-native architecture can maintain real-time and privacy guarantees when subjected to compound stressors. The central systems question investigated in this work is therefore operational: \textit{Can an integrated, privacy-preserving edge architecture sustain institutional-scale operation when workload, registry size, network instability, and thermal pressure intersect simultaneously?}
+Within the ScholarMaster architecture, this subsystem evaluates survivability boundaries, measures compound stress interaction, and validates bounded degradation only. It does not harden immutable lifecycle deployment (Paper 11), optimize flash endurance (Paper 12), optimize federated adaptation (Paper 13), validate runtime enforcement semantics (Paper 18), or define irreversible privacy doctrine (Paper 17).
 
 % ==========================================
 % II. THE SYSTEM UNDER TEST (SUT)
@@ -94,7 +102,7 @@ The adversary is assumed to have physical access to the device enclosure, no roo
 % ==========================================
 \section{Integrated Stress Matrix (ISM)}
 
-Evaluating integrated edge architectures requires modeling the compound operational pressures encountered in real deployments \cite{b26}. Single-variable benchmarking often conceals important interaction effects. In practical deployments, edge systems frequently encounter overlapping stressors: workload scale, unknown-subject injection, network instability, and thermal pressure frequently coincide. Evaluating these factors independently may underestimate failure probability.
+Evaluating integrated edge architectures requires modeling compound operational pressures that single-variable benchmarking systematically conceals \cite{b26}. In practical deployments, workload scale, unknown-subject injection, network instability, and thermal pressure frequently coincide. Evaluating these factors independently underestimates failure probability because survivability collapse emerges from coupled stress interaction, not merely individual subsystem overload.
 
 To model compound deployment pressure, we define the Integrated Stress Matrix (ISM) as a multidimensional stress vector:
 \begin{equation}
@@ -102,14 +110,14 @@ S = \{ \lambda_{fps}, N_{registry}, \rho_{unknown}, \tau_{net}, T_{ambient} \}
 \end{equation}
 Where:
 \begin{itemize}
-    \item $\lambda_{fps}$ — sustained frame ingestion rate
-    \item $N_{registry}$ — active identity registry size
-    \item $\rho_{unknown}$ — proportion of unknown-subject injections
-    \item $\tau_{net}$ — network instability (latency variance + packet loss)
-    \item $T_{ambient}$ — environmental temperature
+    \item $\lambda_{fps}$ — sustained frame ingestion rate (throughput stress)
+    \item $N_{registry}$ — active identity registry size (retrieval stress)
+    \item $\rho_{unknown}$ — proportion of unknown-subject injections (worst-case traversal stress)
+    \item $\tau_{net}$ — network instability: latency variance + packet loss (backpressure stress)
+    \item $T_{ambient}$ — environmental temperature (thermal stress)
 \end{itemize}
 
-Each dimension independently affects subsystem behavior. More importantly, cross-terms introduce nonlinear interactions. For example, increasing $N_{registry}$ increases ANN traversal depth, while increasing $\rho_{unknown}$ increases worst-case search path length. Elevated $T_{ambient}$ reduces sustained CPU frequency via thermal governor, and packet loss increases audit-layer backlog variance. Combined, these effects shift the system closer to deadline violation boundaries.
+Each dimension independently affects subsystem behavior. More importantly, cross-terms amplify degradation nonlinearly. Increasing $N_{registry}$ increases ANN traversal depth; simultaneously increasing $\rho_{unknown}$ extends worst-case search paths because early-match short-circuiting is absent. Elevated $T_{ambient}$ reduces sustained CPU frequency via the thermal governor, compounding the traversal penalty. Packet loss increases audit-layer backlog variance, which---through IPC contention---can induce scheduling friction even in subsystems not directly affected by network instability. Combined, these interaction effects shift the system closer to deadline violation boundaries in ways that no single-variable evaluation would predict.
 
 \subsection{Survivability Function}
 System survivability is defined as the simultaneous preservation of latency and retrieval consistency constraints.
@@ -128,7 +136,7 @@ Formally:
 \Phi(S) = \mathbb{1} \{ L_{p99.9}(S) < 33\text{ ms} \land C_{retrieval}(S) > 99\% \}
 \end{equation}
 
-While $\Phi(S)$ is binary for formal evaluation, practical performance exhibits smooth degradation approaching the threshold boundary. The objective is not infinite robustness. It is bounded degradation while preserving privacy guarantees.
+While $\Phi(S)$ is binary for formal evaluation, practical performance exhibits smooth degradation approaching the threshold boundary. Survivability is intentionally bounded rather than absolute: the objective is graceful degradation under overload, not infinite robustness. Deadline preservation is prioritized over maximum throughput.
 
 \subsection{Stress Interaction Regimes}
 To understand compound effects, we examine three operating regimes. In realistic deployments, these regimes frequently overlap.
@@ -226,9 +234,9 @@ Drop Rate & 14.5\% & 0.0\% & \textbf{0.0\%} \\
 % ==========================================
 \section{Thermal Behavior Under Compound Load}
 
-Thermal dynamics also emerged as a secondary amplifier of system stress during sustained operation. Under sustained linear traversal and continuous ingestion, the naive edge CPU utilization approached 100\%. Core temperature rose rapidly, and frequency scaling reduced effective throughput. Latency inflation became progressively amplified. This positive feedback loop explains why tail latency grew disproportionately relative to average.
+Thermal behavior emerged as an interaction-driven phenomenon rather than simple hardware overheating. Under sustained linear traversal and continuous ingestion, the naive edge CPU utilization approached 100\%. Core temperature rose rapidly, and frequency scaling reduced effective throughput. Scheduler instability and traversal expansion indirectly drove thermal escalation---the positive feedback loop explains why tail latency grew disproportionately relative to average. Throttling emerged from sustained resource coupling across subsystems, not isolated compute load.
 
-Optimized ANN traversal reduced compute cycles per unknown query. CPU utilization stabilized below saturation threshold. The observed steady-state temperature was $\approx 64^\circ C$, and no sustained thermal throttling was detected under the 35°C ambient condition. The difference between architectures was largely attributable to traversal efficiency and scheduling discipline rather than hardware differences.
+Optimized ANN traversal reduced compute cycles per unknown query. CPU utilization stabilized below saturation threshold. The observed steady-state temperature was $\approx 64^\circ C$ within the evaluated hardware envelope, and no sustained thermal throttling was detected under the 35°C ambient condition. The difference between architectures was largely attributable to traversal efficiency and scheduling discipline rather than hardware differences. Actual thermal behavior depends on enclosure design, airflow patterns, and long-duration thermal drift---factors that vary across deployment sites.
 
 % ==========================================
 % VII. RESOURCE CONTENTION PROFILING
@@ -403,13 +411,13 @@ Hardware Watchdog Resets & 0 & 0 & 0 \\
 % ==========================================
 \section{Bounded Degradation Model}
 
-Stress testing reveals a critical architectural property: graceful failure sequencing. When approaching constraint boundaries, the system degrades in the following order:
+Stress testing reveals a critical architectural property: a \textbf{survivability-priority hierarchy} governing graceful failure sequencing. When approaching constraint boundaries, subsystem shedding is intentional and follows a defined order:
 \begin{enumerate}
-    \item Audit availability drops (metadata discard)
-    \item Frame skipping may activate under extreme burst
-    \item Retrieval depth bounding engages
+    \item Audit availability degrades first (metadata discard under backpressure)
+    \item Frame skipping may activate under extreme burst conditions
+    \item Retrieval depth bounding engages to preserve latency margins
 \end{enumerate}
-Only after these mechanisms fail would destruction deadlines be threatened. In evaluation, the final stage was never reached. This staged degradation ensures that privacy guarantees are preserved even under overload.
+Only after these mechanisms are exhausted would destruction deadlines be threatened. In evaluation, the final stage was never reached. This hierarchy ensures that memory-destruction guarantees are preserved before audit availability, and that operational priority preserves critical deadlines under overload. Bounded degradation is an architectural objective---not an accidental failure mode.
 
 % ==========================================
 % XII. DISCUSSION
@@ -423,16 +431,28 @@ The evaluated architecture's survivability is associated with coordinated subsys
 Notably, the system operates close to its destruction boundary under extreme configuration ($L_{p99.9} = 32.8\text{ ms}$ vs $33\text{ ms deadline}$). The margin is intentionally narrow to reflect realistic hardware constraints. Increasing registry size or ambient temperature beyond evaluated bounds would likely push the system into violation. The architecture does not claim infinite scalability—only bounded survivability within defined stress regions.
 
 \subsection{Limitations}
-The current ISM model does not incorporate power brownouts, voltage instability, firmware-level compromise, hypervisor or DMA-based injection, or hardware degradation over multi-year deployment. Future validation should incorporate electrical instability modeling and secure-boot persistence resilience.
+The evaluation framework exposes several boundaries:
+\begin{itemize}
+    \item \textbf{Finite Survivability Regions:} The architecture does not claim infinite scalability; pushing registry size or ambient temperature beyond evaluated bounds will induce systemic violation.
+    \item \textbf{Hardware Dependence:} Degradation margins are tied to the thermal properties, cache sizing, and memory bandwidth of the evaluated ARM SoC. Survivability margins are hardware-dependent.
+    \item \textbf{Absence of Brownout Modeling:} The ISM does not account for power brownouts or voltage instability, which induce unpredictable hardware faults.
+    \item \textbf{Firmware-Level Exclusion:} The threat model assumes absence of hypervisor or DMA-based persistence; firmware-level compromises fall outside scope.
+    \item \textbf{Long-Term Aging Uncertainty:} While 168 hours confirms short-term stability, multi-year silicon degradation, cooling failure, and thermal drift remain uncharacterized.
+    \item \textbf{Synthetic Registry Generation:} The 100,000-identity registry was synthetically generated; organic registry distributions with natural clustering variance may alter traversal behavior.
+    \item \textbf{Limited Enclosure Diversity:} Testing used a single controlled thermal chamber; airflow instability and enclosure heterogeneity across deployment sites remain unmodeled.
+    \item \textbf{Absence of Multi-Device Synchronization Stress:} The evaluation examines single-node survivability; cross-node coordination overhead under compound stress is not evaluated.
+\end{itemize}
 
 % ==========================================
 % XIII. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This study evaluated whether an integrated edge-native academic analytics architecture can preserve privacy and latency guarantees under compound operational stress. Under simultaneous conditions including 30 FPS ingestion, a 100,000-identity registry, 20\% unknown injection, 35°C ambient temperature, and 15–30\% packet loss, the optimized local architecture preserved p99.9 latency below 33 ms, retrieval consistency above 99\%, stable memory utilization, and no observed destruction deadline violations within the evaluated configuration.
+This study evaluated whether subsystem co-design improves compound-stress survivability compared with isolated optimization approaches. Under simultaneous conditions---30 FPS ingestion, 100,000-identity registry, 20\% unknown injection, 35°C ambient, and 15--30\% packet loss---the integrated architecture preserved p99.9 latency below 33 ms and retrieval consistency above 99\% within the evaluated stress region. Both cloud-dependent and naive edge baselines violated deadline constraints under identical conditions.
 
-Both cloud-dependent and naive edge baselines violated deadline constraints or exhibited unstable tail behavior under identical stress conditions. The results indicate that coordinated subsystem design plays the dominant role in maintaining survivability within constrained edge environments. Isolated model optimization alone proves insufficient.
+The bounded degradation hierarchy---prioritizing memory-destruction guarantees over audit availability---demonstrates that survivability under compound stress emerges from subsystem coordination rather than isolated throughput optimization. The architecture operates close to its destruction boundary ($G = -0.2$ ms), reflecting intentionally narrow margins under realistic hardware constraints rather than claims of universal scalability.
+
+Within the ScholarMaster architecture, this framework operates as the integrated survivability validation subsystem---evaluating compound-stress boundaries and degradation sequencing without hardening immutable lifecycle deployment (Paper 11), optimizing flash endurance (Paper 12), managing federated adaptation (Paper 13), or validating runtime enforcement semantics (Paper 18).
 
 % ==========================================
 % REFERENCES

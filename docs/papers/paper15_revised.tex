@@ -74,7 +74,7 @@ These results suggest that spatial computing interfaces can substantially reduce
 \end{abstract}
 
 \begin{IEEEkeywords}
-Augmented Reality, Human-Computer Interaction, Cognitive Load, Situational Awareness, Fitts's Law, Ergonomics, Edge Visualization, Smart Campus.
+Spatial Cognitive Offloading, AR Visualization, Situation Awareness, Perceptual Abstraction, Interpretation Latency, Ergonomic Interface Design.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -82,18 +82,17 @@ Augmented Reality, Human-Computer Interaction, Cognitive Load, Situational Aware
 % ==========================================
 \section{Introduction}
 
-Monitoring infrastructures deployed across modern campuses increasingly rely on automated analytics to identify operational anomalies. While detection algorithms scale efficiently, human operators must still interpret these alerts and determine appropriate responses. On a large, modern campus, dozens or even hundreds of concurrent events may be generated across multiple buildings simultaneously. While backend analytics can scale efficiently to handle this, the human interface layer does not scale gracefully \cite{b1, b28}.
+The dominant thesis of this paper is that \textbf{spatially anchored visualization reduces cognitive translation overhead between symbolic alerts and physical response actions}. Monitoring infrastructures deployed across modern campuses rely on automated analytics to identify operational anomalies. While detection algorithms scale efficiently, human operators must still interpret alerts and determine physical responses. The bottleneck in these systems is rarely anomaly detection accuracy but rather the human interpretation pipeline.
 
-In practice, the limiting factor in these systems is rarely anomaly detection accuracy but rather the human interpretation pipeline. Most monitoring environments present alerts through conventional dashboard interfaces. These typically consist of scrolling logs and static maps. Over extended monitoring periods, navigating this format introduces severe mental fatigue and slows critical interpretation \cite{b2}. The principal bottleneck is often not the presence or speed of the data itself; rather, it is the mental effort required to convert symbolic text into spatially actionable understanding \cite{b29}.
+\subsection{The Cognitive Cost of Symbolic Monitoring Interfaces}
+Conventional dashboard interfaces present alerts as textual streams or static map markers. Operators must continuously perform mental spatial translation: reading a symbolic alert, mapping it to a mental 3D building model, calculating a navigable route, and visually identifying the target upon arrival. This interpretation overhead compounds under stress. Response latency frequently emerges from interface cognition rather than detection accuracy \cite{b2, b29}.
 
-Interpreting these alerts requires operators to mentally translate symbolic notifications into real-world spatial locations. Consider a typical alert prompt: \textit{``Acoustic Anomaly: Stairwell North-3.''} 
-Upon receiving this notification, the operator must perform a sequence of mental transformations. First, they must read and comprehend the text. Second, they map that text string to a mental 3D blueprint of the physical building. Third, they must calculate a navigable physical route from their current location to the target. Finally, they must visually identify the specific door or corridor upon arrival. 
+Consider a typical alert: \textit{``Acoustic Anomaly: Stairwell North-3.''} The operator must parse the text, spatially locate the stairwell in working memory, plan a route from their current position, and navigate while maintaining situational awareness. Each mental translation step introduces avoidable delay, particularly in multi-wing buildings where minor misinterpretations---such as turning down the wrong corridor---compound response times \cite{b3, b30}.
 
-This additional cognitive translation step introduces delays that are largely avoidable, particularly under time-sensitive pressure. Even minor misinterpretations---such as turning down the wrong corridor---compound response times in multi-wing academic buildings \cite{b3, b30}.
+\subsection{Spatial Computing as Cognitive Alignment}
+This work explores whether spatially anchored AR interfaces can eliminate the cognitive translation step by overlaying contextual data directly onto the operator's real-world camera view \cite{b31}. The anomaly becomes a physically registered indicator rather than a symbolic text entry. Spatial anchoring functions as a cognitive alignment mechanism---perceptual coordinate fusion between digital alert data and the physical environment---rather than merely a rendering technique.
 
-This work therefore explores whether spatial computing interfaces can remove the cognitive translation step entirely. Using mobile AR, we overlay contextual data precisely onto the operator's real-world camera view. Under this spatial computing paradigm, an anomaly is no longer just a text log on a screen; it becomes a physical indicator positioned directly over the relevant, real-world location \cite{b31}.
-
-It is important to emphasize that this paper focuses strictly on the presentation layer. We do not propose new anomaly detection algorithms, nor do we evaluate the upstream infrastructure that generates events. This work evaluates AR strictly as a cognitive performance interface. It assumes the existence of valid, spatially-referenced event streams and seeks solely to optimize their human ingestion, exploring how spatial computing can alleviate the cognitive limitations imposed on traditional 2D dashboard operators \cite{b32}.
+This paper focuses strictly on the cognitive interface layer. We do not propose new anomaly detection algorithms, nor evaluate upstream infrastructure. Within the ScholarMaster architecture, this subsystem optimizes spatial cognition, AR-guided interpretation, and response-oriented cognitive offloading only. It does not generate anomaly detections (earlier papers), optimize federated learning (Paper 14), construct trust-governance models (Paper 16), derive formal verification theorems (Paper 21), or synthesize deployment architecture (Paper 20).
 
 % ==========================================
 % II. THEORETICAL FRAMEWORK
@@ -103,13 +102,18 @@ It is important to emphasize that this paper focuses strictly on the presentatio
 Evaluating such an interface requires grounding the analysis in established cognitive and human-computer interaction frameworks.
 
 \subsection{Spatial Cognitive Offloading Model}
-Augmented reality can be interpreted as a cognitive offloading mechanism that externalizes spatial reasoning tasks. Let the Time-to-Action (TTA) be defined as:
+Augmented reality can be interpreted as a cognitive offloading mechanism that externalizes spatial reasoning tasks. We decompose the cognitive translation burden into three distinct components:
+\begin{itemize}
+    \item \textbf{Symbolic Parsing Cost ($P_s$):} The effort to read and comprehend textual alert content.
+    \item \textbf{Spatial Alignment Cost ($A_s$):} The effort to map symbolic identifiers onto a mental 3D model of the physical environment.
+    \item \textbf{Navigational Uncertainty ($N_u$):} The effort to plan and execute a route under incomplete spatial knowledge.
+\end{itemize}
+Let the Time-to-Action (TTA) be defined as:
 \begin{equation}
-TTA = f(M + S)
+TTA = f(P_s + A_s + N_u)
 \end{equation}
-where $M$ represents the mental rotation and translation cost, and $S$ represents the spatial anchoring cost.
 
-In traditional 2D dashboard environments, $M$ remains high while $S$ stays relatively low because the operator must mentally convert symbolic text alerts into physical 3D coordinates. In the AR paradigm, spatial anchoring is externally provided through visual overlays, leading to $M \downarrow$ and $S \uparrow$. Crucially, the increase in spatial anchoring cost is absorbed by the visual cortex rather than conscious working memory, producing an overall reduction in cognitive burden \cite{b25}.
+In traditional 2D dashboard environments, all three components are borne by conscious working memory. In the AR paradigm, spatial anchoring externalizes $A_s$ through visual overlays and reduces $N_u$ through environment-linked path guidance. The redistribution shifts attentional workload from the verbal/working-memory channel to the visual-spatial channel, where the human brain possesses innate pre-attentive processing capabilities \cite{b25}. Critically, AR does not eliminate cognitive load but redistributes it from high-cost conscious translation to lower-cost perceptual alignment.
 
 \subsection{Cognitive Load Theory and Split-Attention}
 Cognitive Load Theory provides a useful framework for distinguishing between task difficulty and interface-induced mental effort. It differentiates between \textit{Intrinsic load} (the difficulty inherent to the task itself) and \textit{Extraneous load} (the difficulty introduced by the interface design). 
@@ -129,7 +133,7 @@ Situation awareness in dynamic environments depends on how quickly operators can
     \item \textbf{Level 3 (Projection):} Prediction of future state.
 \end{itemize}
 
-Traditional text logs frequently succeed at Level 1 but fail at Level 2; operators perceive the alert but struggle to comprehend its physical spatial context quickly under stress. AR interfaces inherently support Levels 1 and 2 by placing the visual indicator directly on the physical target, completely bypassing the need for mental integration and immediately enabling Level 3 projection capabilities \cite{b5, b28}.
+Traditional text logs frequently succeed at Level 1 but fail at Level 2; operators perceive the alert but struggle to comprehend its physical spatial context quickly under stress. AR primarily improves Level-2 comprehension: perceptual fusion reduces environmental interpretation delay by placing the visual indicator directly on the physical target. Spatial registration then accelerates the transition from Level-2 comprehension to Level-3 projection by grounding the operator's mental model in physically registered coordinates \cite{b5, b28}.
 
 \subsection{Information Tunneling and Peripheral Processing}
 During emergencies, human operators experience acute physiological stress responses, leading to Information Tunneling (perceptual narrowing). Operators fixate on a single central focal point while becoming entirely blind to peripheral cues. Text-based logs exacerbate this phenomenon by demanding narrow, serial reading. 
@@ -332,9 +336,9 @@ AR Interface (Proposed) & 28.1 & 0.4 (Wrong turns) \\
 \end{center}
 \end{table}
 
-Mean performance improved from a baseline of 48.5 seconds in the dashboard condition to 28.1 seconds in the AR condition. The AR interface yielded a 42\% improvement in response speed. A paired t-test confirmed the statistical significance of this result ($t(19)=14.8, p<0.01$), with a very strong effect size ($d = 1.12$). 
+Within the evaluated task environment, mean performance improved from a baseline of 48.5 seconds in the dashboard condition to 28.1 seconds in the AR condition. The AR interface was associated with a 42\% improvement in response speed. A paired t-test confirmed statistical significance ($t(19)=14.8, p<0.01$), with a strong effect size ($d = 1.12$). These response gains are consistent with the cognitive offloading hypothesis but may vary across operational contexts; participant familiarity and spatial calibration quality affect interpretation.
 
-Furthermore, the dashboard condition resulted in an average of 3.2 wrong turns per trial, compared to only 0.4 in the AR condition. Observational data indicated that most baseline errors involved incorrect corridor selection immediately following orientation changes (e.g., exiting a stairwell). The spatial alignment provided by the AR interface noticeably reduced this class of navigational error. Two trials in the AR condition experienced temporary SLAM relocalization loss in reflective corridor segments, requiring manual re-anchoring. These runs were retained in analysis to preserve ecological validity.
+Furthermore, the dashboard condition resulted in an average of 3.2 wrong turns per trial, compared to only 0.4 in the AR condition under the observed operational conditions. Observational data indicated that most baseline errors involved incorrect corridor selection immediately following orientation changes (e.g., exiting a stairwell). The attention-guided navigation support provided by the AR interface reduced this class of navigational error. Two trials in the AR condition experienced temporary SLAM relocalization loss in reflective corridor segments, requiring manual re-anchoring. These runs were retained in analysis to preserve ecological validity.
 
 \subsection{Theoretical Analysis via Fitts's Law}
 We further analyzed these empirical results conceptually through the lens of Fitts's Law \cite{b7}. It should be noted that this serves as an interpretive conceptual modeling of ergonomic friction, not a literal measured pointing task. Let $D_d$ denote the visual search distance in the 2D list and $W_d$ represent the textual alert width. The index of difficulty for the dashboard is established as $ID_d = \log_2(1 + D_d / W_d)$. The user must scan a dense list to locate a highly constrained textual target, creating a persistently high cognitive friction.
@@ -400,23 +404,36 @@ In practice, sustained AR operation reduces typical battery life to roughly 3--4
 \section{Ergonomic Considerations}
 
 \subsection{Heads-Up Advantage vs Gorilla Arm}
-The AR interface offers a clear heads-up operational advantage: operators maintain continuous visual awareness of the environment while simultaneously receiving alerts \cite{b25}. This contrasts sharply with dashboard interaction, which forces dangerous, frequent downward glances while walking \cite{b29}.
+The AR interface offers a heads-up operational advantage: operators maintain continuous visual awareness of the environment while simultaneously receiving alerts \cite{b25}. This contrasts with dashboard interaction, which forces frequent downward glances while walking \cite{b29}.
 
-However, sustained device elevation can cause shoulder fatigue, commonly known as Gorilla Arm Syndrome \cite{b22}. Two participants reported mild shoulder fatigue during the trials. For full-shift operations, handheld AR functions best as an intermittent verification tool rather than a continuous lens. Future form factors exploring lightweight, optical see-through AR glasses may mitigate this physical strain, provided hardware costs decrease sufficiently for broad academic deployment \cite{b10}.
+However, sustained device elevation can cause shoulder fatigue, commonly known as Gorilla Arm Syndrome \cite{b22}. Two participants reported mild shoulder fatigue during trials. Attention fatigue during long-duration use and environmental distraction in crowded corridors further degrade usability. For full-shift operations, handheld AR functions best as an intermittent verification tool rather than a continuous lens. The field-of-view constraints of commodity mobile hardware also limit peripheral awareness compared to dedicated AR headsets \cite{b10}.
 
 \subsection{Environmental Constraints}
-Tracking reliability undeniably decreases under specific environmental conditions, notably low lighting and highly reflective surfaces. To mitigate this, the client includes a fallback mechanism: when ambient light sensors detect insufficient illumination, the interface automatically transitions into a 2D radar mode to preserve navigational continuity \cite{b24}.
+Tracking reliability decreases under specific environmental conditions, notably low lighting and highly reflective surfaces. To mitigate this, the client includes a fallback mechanism: when ambient light sensors detect insufficient illumination, the interface automatically transitions into a 2D radar mode to preserve navigational continuity \cite{b24}.
+
+\subsection{Limitations}
+The spatial visualization framework exposes several operational and ergonomic boundaries within the evaluated task environment:
+\begin{itemize}
+    \item \textbf{SLAM Drift Vulnerability:} Extended navigation through featureless or highly reflective corridors induces tracking drift, requiring periodic physical QR re-anchoring to preserve spatial alignment.
+    \item \textbf{Ergonomic Fatigue:} Sustained handheld AR use induces shoulder strain (Gorilla Arm syndrome), attention fatigue, and long-duration usability degradation, restricting the interface to intermittent response verification.
+    \item \textbf{Thermal and Energy Limits:} Simultaneous SLAM tracking, rendering, and network polling induce rapid thermal throttling and battery drain on commodity mobile hardware within a 3-hour window.
+    \item \textbf{Environmental Illumination Constraints:} The tracking algorithms fail abruptly in low-light environments, forcing automatic degradation to 2D radar modes.
+    \item \textbf{Training Familiarity:} Operators unfamiliar with spatial computing required explicit familiarization sessions to overcome initial head-up orientation delays before performance benefits materialized.
+    \item \textbf{Task Artificiality:} The controlled multi-point scenario, while reproducible, may not fully represent the cognitive complexity of unstructured, real-world incident response.
+    \item \textbf{Small Cohort Size:} With $N=20$ participants, the statistical power is sufficient for within-subject comparisons but limits broad generalizability.
+    \item \textbf{AR Novelty Effects:} Despite familiarization protocols, residual novelty bias may have inflated positive AR sentiment during early trials.
+\end{itemize}
 
 % ==========================================
 % X. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This study examined the human-interface bottleneck that arises when automated monitoring systems generate large volumes of alerts. By rendering abstract event data as spatially anchored AR visualizations, the interface produced 42\% faster response times and substantially fewer navigation errors, accompanied by measurable reductions in perceived cognitive load.
+This study examined the cognitive translation bottleneck that arises when automated monitoring systems present alerts through symbolic dashboard interfaces. Within the evaluated task environment, spatially anchored AR visualization was associated with 42\% faster response times, substantially fewer navigation errors, and measurable reductions in perceived cognitive load across all NASA-TLX dimensions.
 
-These results indicate that performance limitations in high-throughput monitoring environments often arise not from the underlying detection algorithms but from how information is presented to human operators. Interfaces that eliminate the need to translate symbolic alerts into spatial reasoning tasks may therefore significantly improve operational responsiveness.
+The results are consistent with the hypothesis that operational response limitations in monitoring environments frequently arise from interpretation latency rather than detection accuracy. By redistributing attentional workload from conscious symbolic parsing to perceptual spatial alignment, AR interfaces reduce the cognitive cost of converting alerts into physical action. These benefits remain bounded to the tested environment; AR performance depends on spatial calibration quality, environmental illumination, and operator familiarity.
 
-Spatially anchored visualization therefore offers a promising strategy for improving human response efficiency in high-throughput monitoring environments.
+Within the ScholarMaster architecture, this framework operates exclusively as the spatial visualization and cognitive-ingestion subsystem---reducing human interpretation latency and cognitive translation effort without modifying upstream anomaly detection, federated aggregation, trust-governance analysis, or edge-orchestration policies.
 
 % ==========================================
 % REFERENCES

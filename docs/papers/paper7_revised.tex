@@ -81,18 +81,18 @@ Narsapur, Andhra Pradesh, India \\
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Institutional attendance verification presents a practical deployment challenge: large student populations must be processed quickly while minimizing operational overhead and impersonation risk. Although facial recognition is frequently proposed as an automated solution, many existing implementations rely on cloud services or report only embedding-level accuracy without examining retrieval behavior under real-time open-set conditions.
+Institutional identity resolution presents a practical systems challenge: large embedding registries must be queried efficiently to sustain continuous video streaming. While deep neural networks efficiently generate biometric embeddings, exhaustive similarity search becomes an operational bottleneck as gallery sizes expand. Existing architectures frequently rely on cloud processing, which introduces latency and transmission exposure.
 
-This work examines whether biometric identification can operate entirely on edge hardware at institutional scale—up to 100,000 identities—while still meeting strict real-time constraints. The proposed retrieval layer utilizes Hierarchical Navigable Small World (HNSW) indexing and introduces a Local Density Consistency Criterion (LDCC) to improve robustness when unknown identities are present, assuming deep embeddings are provided externally.
+This work investigates whether institutional-scale identity retrieval can sustain real-time operation entirely on edge hardware under strict latency constraints. We propose a retrieval subsystem that utilizes Hierarchical Navigable Small World (HNSW) indexing to achieve logarithmic search scaling. To stabilize open-set rejection within sparse embedding regions, we introduce a Local Density Consistency Criterion (LDCC) that validates neighborhood coherence before resolving identity candidates.
 
-Experiments conducted on an edge hardware platform reveal empirically logarithmic retrieval scaling. Even with a 100K identity registry, mean retrieval latency remains below one millisecond. Under controlled open-set testing with 20\% unknown probes, the retrieval module maintains a 99.8\% unknown rejection rate while sustaining throughput above 30 frames per second in a single-stream configuration. By isolating this retrieval step, local execution avoids transmission during retrieval, supporting efficient identity resolution without cloud dependency.
+Empirical evaluation on an edge hardware platform demonstrates that mean retrieval latency remains below one millisecond across a 100K identity registry. Under open-set testing, the retrieval module maintains a 99.8\% unknown rejection rate while sustaining stable queue depths and continuous throughput above 30 frames per second. By treating approximate nearest neighbor search as a deterministic systems constraint, this architecture supports bounded-latency edge identification without cloud dependency.
 \end{abstract}
 
 % ==========================================
 % KEYWORDS
 % ==========================================
 \begin{IEEEkeywords}
-Biometrics, Edge Computing, HNSW Indexing, Edge AI, Approximate Nearest Neighbor Search.
+Approximate Nearest Neighbor Search, HNSW Indexing, Bounded-Latency Retrieval, Open-Set Rejection, Edge Identification, Institutional-Scale Scaling.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -117,25 +117,22 @@ Biometrics, Edge Computing, HNSW Indexing, Edge AI, Approximate Nearest Neighbor
 % ==========================================
 \section{Introduction}
 
-Real-time identity verification within large academic institutions introduces a practical systems constraint: attendance must be validated quickly while avoiding operational disruption inside classrooms. Traditional roll-call procedures scale poorly as enrollment increases and remain vulnerable to impersonation. Automated biometric verification therefore represents a natural technological alternative, provided that the system can operate within strict latency limits.
+The dominant thesis of this paper is that \textbf{graph-based ANN retrieval combined with neighborhood-consistency validation enables bounded-latency institutional-scale identity resolution on edge hardware}. Real-time identity verification at an institutional scale introduces a practical systems constraint: identity candidates must be resolved rapidly to prevent queue accumulation and video stream degradation. While automated biometric sensing is frequently proposed for high-throughput environments, deploying these systems requires strict adherence to latency bounds.
 
-However, digitizing attendance verification introduces several engineering challenges. Network connectivity within campus environments can be inconsistent, particularly during peak usage hours. Systems that depend on external cloud APIs are therefore exposed to unpredictable latency and bandwidth limitations. A viable institutional solution must instead operate autonomously at the edge, processing video streams locally without requiring synchronous remote services \cite{b1}.
+\subsection{The Hidden Retrieval Bottleneck in Edge Identification}
+Modern embeddings already achieve strong discrimination, but embedding accuracy alone does not enable real-time deployment. As gallery sizes reach institutional scale, exhaustive similarity search scales poorly, and retrieval latency destabilizes streaming continuity. Relying on cloud processing introduces unpredictable latency and transmission exposure, violating edge constraints. Scalability collapse emerges fundamentally from retrieval complexity, not merely insufficient embedding quality. Consequently, the bottleneck shifts from neural inference to index lookup.
 
-Within an edge-based deployment architecture, the primary bottleneck shifts from neural inference to identity retrieval. While compact neural networks (e.g., MobileNets \cite{b4}) can efficiently produce embeddings, locating the correct identity within a large gallery often becomes the dominant computational cost. While linear search across stored embeddings works for small cohorts (e.g., fewer than 50 identities), performance degrades rapidly as the gallery grows. At six-figure registry sizes, brute-force vector comparison can become the dominant latency component, regardless of how efficient the neural inference stage may be \cite{b2}.
-
-\subsection{Retrieval Latency Budget}
-Real-time streaming places strict bounds on the allowable processing time for each frame. To sustain real-time video at 30 FPS, total processing time per frame must remain within approximately 33 milliseconds:
+\subsection{Retrieval Latency Budget as a Streaming Constraint}
+Bounded latency is a strict \textbf{streaming-systems constraint}, not merely a performance optimization target. Retrieval jitter destabilizes queue depth, and bounded latency preserves stream continuity. Deterministic retrieval behavior is operationally more important than marginal embedding refinement. To sustain real-time video at 30 FPS, total processing time per frame must remain within approximately 33 milliseconds:
 \begin{equation}
 T_{total} = T_{detect} + T_{align} + T_{embed} + T_{retrieve}
 \end{equation}
-Empirical profiling on edge hardware indicates that detection and alignment consume approximately 4 ms, while embedding extraction requires 28 ms. This leaves only a narrow margin for retrieval. In practice, once embedding time approaches 28 ms, even an additional 5 ms retrieval delay can destabilize the video stream. The requirement for sub-millisecond retrieval arises primarily from operational constraints rather than theoretical optimization.
-
-The present analysis focuses specifically on the retrieval stage under strict latency constraints. We demonstrate that graph-based indexing via HNSW achieves a mean retrieval latency of 0.419 ms at 100K scale. Open-set stress testing confirms stable streaming performance in a single-face gate deployment scenario.
+Empirical profiling on edge hardware indicates that detection and alignment consume approximately 4 ms, while embedding extraction requires 28 ms. This leaves only a narrow margin for retrieval. Once embedding time approaches 28 ms, even an additional 5 ms retrieval delay can destabilize the video stream. 
 
 \textbf{Ethics Statement:} This research utilized public datasets (LFW) and synthetic vectors. No personally identifiable information (PII) from real students was used for model training or benchmarking. All experiments align with institutional data privacy policies.
 
-\subsection{Relation to the Ecosystem and Scope Limitation}
-Within the broader ScholarMaster edge analytics ecosystem, this study focuses specifically on the execution and retrieval layer responsible for identity retrieval under strict latency constraints. To adhere to academic integrity and avoid scope overlap with companion studies, we explicitly focus on \textbf{algorithmic scalability} (HNSW vs. Linear) and \textbf{retrieval accuracy} under streaming constraints. This module focuses exclusively on identity retrieval and does not own the vision detection models or deep learning architectures. While local processing provides inherent data-transmission boundaries, the formal cryptographic protocols and volatile-memory privacy architectures required for GDPR-aligned deployment are outside the scope of this specific algorithmic evaluation. 
+\subsection{Subsystem Scope and Canonical Separation}
+Within the ScholarMaster architecture, this subsystem focuses exclusively on resolving identity candidates, performing ANN retrieval, and stabilizing open-set lookup behavior. It relies on upstream layers for embeddings. This subsystem does NOT define privacy irreversibility (Paper 3), orchestrate activation governance (Paper 9), manage cryptographic provenance (Paper 8), derive runtime verification theorems (Paper 18), or optimize federated adaptation (Paper 13). 
 
 \subsection{Reproducibility}
 To facilitate peer validation, the core indexing logic and evaluation scripts are available as an open-source artifact \cite{scholarmaster_repo}. Note that the repository contains code only; no PII or biological data is hosted.
@@ -145,13 +142,13 @@ To facilitate peer validation, the core indexing logic and evaluation scripts ar
 % ==========================================
 \section{Retrieval Bottleneck at Institutional Scale}
 
-Biometric retrieval behavior changes substantially once identity registries reach institutional scale. This work focuses on institutional-scale deployments involving approximately $10^4$--$10^5$ identities, which differ fundamentally from web-scale systems designed for billions of vectors. At the campus level, early automation initiatives often relied on RFID or NFC-based attendance systems. Although these solutions improved speed compared to manual roll calls, they introduced a proxy vulnerability: possession of a card does not confirm the identity of its holder \cite{b1}. Min-Allah et al. \cite{b8} noted that biometric verification is an effective countermeasure to attendance fraud. However, contact-based systems such as fingerprint scanners raise hygiene concerns in high-traffic environments.
+Biometric retrieval behavior changes substantially once identity registries reach institutional scale. This work focuses on deployments involving approximately $10^4$--$10^5$ identities, which differ fundamentally from web-scale systems designed for billions of vectors. Traditional access automation typically lacks identity verification guarantees, while contact-based biometric systems scale poorly in continuous-flow environments \cite{b1, b8}.
 
-Cloud-based APIs provide recognition capabilities but are poorly suited for continuous real-time video streams. Transmitting high-resolution frames across campus networks introduces unavoidable latency. Reported round-trip delays can range from several hundred milliseconds to multiple seconds per face, particularly during peak usage \cite{b9}. For live ingress monitoring, such delays are unacceptable. Zhou et al. \cite{b2} advocated for processing data closer to the source to reduce this bandwidth load. 
+Cloud-based inference provides robust recognition capabilities but is structurally unsuited for continuous real-time video streams. Transmitting embeddings or frames across institutional networks introduces unavoidable latency. Reported round-trip delays can range from several hundred milliseconds to multiple seconds per query, particularly during peak usage \cite{b9}. For live ingress monitoring, such delays violate real-time operational constraints. Zhou et al. \cite{b2} demonstrated that executing retrieval closer to the source mitigates this bandwidth and latency pressure.
 
-Most academic research in face recognition emphasizes embedding discrimination performance, reporting high benchmark accuracy on datasets such as LFW or MegaFace. However, retrieval cost is often omitted from evaluation. When the gallery size grows beyond 10,000 identities, exhaustive cosine comparison quickly becomes the dominant computational burden.
+Most biometric literature emphasizes embedding discrimination performance, reporting high benchmark accuracy on static datasets such as LFW or MegaFace. However, the operational cost of retrieval is frequently omitted. When the gallery size grows beyond 10,000 identities, exhaustive cosine comparison quickly becomes the dominant computational burden.
 
-For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms—far exceeding the available latency budget for real-time streaming. At this scale, retrieval complexity becomes a principal deployment constraint.
+For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms---far exceeding the available latency budget for real-time streaming. At this scale, retrieval complexity becomes a principal deployment constraint.
 
 Table \ref{tab:sota_constraints} summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed retrieval module maintains both discrimination performance and real-time throughput at 100K scale.
 
@@ -192,13 +189,13 @@ By relying on externally provided embeddings that enforce an angular margin pena
 % ==========================================
 \section{Graph-Based Index Construction}
 
-To address the retrieval bottleneck introduced by large galleries, the proposed retrieval layer employs Hierarchical Navigable Small World (HNSW) indexing. HNSW constructs a multi-layer proximity graph inspired by principles from small-world network theory. Lower layers contain dense local connections across all vectors, while higher layers include progressively fewer nodes connected through longer-range links. 
+To address the retrieval bottleneck introduced by large galleries, the proposed retrieval layer employs Hierarchical Navigable Small World (HNSW) indexing. Scalability emerges fundamentally from graph traversal structure, not merely approximate search heuristics. HNSW constructs a multi-layer proximity graph inspired by principles from small-world network theory. Lower layers contain dense local connections across all vectors, while higher layers include progressively fewer nodes connected through longer-range links, providing high-dimensional degradation resistance.
 
-Search begins at the top sparse layer and proceeds through a greedy traversal toward closer nodes, descending layer by layer until convergence \cite{b7}. Empirically, search complexity follows a logarithmic trend:
+Search begins at the top sparse layer and proceeds through a greedy traversal toward closer nodes, descending layer by layer until convergence \cite{b7}. Because graph navigation remains stable where brute-force and tree structures collapse, search complexity follows a logarithmic scaling trend:
 \begin{equation}
 T(N) = a \log(N) + b
 \end{equation}
-This structure allows efficient approximate nearest neighbor retrieval even in high-dimensional embedding spaces. Tree-based methods often degrade substantially in 512-dimensional space due to the curse of dimensionality \cite{b12}. In our experiments, KD-Tree throughput dropped to approximately 7 FPS, confirming its unsuitability for deep embedding retrieval at scale.
+This structure allows efficient approximate nearest neighbor retrieval even in high-dimensional embedding spaces. Tree-based methods degrade substantially in 512-dimensional space due to the curse of dimensionality \cite{b12}. In our experiments, KD-Tree throughput dropped to approximately 7 FPS, confirming its unsuitability for deep embedding retrieval at scale.
 
 Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. An optional downstream smoothing mechanism (external) smooths predictions across consecutive frames to prevent output flicker.
 
@@ -234,15 +231,15 @@ Since embeddings are normalized to unit magnitude, the reduction from 32-bit to 
 % ==========================================
 \section{Local Density Consistency Criterion (LDCC)}
 
-Open-set biometric identification introduces an additional challenge beyond nearest-neighbor retrieval. In high-dimensional embedding spaces, relying solely on nearest-neighbor similarity may be insufficient for reliable identification. A single high cosine similarity score does not necessarily guarantee a correct identity match. In sparse regions of the embedding space, hubness effects may produce misleading neighbors, especially when dealing with large galleries.
+Open-set identification introduces an additional challenge beyond nearest-neighbor retrieval. In high-dimensional embedding spaces, nearest-neighbor similarity alone becomes unstable in sparse regions. A single high cosine similarity score does not guarantee a correct identity match because hubness effects may produce misleading neighbors. Open-set stability depends on cluster consistency rather than isolated similarity maxima.
 
-To improve robustness, we introduce the Local Density Consistency Criterion (LDCC). Instead of accepting a match purely on similarity, we additionally verify that the candidate identity lies within a locally coherent neighborhood structure. A probe is accepted only if both conditions are satisfied:
+To improve robustness, we introduce the Local Density Consistency Criterion (LDCC). Retrieval acceptance depends on local embedding topology, not single-vector confidence alone. We additionally verify that the candidate identity lies within a locally coherent neighborhood structure to reduce hubness-induced false acceptance. A probe is accepted only if both conditions are satisfied:
 \begin{equation}
 \cos(q, v_1) > \tau \quad \land \quad \frac{1}{k}\sum_{i=1}^{k} ||v_i - \bar{v}||^2 < \epsilon
 \end{equation}
 where $v_i$ are the top-$k$ nearest neighbors of probe $q$, $\bar{v}$ is their centroid, $k=5$ in all experiments, $\tau=0.75$, and $\epsilon=0.02$. 
 
-The first condition ensures sufficient angular similarity. The second verifies that the neighborhood forms a compact cluster rather than an isolated point. Together, these gates help reduce false acceptance caused by structural irregularities in the embedding space.
+The first condition ensures sufficient angular similarity. The second verifies that the neighborhood forms a compact cluster. While LDCC reduces boundary ambiguity, open-set stability remains probabilistic and topology-sensitive, inherently dependent on upstream embedding separation.
 
 \begin{algorithm}[H]
 \caption{High-Throughput Retrieval Logic}
@@ -277,7 +274,7 @@ To evaluate deployment feasibility under institutional conditions, the retrieval
 Because public datasets containing 100K labeled identities under open-set protocols are limited, synthetic hypersphere-distributed vectors were used to stress-test retrieval scaling. While this provides a clean baseline for indexing evaluation, real-world embeddings exhibit non-uniform clustering. Consequently, synthetic results represent a controlled upper-bound estimate of retrieval efficiency. The purpose here is not to simulate real-world identity distributions, but to isolate retrieval mechanics independent of feature extraction variability.
 
 \subsection{Latency Scaling}
-Gallery sizes of $N \in \{100, 1K, 10K, 50K, 100K\}$ were evaluated. Measured latency follows a largely logarithmic trend. Even at 100K identities, average retrieval latency remains 0.419 ms, with p99 latency below 1.1 ms (Table \ref{tab_scalability}). This suggests that HNSW preserves sub-millisecond performance at institutional scale. Unlike brute-force search, retrieval time does not grow linearly with gallery size, making real-time operation feasible within the 33 ms frame budget.
+Gallery sizes of $N \in \{100, 1K, 10K, 50K, 100K\}$ were evaluated. Measured latency follows a largely logarithmic trend. Even at 100K identities, average retrieval latency remains 0.419 ms, with p99 latency below 1.1 ms (Table \ref{tab_scalability}). This confirms that within the observed indexing configuration, HNSW preserves sub-millisecond performance at institutional scale. Unlike brute-force search, retrieval time does not grow linearly, making real-time operation feasible within the 33 ms frame budget. Note that real-world hardware-specific latency variation and cache-locality instability may introduce minor deviations.
 
 \begin{table}[htbp]
 \caption{Latency Scaling Behavior}
@@ -444,19 +441,29 @@ To support high-throughput retrieval without incurring cloud latency, the algori
 % ==========================================
 \section{Discussion}
 
-From an algorithmic perspective, the results highlight that identity retrieval—not feature extraction—often becomes the dominant constraint in edge-based biometric deployments. Modern embedding models already provide strong discriminative performance. However, without scalable indexing, these embeddings cannot be deployed under strict real-time streaming conditions.
+From an algorithmic perspective, the results highlight that identity retrieval---not feature extraction---often dominates the latency budget in edge-based identification deployments. Modern deep networks provide strong embedding discrimination; however, without scalable indexing, these embeddings cannot be queried rapidly enough to sustain real-time video streams.
 
-When attention shifts from model accuracy alone toward retrieval complexity, this work demonstrates that sub-millisecond search is achievable on edge hardware. The elimination of cloud dependencies further improves deployment reliability. During peak campus hours, the retrieval module operated without external bandwidth requirements, avoiding latency spikes common in cloud-tethered architectures.
+By prioritizing retrieval complexity over pure embedding refinement, this architecture achieves sub-millisecond search on edge hardware. Localizing execution structurally eliminates cloud dependencies, shielding the system from external bandwidth limitations and latency spikes common during institutional peak hours.
 
-Separating embedding geometry from indexing mechanics clarifies an important algorithmic principle: high-quality embeddings are necessary but insufficient. Efficient search structures help complete the retrieval process. This framework ensures that identity vectors remain locally contained, satisfying constraints where biometric data is neither transmitted nor aggregated externally during retrieval.
+Separating embedding geometry from indexing mechanics clarifies a core systems principle: high-quality embeddings are necessary but insufficient for real-time deployment. Graph-based indexing and open-set gating (LDCC) bridge the gap between theoretical embedding accuracy and practical edge feasibility. Furthermore, executing retrieval locally inherently reduces transmission exposure, retaining identity resolution entirely within the physical boundary of the edge node.
+
+\section{Limitations}
+
+The evaluation framework exposes several operational and algorithmic limitations:
+\begin{itemize}
+    \item \textbf{Synthetic Hypersphere Assumptions:} Scalability testing relied on synthetic hypersphere distributions. Real institutional embeddings exhibit denser overlap, demographic clustering variance, and enrollment drift, which can increase local traversal time and trigger index fragmentation over long durations.
+    \item \textbf{Index Memory Footprint:} While FP16 reduces the HNSW memory burden to 214 MB at 100K scale, memory scaling limitations beyond 100K identities ($10^6$ range) will exceed standard edge node capacity, requiring distributed index partitioning. Asynchronous insertion behavior can also temporarily spike memory usage.
+    \item \textbf{Dependency on Upstream Quality:} The retrieval layer depends entirely on upstream embedding quality; open-set performance collapses if the external model produces ambiguous feature vectors.
+    \item \textbf{Absence of Anti-Spoofing:} The retrieval graph assumes genuine biometric input. It lacks integrated anti-spoofing evaluation, relying entirely on upstream layers to reject presentation attacks.
+\end{itemize}
 
 % ==========================================
 % IX. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This work examined whether institutional-scale biometric identification can operate entirely on edge hardware when retrieval latency is treated as a primary algorithmic constraint. By integrating margin-based embeddings with HNSW indexing and LDCC gating, the proposed algorithm maintains 99.82\% LFW accuracy while achieving sub-millisecond retrieval at 100K scale. 
+This study investigated whether institutional-scale identity retrieval can sustain deterministic, real-time operation exclusively on edge hardware under streaming constraints. By combining HNSW graph indexing with Local Density Consistency Criterion (LDCC) gating, the proposed subsystem achieves bounded-latency retrieval and stabilizes open-set lookup against a 100K-identity gallery.
 
-Real-time performance above 30 FPS is sustained without reliance on cloud connectivity. The primary contribution lies not in improving embedding discrimination itself but in addressing the retrieval bottleneck that often limits practical deployment. Graph-based indexing therefore enables practical biometric identification at institutional scale while maintaining fully local processing on edge devices.
+Empirical evaluation demonstrates that separating indexing mechanics from feature extraction allows the system to sustain stable queue depths and deterministic streaming behavior. Within the ScholarMaster architecture, this framework operates exclusively as a bounded-latency retrieval subsystem---resolving identity candidates without defining privacy irreversibility (Paper 3), orchestrating activation governance (Paper 9), or establishing cryptographic provenance (Paper 8).
 
 % ==========================================
 % REFERENCES

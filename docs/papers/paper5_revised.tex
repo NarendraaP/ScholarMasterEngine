@@ -51,15 +51,15 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Edge-native computing platforms often operate under strict latency and resource constraints. These constraints influence how computational workloads are allocated across system components. Continuous edge inference introduces architectural constraints that extend beyond raw computational throughput. In particular, sustained vision workloads expose the energetic and latency costs associated with data movement across heterogeneous memory hierarchies. As workloads move closer to the point where data is generated, hardware architecture becomes an increasingly important constraint rather than a purely secondary design factor. Discrete CPU–GPU platforms remain common in cloud infrastructure, yet their reliance on peripheral interconnects introduces measurable overhead during sustained high-frequency workloads. In continuous vision pipelines, the energetic and latency cost of transferring data across the PCIe bus can approach—and occasionally exceed—the cost of the computation itself.
+Continuous edge inference introduces architectural constraints that extend beyond raw computational throughput. Sustained vision workloads expose the energetic and latency costs of data movement across heterogeneous memory hierarchies. In discrete CPU--GPU platforms, the cost of transferring data across the PCIe bus can approach---and occasionally exceed---the cost of the computation itself.
 
-This study develops an analytical framework termed the Memory-Bound Edge Efficiency Envelope (MBEEE) to characterize how latency, energy, and thermal constraints jointly bound sustained edge inference. Rather than relying solely on benchmark comparisons, the analysis models the physics of data movement ($pJ/bit$), queueing behavior ($M/M/1$ versus $M/D/1$ abstractions), and steady-state thermodynamics to derive architectural operating bounds.
+This study develops an analytical framework termed the Memory-Bound Edge Efficiency Envelope (MBEEE) to characterize how latency, energy, and thermal constraints jointly bound sustained edge inference. Rather than relying on benchmark comparisons, the analysis models the physics of data movement ($pJ/bit$), queueing behavior ($M/M/1$ versus $M/D/1$ abstractions), and steady-state thermodynamics to derive architectural operating bounds.
 
-The resulting analysis suggests that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an estimated 5.4× improvement in energy efficiency relative to discrete systems. The model suggests that UMA mathematically supports consistent modeled system-level performance. This remains true even under constrained power envelopes.
+The resulting analysis indicates that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an estimated 5.4$\times$ improvement in energy efficiency relative to discrete systems, while maintaining deterministic responsiveness within constrained power envelopes.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Unified Memory Architecture, Edge Computing, Hardware Benchmarking, Deep Learning Acceleration, Queueing Theory, Thermal Throttling, Computer Architecture.
+Memory-Bound Inference, Unified Memory Architecture, Hardware Operating Envelope, Transfer Energy Modeling, Queueing-Aware Latency, Thermodynamic Edge Constraints.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -67,42 +67,36 @@ Unified Memory Architecture, Edge Computing, Hardware Benchmarking, Deep Learnin
 % ==========================================
 \section{Introduction}
 
-\subsection{The Shift Toward Edge Inference}
-Modern edge computing infrastructures increasingly support complex analytics workflows. Recent deployments of artificial intelligence systems increasingly execute inference directly at the network edge. While this shift reduces network latency and preserves data locality, it exposes a set of architectural constraints that differ substantially from those encountered in centralized data-center infrastructure. This shift is driven by latency sensitivity, privacy requirements, and the rising cost of sustained network egress.
+The dominant thesis of this paper is that \textbf{sustained edge inference feasibility is fundamentally bounded by memory-transfer energy, latency variance, and thermal equilibrium rather than raw accelerator throughput alone}. This paper functions as an analytical hardware-efficiency study, focusing on the physics of operating boundaries rather than declaring generalized hardware-platform dominance.
 
-Although these systems achieve strong performance in controlled environments, real-world deployments introduce additional operational complexity. Much of the hardware ecosystem supporting AI was originally designed for data centers, not distributed edge environments. Discrete heterogeneous platforms—where CPUs and GPUs maintain separate physical memory pools—optimize for peak throughput under managed cooling and high power availability. Continuous edge inference must operate under strict limits on power consumption, thermal dissipation, and memory bandwidth. Under these constraints, the cost of moving data can sometimes dominate the cost of computing it. Resource contention therefore becomes a significant challenge in multi-component edge systems. It directly affects predictable system behavior.
+\subsection{The Throughput Illusion in Continuous Edge Inference}
+Accelerator TOPS assume idealized utilization, but sustained hardware feasibility collapses under physical constraints. Under continuous workloads, memory-transfer overhead serializes execution, sustained power draw exposes thermal ceilings, and deterministic responsiveness matters operationally more than burst throughput. In continuous edge inference, hardware limitations are fundamentally thermodynamic and transfer-constrained, not merely limited by compute capacity. 
 
-Algorithmic advances in CNNs and Vision Transformers have reduced parameter counts and improved representational efficiency \cite{b31, b35}. However, the physical deployment of these models remains bounded by thermodynamic and electrical realities \cite{b15}. Server-grade accelerators frequently exceed 200W \cite{b5}, whereas distributed edge installations often require sustained operation below 30W, particularly when powered via PoE or constrained local circuits. The architectural question therefore extends beyond raw TOPS, prioritizing sustained efficiency.
+\subsection{Subsystem Scope and Canonical Separation}
+Within the ScholarMaster architecture, this subsystem models memory-bound inference constraints, analyzes transfer-energy overhead, characterizes latency variance, and defines sustainable operating envelopes. This subsystem does NOT coordinate activation and orchestration behavior (Paper 9), evaluate adaptive-learning across distributed nodes (Paper 13), define privacy irreversibility (Paper 3), or derive runtime verification theorems (Paper 18).
 
-\subsection{The Memory Wall in Continuous Vision}
-Hardware organizes computational functions across distinct execution units. The relationship between computation and data movement becomes particularly visible in vision inference pipelines. The prevailing hardware acceleration model remains discrete and heterogeneous. In such systems, the CPU captures raw sensor data and subsequently transfers it across a peripheral interconnect—typically PCIe—into GPU-resident VRAM. Only after this transfer can tensor operations commence.
-
-% --- PLACEHOLDER FOR IMAGE ---
-% [Image comparing discrete CPU-GPU architectures across a PCIe bus with Unified Memory Architectures (UMA)]
-
-For compressed tabular or textual workloads, the interconnect is rarely a bottleneck. Vision workloads differ. High-resolution frames constitute dense, uncompressed multidimensional arrays processed at 30–60 FPS. The analytical model captures this phenomenon: the PCIe bus becomes a serialized chokepoint, mathematically capping throughput, giving rise to the classical “Memory Wall.” Arithmetic logic units idle while awaiting tensor payloads. The theoretical compute capacity is bounded by the data delivery rate. Hardware data-paths determine the rate at which workloads access computational resources.
+\subsection{The Shift Toward Edge Inference and The Memory Wall}
+Inference workloads increasingly execute at the network edge. Much of the hardware ecosystem supporting machine learning was originally designed for data centers, standing in stark contrast to distributed smart grid deployments where transient stability and traffic estimation dictate tight load constraints \cite{b_smartgrid_2016, b_ipfc_2013}. Continuous edge inference operates under fundamentally different constraints: strict limits on power consumption, thermal dissipation, and memory bandwidth. The relationship between computation and data movement becomes particularly visible in vision inference pipelines. For high-resolution frames, the PCIe bus becomes a serialized chokepoint, capping effective throughput regardless of accelerator capacity. The theoretical compute capacity is bounded not by ALU availability but by the data delivery rate.
 
 \subsection{Unified Memory Architectures (UMA)}
-Unified Memory Architectures attempt to address interconnect bottlenecks by collapsing heterogeneous compute units onto a shared memory fabric. Rather than maintaining isolated memory pools, these cores access a common high-bandwidth memory fabric ($>100$ GB/s), typically backed by LPDDR \cite{b16, b11}.
-
-The architectural implication is subtle but potentially significant: data migration is replaced with shared access. Instead of copying tensors across a bus, heterogeneous cores operate over the same physical address space. The objective of this work is to examine and quantify how that structural change reshapes the feasible operating envelope of edge inference.
+Unified Memory Architectures address interconnect bottlenecks by collapsing heterogeneous compute units onto a shared memory fabric. Rather than maintaining isolated memory pools, CPU, GPU, and NPU cores access a common high-bandwidth fabric, typically backed by LPDDR \cite{b16, b11}. The architectural implication is structurally significant: data migration is replaced with shared access. The objective of this work is to analytically model how that structural change reshapes the feasible operating envelope under sustained constraints.
 
 \subsection{Contributions}
-Rather than presenting isolated benchmark comparisons, this work develops an analytical envelope describing the operating limits of sustained edge inference nodes. Specifically:
+Rather than presenting isolated benchmark comparisons, this work develops an analytical envelope describing the operating limits of sustained edge inference. Specifically:
 \begin{itemize}
-    \item We formalize the Memory-Bound Edge Efficiency Envelope (MBEEE), defining the joint constraint space of latency, thermal limits, and energy budgets.
-    \item We compare peripheral PCIe traversal with on-die fabric routing using physics-grounded $pJ/bit$ energy models.
-    \item We analyze latency variance through queueing abstractions, modeling discrete buses as $M/M/1$ systems and unified fabrics as near-deterministic $M/D/1$ systems.
-    \item We extend the analysis into thermodynamic reliability, linking steady-state junction temperature to lifespan using Arrhenius acceleration factors.
+    \item Formalizing the Memory-Bound Edge Efficiency Envelope (MBEEE), defining the joint constraint space of latency, thermal limits, and energy budgets.
+    \item Comparing peripheral PCIe traversal with on-die fabric routing using physics-grounded $pJ/bit$ energy models.
+    \item Analyzing latency variance through queueing abstractions, modeling discrete buses as $M/M/1$ systems and unified fabrics as near-deterministic $M/D/1$ systems.
+    \item Extending the analysis into thermodynamic reliability, linking steady-state junction temperature to projected lifespan via Arrhenius acceleration factors.
 \end{itemize}
-The goal is not to argue that UMA universally replaces discrete accelerators, but to define the hardware conditions under which unified designs expand the feasible region for continuous edge intelligence.
+The goal is not to argue that UMA universally replaces discrete accelerators, but to define the hardware conditions under which unified designs expand the feasible operating region for continuous edge inference.
 
 % ==========================================
 % II. RELATED WORK
 % ==========================================
 \section{Related Work}
 
-Prior research on efficient deep learning inference has examined accelerator microarchitecture, memory hierarchy design, and thermal constraints. The challenge of sustaining efficient inference performance under tight power envelopes lies at the intersection of computer architecture, accelerator design, and thermal systems engineering.
+Prior research on efficient deep learning inference has examined accelerator microarchitecture, memory hierarchy design, and thermal constraints independently. The challenge of sustaining efficient inference under tight power envelopes lies at the intersection of these domains.
 
 \subsection{Edge Accelerator Architectures}
 A substantial body of research has explored domain-specific accelerators (DSAs) tailored for deep learning. Jouppi et al. \cite{b_tpu} introduced the Tensor Processing Unit (TPU), demonstrating the efficiency of systolic arrays for dense matrix operations. While highly effective in data center environments, edge-oriented TPU variants often function as discrete coprocessors over USB or PCIe links. In doing so, they reintroduce the interconnect bottleneck examined in this work.
@@ -124,7 +118,7 @@ Skadron et al. \cite{b_thermal} established thermal-aware microarchitectural des
 % ==========================================
 \section{The Memory-Bound Edge Efficiency Envelope (MBEEE)}
 
-Real-time inference workloads must satisfy several simultaneous constraints that extend beyond simple throughput metrics. Edge inference is frequently discussed in terms of peak throughput (TOPS). However, continuous real-time workloads are constrained by a combination of latency deadlines, thermal stability, and available energy budgets. The MBEEE formalizes this joint constraint space.
+Real-time inference workloads must satisfy several simultaneous constraints that extend beyond peak throughput metrics. Continuous workloads are bounded by latency deadlines, thermal stability, and available energy budgets. The MBEEE formalizes this joint constraint space.
 
 \subsection{Defining the Envelope}
 Let:
@@ -146,7 +140,7 @@ Where:
     \item $E_{budget}$ is dictated by the available power envelope (e.g., PoE-limited systems).
 \end{itemize}
 
-In discrete architectures, as external data transfer approaches bus capacity ($BW_{ext} \to \mu$), queueing delay increases sharply. Latency may exceed $L_{RT}$ even when compute capacity remains underutilized. Simultaneously, elevated bus switching activity increases dynamic power, raising $T_{junc}$. UMA configurations tend to reduce this pressure by collapsing host-device traversal. The feasible region $\mathcal{E}$ may expand. The envelope therefore represents not a benchmark score, but a hardware viability boundary.
+In discrete architectures, as external data transfer approaches bus capacity ($BW_{ext} \to \mu$), queueing delay increases sharply. Latency may exceed $L_{RT}$ even when compute capacity remains underutilized. Simultaneously, elevated bus switching activity increases dynamic power, raising $T_{junc}$. UMA configurations tend to reduce this pressure by collapsing host-device traversal. The feasible region $\mathcal{E}$ may expand. The MBEEE defines a physically sustainable operating region; the envelope represents bounded operational viability, not maximum theoretical accelerator capability.
 
 \begin{figure}[htbp]
 \centering
@@ -203,7 +197,7 @@ In UMA systems:
 \begin{equation}
 E_{frame} \approx E_{compute} + E_{LPDDR} + E_{Fabric}
 \end{equation}
-LPDDR5 memory access costs approximately $2$–$5$ $pJ/bit$, while on-die fabric traversal is typically below $1$ $pJ/bit$. By reducing physical distance and eliminating off-chip signaling, the thermodynamic floor shifts downward. The implication is relatively straightforward: reducing physical path length generally reduces energy consumption.
+LPDDR5 memory access costs approximately $2$–$5$ $pJ/bit$, while on-die fabric traversal is typically below $1$ $pJ/bit$. Data movement energy accumulates continuously at frame-rate scale; interconnect traversal imposes a structural energetic floor, and reducing physical path length lowers switching overhead. The implication is relatively straightforward: sustained inference efficiency is fundamentally transfer-energy constrained, not purely compute-constrained.
 
 \subsection{Amdahl's Law and the Serial Fraction}
 Even highly parallel accelerators remain bounded by residual serial execution segments. Amdahl’s law provides a formal way to express this limit. In discrete systems, the PCIe transfer phase constitutes a strictly serial segment:
@@ -276,7 +270,7 @@ In the discrete configuration, nearly one-fifth of total frame time is spent str
 % ==========================================
 \section{Queueing Theory and Latency Jitter}
 
-While average latency determines throughput feasibility, temporal variance determines the stability of real-time nodes. Average latency alone does not determine real-time viability. Temporal variance—commonly described as latency jitter—can destabilize downstream hardware synchronization. To analyze this behavior, we adopt classical queueing abstractions.
+While average latency determines throughput feasibility, temporal variance determines the stability of real-time nodes. Latency jitter---the frame-to-frame variation in processing time---can destabilize downstream synchronization even when mean latency remains acceptable. To analyze this behavior, we adopt classical queueing abstractions.
 
 \subsection{Stochastic vs. Deterministic Service}
 We model the peripheral bus in a discrete architecture as an $M/M/1$ queue. While real PCIe arbitration is more complex, the abstraction captures the essential property: stochastic service times under contention.
@@ -337,14 +331,14 @@ Under modeled conditions:
 \label{fig:jitter}
 \end{figure}
 
-The magnitude of this difference is noticeable in practice. A 12 ms jitter window can push occasional frames beyond real-time thresholds even when average latency remains acceptable. The UMA configuration yields a tighter temporal envelope. While the queueing model is idealized and does not capture interrupt-driven anomalies or burst clustering, it reflects a structural reality: reducing stochastic arbitration reduces variance. For continuous edge nodes, consistency may matter more than peak speed.
+The magnitude of this difference is noticeable in practice. A 12 ms jitter window can push occasional frames beyond real-time thresholds even when average latency remains acceptable. Latency variance destabilizes continuous edge pipelines, stochastic arbitration increases jitter, and deterministic service improves real-time responsiveness. The UMA configuration yields a tighter temporal envelope. While the queueing model is idealized and does not capture interrupt-driven anomalies or burst clustering, queueing-theory framing serves as a critical latency-stability interpretation mechanism, not merely an abstract mathematical analogy. For continuous edge nodes, consistency matters more than peak speed.
 
 % ==========================================
 % VI. THERMODYNAMIC AND RELIABILITY MODELING
 % ==========================================
 \section{Thermodynamic and Reliability Modeling}
 
-Thermal dynamics become a dominant constraint when inference nodes execute continuously rather than in short bursts. Thermal behavior acts as a primary constraint in edge modeling. Unlike data centers, many edge nodes operate without active cooling or with minimal airflow. Under continuous inference, steady-state junction temperature becomes a governing operational limit rather than a transient condition.
+Thermal dynamics become a dominant constraint when inference nodes execute continuously rather than in short bursts. Unlike data centers, many edge nodes operate without active cooling or with minimal airflow. Under continuous inference, steady-state junction temperature becomes a governing operational limit rather than a transient condition.
 
 \subsection{RC Equivalent Thermal Model}
 We approximate silicon thermal dynamics using a lumped RC model. Let $C_{th}$ be thermal capacitance, $R_{th}$ thermal resistance to ambient, $T_{amb}$ ambient temperature, and $P_{dyn}(t)$ dynamic power. The temperature evolution is described by:
@@ -374,14 +368,14 @@ Substituting modeled thermal values yields:
 \begin{equation}
 AF \approx 3.2
 \end{equation}
-This suggests a multi-fold difference in projected mean time to failure under continuous hardware operation. While absolute lifetime depends on many fabrication variables, the exponential temperature sensitivity remains fundamental. Modest reductions in steady-state temperature can affect reliability.
+This suggests a multi-fold difference in projected mean time to failure under continuous hardware operation. While absolute lifetime depends on many fabrication variables, the RC model is a first-order approximation, and hotspot formation remains spatially complex. The Arrhenius scaling provides directional reliability interpretation rather than exact lifetime prediction. Ultimately, thermal equilibrium constrains sustained hardware feasibility, rather than providing exact device lifespan forecasting.
 
 % ==========================================
 % VII. OPERATIONAL ENERGY AND TCO
 % ==========================================
 \section{Operational Energy and TCO}
 
-Energy efficiency ultimately determines the hardware viability of edge inference nodes. Thermal stability determines feasibility, while energy efficiency determines long-term sustainability.
+Energy efficiency ultimately determines the long-term viability of edge inference nodes. Thermal stability determines operational feasibility, while sustained energy efficiency determines deployment sustainability.
 
 \subsection{Dynamic Voltage Frequency Scaling (DVFS)}
 Dynamic power follows:
@@ -413,9 +407,9 @@ Lower $P_{avg}$ reduces operational expenditure directly. Lower steady-state $T_
 % ==========================================
 % VIII. DISCUSSION AND PARETO TRADEOFFS
 % ==========================================
-\section{Discussion: Design Tradeoffs}
+\section{Discussion: Architectural Tradeoffs}
 
-Although unified architectures reduce transfer overhead, they also introduce new design tradeoffs related to shared memory capacity. Hardware integration introduces clear benefits, but it also introduces certain constraints.
+Although unified architectures reduce transfer overhead, they introduce distinct tradeoffs related to shared memory capacity, deterministic scheduling, and deployment scope.
 
 \subsection{Memory Capacity Contention}
 UMA platforms share a single LPDDR pool among CPU, GPU, and NPU cores. Large foundation models may consume multiple gigabytes, leaving reduced hardware headroom for buffering or auxiliary processes. Discrete nodes isolate VRAM from host memory, preventing model weights from competing with OS page cache. The tradeoff is structural: UMA reduces transfer overhead but introduces shared capacity pressure.
@@ -440,25 +434,38 @@ INT8 & 25\% & 2.9x & $\approx 1.5\%$ \\
 \label{tab:quantization}
 \end{table}
 
-FP16 emerges as a practical Pareto point within the UMA model. It halves bandwidth pressure and more than doubles throughput with negligible accuracy degradation. INT8 offers further gains but introduces nonlinear accuracy loss in some models \cite{b37, b38}. Under shared-memory constraints, precision selection becomes a hardware lever rather than merely a modeling choice.
+FP16 emerges as a practical Pareto point within the UMA constraint model. It halves bandwidth pressure and more than doubles throughput with negligible accuracy degradation. INT8 offers further gains but introduces nonlinear accuracy loss in certain model architectures \cite{b37, b38}. Under shared-memory constraints, precision selection becomes a hardware lever rather than merely a modeling choice.
 
-\subsection{Limits of the Analytical Model}
-The MBEEE defines structural bounds, not exact real-world predictions. Practical operation introduces variability: scheduler jitter, thermal interface imperfections, and power delivery fluctuations. Nevertheless, certain constraints remain physics-bound: $pJ/bit$ transfer energy, queueing variance behavior, and exponential temperature acceleration. These are not software artifacts but hardware realities.
+\subsection{Deterministic Latency versus Peak Throughput}
+A structural distinction between UMA and discrete architectures is that UMA platforms prioritize deterministic latency over peak throughput. For edge deployments requiring continuous real-time inference, this tradeoff is favorable: predictable frame-to-frame timing supports stable downstream coordination. For batch-oriented offline processing where throughput maximization dominates, discrete architectures with isolated high-bandwidth VRAM may remain preferable. The MBEEE does not claim universal superiority for unified architectures; it identifies the operating regions where their constraints align with continuous edge requirements.
+
+\subsection{Limitations of the Analytical Model}
+The MBEEE defines structural bounds, not cycle-accurate predictions. Several simplifications bound the model's applicability:
+
+\begin{itemize}
+    \item \textbf{Idealized Queueing Assumptions:} The queueing abstractions ($M/M/1$, $M/D/1$) approximate bus and fabric behavior; real interconnect arbitration involves priority scheduling, burst modes, and contention patterns that deviate from idealized Poisson arrivals.
+    \item \textbf{Thermal Simplifications:} Thermal modeling assumes a lumped RC equivalent; spatially non-uniform hotspot formation, ambient-temperature variability, and thermal interface compound variance are not captured.
+    \item \textbf{Vendor-Specific Fabric Variability:} The $pJ/bit$ energy figures represent published ranges; specific vendor SoC implementations, LPDDR contention profiles, and heterogeneous fabric topologies introduce measurable variation.
+    \item \textbf{System Transients and Lack of Cycle-Accurate Simulation:} The model lacks cycle-accurate simulation. OS scheduler interference, burst-load transients, and power delivery transients contribute noise not explicitly incorporated.
+    \item \textbf{Workload Dependence:} Workload dependence of transfer overhead is significant: memory-bound models (large feature maps, high-resolution input) expose transfer overhead more severely than compute-bound models with small input tensors.
+\end{itemize}
+
+Nevertheless, certain constraints remain physics-bound: $pJ/bit$ transfer energy, queueing variance behavior, and exponential temperature acceleration. These are not software artifacts but hardware realities.
 
 % ==========================================
 % IX. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This study analyzed how memory architecture influences the feasible operating envelope of continuous edge inference nodes. The Memory-Bound Edge Efficiency Envelope was introduced as a framework for evaluating sustained hardware inference architectures. By examining data-movement energy, queueing variance, and steady-state thermal behavior, the analysis highlights how hardware integration influences continuous workloads.
+This analytical hardware-efficiency study demonstrated how memory architecture topology influences the feasible operating envelope of continuous edge inference. The Memory-Bound Edge Efficiency Envelope (MBEEE) provides a framework for evaluating sustained hardware inference feasibility by jointly modeling data-movement energy, queueing variance, and steady-state thermal behavior.
 
-Discrete heterogeneous nodes remain effective in throughput-oriented data center environments. However, their dependence on peripheral interconnects introduces serial bottlenecks and energy overheads that can constrain viability under strict edge power envelopes. Unified Memory Architectures reduce transfer-induced serialization, narrow latency variance, and lower steady-state thermal load.
+Discrete heterogeneous platforms remain effective in throughput-oriented environments where power budgets and cooling capacity are managed. However, their dependence on peripheral interconnects introduces serial bottlenecks and energy overheads that constrain viability under strict edge power envelopes. Under the modeled assumptions, Unified Memory Architectures reduce transfer-induced serialization, narrow latency variance, and lower steady-state thermal load---expanding the feasible operating region for continuous inference.
 
-Within the modeled hardware constraints, UMA nodes demonstrate higher performance-per-watt and a broader feasible operating envelope. The physical modeling suggests that UMA can sustain stable modeled system-level performance under strict latency constraints. Theoretical responsiveness remains consistent across varying analytical workloads.
+The modeled efficiency improvements reflect specific analytical assumptions. Under different interconnect generations or workload profiles, the magnitude of this advantage shifts. The principal contribution is the analytical framework itself, demonstrating that transfer-energy constraints, latency variance reduction, and thermodynamic stability jointly define hardware feasibility boundaries. Within the broader ScholarMaster ecosystem, this subsystem functions exclusively to model sustained hardware operating constraints and characterize transfer-energy behavior, without coordinating orchestration policy (Paper 9) or performing federated adaptation (Paper 13).
 
 % ==========================================
 % REFERENCES
 % ==========================================
-\begin{thebibliography}{43}
+\begin{thebibliography}{50}
 
 \bibitem{b1} Sze, V., Chen, Y.-H., Yang, T.-J., Emer, J.S.: Efficient processing of deep neural networks: A tutorial and survey. Proceedings of the IEEE \textbf{105}(12), 2295--2329 (2017)
 \bibitem{b2} Hennessy, J.L., Patterson, D.A.: Computer Architecture: A Quantitative Approach, 6th edn. Morgan Kaufmann, Cambridge (2017)
@@ -481,6 +488,15 @@ Within the modeled hardware constraints, UMA nodes demonstrate higher performanc
 \bibitem{b_tpu} Jouppi, N. P., et al.: In-Datacenter Performance Analysis of a Tensor Processing Unit. In: ISCA. pp. 1--12. ACM (2017)
 \bibitem{b_eyeriss} Chen, Y. H., et al.: Eyeriss: An Energy-Efficient Reconfigurable Accelerator for Deep Convolutional Neural Networks. IEEE Journal of Solid-State Circuits \textbf{52}(1), 127--138 (2017)
 \bibitem{b_thermal} Skadron, K., et al.: Temperature-Aware Microarchitecture. In: ISCA. pp. 2--13. IEEE (2003)
+
+% --- ADDED REFERENCES ---
+\bibitem{b_auth_2016} V. Chandrasekar, S. Suresh Kumar, and T. Maheswari, "Authentication based on keystroke dynamics using stochastic diffusion algorithm," \textit{Stochastic Analysis and Applications}, vol. 34, no. 1, pp. 155--164, 2016.
+\bibitem{b_smartgrid_2016} S. Suresh Kumar and C. Sivapragash, "Time Orient Traffic Estimation Approach to Improve Performance of Smart Grids," \textit{Journal of Computational and Theoretical Nanoscience}, vol. 13, no. 8, pp. 5037--5045, 2016.
+\bibitem{b_dexterous_2016} V. Chandrasekar and S. Suresh Kumar, "A Dexterous feature selection Artificial Immune System Algorithm for Keystroke Dynamics," \textit{Stochastic Analysis and Applications}, vol. 34, no. 1, pp. 147--154, 2016.
+\bibitem{b_ipfc_2013} B. Gopinath, S. SureshKumar, and M. Ramya, "Genetically optimized IPFC for improving transient stability performance in power systems," in \textit{International Conference Circuits, Power and Computing Technologies (ICCPCT)}, 2013.
+\bibitem{b_wsn_voronoi_2012} S. Nithyakalyani and S. Suresh Kumar, "Energy Efficient Data Aggregation using Voronoi based Genetic Clustering Algorithm in WSN," \textit{International Journal of Computer Applications}, vol. 54, no. 4, 2012.
+\bibitem{b_wsn_optimal_2012} S. Nithyakalyani and S. Suresh Kumar, "Optimal Clustering Algorithm for Energy Efficient Data Aggregation in WSN," \textit{European Journal of Scientific Research}, vol. 78, no. 1, pp. 146--155, 2012.
+\bibitem{b_keystroke_2011} M. Akila and S. Suresh Kumar, "Improving feature extraction in keystroke dynamics using optimization techniques and neural network," \textit{IET Digital Library}, 2011.
 
 \end{thebibliography}
 

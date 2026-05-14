@@ -41,7 +41,7 @@ Automated compliance verification in cyber-physical environments is often implem
 \end{abstract}
 
 \begin{IEEEkeywords}
-Formal Methods, Spatiotemporal Logic, Distributed Systems, Automata Theory, Kinematic Constraints, Decidability, Event Calculus, Theorem Proving, Vector Clocks, Measure Theory.
+Spatiotemporal Axiomatization, Metric-Space Compliance Reasoning, Event-Calculus Persistence, Distributed Causal Integrity, PSPACE Decidability, Cyber-Physical Verification.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -49,20 +49,37 @@ Formal Methods, Spatiotemporal Logic, Distributed Systems, Automata Theory, Kine
 % ==========================================
 \section{Introduction}
 
-Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring. Existing implementations predominantly rely on heuristic anomaly detection \cite{b1} or probabilistic inference techniques that perform well under typical operating conditions but provide limited guarantees when confronted with adversarial manipulation, distributed state inconsistencies, or physically impossible observation sequences.
+Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring. 
 
-This paper develops a formal mathematical framework for reasoning about spatiotemporal compliance and distributed system integrity. The principal contributions are: (1) an axiomatic foundation grounded in classical kinematics and event calculus that resolves discrete sensor observations into continuous state intervals; (2) measure-theoretic compliance predicates enabling Lebesgue-integrable duration bounds; (3) proofs of verification soundness under bounded sensor noise and completeness boundaries via sampling-theoretic analysis; (4) a decidability classification of the verification problem under finite zone and entity constraints; (5) a distributed integrity theorem governing causal monotonicity across system shards; and (6) a game-theoretic adversarial formulation that characterizes the equilibrium behavior of spoofing under kinematic constraints.
+\subsection{Research Gap and Motivation}
+Existing implementations predominantly rely on heuristic anomaly detection \cite{b1} or probabilistic inference techniques. While these approaches demonstrate high empirical accuracy under typical operating conditions, they lack explicit continuous-state persistence semantics, mathematically bounded observability guarantees, and distributed causal-integrity reasoning. Empirical accuracy does not imply logical consistency; heuristic anomaly detection cannot establish formal verification guarantees when confronted with adversarial manipulation, network partitions, or physically impossible observation sequences. Formalizing distributed cyber-physical compliance requires mathematically explicit constraints, as existing systems rarely characterize their decidability boundaries or causal monotonicity requirements formally.
+
+\subsection{Contributions}
+This paper develops a formal mathematical framework strictly focused on spatiotemporal compliance verification and distributed integrity reasoning. Within the ScholarMaster architecture, this subsystem performs formal verification only. It does not perform runtime privacy enforcement, governance orchestration, federated learning, or deployment synthesis. 
+
+The core contribution is a unified spatiotemporal verification model, supported by mathematical machinery deployed strictly as necessity-driven formalization layers. The principal integrations are: (1) an axiomatic foundation grounded in classical kinematics and Event Calculus to provide persistence semantics; (2) measure-theoretic compliance predicates enabling integration; (3) sampling theory to establish observability bounds; (4) automata theory to classify decidability limits; (5) vector clocks to preserve distributed consistency; and (6) adversarial game theory as a boundary-condition stress-test.
 
 % ==========================================
 % II. MATHEMATICAL PRELIMINARIES
 % ==========================================
 \section{Mathematical Preliminaries}
 
-Reliable compliance verification requires more than empirical performance metrics. In cyber-physical environments governed by safety or regulatory constraints, the verification logic itself must possess internally consistent mathematical semantics. Machine-learning approaches frequently demonstrate strong empirical accuracy when interpreting observational data streams \cite{b1}. However, statistical inference alone does not guarantee logical consistency when confronted with adversarial behavior or distributed state conflicts. Yet these approaches provide limited guarantees under adversarial spoofing or distributed state conflicts. They also struggle to reason about physically impossible motion patterns. In environments governed by safety regulations or privacy policies, such edge conditions are not merely theoretical. They represent precisely the situations in which verification mechanisms must remain trustworthy. For this reason it is often preferable to formulate compliance verification as a logically analyzable system instead of relying exclusively on statistical likelihood estimates \cite{b14}.
+Reliable compliance verification requires more than empirical performance metrics. In cyber-physical environments governed by safety or regulatory constraints, the verification logic itself must possess internally consistent mathematical semantics. 
 
-Against this backdrop, the present study develops a formal structure intended to clarify the boundary conditions under which compliance verification can be rigorously analyzed. More specifically, the framework synthesizes elements of Kinematic Logic, Event Calculus, Measure-Theoretic Institutional Predicates, and Distributed Integrity Invariants to formally define the boundaries of automated supervision. 
+\subsection{Formal Assumption Model}
+To ensure the mathematical models remain operationally grounded and explicitly bounded, the verification framework is built upon the following structured assumptions:
+\begin{itemize}
+    \item \textbf{A1: Finite Zone Topology:} The spatial environment is a closed, discrete set of finite regions.
+    \item \textbf{A2: Bounded Entity Velocity:} Physical motion is bounded by a universal maximum kinematic velocity ($V_{max}$).
+    \item \textbf{A3: Uniform Sampling Interval:} Digital observations occur at continuous, discrete, and uniform time steps ($\Delta t$).
+    \item \textbf{A4: Bounded Sensor Noise:} Observational uncertainty is geometrically bounded within a known Chebyshev radius ($\eta$).
+    \item \textbf{A5: Reliable Causal Timestamp Ordering:} Distributed events can be causally ordered using vector clocks, acknowledging that partitions may delay message delivery but will not silently invert causality.
+    \item \textbf{A6: Finite Entity Cardinality:} The number of tracked physical objects is strictly bounded ($N < \infty$).
+    \item \textbf{A7: Piecewise-Continuous Motion:} Physical trajectories cannot exhibit discontinuous teleportation across spatial boundaries.
+    \item \textbf{A8: Rational Adversarial Objective Behavior:} Adversarial actors attempt to maximize a defined utility function while remaining bound by physical kinematics.
+\end{itemize}
 
-Before introducing the axioms, we first define the underlying topological, metric, and temporal spaces over which the system and its entities operate, building upon established spatial logics \cite{b16}.
+These assumptions structurally motivate the selection of our mathematical machinery. Before introducing the behavioral axioms, we formally define the underlying topological, metric, and temporal spaces over which the system operates, building upon established spatial logics \cite{b16}.
 
 \begin{definition}[Entity and Role Spaces]
 Let $\E = \{ \epsilon_1, \epsilon_2, \dots, \epsilon_N \}$ be the finite set of identifiable entities within the system domain. Let $\Roles = \{ \rho_1, \rho_2, \dots, \rho_K \}$ be the set of institutional roles. The mapping $\Lambda: \E \to 2^\Roles \setminus \{\emptyset\}$ assigns one or more roles to entities, dictating their spatial and temporal authorization policies.
@@ -137,7 +154,7 @@ Let $G = (\Z, E_{adj})$ be the physical connectivity graph of the environment, w
 
 
 
-Distributed sensing infrastructures generate discrete point-in-time observations rather than continuous analog trajectories (a consequence of practical sensor sampling). We must formalize how these discrete observations reliably translate into continuous state intervals. We extend Kowalski and Sergot's Event Calculus \cite{b2, b19} to the spatiotemporal domain to formally resolve the Frame Problem (how state persists) and the Ramification Problem (how movement implies absence elsewhere).
+Distributed sensing infrastructures generate discrete point-in-time observations rather than continuous analog trajectories (a consequence of practical sensor sampling). To reason about compliance over continuous time, the verification logic requires explicit persistence semantics to bridge the gaps between samples. Without this formalization, continuous verification becomes impossible. We therefore extend Kowalski and Sergot's Event Calculus \cite{b2, b19} to the spatiotemporal domain specifically to resolve the Frame Problem (how state persists between observations) and the Ramification Problem (how verified movement implies proven absence elsewhere). This provides the necessary logical tissue connecting isolated digital snapshots into verifiable physical trajectories.
 
 Let $f$ represent a fluent (a dynamic property that holds over time), specifically the location fluent $Location(\epsilon, z)$. Let $e$ be a discrete digital sensor observation event.
 
@@ -175,7 +192,7 @@ Initiates(e, Location(\epsilon, z), t_1) \land (t_1 < t) \land \neg Clipped(t_1,
 \section{Compliance Formalization}
 
 \subsection{Measure-Theoretic Schedule Formalism}
-Institutional schedules define the spatial and temporal permissions governing entity behavior. To reason about compliance independently of any particular relational database implementation, we map the continuous physical trajectories of entities onto abstract logical constraints.
+Institutional schedules define the spatial and temporal permissions governing entity behavior. Once Event Calculus reconstructs a continuous trajectory from discrete observations, the system must evaluate whether that continuous state history satisfies the schedule constraints. To rigorously integrate compliance across arbitrary temporal intervals independently of any specific database implementation, we map the continuous physical trajectories onto abstract logical constraints and employ measure theory. Measure-theoretic integration resolves the limitation of evaluating compliance merely at instantaneous points in time.
 
 \begin{definition}[Authorized State Set]
 An institutional schedule is defined as a mathematical mapping $\Auth: \E \times \T \to \Z^*$, which assigns every entity at any given continuous time $t$ a valid topological sub-manifold of permitted zones. 
@@ -228,9 +245,9 @@ A compliance predicate $P: \Sstate \to \{0, 1\}$ is formally Robust with topolog
 Perturbations in spatial detection falling within the safety margin $\delta$ do not alter the logical outcome of the predicate.
 \end{definition}
 
-\subsection{Adversarial Threat Model (MDP formulation)}
+\subsection{Adversarial Boundary-Condition Analysis (MDP formulation)}
 
-To evaluate resilience against active manipulation, we model the interaction between the verification system and an adversary as a strategic decision process \cite{b10, b21}.
+This section introduces an adversarial formulation not as a universal cybersecurity guarantee, but specifically as a theoretical boundary-condition analysis. To formally stress-test the compliance model and explore the limits of spoof-resistance, we evaluate resilience against active manipulation by modeling the interaction as a strategic decision process (Markov Decision Process) \cite{b10, b21}. This formulation is strictly an extension layer testing the stability of our kinematic verification.
 
 Let the MDP be defined by the tuple $\langle \mathcal{Q}, A, \mathcal{P}, R, \gamma \rangle$:
 \begin{itemize}
@@ -290,7 +307,7 @@ Under the assumptions of (1) Discrete Time steps $\Delta t$, (2) a Finite Zone s
 \end{theorem}
 
 \begin{theorem}[Distributed Integrity Preservation]
-Let $V_i$ be the vector clock at distributed shard $i$. The spatial and kinematic axioms defined earlier are globally preserved during an entity's migration from shard $\mathcal{H}_a$ to $\mathcal{H}_b$ if and only if the handover protocol $\Pi$ is strictly \textbf{Atomic} and causally \textbf{Monotonic}. A full formalization would require explicit modeling of shard synchronization delay distributions; here we provide only a structural argument.
+Let $V_i$ be the vector clock at distributed shard $i$. The spatial and kinematic axioms defined earlier are globally preserved during an entity's migration from shard $\mathcal{H}_a$ to $\mathcal{H}_b$ if and only if the handover protocol $\Pi$ is strictly \textbf{Atomic} and causally \textbf{Monotonic}. We emphasize that vector clocks provide logical causal ordering, not perfect temporal synchronization. Network partitions will inevitably create operational uncertainty, and causal monotonicity is an operational requirement rather than a universal guarantee.
 \end{theorem}
 
 \begin{theorem}[Equilibrium of Spoofing]
@@ -343,17 +360,20 @@ By the Bellman Optimality Equation \cite{b10}, the expected value of the adversa
 \end{proof}
 
 % ==========================================
-% VI. IMPLICATIONS AND LIMITS
+% VI. LIMITATIONS
 % ==========================================
-\section{Implications and Limits}
+\section{Limitations}
+The formal theorems established in this framework are bounded by several methodological and theoretical constraints:
+\begin{itemize}
+    \item \textbf{State-Space Explosion:} While theoretically decidable (PSPACE), the exponential growth of the finite-state automaton representing multi-entity zone transitions renders direct enumeration computationally intractable for high-density campus topologies.
+    \item \textbf{Bounded Sampling Assumptions:} The Nyquist-style completeness threshold (Theorem 5) relies on uniform continuous sampling; asynchronous sensor dropout or adversarial jamming fundamentally breaks the observability requirements.
+    \item \textbf{Idealized Kinematic Models:} The representation of motion bounds physical transitions by a universal scalar $V_{max}$, abstracting over complex biological movement geometries and non-linear acceleration.
+    \item \textbf{Theorem-Prover Absence:} The formal deductions are structured as mathematical pen-and-paper proofs rather than machine-verified theorems in Isabelle/HOL or Coq, introducing potential risk of manual logical omissions.
+    \item \textbf{Distributed Synchronization Uncertainty:} The preservation of distributed integrity (Theorem 7) requires strict causal monotonicity (vector clocks), creating unbounded processing delays when network partitions prevent synchronization across shards.
+\end{itemize}
 
-Taken together, the constructions developed in this work outline the logical boundaries of spatiotemporal compliance verification under explicitly stated assumptions. By combining metric topology, event calculus persistence, sampling-theoretic constraints, and automata-theoretic decidability, the framework clarifies the conditions under which verification remains mathematically tractable and analyzable.
-
-Although the framework establishes mathematical soundness under stated assumptions, practical deployments introduce additional engineering considerations. While verification is formally decidable, the exponential growth of the state space with respect to entities and zones quickly limits direct enumeration strategies. In operational systems this limitation typically motivates symbolic encodings, bounded temporal windows, or abstraction techniques to maintain tractable runtime behavior.
-
-Similarly, the Nyquist-style completeness condition establishes only a necessary sampling threshold. It does not guarantee resilience under arbitrary sensor degradation or deliberate interference. The adversarial analysis therefore should be interpreted as identifying equilibrium behavior under explicitly defined assumptions rather than providing unconditional security guarantees.
-
-The proofs presented in this work are structured as pen-and-paper deductions. Mechanized verification using theorem provers such as Coq, Isabelle/HOL, or model checkers such as TLA+ has not yet been undertaken. Formalizing the axiom set and core theorems within a mechanized proof assistant remains an important direction for future work and would significantly strengthen the confidence level of the results.
+\subsection{Mechanized Verification Feasibility}
+The formal deductions presented in this work are mathematically structured but currently rely on manual pen-and-paper proofs. Mechanized verification using theorem provers such as Coq or Isabelle/HOL, executable verification via TLA+, or SMT-backed invariant checking has not yet been undertaken. While the finite-state reachability of our model implies that automated model-checking is feasible, translating the continuous measure-theoretic properties into a mechanized proof assistant remains a critical direction for future work to eliminate the risk of manual logical omissions and further improve formal confidence.
 
 \section{Related Work}
 
@@ -370,6 +390,9 @@ The event calculus formalization builds on the foundational work of Kowalski and
 % ==========================================
 % REFERENCES
 % ==========================================
+\section{Conclusion}
+This paper demonstrates that cyber-physical compliance verification can transcend heuristic anomaly detection through explicit mathematical formalization. By anchoring observations in metric-space kinematics, resolving persistence via Event Calculus, and bounding observability through sampling-theoretic theorems, we establish a decidable and causally monotonic framework for distributed verification. Within the ScholarMaster architecture, this framework operates exclusively as the formal spatiotemporal verification and distributed integrity subsystem---establishing theoretical verification bounds without governing runtime privacy-enforcement mechanisms, federated optimization, or standalone deployment-topology orchestration.
+
 \begin{thebibliography}{00}
 
 \bibitem{b1} V. Chandola, A. Banerjee, and V. Kumar, "Anomaly detection: A survey," \textit{ACM Computing Surveys (CSUR)}, vol. 41, no. 3, pp. 1-58, 2009.

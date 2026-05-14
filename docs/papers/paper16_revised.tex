@@ -58,7 +58,7 @@ The results indicate that privacy safeguards become socially meaningful only whe
 \end{abstract}
 
 \begin{IEEEkeywords}
-Privacy Paradox, Surveillance Studies, Human-Computer Trust, Educational Technology, Sociology of AI, Visible Privacy, Automated Stewardship.
+Automated Stewardship, Visible Abstraction, Transparency-Mediated Trust, Sociotechnical Acceptance, Contextual Integrity, Longitudinal Sentiment Analysis.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -66,15 +66,15 @@ Privacy Paradox, Surveillance Studies, Human-Computer Trust, Educational Technol
 % ==========================================
 \section{Introduction}
 
-Monitoring technologies increasingly operate as infrastructural components within modern educational environments. These systems automate administrative tasks such as attendance tracking, classroom analytics, and safety monitoring, often relying on sensor networks that remain largely invisible to the individuals they observe. Bentham's Panopticon describes an architectural model in which individuals regulate their behavior because they know they might be observed at any moment, even if they cannot confirm they are currently being watched \cite{b1}. Although originally proposed as an optimized prison design in the eighteenth century, the concept has evolved into a widely cited metaphor for modern surveillance societies. 
+The dominant thesis of this paper is that \textbf{visible operational constraints materially influence institutional trust formation in monitoring environments}. Monitoring technologies increasingly operate as infrastructural components within modern educational environments, automating attendance tracking, classroom analytics, and safety monitoring through sensor networks that remain largely invisible to the individuals they observe.
 
-Despite their functional utility, such infrastructures can create persistent uncertainty regarding the scope and intent of observation. Contemporary smart-campus deployments sometimes replicate aspects of this panoptic dynamic, often unintentionally. Cameras and automated monitoring systems frequently operate as opaque technological artifacts whose capabilities and retention policies remain largely invisible to the people being observed. When confronted with such opacity, students often assume worst-case monitoring scenarios. They operate under the assumption that their physical movements, facial expressions, and private interactions are continuously recorded, analyzed, and permanently archived. This perception can generate what surveillance scholars describe as a Chilling Effect, in which individuals suppress legitimate behavior due to the perceived risk of observation \cite{b7}.
+\subsection{Why Hidden Safeguards Fail to Generate Trust}
+Modern monitoring architectures often incorporate extensive privacy-preserving mechanisms, including data minimization pipelines and automated deletion policies. However, backend privacy protections that remain invisible to users have limited social relevance. Users cannot psychologically evaluate safeguards they cannot perceive. Operational opacity produces worst-case assumptions: when confronted with opaque infrastructure, students often assume that their physical movements, facial expressions, and private interactions are continuously recorded, analyzed, and permanently archived. This perception generates what surveillance scholars describe as a Chilling Effect \cite{b7}. Visible boundedness changes perceived institutional intent---trust depends on perceptibility, not merely technical correctness.
 
-Modern monitoring architectures often incorporate extensive privacy-preserving mechanisms, including data minimization pipelines and automated deletion policies. However, a technical safeguard that remains invisible to users may have limited social relevance. If individuals cannot see or independently verify that safeguards exist, they often default to the assumption that maximal surveillance is occurring, regardless of the institution's stated privacy policy.
+\subsection{Study Framing and Subsystem Scope}
+This study adopts the framing of Automated Stewardship \cite{b13}, which positions monitoring technologies as bounded systems designed to serve specific, transparent institutional purposes while visibly demonstrating their own limitations. We designed a semester-long longitudinal field study to evaluate whether visible transparency mechanisms---such as real-time skeletal abstraction displays and user-accessible audit dashboards---can alter student perceptions of monitoring technologies. The intervention focused purely on making existing operational constraints perceptible to the student body.
 
-A critical sociotechnical question therefore emerges: how does the visibility of these safeguards influence user trust? To investigate this question, the study adopts the framing of Automated Stewardship \cite{b13}. In contrast to traditional surveillance paradigms that emphasize maximal observational capability and hidden analytics, stewardship frames monitoring technologies as bounded systems designed to serve specific, transparent institutional purposes while visibly demonstrating their own limitations to the subjects being monitored. 
-
-We designed a semester-long longitudinal field study to evaluate whether visible transparency mechanisms---such as real-time skeletal abstraction displays and user-accessible audit dashboards---can fundamentally alter student perceptions of monitoring technologies. Rather than modifying the underlying sensing infrastructure or the mathematical inference models themselves, the intervention focused purely on making the deployed system's existing operational constraints perceptible to the student body. In this framing, the monitoring system is not positioned as an invisible, omniscient observer, but rather as a visible participant subject to clear accountability and transparency rules.
+Within the ScholarMaster architecture, this subsystem studies visible privacy, transparency-mediated trust, and sociotechnical acceptance only. It does not define irreversible architecture (Paper 17), validate runtime enforcement (Paper 18), derive formal verification theorems (Paper 21), synthesize deployment infrastructure (Paper 20), or optimize federated coordination (Paper 14).
 
 \subsection{Data Availability}
 The anonymized survey instruments (questionnaires), interview protocols, and aggregated Likert datasets used in this sociological study are available from the authors upon reasonable request to support reproducibility in HCI research.
@@ -99,11 +99,7 @@ Privacy expectations within technological systems are strongly shaped by context
 For example, recording attendance in a classroom perfectly aligns with expected educational norms; students understand that their presence is required and tracked. However, performing continuous emotional profiling of those same students for commercial analytics violently breaks that norm. A monitoring system that communicates its operational constraints clearly to the user may therefore align much more closely with user expectations than a generalized surveillance tool.
 
 \subsection{Surveillance Capitalism in Education}
-Contemporary digital infrastructures increasingly transform behavioral data into predictive analytic resources \cite{b10}. Zuboff's analysis of Surveillance Capitalism describes how modern digital systems increasingly extract behavioral data from everyday human activities to generate predictive, commodified value. Within the domain of education, this dynamic appears in learning analytics platforms that track granular engagement metrics, behavioral patterns, and emotional signals to build predictive student models. 
-
-Slade and Prinsloo \cite{b11} argue that such aggressively data-driven educational models risk reducing complex students to mere behavioral datasets while largely neglecting the ethical implications of the tracking itself. Similarly, Williamson \cite{b12} describes the emergence of ``psycho-informatics'' within EdTech platforms, where intimate emotional states are inferred from ambient behavioral signals. 
-
-Privacy-centered deployments attempt to counter this trajectory by emphasizing stronger data minimization practices and operational transparency, principles closely aligned with Cavoukian's Privacy by Design framework \cite{b13}. Rather than obscuring the observation process to extract more organic behavior, stewardship models attempt to reveal operational constraints to foster a cooperative environment.
+Contemporary digital infrastructures increasingly transform behavioral data into predictive analytic resources \cite{b10}. Within education, this dynamic appears in learning analytics platforms that track granular engagement metrics and emotional signals. Slade and Prinsloo \cite{b11} argue that aggressively data-driven educational models risk reducing students to behavioral datasets while neglecting the ethical implications of the tracking. Privacy-centered deployments attempt to counter this trajectory by emphasizing data minimization and operational transparency, principles aligned with Cavoukian's Privacy by Design framework \cite{b13}. Stewardship models aim to reveal operational constraints to foster a cooperative environment rather than obscuring the observation process.
 
 \subsection{Trust in Automation}
 Trust in automated systems is typically modeled as a function of predictability, dependability, and perceived system intent \cite{b5}. 
@@ -238,12 +234,12 @@ Sentiment changes were not uniform across participant groups.
 \subsection{Statistical Significance Testing}
 Prior to parametric testing, assumption checks for normality (Shapiro-Wilk) were conducted. We performed a paired sample t-test comparing Phase 1 and Phase 2 scores for each construct. The observed improvements in Trust ($t(539) = 14.2, p < 0.001$) and Understanding ($t(539) = 21.5, p < 0.001$) met conventional statistical significance thresholds. 
 
-Furthermore, a Cohen's d effect size analysis yielded $d=1.8$ (95\% CI $[1.62, 1.98]$) for the Understanding of Data metric, consistent with a large effect size interpretation associated with the transparency intervention. A regression-based mediation analysis (Indirect effect = $0.41$, $95\%$ CI $[0.32, 0.52]$) suggests that reduced surveillance anxiety partially mediates the relationship between visual transparency and trust formation. Notably, 7\% of participants showed no change or slight decreases in Trust scores, suggesting heterogeneous adaptation patterns.
+Furthermore, a Cohen's d effect size analysis yielded $d=1.8$ (95\% CI $[1.62, 1.98]$) for the Understanding of Data metric, consistent with a large effect size associated with the transparency intervention. A regression-based mediation analysis (Indirect effect = $0.41$, $95\%$ CI $[0.32, 0.52]$) suggests that reduced surveillance anxiety partially mediates the relationship between visual transparency and trust formation. The mediation analysis suggests influence rather than universal causality; cohort composition affects interpretability. Notably, 7\% of participants showed no change or slight decreases in Trust scores, suggesting heterogeneous adaptation patterns within the evaluated cohort.
 
 \subsection{The Role of Visual Privacy Cues}
 Survey responses revealed an interesting hierarchy regarding which specific features actually drove the shift in perception. When asked to identify the most influential factor, 82\% of participants pointed to the Skeleton View visualization. In sharp contrast, the complex backend technical mechanisms were cited by only 15\% of students. 
 
-This disparity highlights an important design implication: perceptible privacy signals carry vastly greater psychological weight than invisible technical guarantees. Users must be able to visually infer the system's operational limits in order to feel comfortable with its presence.
+This disparity highlights an important design implication: perceptible privacy signals---interface-mediated constraint visibility and user-observable abstraction---carry vastly greater psychological weight than invisible technical guarantees. Visibility is not merely aesthetic; it functions as a trust-regulation mechanism. Users must be able to visually infer the system's operational limits to feel comfortable with its presence.
 
 % --- FIGURE 1: BAR CHART ---
 \begin{figure}[htbp]
@@ -335,7 +331,7 @@ C = f_2(A,V)
 S = f_3(C)
 \end{equation}
 
-The observed data are consistent with a mediated trust formation hypothesis in which visible abstraction reduces affective anxiety ($A = f_1(V)$), which subsequently acts as a necessary bridge to enable cognitive verification ($C = f_2(A, V)$), ultimately leading to system acceptance ($S = f_3(C)$).
+The observed data are consistent with a mediated trust formation hypothesis in which visible abstraction reduces affective anxiety ($A = f_1(V)$), which subsequently enables cognitive verification ($C = f_2(A, V)$), ultimately leading to system acceptance ($S = f_3(C)$). Critically, the temporal progression matters: affective trust appears to function as a necessary precursor for cognitive trust. This model should be understood as a sociotechnical mediation framework rather than a universal causal law; the associations are strong within the evaluated cohort but may vary across populations and institutional cultures.
 
 \subsection{Cognitive vs. Affective Dynamics}
 
@@ -343,7 +339,7 @@ Building upon Mayer's framework \cite{b6}, the student-facing dashboards primari
 
 Conversely, the visual abstraction overlays and ambient indicators specifically targeted Affective Trust. These features addressed the visceral fear of being watched. By converting the subjective gaze of the camera into a harmless skeletal abstraction, the system visually demonstrated benevolence, actively reducing emotional anxiety. 
 
-Our observational data tightly aligns with this model: Affective Trust appears to function as a precursor for Cognitive Trust. Students who remained highly anxious in Phase 1 were generally uninterested in auditing complex logs; they simply expressed a desire for the system to be removed entirely. Once affective security was established by the visual abstractions in Phase 2, engagement with the cognitive audit features increased.
+Our observational data aligns with this model: Affective Trust appears to function as a precursor for Cognitive Trust, then Behavioral Acceptance. Students who remained highly anxious in Phase 1 were generally uninterested in auditing complex logs; they expressed a desire for the system to be removed entirely. Once affective security was established by the visual abstractions in Phase 2, engagement with the cognitive audit features increased. We note that this temporal progression---from affective reassurance through cognitive verification to behavioral acceptance---suggests a three-stage mediation pathway, though habituation effects and novelty decay may influence long-term stability beyond the measured semester.
 
 % --- FIGURE 2: REDESIGNED TRUST LOOP DIAGRAM ---
 \begin{figure}[htbp]
@@ -426,16 +422,28 @@ Surveillance literature frequently cites the Chilling Effect---the inhibition of
 \subsection{Institutional Implications}
 Administrators initially expressed concern that transparency would lead to gaming the system. The study found indications of the opposite: transparency coincided with increased cooperative attitudes. Students reported less motivation to hide from or obstruct cameras once they understood the system was not recording facial video. 
 
+\subsection{Limitations}
+The sociotechnical evaluation of visible privacy bounds contains several methodological constraints:
+\begin{itemize}
+    \item \textbf{Novelty Effects:} The sudden introduction of polished mobile dashboards in Phase 2 may have artificially inflated short-term positive sentiment, masking long-term habituation and trust stabilization dynamics.
+    \item \textbf{Self-Selection Bias:} Voluntary participation may have attracted students with pre-existing interest in privacy or technology, skewing the cohort toward those more responsive to transparency interventions.
+    \item \textbf{Possible Hawthorne Effects:} Students' awareness of being studied may have influenced their reported sentiment toward the monitoring system.
+    \item \textbf{Single-Institution Culture:} Trust formation is context-dependent; institutional culture materially affects transparency preferences, and visible abstraction may not generalize identically across populations.
+    \item \textbf{Demographic Skew:} The participant cohort heavily overrepresented tech-literate engineering students, who may process architectural abstraction logic differently than the broader public.
+    \item \textbf{Self-Report Vulnerability:} Longitudinal sentiment relies heavily on self-reported Likert scales, which remain inherently vulnerable to social desirability bias despite anonymization.
+    \item \textbf{Longitudinal Uncertainty:} A 16-week study captures initial adoption trust but does not guarantee stable acceptance across multi-year generational cohorts. Long-term sentiment drift, institutional normalization, and novelty decay may evolve beyond the measured semester.
+\end{itemize}
+
 % ==========================================
 % VII. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This longitudinal study has examined how visible transparency mechanisms influence trust in automated monitoring systems within educational environments. Following the transition from an opaque deployment model to one incorporating skeletal abstraction displays and student-accessible audit dashboards, mean Trust scores increased dramatically from 2.4 to 4.1 on a five-point scale.
+This longitudinal intervention study examined how visible transparency mechanisms influence trust formation in automated monitoring systems within an educational environment. Following the transition from an opaque deployment model to one incorporating skeletal abstraction displays and student-accessible audit dashboards, mean Trust scores increased from 2.4 to 4.1 on a five-point scale within the evaluated cohort.
 
-The results suggest that privacy-preserving backend mechanisms such as encrypted storage and automated deletion policies may not strongly influence user perception when they remain hidden from view. When operational constraints are made clearly observable through interface design, users appear significantly more willing to interpret the system as bounded, accountable, and legitimate.
+The results suggest that privacy-preserving backend mechanisms such as encrypted storage and automated deletion policies may not strongly influence user perception when they remain hidden from view. When operational constraints are made observable through interface-mediated legibility, users appear more willing to interpret the system as bounded, accountable, and legitimate. The observed trust formation follows a mediated pathway---from affective reassurance through cognitive verification to behavioral acceptance---though these associations remain context-bounded and require broader replication.
 
-Institutional monitoring systems that visibly communicate their operational constraints may therefore achieve higher trust than systems relying only on invisible backend safeguards.
+Within the ScholarMaster architecture, this framework operates exclusively as the visible privacy and institutional trust subsystem---studying perceptible system boundedness, interface-mediated constraint visibility, and sociotechnical acceptance without governing cryptographic ledgering, edge intelligence, architectural irreversibility doctrine, or spatiotemporal verification rules.
 
 % ==========================================
 % REFERENCES

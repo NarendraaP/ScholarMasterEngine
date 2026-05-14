@@ -71,7 +71,7 @@ Empirical validation on a controlled testbed subjected to repeated hard power in
 \end{abstract}
 
 \begin{IEEEkeywords}
-Embedded Systems, Reliability Engineering, OverlayFS, OTA Updates, Zero-Touch Provisioning, Fleet Management, Edge Appliances.
+Immutable Appliance Architecture, Lifecycle Hardening, OverlayFS Invariance, Bounded Recovery, OTA Rollback, Zero-Touch Provisioning.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -79,13 +79,21 @@ Embedded Systems, Reliability Engineering, OverlayFS, OTA Updates, Zero-Touch Pr
 % ==========================================
 \section{Introduction}
 
-Deploying embedded systems as distributed edge appliances fundamentally changes the engineering priorities of infrastructure. Once installed in unattended environments, reliability becomes dominated by operating-system resilience, update safety, and autonomous recovery mechanisms rather than raw application performance. Although application accuracy and throughput remain important considerations, day-to-day reliability frequently depends on operating system stability and disciplined update management \cite{b1, b2, b3}.
+The dominant thesis of this paper is that \textbf{immutable appliance design substantially improves operational recoverability under unstable power and connectivity conditions}. Once installed in unattended environments, reliability becomes dominated by operating-system resilience, update safety, and autonomous recovery mechanisms rather than raw application performance \cite{b1, b2, b3}.
 
-Institutional deployments often expose edge appliances to unstable power conditions, intermittent networking, and restricted physical access. Power interruptions, wireless congestion, and restricted physical access are common. Under these conditions, conventional Linux deployments---particularly those relying on writable root filesystems---can gradually degrade or become unbootable over time \cite{b4, b12, b17}.
+\subsection{Operational Fragility of Mutable Edge Hosts}
+Conventional Linux deployments relying on writable root filesystems accumulate configuration drift through mutable package-level updates, uncontrolled writes, and incremental state mutations. Over time, this drift amplifies corruption exposure: each power interruption risks filesystem inconsistency, and each uncoordinated update risks dependency breakage \cite{b4, b12, b17}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
 
-These constraints shift the engineering focus away from pure application optimization. Instead, emphasis moves toward deployment lifecycle and systems reliability engineering \cite{b6}. While prior research extensively covers application serving \cite{b7}, the operational lifecycle of the appliance ultimately dictates its real-world utility. An embedded application that achieves high accuracy in the laboratory provides little practical utility if its host OS fails to boot after a routine campus power outage.
+\subsection{Contributions and Subsystem Scope}
+This paper details an immutable, containerized OS architecture designed for Zero-Touch administration. By enforcing strict separation between a read-only host OS and containerized inference logic, we ensure that the edge node can survive power loss, recover from software hangs, and securely update its models without human intervention. Specifically:
+\begin{itemize}
+    \item We formalize an Appliance Invariance Model that confines all runtime mutations to volatile memory or versioned container layers.
+    \item We implement Blue/Green OTA rollback as a bounded-failure containment mechanism.
+    \item We integrate hardware watchdog recovery for liveness enforcement under scheduler exhaustion.
+    \item We validate autonomous recovery across 50 simulated hard power-cycles.
+\end{itemize}
 
-This paper details an immutable, containerized OS architecture designed for Zero-Touch administration. By enforcing strict separation between the read-only host OS and the containerized inference logic, we ensure that the edge node can survive power loss, recover from software hangs, and securely update its models without human intervention. The system architecture and end-to-end data flow are assumed from the broader series; this study focuses exclusively on deployment lifecycle engineering and does not evaluate inference accuracy, storage endurance wear-leveling, or privacy enforcement.
+Within the ScholarMaster architecture, this subsystem enforces immutable lifecycle behavior, hardens OTA recovery, and stabilizes unattended appliance deployment only. It does not optimize flash endurance (Paper 12), validate runtime enforcement semantics (Paper 18), optimize federated adaptation (Paper 13), derive formal verification theorems (Paper 21), or define architectural privacy doctrine (Paper 17).
 
 % ==========================================
 % II. FAILURE-STATE TAXONOMY & RELATED WORK
@@ -115,12 +123,12 @@ Flash-based storage systems introduce additional reliability considerations when
 The proposed deployment model treats the edge node as an immutable appliance instead of a conventional mutable Linux host. The system architecture and end-to-end data pipeline are defined by the broader architectural series; this work focuses on the lifecycle invariance properties of the deployment substrate. The deployment model intentionally avoids traditional package-manager operations such as remote apt-based upgrades executed through SSH. Instead, the host OS is treated primarily as a minimal read-only container runtime environment. All software dependencies, drivers, analytic logic, and neural network models are packaged into immutable Docker images \cite{b8}.
 
 \subsection{Formal Invariant}
-The architectural principle underlying this deployment strategy is formalized as the Appliance Invariance Model. Let $H$ represent the lower-layer persistent filesystem state, $C$ represent the containerized application state, and $V$ represent the volatile overlay state. The core system invariant is defined as:
+The architectural principle underlying this deployment strategy is formalized as the Appliance Invariance Model. Let $H$ represent the lower-layer persistent filesystem state, $C$ represent the containerized application state, and $V$ represent the volatile overlay state. The core system invariant is:
 \begin{equation}
 \forall t,\; H_{persistent}(t) = H_0
 \end{equation}
 
-This invariant expresses the design principle that the persistent host operating system state should remain unchanged during routine operation. Runtime mutations are restricted either to volatile memory ($V$) or to versioned container layers ($C$) managed through controlled OTA transitions. In practice, this separation reduces the likelihood that repeated power interruptions accumulate filesystem inconsistencies over time.
+This invariant expresses the design principle that the persistent host OS state remains unchanged during routine operation. Invariance is enforced through \textbf{mutation confinement}: runtime mutations are restricted either to volatile memory ($V$)---which is destroyed on power loss---or to versioned container layers ($C$) managed through controlled OTA transitions. The distinction is structurally important: persistent immutable state ($H_0$) is never written during normal operation; volatile operational state ($V$) absorbs all runtime churn; containerized application state ($C$) changes only through validated OTA transitions; and transient runtime mutation exists exclusively in RAM. This confinement ensures that corruption domains are spatially bounded---repeated power interruptions cannot accumulate filesystem inconsistencies in the persistent layer.
 
 \subsection{Immutability Layer Diagram}
 
@@ -191,7 +199,7 @@ Filesystem immutability is implemented using the OverlayFS union filesystem prov
 
 The physical storage acts as the immutable Lower Directory. A volatile \texttt{tmpfs} (RAM disk) is mounted as the Upper Directory. The operating system interacts with the Merged View. All system writes (logs, temp files, state changes) are seamlessly intercepted by the Linux kernel and written exclusively to the volatile RAM disk. 
 
-Under this configuration, abrupt power removal destroys only the volatile UpperDir residing in RAM. Because persistent storage is mounted read-only during normal operation, boot-sector and base OS corruption events were not observed during evaluated power-cycle tests. While no filesystem configuration can eliminate all theoretical failure modes, this approach substantially reduces corruption exposure in environments with unstable power.
+Under this configuration, abrupt power removal destroys only the volatile UpperDir residing in RAM. Because persistent storage is mounted read-only during normal operation, boot-sector and base OS corruption events were not observed during evaluated power-cycle tests. OverlayFS isolation confines volatile churn to bounded RAM---corruption domains become spatially limited, and reboot semantics inherently restore clean operational state. This architecture improves bounded recoverability rather than guaranteeing absolute corruption impossibility; hardware-level flash failures, bootloader corruption, and power-delivery anomalies remain outside the OverlayFS protection boundary.
 
 \subsection{RAM-Disk Exhaustion Mitigation}
 To reduce the risk of RAM exhaustion, log output is aggressively bounded. System and container logs are capped, and cgroup-based memory ceilings are applied to inference containers. Because operational telemetry is streamed off-device when connectivity permits, deep local log retention is intentionally avoided.
@@ -201,7 +209,7 @@ To reduce the risk of RAM exhaustion, log output is aggressively bounded. System
 % ==========================================
 \section{OTA Updates \& Fleet Management}
 
-Maintaining a distributed fleet of edge appliances requires deterministic and failure-tolerant update mechanisms. Deploying updated neural network weights, system dependencies, or application logic across a fleet of edge appliances requires fail-safe OTA update mechanisms \cite{b18}. We implement a Blue/Green deployment state machine leveraging container APIs to provide deterministic cutovers with minimal service disruption \cite{b9}.
+Maintaining a distributed fleet of edge appliances requires deterministic and failure-tolerant update mechanisms. Deploying updated neural network weights, system dependencies, or application logic across a fleet requires fail-safe OTA mechanisms \cite{b18}. We implement a Blue/Green deployment state machine leveraging container APIs to provide deterministic cutovers with minimal service disruption \cite{b9}. The Blue/Green mechanism functions as a \textbf{bounded-failure containment mechanism}: OTA rollback constrains update blast radius, pre-flight validation limits irreversible deployment transitions, and deterministic reversion improves unattended survivability.
 
 \subsection{Deterministic Cutover Formalization}
 We define the update timing constraints as follows. Let $T_{pre}$ be the validation time, $T_{cutover}$ be the container swap execution, and $T_{rollback}$ be the revert time. 
@@ -252,7 +260,7 @@ Upon first boot, the device connects to the provisioning server. It utilizes the
 \subsection{Mutual TLS (mTLS) \& Secure Boot}
 Following ZTP, all communication with the central fleet manager is secured via Mutual TLS (mTLS) using TLS 1.2 or later \cite{b23}. The edge node authenticates the server, and the server cryptographically authenticates the edge node using the TPM-backed certificate. 
 
-The TPM-backed certificate lifecycle limits key extraction risk by generating private keys within protected hardware. Secure Boot enforcement further reduces the likelihood that unsigned kernels or modified bootloaders can be executed on the device. While physical security always remains context-dependent, these measures raise the barrier against casual firmware tampering on open campus networks.
+The TPM-backed certificate lifecycle limits key extraction risk by generating private keys within protected hardware. Secure Boot enforcement further reduces the likelihood that unsigned kernels or modified bootloaders can be executed on the device. These security mechanisms exist primarily to protect lifecycle integrity---provisioning trust anchors stabilize deployment authenticity, and TPM-backed identity reduces unauthorized update risk. Detailed adversarial formalization and threat-model analysis are addressed in the formal threat-modeling layer of the broader series.
 
 % ==========================================
 % IX. FULL-STACK OBSERVABILITY
@@ -291,7 +299,7 @@ Standard Ext4 (Read/Write) & 6/50 & 12.0\% \\
 \label{tab:power_failure}
 \end{table}
 
-Across 50 induced abrupt power interruptions under active I/O stress, no boot-blocking corruption events were observed in the OverlayFS configuration. In contrast, the standard writable Ext4 configuration required manual intervention in 6 cases. While the sample size is limited, these results suggest improved resilience under repeated unclean shutdowns.
+Within the evaluated deployment conditions, across 50 induced abrupt power interruptions under active I/O stress, no boot-blocking corruption events were observed in the OverlayFS configuration. In contrast, the standard writable Ext4 configuration required manual intervention in 6 cases. While the sample size is limited and recovery timing depends on board and bootloader characteristics, these results are consistent with improved recoverability through mutation confinement. Long-duration fleet behavior under multi-year continuous operation remains deployment-dependent.
 
 \subsection{OTA Rollback Validation}
 To test the resilience against the Malicious/Corrupt Update Failure class, we intentionally pushed a poisoned container image (configured to segfault upon initialization) to the edge node.
@@ -338,16 +346,29 @@ PoE+ Splitter & \$15.00 \\
 
 By enforcing the OverlayFS read-only root and volatile RAM-disk logging, physical wear on the storage medium is constrained. Quantitative flash endurance analysis is presented separately in the storage reliability layer of the broader series.
 
+\subsection{Limitations}
+The reliability mechanisms expose several structural limitations:
+\begin{itemize}
+    \item \textbf{Finite RAM-Disk Capacity:} The \texttt{tmpfs} upper layer is bounded by physical memory; unbounded log emission during sustained network partitions triggers OOM failures if not strictly rotated.
+    \item \textbf{Firmware Protection Limits:} OverlayFS immutability protects the OS root but does not prevent malicious lower-level bootloader or baseband firmware modifications.
+    \item \textbf{TPM Hardware Dependence:} The Zero-Touch Provisioning sequence relies on hardware TPM 2.0, limiting portability to boards lacking this module.
+    \item \textbf{Flash Controller Variability:} While root immutability reduces write amplification, proprietary SD card wear-leveling algorithms introduce hardware-specific variance outside OS control. Quantitative flash endurance modeling is addressed separately in Paper 12.
+    \item \textbf{Limited Fleet Scale:} Validation was conducted on a controlled testbed; fleet-scale behavior across heterogeneous hardware and network conditions remains unvalidated.
+    \item \textbf{Controlled Power-Failure Simulation:} Power cycles were simulated via automated relay switching; real-world brownouts, voltage sag, and transient instability patterns may differ.
+    \item \textbf{Absence of Multi-Year Observation:} Long-duration appliance behavior under continuous operation has not been evaluated; filesystem aging, SD-card degradation, and bootloader drift may emerge over extended horizons.
+    \item \textbf{Watchdog False Positives:} During threshold tuning, overly aggressive inactivity detection caused unintended reboots, indicating sensitivity to calibration under variable workloads.
+\end{itemize}
+
 % ==========================================
 % XII. CONCLUSION
 % ==========================================
 \section{Conclusion}
 
-This work analyzed the operating-system architecture required to deploy resilient edge appliances in infrastructure-constrained environments. Rather than introducing new inference algorithms, the contribution focuses on lifecycle engineering, including system immutability, automated recovery mechanisms, and controlled update strategies.
+This work analyzed the lifecycle engineering required to deploy resilient edge appliances in infrastructure-constrained environments. The contribution focuses on immutable-state recovery, bounded deployment failure containment, and autonomous appliance restoration.
 
-By combining a read-only OverlayFS root, containerized Blue/Green OTA updates, hardware watchdog supervision, and TPM-backed secure boot chains, the proposed architecture demonstrated stable behavior across repeated power interruptions, simulated update corruption, and induced scheduler exhaustion within the evaluated test environment.
+By combining a read-only OverlayFS root, containerized Blue/Green OTA rollback, hardware watchdog supervision, and TPM-backed provisioning, the architecture demonstrated stable behavior across repeated power interruptions, simulated update corruption, and induced scheduler exhaustion within the evaluated test environment. Mutation confinement through OverlayFS ensures that corruption domains are spatially bounded and reboot semantics restore clean operational state.
 
-The presented deployment architecture demonstrates that disciplined system immutability can substantially improve operational reliability for distributed edge appliances in academic environments. Automated recovery mechanisms further strengthen deployment resilience.
+Within the ScholarMaster architecture, this framework operates exclusively as the immutable deployment lifecycle and appliance-hardening subsystem---enforcing recovery boundaries and stabilizing unattended deployment without optimizing flash endurance (Paper 12), validating runtime enforcement semantics (Paper 18), managing federated adaptation (Paper 13), or deriving formal verification theorems (Paper 21).
 
 \subsection*{Reproducibility}
 A reference prototype was implemented for evaluation purposes. Implementation details are available upon request.

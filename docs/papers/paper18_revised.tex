@@ -69,7 +69,7 @@ Architectural privacy claims require runtime validation to ensure compliance und
 \end{abstract}
 
 \begin{IEEEkeywords}
-Runtime Enforcement, Fault Injection, Fail-Closed Systems, Privacy Verification, Watchdog, Edge AI.
+Runtime Privacy Verification, Crash-Oriented Enforcement, Temporal-Bound Supervision, Compiler-Safe Zeroization, Fault-Injection Validation, Watchdog Isolation.
 \end{IEEEkeywords}
 
 % ==========================================
@@ -77,15 +77,13 @@ Runtime Enforcement, Fault Injection, Fail-Closed Systems, Privacy Verification,
 % ==========================================
 \section{Introduction}
 
-\subsection{The Enforcement Gap}
-The gap between policy and enforcement is the gap between design intent and observable behavior. A system may be designed to destroy data within 33ms, yet fail to do so under memory pressure, process crashes, or power loss. 
-
-This paper addresses a specific question: \textit{How do we verify that architectural privacy claims are enforced at runtime, even under crash and failure conditions?}
+\subsection{Why Architectural Claims Require Runtime Verification}
+The dominant thesis of this paper is that \textbf{architectural privacy claims require empirical runtime enforcement validation}. The gap between policy and enforcement is the gap between design intent and observable behavior. Architectural privacy guarantees can easily fail operationally. Crash conditions frequently bypass intended invariants, and memory-management behavior under stress often diverges from theoretical design. Formal design principles alone do not guarantee enforcement; runtime failure semantics materially affect privacy. Therefore, empirical validation is required for deployment credibility. 
 
 \subsection{Scope and Authority}
-This work operates within the constraints of ScholarMasterEngine's canonical architecture as defined in Paper 17 \cite{b17}. We verify existing claims. The canonical architecture and invariants defined in Paper 17 are assumed. Our contribution is empirical proof of enforcement.
+This subsystem validates runtime privacy enforcement, verifies fail-closed operational behavior, tests crash resilience, evaluates TTL enforcement correctness, and empirically confirms runtime invariant preservation. Within the ScholarMaster architecture, this subsystem performs runtime enforcement validation only. It does not define formal threat models or TCB assumptions (Paper 19), derive spatiotemporal logic theorems (Paper 21), define federated optimization (Paper 14), or synthesize deployment architecture (Paper 20). 
 
-All invariants defined in this paper use the \textbf{P18-INV} namespace (P18-INV-01 through P18-INV-06) to distinguish them from the canonical invariant namespace. These paper-local invariants encode runtime enforcement properties specific to the verification methodology presented here.
+Our contribution is strictly empirical proof of enforcement. All invariants defined in this paper use the \textbf{P18-INV} namespace (P18-INV-01 through P18-INV-06) to distinguish them from the canonical invariant namespace.
 
 \subsection{Paper Structure}
 Section II defines the threat model and failure taxonomy. Section III describes runtime enforcement mechanisms. Section IV states formal irreversibility invariants. Section V presents the fault injection test harness. Section VI reports results. Section VII discusses implications. Section VIII clarifies the relationship to prior work. Section IX concludes.
@@ -104,8 +102,8 @@ We assume an adversary who cannot modify the deployed binary or hardware but can
     \item Network captures during partition recovery
 \end{itemize}
 
-\subsection{Failure Taxonomy}
-We enumerate failure modes that could violate privacy invariants:
+\subsection{Failure Taxonomy: Operational Necessity}
+Privacy systems frequently fail during abnormal states. Crash conditions are critically underexplored in edge AI literature, where most evaluation focuses on ideal conditions. Fault-state verification is fundamentally distinct from steady-state benchmarking. Therefore, enumerating this failure taxonomy is operationally necessary to evaluate privacy boundaries:
 
 \begin{table}[h]
 \caption{Failure Taxonomy}
@@ -182,7 +180,7 @@ The TTL constants are:
 The TTL thresholds are derived from frame cadence (30 FPS) and bounded buffering constraints defined in Paper 17; they represent upper bounds rather than average destruction time. The TTL enforcement thread executes at \texttt{SCHED\_FIFO} priority above inference threads, ensuring deterministic execution within bounded jitter (<2ms measured under synthetic CPU saturation (100\% load across all cores)).
 
 \subsection{Forced Zeroization}
-Before deallocation, all raw buffers are explicitly zeroized using compiler-safe techniques to prevent dead-store elimination optimization:
+Before deallocation, all raw buffers are explicitly zeroized using compiler-safe techniques to prevent dead-store elimination optimization. Zeroization strictly removes application-layer recoverability; DRAM remanence forensics are outside scope.
 
 \begin{lstlisting}[language=C, caption={Zeroization Procedure}]
 void zeroize(buffer_t *buffer) {
@@ -196,17 +194,18 @@ void zeroize(buffer_t *buffer) {
 }
 \end{lstlisting}
 
-The \texttt{verify\_zero} check forces a read-back to ensure the write completed before deallocation. Failure to verify triggers halt.
+The \texttt{verify\_zero} check forces a read-back to improve operational confidence, ensuring the write completed before deallocation. Failure to verify triggers an immediate halt.
 
 \subsection{Independent Watchdog Process}
-A separate watchdog process monitors TTL compliance. The watchdog:
+A separate watchdog process monitors TTL compliance, ensuring deterministic fail-closed escalation. The watchdog:
 \begin{itemize}
     \item Runs as a distinct process with separate memory space
-    \item Executes at an equal or higher scheduling class (\texttt{SCHED\_FIFO}) than the monitored inference process to prevent CPU starvation
-    \item Queries the main process via shared memory fence
-    \item Terminates the main process if TTL violation detected
+    \item Executes at an equal or higher scheduling class (\texttt{SCHED\_FIFO}) to enforce starvation resistance
+    \item Queries the main process via shared memory fence heartbeat semantics
+    \item Terminates the main process via SIGKILL if a TTL violation is detected
     \item Cannot be disabled by the main process
 \end{itemize}
+We note that watchdog independence remains OS-bound; scheduler correctness remains assumed, and severe kernel-level starvation remains outside these strict empirical guarantees.
 
 % --- FIGURE 1: WATCHDOG ARCHITECTURE ---
 \begin{figure}[htbp]
@@ -249,7 +248,7 @@ This contrasts with fail-open systems that continue operating with degraded priv
 % 4. FORMAL IRREVERSIBILITY INVARIANTS
 % ==========================================
 \section{Formal Irreversibility Invariants}
-The invariants below are enforcement refinements of the canonical invariants defined in Paper 17, expressed here in operational runtime form for verification. We define the following paper-local invariants (P18-INV namespace). All must hold at all times, including during and after failures.
+The invariants below are organized as a layered enforcement chain. This sequence provides progressively enforced runtime containment. We define the following paper-local invariants (P18-INV namespace) which must hold under failure conditions.
 
 \subsection{P18-INV-01: Boundary Non-Crossing}
 Invariant P18-INV-01 validates the irreversibility boundary as defined in Paper 17.
@@ -376,13 +375,13 @@ class TestFailureScenario(unittest.TestCase):
 \end{lstlisting}
 
 \subsection{Chaos Engineering Implementation}
-We utilized the Linux Kernel Fault Injection (fault-injection) framework to simulate hardware errors, following principles established by Natella et al. \cite{b18}. Specifically, we enabled:
+We utilized the Linux Kernel Fault Injection framework to perform synthetic failure orchestration and bounded fault-space exploration, following principles established by Natella et al. \cite{b18}. Specifically, we enabled:
 \begin{itemize}
     \item \texttt{fail\_make\_request}: To simulate partial disk write failures during logging.
     \item \texttt{fail\_alloc\_page}: To simulate OOM conditions in the middle of inference.
     \item \texttt{fail\_futex}: To simulate locking deadlocks between the main process and watchdog.
 \end{itemize}
-The test harness runs these scenarios continuously for 24 hours (``Soak Testing''). No invariant violations were observed across 14,000+ injected faults, confirming that the fail-closed logic is robust against kernel-level instability.
+The test harness runs these scenarios continuously for 24 hours (``Soak Testing'') to characterize runtime resilience. Under these tested operational conditions, no invariant violations were observed across 14,000+ injected faults. Laboratory conditions cannot exhaust all failure combinations, but these results establish high operational confidence.
 
 % ==========================================
 % 6. RESULTS
@@ -534,15 +533,15 @@ The enforcement mechanisms provide defense in depth:
 
 Each layer can fail independently without compromising the overall enforcement, provided at least one layer remains operational.
 
-\subsection{Limitations}
-This verification assumes the hardware behaves as specified. We do not verify:
+\subsection{Limitations and Operational Realism}
+The empirical verification of runtime privacy enforcement contains several methodological and structural boundaries. Operational reality involves severe resource exhaustion, scheduler contention, and institutional deployment instability, limiting our guarantees:
 \begin{itemize}
-    \item Cold boot attacks on DRAM
-    \item Hardware backdoors in sensor modules
-    \item Hypervisor-level memory inspection
+    \item \textbf{Hardware Remanence Vulnerability:} The software-only verification methodology cannot account for physical DRAM-level data remanence (e.g., cold-boot attacks) which require hardware-level countermeasures.
+    \item \textbf{Hypervisor Opacity:} The verification assumes the operating system acts as the lowest layer of execution; hypervisor-level memory inspection by a malicious virtual machine monitor remains undetected.
+    \item \textbf{Scheduler Starvation Risk:} Watchdog enforcement relies heavily on \texttt{SCHED\_FIFO} priority; severe kernel-level CPU starvation or locking contention could hypothetically delay SIGKILL delivery beyond the TTL limit.
+    \item \textbf{Microarchitectural Leakage:} While compiler-safe zeroization clears application memory, transient execution side-channels (e.g., Spectre/Meltdown variants) occurring within the 33ms window are not verified by this framework.
+    \item \textbf{Laboratory Synthetic Bias:} Fault injection inherently tests anticipated failure distributions. Long-duration operational drift and novel, compound real-world crash behaviors fall outside the generated injection envelope.
 \end{itemize}
-
-These threats require hardware-level countermeasures outside the scope of software verification. Consequently, ``zero residue'' as reported in this paper refers to the absence of recoverable application-layer references; it does not constitute a claim about physical DRAM-level data remanence.
 
 % ==========================================
 % 8. SCOPE AND RELATION TO PRIOR WORK
@@ -570,7 +569,7 @@ Proving this liveness property mathematically would complement the empirical evi
 % ==========================================
 \section{Conclusion}
 
-This paper validates that ScholarMasterEngine's architectural privacy claims are enforced at runtime. Through systematic fault injection across 475 failure scenarios, we verified that no recoverable application-layer post-crash data residue was observed, alongside consistent watchdog termination success, and correct system halt behavior. For all six paper-local invariants (P18-INV-01 through P18-INV-06)---boundary non-crossing, TTL compliance, restart non-replay, governance non-bypass, watchdog independence, and zeroization completeness---no violations were observed during testing. The system is fail-closed: it halts rather than degrades privacy. This paper empirically validates the architectural privacy invariants defined in Paper 17 under adversarial failure conditions.
+This runtime-verification study demonstrates that architectural privacy claims can be empirically bounded under failure conditions. Through systematic fault injection across 475 failure scenarios, we verified that within the evaluated runtime envelope, no recoverable application-layer post-crash data residue was observed. We confirmed consistent watchdog termination success and correct fail-closed system halt behavior. For all six paper-local invariants---enforcing boundary isolation, temporal exposure, restart protection, governance checking, supervisory independence, and memory sanitization---no violations were observed under tested conditions. The system guarantees that it halts rather than degrades privacy. Within the ScholarMaster architecture, this framework operates exclusively as the runtime verification and crash-oriented enforcement subsystem---validating temporal isolation and memory destruction without governing spatial visualization, cryptographic provenance, formal threat modeling, or distributed orchestration logic.
 
 % ==========================================
 % REFERENCES
