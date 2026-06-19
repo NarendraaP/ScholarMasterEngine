@@ -30,11 +30,12 @@ class TestIdentityManagement(unittest.TestCase):
         # CLI testing is complex, so we just verify it doesn't crash
         pass
 
-    @patch('modules.face_registry.FaceAnalysis')
-    @patch('modules.face_registry.faiss')
+    @patch('face_registry.FaceAnalysis')
+    @patch('face_registry.faiss')
     def test_face_registry_update(self, mock_faiss, mock_face_analysis):
         """Test if FaceRegistry updates status to Enrolled."""
         from modules.face_registry import FaceRegistry
+        import builtins
         
         # Setup Mock FAISS Index
         mock_index = MagicMock()
@@ -52,7 +53,13 @@ class TestIdentityManagement(unittest.TestCase):
         mock_face.embedding = np.random.rand(512).astype(np.float32)
         mock_app.get.return_value = [mock_face]
         
-        with patch('builtins.open', unittest.mock.mock_open(read_data='{}')) as mock_file, \
+        original_open = builtins.open
+        def conditional_open(file, *args, **kwargs):
+            if 'identity_map.json' in str(file) or 'students.json' in str(file) or 'faiss_index.bin' in str(file):
+                return unittest.mock.mock_open(read_data='{}')(file, *args, **kwargs)
+            return original_open(file, *args, **kwargs)
+        
+        with patch('builtins.open', new=conditional_open), \
              patch('json.dump') as mock_json_dump, \
              patch('json.load', return_value={}) as mock_json_load, \
              patch('os.path.exists', return_value=True):
@@ -63,23 +70,30 @@ class TestIdentityManagement(unittest.TestCase):
             registry.index.ntotal = 0
             
             # Call register
-            success, msg = registry.register_face(MagicMock(), "S999", "Test Student", "Student", "CS")
+            success, msg = registry.register_face(MagicMock(), "S999", "Test Student", "Student", "CS", user_role="Admin")
             
             self.assertTrue(success)
             print(f"✅ FaceRegistry logic verified: {msg}")
 
-    @patch('modules.face_registry.FaceAnalysis')
-    @patch('modules.face_registry.faiss')
+    @patch('face_registry.FaceAnalysis')
+    @patch('face_registry.faiss')
     def test_search_face_threshold(self, mock_faiss, mock_face_analysis):
         """Test search_face respects the 0.6 cosine (1.2 L2) threshold."""
         from modules.face_registry import FaceRegistry
+        import builtins
         
         # Setup Mock FAISS Index
         mock_index = MagicMock()
         mock_faiss.IndexFlatL2.return_value = mock_index
         mock_faiss.read_index.return_value = mock_index
         
-        with patch('builtins.open', unittest.mock.mock_open(read_data='{"0": {"id": "S100", "name": "Test User"}}')), \
+        original_open = builtins.open
+        def conditional_open(file, *args, **kwargs):
+            if 'identity_map.json' in str(file) or 'students.json' in str(file) or 'faiss_index.bin' in str(file):
+                return unittest.mock.mock_open(read_data='{"0": {"id": "S100", "name": "Test User"}}')(file, *args, **kwargs)
+            return original_open(file, *args, **kwargs)
+        
+        with patch('builtins.open', new=conditional_open), \
              patch('json.load', return_value={"0": {"id": "S100", "name": "Test User"}}), \
              patch('os.path.exists', return_value=True):
             

@@ -1,1 +1,0 @@
-../di/legacy_adapters.py

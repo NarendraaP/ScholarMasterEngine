@@ -437,15 +437,41 @@ else:
                 
                 # Delete User
                 del_user = st.selectbox("Select User to Delete", [u["Username"] for u in user_list])
-                if st.button("Delete User", type="primary"):
+                
+                # Check if this user is the last Super Admin
+                super_admins = [u for u, d in users_db.items() if d.get("role") == "Super Admin"]
+                is_last_admin = (len(super_admins) <= 1 and users_db.get(del_user, {}).get("role") == "Super Admin")
+                
+                if st.button("Delete User", type="primary", key="del_user_trigger"):
                     if del_user == st.session_state['username']:
-                        st.error("Cannot delete yourself!")
+                        st.error("🚫 Cannot delete yourself!")
+                        if 'confirm_delete' in st.session_state:
+                            del st.session_state['confirm_delete']
+                    elif is_last_admin:
+                        st.error("🚫 Security Threat: Cannot delete the last Super Admin in the system!")
+                        if 'confirm_delete' in st.session_state:
+                            del st.session_state['confirm_delete']
                     else:
-                        del users_db[del_user]
-                        with open(users_file, "w") as f:
-                            json.dump(users_db, f, indent=4)
-                        st.success(f"Deleted {del_user}")
-                        st.rerun()
+                        st.session_state['confirm_delete'] = del_user
+                
+                if 'confirm_delete' in st.session_state and st.session_state['confirm_delete'] == del_user:
+                    st.warning(f"⚠️ **Double Confirmation**: Are you absolutely sure you want to delete user `{del_user}`?")
+                    col_c1, col_c2 = st.columns([1, 4])
+                    with col_c1:
+                        if st.button("Yes, Confirm", type="primary", key="confirm_delete_btn"):
+                            # Recheck conditions
+                            if del_user in users_db:
+                                del users_db[del_user]
+                                with open(users_file, "w") as f:
+                                    json.dump(users_db, f, indent=4)
+                                st.success(f"✅ Deleted {del_user}")
+                                del st.session_state['confirm_delete']
+                                time.sleep(1)
+                                st.rerun()
+                    with col_c2:
+                        if st.button("Cancel", key="cancel_delete_btn"):
+                            del st.session_state['confirm_delete']
+                            st.rerun()
             
             # --- Pending Approvals (Super Admin Only) ---
             st.markdown("---")

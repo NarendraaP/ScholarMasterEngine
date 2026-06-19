@@ -7,7 +7,7 @@ def test_auto_scheduler():
     # Reset files
     if os.path.exists('data/teachers.json'):
         with open('data/teachers.json', 'w') as f:
-            f.write('{"Prof. Smith": {"dept": "Math", "max_hours": 10, "current_hours": 0}, "Dr. Jones": {"dept": "Physics", "max_hours": 8, "current_hours": 0}}')
+            f.write('{"Prof. Smith": {"dept": "Math", "max_hours": 10, "current_hours": 0, "faculty": "Science", "subjects": ["Math 101", "Math Advanced"]}, "Dr. Jones": {"dept": "Physics", "max_hours": 8, "current_hours": 0, "faculty": "Science", "subjects": ["Physics 101"]}}')
     if os.path.exists('data/timetable.csv'):
         os.remove('data/timetable.csv')
 

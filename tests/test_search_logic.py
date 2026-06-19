@@ -6,7 +6,7 @@ import shutil
 # Add project root to path
 sys.path.append(os.getcwd())
 
-from modules.face_registry import FaceRegistry
+from unittest.mock import patch
 
 def test_search():
     print("--- Testing Face Search ---")
@@ -17,6 +17,14 @@ def test_search():
         shutil.rmtree(test_dir)
     os.makedirs(test_dir)
     
+    import sys
+    from unittest.mock import MagicMock
+    sys.modules['insightface'] = MagicMock()
+    sys.modules['insightface.app'] = MagicMock()
+    
+    import sys
+    sys.path.append(os.path.join(os.getcwd(), 'modules_legacy'))
+    from modules.face_registry import FaceRegistry
     registry = FaceRegistry(data_dir=test_dir)
     
     # Check if identity_map created
@@ -63,11 +71,11 @@ def test_search():
         
     # Test Search (No Match)
     print("Searching for Random User...")
-    emb_rand = np.random.rand(512).astype('float32')
+    emb_rand = np.random.randn(512).astype('float32')
     emb_rand = emb_rand / np.linalg.norm(emb_rand)
     # Make sure it's far orthogonal
     while np.dot(emb1, emb_rand) > 0.4:
-         emb_rand = np.random.rand(512).astype('float32')
+         emb_rand = np.random.randn(512).astype('float32')
          emb_rand = emb_rand / np.linalg.norm(emb_rand)
          
     found, uid = registry.search_face(emb_rand)

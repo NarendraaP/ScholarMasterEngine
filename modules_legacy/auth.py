@@ -130,9 +130,14 @@ def validate_role(allowed_roles, user_role=None):
             raise PermissionError("Authentication required: User not logged in")
         user_role = st.session_state.get('role', None)
     
+    # Normalize roles (if Admin is allowed, Super Admin is also allowed)
+    allowed_list = list(allowed_roles)
+    if "Admin" in allowed_list and "Super Admin" not in allowed_list:
+        allowed_list.append("Super Admin")
+        
     # Validate role
-    if user_role not in allowed_roles:
+    if user_role not in allowed_list:
         raise PermissionError(
-            f"Access Denied: This operation requires {' or '.join(allowed_roles)} role. "
+            f"Access Denied: This operation requires {' or '.join(allowed_list)} role. "
             f"Current role: {user_role}"
         )

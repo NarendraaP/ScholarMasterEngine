@@ -468,12 +468,36 @@ class ScholarMasterUnified:
             print(f"⚠️ [VIDEO] Pose model not available: {pose_err}")
             pose_model = None
         
-        # Initialize camera
-        cap = cv2.VideoCapture(0)
+        # Initialize camera from config
+        camera_source = 0
+        try:
+            config_path = Path("data/zones_config.json")
+            if config_path.exists():
+                with open(config_path, "r") as f:
+                    configs = json.load(f)
+                    for config in configs:
+                        if config.get("id") == "CAM_01":
+                            source_val = config.get("source")
+                            if isinstance(source_val, str) and source_val.isdigit():
+                                camera_source = int(source_val)
+                            else:
+                                camera_source = source_val
+                            break
+            print(f"[VIDEO] Loading camera source from config: {camera_source}")
+        except Exception as config_err:
+            print(f"⚠️ [VIDEO] Failed to load zones_config.json: {config_err}. Using default source 0.")
+            camera_source = 0
+
+        # Attempt to open configuration source, fallback to test video if fails
+        cap = cv2.VideoCapture(camera_source)
         if not cap.isOpened():
-            print("❌ [VIDEO] Cannot open webcam")
-            print("[VIDEO] ERROR: Cannot open camera")
-            return
+            print(f"⚠️ [VIDEO] Cannot open camera source: {camera_source}")
+            fallback_source = "data/test_video.mp4"
+            print(f"[VIDEO] Attempting fallback to video file: {fallback_source}")
+            cap = cv2.VideoCapture(fallback_source)
+            if not cap.isOpened():
+                print("❌ [VIDEO] ERROR: Cannot open camera or fallback video file")
+                return
         
         frame_count = 0
         start_time = time.time()
@@ -750,17 +774,23 @@ class ScholarMasterUnified:
         
         sample_rate = 44100
         duration = 0.1  # 100ms chunks
+        sim_reported = False
         
         while self.running:
             try:
-                # Record audio chunk
-                audio_data = sd.rec(
-                    int(duration * sample_rate),
-                    samplerate=sample_rate,
-                    channels=1,
-                    dtype='float32'
-                )
-                sd.wait()
+                if getattr(self, 'audio_simulation_active', False):
+                    # Generate synthetic audio chunk (100ms of low-level normal noise)
+                    audio_data = np.random.normal(0, 0.01, int(duration * sample_rate)).astype('float32').reshape(-1, 1)
+                    time.sleep(duration)
+                else:
+                    # Record audio chunk
+                    audio_data = sd.rec(
+                        int(duration * sample_rate),
+                        samplerate=sample_rate,
+                        channels=1,
+                        dtype='float32'
+                    )
+                    sd.wait()
                 
                 # Process with AudioSentinel (Paper 6)
                 audio_features = self.audio_sentinel.extract_features(audio_data)
@@ -773,7 +803,10 @@ class ScholarMasterUnified:
                 time.sleep(0.1)
             
             except Exception as e:
-                print(f"[AUDIO] Error: {e}")
+                if not sim_reported:
+                    print(f"⚠️ [AUDIO] Hardware recording failed: {e}. Switching to synthetic audio simulation.")
+                    sim_reported = True
+                self.audio_simulation_active = True
                 time.sleep(0.5)
         
         print("[AUDIO] Thread stopped")

@@ -16,8 +16,43 @@ class TestDebounceLogic:
     
     def setup_method(self):
         """Setup test fixtures"""
-        self.student_repo = JsonStudentRepository("data/students.json")
-        self.schedule_repo = CsvScheduleRepository("data/timetable.csv")
+        from unittest.mock import MagicMock
+        
+        self.student_repo = MagicMock()
+        # Mock get_by_id to return a valid Student entity for CSE001 and CSE002
+        def mock_get_by_id(student_id):
+            if student_id in ["CSE001", "CSE002"]:
+                return Student(
+                    id=student_id,
+                    name="Test Student",
+                    role="Student",
+                    department="Computer Science",
+                    program="UG",
+                    year=1,
+                    section="A"
+                )
+            return None
+        self.student_repo.get_by_id.side_effect = mock_get_by_id
+        
+        self.schedule_repo = MagicMock()
+        # Mock get_entry_at_time to return a ScheduleEntry matching the expected room CSE Lab A
+        def mock_get_entry_at_time(student, day, check_time):
+            if day == "Mon" and check_time == time(10, 30):
+                return ScheduleEntry(
+                    day="Mon",
+                    time_slot=TimeSlot(start=time(10, 0), end=time(11, 0)),
+                    faculty="Engineering",
+                    department="Computer Science",
+                    program="UG",
+                    year=1,
+                    section="A",
+                    subject="CSE 101",
+                    teacher="Prof. Jones",
+                    room="CSE Lab A"
+                )
+            return None
+        self.schedule_repo.get_entry_at_time.side_effect = mock_get_entry_at_time
+        
         self.use_case = DetectTruancyUseCase(
             self.student_repo,
             self.schedule_repo,

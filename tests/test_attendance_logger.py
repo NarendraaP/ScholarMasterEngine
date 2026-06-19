@@ -21,7 +21,7 @@ def test_logger():
         "subject": "CS101",
         "room": "Lab 1"
     }
-    result = manager.mark_present("S101", context_data)
+    result = manager.mark_present("S101", context_data, user_role="Admin")
     
     if result == "Marked Present":
         print("✅ Marked S101")
@@ -30,7 +30,7 @@ def test_logger():
 
     # Test 2: Duplicate Check
     print("Test 2: Marking S101 again (Duplicate)...")
-    result = manager.mark_present("S101", context_data)
+    result = manager.mark_present("S101", context_data, user_role="Admin")
     
     if result == "Already Logged":
         print("✅ Duplicate correctly rejected")

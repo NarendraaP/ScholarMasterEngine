@@ -25,8 +25,9 @@ class AnalyticsEngine:
     Papers: 5 (Engagement), 3 (Pose estimation)
     """
     
-    def __init__(self):
+    def __init__(self, log_file="data/session_log.csv"):
         """Initialize MediaPipe Face Mesh for pose and EAR"""
+        self.log_file = log_file
         # Initialize MediaPipe Face Mesh
         self.mp_face_mesh = mp.solutions.face_mesh
         self.face_mesh = self.mp_face_mesh.FaceMesh(
@@ -235,6 +236,48 @@ class AnalyticsEngine:
             "avg_engagement": 0.75,
             "attention_span": "Good"
         }
+
+    def _load_data(self):
+        import pandas as pd
+        import os
+        if not os.path.exists(self.log_file):
+            return pd.DataFrame()
+        try:
+            return pd.read_csv(self.log_file)
+        except Exception:
+            return pd.DataFrame()
+
+    def get_engagement_metrics(self):
+        import pandas as pd
+        df = self._load_data()
+        if df.empty:
+            return pd.DataFrame(columns=['Subject', 'Engagement Score'])
+
+        # Define engagement mapping
+        high_engagement = ["Happy", "Neutral", "Surprise"]
+        
+        # Calculate score: 1 for High, 0 for Low
+        df['score'] = df['emotion'].apply(lambda x: 1 if x in high_engagement else 0)
+        
+        # Group by Subject and calculate mean score (percentage)
+        metrics = df.groupby('subject')['score'].mean().reset_index()
+        metrics.columns = ['Subject', 'Engagement Score']
+        
+        return metrics
+
+    def get_emotion_trends(self):
+        import pandas as pd
+        df = self._load_data()
+        if df.empty:
+            return pd.DataFrame()
+            
+        # Ensure timestamp is datetime (handle ISO format)
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='mixed', errors='coerce')
+        
+        # Drop rows with invalid timestamps
+        df = df.dropna(subset=['timestamp'])
+        
+        return df
 
 
 # Singleton instance for import compatibility

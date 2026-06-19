@@ -11,9 +11,18 @@ sys.path.append(os.getcwd())
 @pytest.fixture
 def mock_registry():
     """Fixture to create a mocked FaceRegistry for testing."""
-    with patch('modules.face_registry.FaceAnalysis') as mock_face_analysis, \
-         patch('modules.face_registry.faiss') as mock_faiss, \
-         patch('builtins.open', unittest.mock.mock_open(read_data='{"0": {"id": "S100", "name": "Existing User"}}')), \
+    import builtins
+    original_open = builtins.open
+    
+    # Conditional mock open to prevent intercepting ONNX/system files
+    def conditional_open(file, *args, **kwargs):
+        if 'identity_map.json' in str(file) or 'students.json' in str(file) or 'faiss_index.bin' in str(file):
+            return unittest.mock.mock_open(read_data='{"0": {"id": "S100", "name": "Existing User"}}')(file, *args, **kwargs)
+        return original_open(file, *args, **kwargs)
+        
+    with patch('face_registry.FaceAnalysis') as mock_face_analysis, \
+         patch('face_registry.faiss') as mock_faiss, \
+         patch('builtins.open', new=conditional_open), \
          patch('json.load', return_value={"0": {"id": "S100", "name": "Existing User"}}), \
          patch('os.path.exists', return_value=True):
         
@@ -48,7 +57,7 @@ def test_register_face_duplicate(mock_registry):
     """Test that registering a duplicate face returns False and 'Duplicate' message."""
     # Attempt to register
     dummy_image = np.zeros((640, 640, 3), dtype=np.uint8)
-    success, message = mock_registry.register_face(dummy_image, "S101", "New User", "Student")
+    success, message = mock_registry.register_face(dummy_image, "S101", "New User", "Student", user_role="Admin")
     
     # Assertions
     assert success == False
@@ -62,7 +71,7 @@ def test_face_detection_failure(mock_registry):
     mock_registry.app.get.return_value = []
     
     dummy_image = np.zeros((640, 640, 3), dtype=np.uint8)
-    success, message = mock_registry.register_face(dummy_image, "S102", "Test User", "Student")
+    success, message = mock_registry.register_face(dummy_image, "S102", "Test User", "Student", user_role="Admin")
     
     assert success == False
     assert "No face detected" in message

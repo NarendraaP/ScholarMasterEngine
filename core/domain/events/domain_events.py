@@ -9,61 +9,61 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DomainEvent:
     """Base class for domain events"""
-    timestamp: datetime = None
+    timestamp: Optional[datetime] = None
     
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
 
 
-@dataclass(kw_only=True)
+@dataclass
 class FaceDetectedEvent(DomainEvent):
     """Face was detected and recognized"""
-    student_id: str
-    zone: str
-    confidence: float
-    timestamp: datetime = None
+    student_id: str = ""
+    zone: str = ""
+    confidence: float = 0.0
+    timestamp: Optional[datetime] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ViolationDetectedEvent(DomainEvent):
     """Compliance violation detected"""
-    student_id: str
-    violation_type: str  # "truancy", "noise", "violence", "grooming"
-    zone: str
-    severity: str  # "Security", "Warning", "Critical"
-    metadata: Dict[str, Any]
-    timestamp: datetime = None
+    student_id: str = ""
+    violation_type: str = ""  # "truancy", "noise", "violence", "grooming"
+    zone: str = ""
+    severity: str = ""  # "Security", "Warning", "Critical"
+    metadata: Optional[Dict[str, Any]] = None
+    timestamp: Optional[datetime] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class AttendanceMarkedEvent(DomainEvent):
     """Attendance was successfully marked"""
-    student_id: str
-    subject: str
-    zone: str
+    student_id: str = ""
+    subject: str = ""
+    zone: str = ""
     teacher: Optional[str] = None
-    timestamp: datetime = None
+    timestamp: Optional[datetime] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class NoiseAlertEvent(DomainEvent):
     """Loud noise detected"""
-    zone: str
-    db_level: float
-    is_lecture_mode: bool
-    severity: str  # "Warning", "Critical"
-    timestamp: datetime = None
+    zone: str = ""
+    db_level: float = 0.0
+    is_lecture_mode: bool = False
+    severity: str = ""  # "Warning", "Critical"
+    timestamp: Optional[datetime] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SafetyAlertEvent(DomainEvent):
     """Safety concern detected (violence, sleep, etc.)"""
-    zone: str
-    alert_type: str  # "violence", "prolonged_sleep", etc.
-    severity: str
-    metadata: Dict[str, Any]
-    timestamp: datetime = None
+    zone: str = ""
+    alert_type: str = ""  # "violence", "prolonged_sleep", etc.
+    severity: str = ""
+    metadata: Optional[Dict[str, Any]] = None
+    timestamp: Optional[datetime] = None
