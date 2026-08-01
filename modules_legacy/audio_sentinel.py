@@ -34,6 +34,53 @@ class AudioSentinel:
         # Aggressiveness: 0 (least) to 3 (most aggressive)
         self.vad = webrtcvad.Vad(2)  # Moderate aggressiveness
 
+    def extract_features(self, indata):
+        """
+        Extract audio features from a chunk of audio data.
+        Returns a dict with volume_db, spectral_ratio, and alert status.
+        Paper 6: Acoustic Processing Pipeline.
+        """
+        indata = np.asarray(indata, dtype=np.float32).flatten()
+        
+        # RMS volume
+        rms = np.sqrt(np.mean(indata ** 2)) if len(indata) > 0 else 1e-10
+        rms = max(rms, 1e-10)  # Prevent log(0)
+        volume_db = 20 * np.log10(rms)
+        self.current_volume = volume_db
+        
+        # FFT-based spectral analysis (Paper 6, Algorithm 1)
+        fft_data = np.fft.rfft(indata)
+        fft_freq = np.fft.rfftfreq(len(indata), d=1.0 / 44100)
+        
+        # Low band (0-500 Hz): ambient noise, thuds, doors
+        low_mask = fft_freq < 500
+        low_energy = np.sum(np.abs(fft_data[low_mask])) + 1e-10
+        
+        # High band (2000-4000 Hz): screams, glass, alarms
+        high_mask = (fft_freq > 2000) & (fft_freq < 4000)
+        high_energy = np.sum(np.abs(fft_data[high_mask]))
+        
+        spectral_ratio = high_energy / low_energy
+        
+        # Decision logic
+        is_loud = rms > self.threshold
+        is_impulsive = spectral_ratio > 2.5
+        
+        if is_loud and is_impulsive:
+            self.status = "LOUD NOISE"
+        else:
+            self.status = "Safe"
+        
+        # Privacy: secure wipe raw audio from memory
+        indata.fill(0)
+        
+        return {
+            'volume_db': volume_db,
+            'spectral_ratio': spectral_ratio,
+            'is_alert': self.status == "LOUD NOISE",
+            'status': self.status
+        }
+
     def analyze_chunk(self, indata, frames, time, status):
         """
         Callback function to process audio chunks.

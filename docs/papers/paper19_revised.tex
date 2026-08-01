@@ -334,13 +334,13 @@ To summarize the interaction between adversary capabilities and architectural de
 \midrule
 $A_0$ & Passive Observer & Sniffing network packets during class. & mTLS encryption layer; Network payload contains no raw PII. & Defended \\
 \midrule
-$A_1$ & Local User & SSH login, attempting to read `/tmp` or run `ps` to scrape RAM. & Application memory is mapped `private`. Disabling of IPC shared memory for raw arrays. & Defended \\
+$A_1$ & Local User & SSH login, attempting to read \texttt{/tmp} or run \texttt{ps} to scrape RAM. & Application memory is mapped \texttt{private}. Disabling of IPC shared memory for raw arrays. & Defended \\
 \midrule
 $A_2$ & Network Admin & Packet delay/drop to force buffer overflows in edge node. & Fixed-size queue limits; Network timeout triggers fail-closed state (MTL Property 3). & Defended \\
 \midrule
-$A_3$ & Root Admin & Analyzing historical disk data, reviewing crash core dumps, viewing swap. & `mlock` prevents swapping; `MADV_DONTDUMP` excludes from core dumps; Configured TTL bounds memory exposure. & Defended \\
+$A_3$ & Root Admin & Analyzing historical disk data, reviewing crash core dumps, viewing swap. & \texttt{mlock} prevents swapping; \texttt{MADV\_DONTDUMP} excludes from core dumps; Configured TTL bounds memory exposure. & Defended \\
 \midrule
-$A_4$ & Kernel Exploit & Exploiting zero-day to rewrite OS scheduler or bypass `mlock`. & N/A - The TCB relies completely on kernel isolation integrity. & \textbf{Vulnerable} \\
+$A_4$ & Kernel Exploit & Exploiting zero-day to rewrite OS scheduler or bypass \texttt{mlock}. & N/A - The TCB relies completely on kernel isolation integrity. & \textbf{Vulnerable} \\
 \midrule
 $A_5$ & Physical Actor & Cold Boot \cite{b4}, Side-channels (Spectre \cite{b18_spectre}, Rowhammer \cite{b19_row}). & Out of scope by Axioms $A_{PHYS}$ and $A_{SPEC}$. Requires hardware TME. & \textbf{Vulnerable} \\
 \bottomrule
@@ -537,35 +537,62 @@ To computationally verify the consistency of the state machine defined by these 
 \begin{thebibliography}{00}
 
 \bibitem{b1} J. H. Saltzer and M. D. Schroeder, "The protection of information in computer systems," \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
-\bibitem{b2} D. Dolev and A. Yao, "On the security of public key protocols," \textit{IEEE Transactions on Information Theory}, vol. 29, no. 2, pp. 198--208, 1983.
-\bibitem{b3} T. C. B. Department of Defense, "Trusted Computer System Evaluation Criteria (Orange Book)," \textit{DoD 5200.28-STD}, 1985.
-\bibitem{b4} J. A. Halderman et al., "Lest we remember: cold boot attacks on encryption keys," in \textit{USENIX Security Symposium}, 2008.
-\bibitem{b5} R. Shokri et al., "Membership inference attacks against machine learning models," in \textit{IEEE S\&P}, 2017.
-\bibitem{b6} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, 2017.
-\bibitem{b7} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM TIST}, vol. 6, no. 3, 2015.
-\bibitem{b8} J. A. Goguen and J. Meseguer, "Security Policies and Security Models," in \textit{IEEE S\&P}, 1982.
-\bibitem{b9} R. Koymans, "Specifying real-time properties with metric temporal logic," \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255-299, 1990.
-\bibitem{b10} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
-\bibitem{b11} A. Sabelfeld and A. C. Myers, "Language-based information-flow security," \textit{IEEE JSAC}, vol. 21, no. 1, pp. 5-19, 2003.
+
 \bibitem{b12} D. E. Denning, "A lattice model of secure information flow," \textit{Communications of the ACM}, vol. 19, no. 5, pp. 236-243, 1976.
+
 \bibitem{b13} A. Pnueli, "The temporal logic of programs," in \textit{18th Annual Symposium on Foundations of Computer Science (SFCS)}, 1977.
-\bibitem{b14} C. Dwork, "Differential Privacy," in \textit{ICALP}, Springer, 2006.
-\bibitem{b15} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," \textit{AISTATS}, 2017.
-\bibitem{b16} V. Costan and S. Devadas, "Intel SGX Explained," \textit{IACR Cryptology ePrint Archive}, 2016.
-\bibitem{b17_tz} S. Pinto and N. Santos, "Demystifying Arm TrustZone: A Comprehensive Survey," \textit{ACM Computing Surveys}, vol. 51, no. 6, 2019.
-\bibitem{b18_spectre} P. Kocher et al., "Spectre Attacks: Exploiting Speculative Execution," in \textit{IEEE S\&P}, 2019.
-\bibitem{b19_row} Y. Kim et al., "Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors," \textit{ISCA}, 2014.
+
+\bibitem{b8} J. A. Goguen and J. Meseguer, "Security Policies and Security Models," in \textit{IEEE S\&P}, 1982.
+
+\bibitem{b2} D. Dolev and A. Yao, "On the security of public key protocols," \textit{IEEE Transactions on Information Theory}, vol. 29, no. 2, pp. 198--208, 1983.
+
+\bibitem{b3} T. C. B. Department of Defense, "Trusted Computer System Evaluation Criteria (Orange Book)," \textit{DoD 5200.28-STD}, 1985.
+
+\bibitem{b9} R. Koymans, "Specifying real-time properties with metric temporal logic," \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255-299, 1990.
+
 \bibitem{b20} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
-\bibitem{b21} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security}, 2019.
-\bibitem{b22} M. Abadi et al., "Deep Learning with Differential Privacy," in \textit{CCS}, 2016.
+
+\bibitem{b10} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
+
+\bibitem{b11} A. Sabelfeld and A. C. Myers, "Language-based information-flow security," \textit{IEEE JSAC}, vol. 21, no. 1, pp. 5-19, 2003.
+
+\bibitem{b14} C. Dwork, "Differential Privacy," in \textit{ICALP}, Springer, 2006.
+
+\bibitem{b30_cps} A. A. Cardenas, S. Amin, and S. Sastry, ``Secure control: Towards survivable cyber-physical systems,'' in \textit{The 28th Int. Conf. on Distributed Computing Systems Workshops}, IEEE, 2008.
+
+\bibitem{b4} J. A. Halderman et al., "Lest we remember: cold boot attacks on encryption keys," in \textit{USENIX Security Symposium}, 2008.
+
+\bibitem{b19_row} Y. Kim et al., "Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors," \textit{ISCA}, 2014.
+
 \bibitem{b23} M. Fredrikson et al., "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{CCS}, 2015.
 
-\bibitem{b25_irrev} S. S. Kumar, ``Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems,'' in \textit{Proc. IEEE Int. Conf. Edge Computing}, 2026.
-\bibitem{b26_runtime} S. S. Kumar, ``Runtime Enforcement of Architectural Irreversibility in Edge AI Systems,'' in \textit{Proc. IEEE Int. Conf. CPS}, 2026.
-\bibitem{b27_arch} S. S. Kumar, ``A Unified Privacy-First Reference Architecture for Edge-Based Intelligent Campus Systems,'' in \textit{Proc. IEEE IoT-J}, 2026.
+\bibitem{b7} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM TIST}, vol. 6, no. 3, 2015.
+
+\bibitem{b16} V. Costan and S. Devadas, "Intel SGX Explained," \textit{IACR Cryptology ePrint Archive}, 2016.
+
+\bibitem{b22} M. Abadi et al., "Deep Learning with Differential Privacy," in \textit{CCS}, 2016.
+
+\bibitem{b15} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," \textit{AISTATS}, 2017.
+
+\bibitem{b5} R. Shokri et al., "Membership inference attacks against machine learning models," in \textit{IEEE S\&P}, 2017.
+
+\bibitem{b6} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, 2017.
+
+\bibitem{b17_tz} S. Pinto and N. Santos, "Demystifying Arm TrustZone: A Comprehensive Survey," \textit{ACM Computing Surveys}, vol. 51, no. 6, 2019.
+
+\bibitem{b18_spectre} P. Kocher et al., "Spectre Attacks: Exploiting Speculative Execution," in \textit{IEEE S\&P}, 2019.
+
+\bibitem{b21} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security}, 2019.
+
 \bibitem{b28_pose} S. S. Kumar, ``Privacy-Preserving Skeletal Abstraction for Identity-Free Behavioral Analytics,'' in \textit{Proc. IEEE CVPR Workshops}, 2025.
+
+\bibitem{b25_irrev} S. S. Kumar, ``Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems,'' in \textit{Proc. IEEE Int. Conf. Edge Computing}, 2026.
+
+\bibitem{b26_runtime} S. S. Kumar, ``Runtime Enforcement of Architectural Irreversibility in Edge AI Systems,'' in \textit{Proc. IEEE Int. Conf. CPS}, 2026.
+
+\bibitem{b27_arch} S. S. Kumar, ``A Unified Privacy-First Reference Architecture for Edge-Based Intelligent Campus Systems,'' in \textit{Proc. IEEE IoT-J}, 2026.
+
 \bibitem{b29_fl} S. S. Kumar, ``Intra-Campus Federated Learning for Temporal Drift Compensation in Privacy-Preserving Edge AI,'' in \textit{Proc. IEEE ICML Workshops}, 2026.
-\bibitem{b30_cps} A. A. Cardenas, S. Amin, and S. Sastry, ``Secure control: Towards survivable cyber-physical systems,'' in \textit{The 28th Int. Conf. on Distributed Computing Systems Workshops}, IEEE, 2008.
 
 \end{thebibliography}
 

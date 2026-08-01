@@ -169,9 +169,9 @@ def get_expected_location(self, student_id, day, time_str):
 
 ---
 
-### Paper 5: UMA Thermal Benchmarking (M2 vs Discrete GPU)
+### Paper 5: Memory-Bound Edge Efficiency Envelope (MBEEE)
 
-**📄 Title**: "Unified Memory Architecture Benefits for Edge AI"  
+**📄 Title**: "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model"  
 **🎯 Key Claims**:
 - M2 thermal stability: 62°C (vs 85°C baseline)
 - 3x faster inference with CoreML

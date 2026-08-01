@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Title** | Unified Memory Architectures Under Continuous Edge Inference: An Analytical Envelope Model |
+| **Title** | Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model |
 | **Paper ID** | P5 |
 | **Layer** | Hardware / Edge Node Infrastructure Layer (L2) |
 | **Author** | Dr. S. Suresh Kumar |

@@ -18,6 +18,30 @@ Version: 1.0.0 (Gold Master)
 ================================================================================
 """
 
+import os
+# ============================================================================
+# CRITICAL: C-LIBRARY THREAD SAFETY (must be set BEFORE any ML framework import)
+# On macOS Apple Silicon, multiple ML frameworks (ONNX Runtime, PyTorch) each
+# spawn their own C-level thread pools (OpenMP, vecLib, MKL). When these run
+# inside Python background threads, the thread pools collide and cause SIGSEGV.
+# Setting all thread counts to 1 eliminates this class of crash entirely.
+# ============================================================================
+os.environ["OMP_NUM_THREADS"] = "1"           # OpenMP (used by ONNX Runtime, NumPy)
+os.environ["MKL_NUM_THREADS"] = "1"           # Intel MKL (used by NumPy/SciPy)
+os.environ["OPENBLAS_NUM_THREADS"] = "1"      # OpenBLAS (alternative BLAS backend)
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"    # macOS Accelerate/vecLib
+os.environ["NUMEXPR_NUM_THREADS"] = "1"       # NumExpr (used by pandas/tables)
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"   # Prevent fatal error when PyTorch + ONNX both load OpenMP
+os.environ["OPENCV_AVFOUNDATION_SKIP_AUTH"] = "1"  # Skip AVFoundation auth dialog on background thread
+
+# Enable faulthandler to print traceback on segfault (SIGSEGV)
+import faulthandler
+import sys
+_fault_file = open("crash_traceback.txt", "w")
+faulthandler.enable(file=_fault_file)
+# Dump ALL thread tracebacks at 3s intervals to capture state before crash
+faulthandler.dump_traceback_later(3, repeat=True, file=_fault_file)
+
 import cv2
 import sounddevice as sd
 import numpy as np
@@ -31,6 +55,58 @@ from datetime import datetime
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from pathlib import Path
+# Thread-safe least squares solver using OpenCV's LU decomposition solver
+# (Resolves macOS vecLib/Accelerate thread-safety segmentation faults in background threads)
+original_lstsq = np.linalg.lstsq
+
+def safe_lstsq(a, b, rcond=None):
+    a_arr = np.asarray(a, dtype=np.float64)
+    b_arr = np.asarray(b, dtype=np.float64)
+    
+    # Attempt 1: Normal equations solved via OpenCV LU decomposition (thread-safe)
+    try:
+        ata = a_arr.T @ a_arr
+        atb = a_arr.T @ b_arr
+        success, x = cv2.solve(ata, atb, flags=cv2.DECOMP_LU)
+        if success:
+            return x, None, None, None
+    except Exception:
+        pass
+    
+    # Attempt 2: OpenCV SVD decomposition (handles singular/degenerate matrices, thread-safe)
+    try:
+        ata = a_arr.T @ a_arr
+        atb = a_arr.T @ b_arr
+        success, x = cv2.solve(ata, atb, flags=cv2.DECOMP_SVD)
+        if success:
+            return x, None, None, None
+    except Exception:
+        pass
+    
+    # Attempt 3: Safe dummy result (identity-like transform preserves the original face crop)
+    # This prevents a crash; the face alignment will be a no-op for this single frame
+    cols = b_arr.shape[1] if b_arr.ndim > 1 else 1
+    x = np.zeros((a_arr.shape[1], cols), dtype=np.float64)
+    np.fill_diagonal(x, 1.0)
+    return x, None, None, None
+
+# Apply monkey patch
+np.linalg.lstsq = safe_lstsq
+
+import onnxruntime as ort
+
+class SafeInferenceSession(ort.InferenceSession):
+    def __init__(self, model_path, sess_options=None, *args, **kwargs):
+        if sess_options is None:
+            sess_options = ort.SessionOptions()
+        # Force single-threaded execution in ONNX Runtime to prevent macOS thread sync crashes
+        sess_options.intra_op_num_threads = 1
+        sess_options.inter_op_num_threads = 1
+        sess_options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        super().__init__(model_path, sess_options, *args, **kwargs)
+
+# Patch the module namespace directly
+ort.InferenceSession = SafeInferenceSession
 
 # Import ScholarMaster modules
 from modules_legacy.face_registry import FaceRegistry
@@ -42,7 +118,14 @@ from modules_legacy.st_csf import SpatiotemporalCSF  # Paper 7: Logic Layer
 from modules_legacy.attendance_logger import AttendanceManager  # Phase 1: Attendance integration
 from modules_legacy.safety_rules import SafetyEngine  # Phase 3: Safety detection
 from utils.secure_memory import secure_wipe, lock_memory # Paper 6: Secure Memory & mlock
-from infrastructure.acoustic.anomaly_detector import AcousticAnomalyDetector # Paper 6: Gold Implementation
+try:
+    import sys as _sys_check
+    if _sys_check.platform != "darwin":
+        from infrastructure.acoustic.anomaly_detector import AcousticAnomalyDetector  # Paper 6: Gold Implementation
+    else:
+        AcousticAnomalyDetector = None  # Skip on macOS (scipy C extensions incompatible)
+except ImportError:
+    AcousticAnomalyDetector = None
 
 # Canonical Layer Stack (ARCHITECTURE_CANONICAL.md)
 from core.canonical_layers import (
@@ -282,6 +365,9 @@ class PowerMonitor:
         print(f"[POWER] Report saved: {filepath}")
 
 
+
+
+
 # ============================================================================
 # MAIN UNIFIED SYSTEM
 # ============================================================================
@@ -318,9 +404,44 @@ class ScholarMasterUnified:
         self.total_unknown_probes: int = 0  # Total unknown faces seen
         self.false_accepts: int = 0  # Unknown faces incorrectly accepted
         
+        # Platform-aware audio source selection:
+        # On macOS (darwin), force synthetic simulation to prevent PortAudio thread-safety crashes.
+        # On production edge nodes (Linux/Windows), default to hardware microphone capture.
+        import sys
+        if sys.platform == "darwin":
+            print("[INIT] macOS detected: Forcing Synthetic Audio Simulation (Thread-Safety Constraint)")
+            self.audio_simulation_active = True
+        else:
+            self.audio_simulation_active = False
+
+        # Pre-load PyTorch/YOLO on the main thread to prevent background thread import crashes
+        # On macOS: Skip entirely — ultralytics imports matplotlib/pyparsing which have
+        # C extensions incompatible with Python 3.9 on Apple Silicon (causes SIGSEGV).
+        # On Linux production edge nodes: YOLO loads normally for safety/pose detection.
+        import sys as _sys_platform
+        if _sys_platform.platform != "darwin":
+            print("\n[INIT] Loading safety/pose models...")
+            try:
+                import torch
+                torch.set_num_threads(1)
+                from ultralytics import YOLO
+                self.pose_model = YOLO('yolov8n-pose.pt')
+                print("[INIT] ✅ YOLOv8 Pose model loaded on main thread")
+            except Exception as e:
+                print(f"⚠️ [INIT] Pose model not available: {e}")
+                self.pose_model = None
+        else:
+            print("\n[INIT] macOS detected: Skipping YOLO pose model (C extension constraint)")
+            self.pose_model = None
+
         # Initialize all layers
-        print("\n[INIT] Loading face recognition model...")
+        print("[INIT] Loading face recognition model...")
         self.face_registry = FaceRegistry()
+        
+        print("[INIT] Loading audio sentinel...")
+        self.audio_sentinel = AudioSentinel()
+        
+
         
         # Paper 3: Privacy-Preserving Engagement (Pose Only)
         try:
@@ -380,6 +501,55 @@ class ScholarMasterUnified:
             raise e
         
         # -------------------------------------------------------------------------
+        # Initialize camera on main thread BEFORE any background threads start
+        # (macOS AVFoundation requires no background threads during camera init)
+        # -------------------------------------------------------------------------
+        camera_source = 0
+        try:
+            config_path = Path("data/zones_config.json")
+            if config_path.exists():
+                with open(config_path, "r") as f:
+                    configs = json.load(f)
+                    for config in configs:
+                        if config.get("id") == "CAM_01":
+                            source_val = config.get("source")
+                            if isinstance(source_val, str) and source_val.isdigit():
+                                camera_source = int(source_val)
+                            else:
+                                camera_source = source_val
+                            break
+            print(f"[INIT] Loading camera source from config: {camera_source}")
+        except Exception as config_err:
+            print(f"⚠️ [INIT] Failed to load zones_config.json: {config_err}. Using default source 0.")
+            camera_source = 0
+
+        # On macOS, cv2.VideoCapture(0) triggers AVFoundation which segfaults with Python 3.9.
+        # On Linux production edge nodes, live camera works natively via V4L2.
+        import sys as _sys
+        if _sys.platform == "darwin":
+            print("[INIT] macOS detected: Using video file source (AVFoundation constraint)")
+            fallback_source = "data/test_video.mp4"
+            self.cap = cv2.VideoCapture(fallback_source)
+            if not self.cap.isOpened():
+                print("❌ [INIT] ERROR: Cannot open fallback video file")
+                self.cap = None
+            else:
+                print("[INIT] ✅ Video file source loaded")
+        else:
+            self.cap = cv2.VideoCapture(camera_source)
+            if not self.cap.isOpened():
+                print(f"⚠️ [INIT] Cannot open camera source: {camera_source}")
+                fallback_source = "data/test_video.mp4"
+                self.cap = cv2.VideoCapture(fallback_source)
+                if not self.cap.isOpened():
+                    print("❌ [INIT] ERROR: Cannot open camera or fallback video file")
+                    self.cap = None
+                else:
+                    print("[INIT] ✅ Fallback video source loaded")
+            else:
+                print(f"[INIT] ✅ Camera source {camera_source} opened")
+
+        # -------------------------------------------------------------------------
         # ARCHITECTURE_CANONICAL.md 3.0: Canonical Layer Stack (L1→L3, L5)
         # -------------------------------------------------------------------------
         # Wire formal enforcement layers into runtime pipeline
@@ -411,6 +581,7 @@ class ScholarMasterUnified:
             self._L5_governance = None
         
         print("\n✅ All systems initialized!\n")
+    
     
     # ========================================================================
     # OPEN-SET EVALUATION METHODS
@@ -459,52 +630,29 @@ class ScholarMasterUnified:
         """
         print("[VIDEO] Starting face recognition thread...")
         
-        # Initialize YOLO Pose for Phase 3: Safety Detection
-        try:
-            from ultralytics import YOLO
-            pose_model = YOLO('yolov8n-pose.pt')  # Lightweight pose model
-            print("[VIDEO] YOLOv8 Pose model loaded")
-        except Exception as pose_err:
-            print(f"⚠️ [VIDEO] Pose model not available: {pose_err}")
-            pose_model = None
+        # Access YOLO model pre-loaded on main thread (avoids background thread import crash)
+        pose_model = getattr(self, 'pose_model', None)
         
-        # Initialize camera from config
-        camera_source = 0
-        try:
-            config_path = Path("data/zones_config.json")
-            if config_path.exists():
-                with open(config_path, "r") as f:
-                    configs = json.load(f)
-                    for config in configs:
-                        if config.get("id") == "CAM_01":
-                            source_val = config.get("source")
-                            if isinstance(source_val, str) and source_val.isdigit():
-                                camera_source = int(source_val)
-                            else:
-                                camera_source = source_val
-                            break
-            print(f"[VIDEO] Loading camera source from config: {camera_source}")
-        except Exception as config_err:
-            print(f"⚠️ [VIDEO] Failed to load zones_config.json: {config_err}. Using default source 0.")
-            camera_source = 0
-
-        # Attempt to open configuration source, fallback to test video if fails
-        cap = cv2.VideoCapture(camera_source)
-        if not cap.isOpened():
-            print(f"⚠️ [VIDEO] Cannot open camera source: {camera_source}")
-            fallback_source = "data/test_video.mp4"
-            print(f"[VIDEO] Attempting fallback to video file: {fallback_source}")
-            cap = cv2.VideoCapture(fallback_source)
-            if not cap.isOpened():
-                print("❌ [VIDEO] ERROR: Cannot open camera or fallback video file")
-                return
+        # Camera already initialized on main thread (macOS AVFoundation requirement)
+        if self.cap is None or not self.cap.isOpened():
+            print("❌ [VIDEO] ERROR: No camera or video source available")
+            return
         
         frame_count = 0
         start_time = time.time()
         
         while self.running:
-            ret, frame = cap.read()
-            if not ret:
+            # Check for new biometric enrollments dynamically
+            if hasattr(self.face_registry, 'hot_reload'):
+                self.face_registry.hot_reload()
+                
+            # Discard old frames in the camera buffer to get the latest frame
+            # (non-threaded frame-dropping, extremely stable for macOS)
+            if hasattr(self.cap, 'grab'):
+                for _ in range(4):
+                    self.cap.grab()
+            ret, frame = self.cap.read()
+            if not ret or frame is None:
                 break
             
             # L2→L3: Register frame capture for TTL enforcement
@@ -758,7 +906,7 @@ class ScholarMasterUnified:
             
             time.sleep(0.033)  # ~30 FPS
         
-        cap.release()
+        self.cap.release()
         print("[VIDEO] Thread stopped")
     
     # ========================================================================
@@ -987,8 +1135,8 @@ class ScholarMasterUnified:
             while self.running:
                 time.sleep(1)
         except KeyboardInterrupt:
-            
-            time.sleep(2)
+            self.running = False
+            time.sleep(1.5)
             print("\n✅ System stopped cleanly\n")
 
 

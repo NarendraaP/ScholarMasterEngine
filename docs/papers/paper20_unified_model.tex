@@ -116,7 +116,7 @@ The architecture is organized into four distinct strata. While Layers 1-8 repres
 
 \begin{tikzpicture}[
     node distance=0.2cm,
-    layer/.style={rectangle, draw, minimum width=8cm, minimum height=1.2cm, align=center, rounded corners, drop shadow, fill=white},
+    layer/.style={rectangle, draw, minimum width=0.98\linewidth, text width=0.92\linewidth, minimum height=1.2cm, align=center, rounded corners, fill=white},
     label/.style={font=\bfseries\small}
 ]
 
@@ -195,7 +195,7 @@ To ensure consistency across the 19-paper research program, we formalize the \te
 
 
 
-\textit{Note: The invariant namespace does not introduce new enforcement mechanisms but consolidates and labels constraints already validated in component studies (P1, P3, P9, P17, P18).} These invariants act as formal contracts between the system layers; a failure in any invariant triggers an immediate L1 hardware halt.
+Contrastingly, the invariant namespace does not enforce any new constraints. Instead, it collects all the checked constraints from the component studies (P1, P3, P9, P17, P18). These invariants are formal contracts between the system layers: a violation of any invariant results in an immediate L1 hardware exception.
 
 \subsection{Ephemeral Data Constraints}
 \begin{itemize}
@@ -378,24 +378,44 @@ No data can transition to network egress ($Net$) without passing L5 Governance c
 \begin{thebibliography}{00}
 
 \bibitem{P1} N. Babu P., "Scalable High-Throughput Biometric Identification using HNSW," \textit{ScholarMaster Series}, 2025.
-\bibitem{P2} N. Babu P., "Context-Aware Multi-Modal Framework," \textit{ScholarMaster Series}, 2025.
-\bibitem{P3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics," \textit{ScholarMaster Series}, 2025.
-\bibitem{P4} N. Babu P., "Automated Schedule-Compliance Monitoring," \textit{ScholarMaster Series}, 2025.
-\bibitem{P5} N. Babu P., "Benchmarking Unified Memory Architectures," \textit{ScholarMaster Series}, 2025.
-\bibitem{P6} N. Babu P., "Privacy-Preserving Acoustic Anomaly Detection," \textit{ScholarMaster Series}, 2025.
-\bibitem{P7} N. Babu P., "Spatiotemporal Rule-Based Reasoning," \textit{ScholarMaster Series}, 2025.
-\bibitem{P8} N. Babu P., "Trust-Aware Metadata Provenance," \textit{ScholarMaster Series}, 2025.
-\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
+
 \bibitem{P10} N. Babu P., "System-Level Validation of Smart Campus Intelligence," \textit{ScholarMaster Series}, 2025.
+
+% 2026 Series
+
+\bibitem{P2} N. Babu P., "Context-Aware Multi-Modal Framework," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P4} N. Babu P., "Automated Schedule-Compliance Monitoring," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P6} N. Babu P., "Privacy-Preserving Acoustic Anomaly Detection," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P7} N. Babu P., "Spatiotemporal Rule-Based Reasoning," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P8} N. Babu P., "Trust-Aware Metadata Provenance," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
+
 \bibitem{P11} N. Babu P., "Production-Grade Edge MLOps Architecture," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P12} N. Babu P., "Flash Endurance Engineering for Edge AI," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P13} N. Babu P., "Intra-Campus Federated Learning," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P14} N. Babu P., "Cross-Campus Federated Intelligence," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P15} N. Babu P., "Augmented Situation Awareness (AR)," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P16} N. Babu P., "Beyond the Panopticon: Sociological Trust," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P17} N. Babu P., "Architectural Irreversibility (Capstone)," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P18} N. Babu P., "Runtime Enforcement of Irreversibility," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P19} N. Babu P., "Formal Threat Model and TCB Definition," \textit{ScholarMaster Series}, 2026.
+
+\bibitem{P5} N. Polisetti et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, 2026.
 
 \end{thebibliography}
 

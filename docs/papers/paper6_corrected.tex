@@ -58,7 +58,7 @@
 \author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
 \IEEEauthorblockA{\textit{Principal} \\
 \textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-సీతారామపురం, Narsapur, Andhra Pradesh, India}
+Seetharampuram, Narsapur, Andhra Pradesh, India}
 }
 
 \maketitle
@@ -127,7 +127,7 @@ The primary contributions of this work are as follows:
 \subsection{Deep Learning vs. Edge Signal Processing}
 Modern acoustic event detection (AED) is heavily dominated by Deep Learning approaches. Large-scale pre-trained networks (PANNs) \cite{b22} and Audio Spectrogram Transformers (AST) \cite{b23} achieve state-of-the-art accuracy on general classification benchmarks like FSD50K. However, these models require substantial context windows (often $>$10 seconds), continuous audio buffering, and significant compute overhead. 
 
-In a safety-critical physical security context, latency is paramount. Sending audio to a cloud API or buffering 10 seconds of data for an AST model introduces unacceptable delays. Table I highlights the architectural divergence between standard AED benchmarks and our physics-based approach, which prioritizes sub-100ms edge latency and strict operational data minimization. By relying on spectral gating rather than learned semantic features, we enable deployment on resource-constrained commodity hardware (e.g., Raspberry Pi) necessary for dense blind-spot coverage.
+In a safety-critical physical security context, latency is paramount. Sending audio to a cloud API or buffering 10 seconds of data for an AST model introduces unacceptable delays. Table I highlights the architectural divergence between standard AED benchmarks and our physics-based approach, which prioritizes sub-100ms edge latency and strict operational data minimization. By relying on spectral gating rather than learned semantic features, we enable deployment on resource-constrained commodity hardware (e.g., Raspberry Pi) necessary for dense blind-spot coverage. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \cite{b27}, while the present work focuses on reverberant acoustic sensing.
 
 \begin{table}[htbp]
 \caption{Applicability Analysis: Benchmark AED vs. Proposed System}
@@ -530,31 +530,48 @@ We acknowledge the technical staff who assisted with controlled acoustic data ge
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," \textit{IEEE Signal Processing Magazine}, vol. 24, no. 2, pp. 168-169, 2007.
-\bibitem{b2} M. Crocco, M. Cristani, A. Trucco, and V. Murino, "Audio surveillance: A systematic review," \textit{ACM Computing Surveys}, vol. 48, no. 4, pp. 1-46, 2016.
-\bibitem{b4} B. Naderi, S. Möller, and R. Polzehl, "Adversarial Representation Learning for Robust Privacy Preservation in Audio," \textit{IEEE Open Journal of Signal Processing}, vol. 5, 2024.
-\bibitem{b5} G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, "Scream and gunshot detection and localization for audio-surveillance systems," in \textit{2007 IEEE Conference on Advanced Video and Signal Based Surveillance}, pp. 21-26, 2007.
-\bibitem{b8} T. Virtanen, M. D. Plumbley, and D. Ellis, \textit{Computational Analysis of Sound Scenes and Events}, Springer, 2018.
-
-% --- SIGNAL PROCESSING & LOCALIZATION ---
-\bibitem{b9} J. Blauert, \textit{Spatial Hearing: The Psychophysics of Human Sound Localization}, MIT Press, 1997.
-\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing}, Academic Press, 2008.
-\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}, Prentice Hall, 1993.
 \bibitem{b20} C. Knapp and G. Carter, "The generalized correlation method for estimation of time delay," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 24, no. 4, pp. 320-327, 1976.
 
 % --- SENSOR NETWORKS & EDGE ---
+
+\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}, Prentice Hall, 1993.
+
+\bibitem{b9} J. Blauert, \textit{Spatial Hearing: The Psychophysics of Human Sound Localization}, MIT Press, 1997.
+
 \bibitem{b21} M. Gruteser and D. Grunwald, "Anonymous usage of location-based services through spatial and temporal cloaking," in \textit{Proceedings of the 1st International Conference on Mobile Systems, Applications and Services}, 2003, pp. 31-42.
-\bibitem{b22} Q. Kong et al., "PANNs: Large-scale Pretrained Audio Neural Networks for Audio Pattern Recognition," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 28, pp. 2880-2894, 2020.
-\bibitem{b23} Y. Gong, Y.-A. Chung, and J. Glass, "AST: Audio Spectrogram Transformer," in \textit{Proc. Interspeech}, 2021, pp. 571-575.
+
+\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," \textit{IEEE Signal Processing Magazine}, vol. 24, no. 2, pp. 168-169, 2007.
+
+\bibitem{b5} G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, "Scream and gunshot detection and localization for audio-surveillance systems," in \textit{2007 IEEE Conference on Advanced Video and Signal Based Surveillance}, pp. 21-26, 2007.
+
+\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing}, Academic Press, 2008.
+
+\bibitem{b25} B. McFee et al., "librosa: Audio and Music Signal Analysis in Python," in \textit{Proceedings of the 14th Python in Science Conference}, 2015.
+
+\bibitem{b2} M. Crocco, M. Cristani, A. Trucco, and V. Murino, "Audio surveillance: A systematic review," \textit{ACM Computing Surveys}, vol. 48, no. 4, pp. 1-46, 2016.
+
 \bibitem{b26} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
 
 % --- DATASET & TOOLING ---
-\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
-\bibitem{b25} B. McFee et al., "librosa: Audio and Music Signal Analysis in Python," in \textit{Proceedings of the 14th Python in Science Conference}, 2015.
 
-% --- SCHOLARMASTER SERIES ---
+\bibitem{b8} T. Virtanen, M. D. Plumbley, and D. Ellis, \textit{Computational Analysis of Sound Scenes and Events}, Springer, 2018.
+
+% --- SIGNAL PROCESSING & LOCALIZATION ---
+
+\bibitem{b22} Q. Kong et al., "PANNs: Large-scale Pretrained Audio Neural Networks for Audio Pattern Recognition," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 28, pp. 2880-2894, 2020.
+
+\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
+
+\bibitem{b23} Y. Gong, Y.-A. Chung, and J. Glass, "AST: Audio Spectrogram Transformer," in \textit{Proc. Interspeech}, 2021, pp. 571-575.
+
+\bibitem{b4} B. Naderi, S. Möller, and R. Polzehl, "Adversarial Representation Learning for Robust Privacy Preservation in Audio," \textit{IEEE Open Journal of Signal Processing}, vol. 5, 2024.
+
 \bibitem{scholarmaster_repo}
 Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}.
+
+\bibitem{b27} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.
+
+% --- SCHOLARMASTER SERIES ---
 
 \end{thebibliography}
 

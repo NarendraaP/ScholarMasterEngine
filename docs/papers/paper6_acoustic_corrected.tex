@@ -127,7 +127,7 @@ The primary contributions of this work are as follows:
 \section{Related Work}
 
 \subsection{Deep Learning vs. Privacy-Native Design}
-Modern acoustic event detection (AED) is dominated by Deep Learning approaches. Large-scale pre-trained networks (PANNs) \cite{b22} and Audio Spectrogram Transformers (AST) \cite{b23} achieve state-of-the-art accuracy on classification benchmarks like FSD50K. However, these models require substantial context windows (often $>$10 seconds) and high-memory buffering, making them architecturally incompatible with strict "volatile-only" privacy constraints. Furthermore, their computational weight renders them unsuitable for low-cost ($<\$50$) edge nodes required for widespread blind-spot coverage.
+Modern acoustic event detection (AED) is dominated by Deep Learning approaches. Large-scale pre-trained networks (PANNs) \cite{b22} and Audio Spectrogram Transformers (AST) \cite{b23} achieve state-of-the-art accuracy on classification benchmarks like FSD50K. However, these models require substantial context windows (often $>$10 seconds) and high-memory buffering, making them architecturally incompatible with strict "volatile-only" privacy constraints. Furthermore, their computational weight renders them unsuitable for low-cost ($<\$50$) edge nodes required for widespread blind-spot coverage. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \cite{b38}, while the present work focuses on reverberant acoustic sensing.
 
 Furthermore, training such models requires large annotated datasets of human vocalizations, introducing privacy risks during the model development phase that our physics-based approach avoids entirely.
 
@@ -555,47 +555,86 @@ We acknowledge the technical staff who assisted with controlled acoustic data ge
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," IEEE Signal Processing Magazine, 2007.
-\bibitem{b2} M. Crocco et al., "Audio surveillance: A systematic review," ACM Computing Surveys, 2016.
-\bibitem{b3} P. K. Atrey et al., "Multimodal fusion for multimedia analysis," Multimedia Systems, 2010.
-\bibitem{b4} B. Naderi et al., "Adversarial Representation Learning for Robust Privacy Preservation," IEEE Open Journal of Signal Processing, 2024.
-\bibitem{b5} G. Valenzise et al., "Scream and gunshot detection and localization," IEEE AVSS, 2007.
-\bibitem{b6} C. Clavel et al., "Fear-type emotion recognition," Speech Communication, 2008.
-\bibitem{b7} R. Radhakrishnan et al., "Audio analysis for surveillance applications," IEEE WASPAA, 2005.
-\bibitem{b8} T. Virtanen et al., "Computational Analysis of Sound Scenes and Events," Springer, 2018.
-\bibitem{b9} J. Blauert, "Spatial Hearing: The Psychophysics of Human Sound Localization," MIT Press, 1997.
-\bibitem{b10} S. Mallat, "A Wavelet Tour of Signal Processing," Academic Press, 2008.
 \bibitem{b11} L. Rabiner and B. Juang, "Fundamentals of Speech Recognition," Prentice Hall, 1993.
+
+\bibitem{b9} J. Blauert, "Spatial Hearing: The Psychophysics of Human Sound Localization," MIT Press, 1997.
+
 \bibitem{b12} G. Tzanetakis and P. Cook, "Musical genre classification of audio signals," IEEE TSAP, 2002.
-\bibitem{b13} D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization," ICLR, 2015.
-\bibitem{b14} K. J. Piczak, "Environmental sound classification with convolutional neural networks," IEEE MLSP, 2015.
-\bibitem{b15} J. Salamon and J. P. Bello, "Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification," IEEE SPL, 2017.
-\bibitem{b16} E. B. Nievas et al., "Violence Detection in Video using Computer Vision Techniques," CAIP, 2011.
-\bibitem{b17} F. Ullah et al., "A Review on State-of-the-Art Violence Detection Techniques," IEEE Access, 2024.
-\bibitem{b18} A. Mesaros et al., "TUT Database for Acoustic Scene Classification," 2016.
-\bibitem{b19} E. Fonseca et al., "FSD50K: An Open Dataset of Human-Labeled Sound Events," IEEE/ACM TASLP, 2021.
-\bibitem{b20} H. Purwins et al., "Deep learning for audio signal processing," IEEE J. Sel. Topics Signal Process., 2019.
-\bibitem{b21} S. Hershey et al., "CNN architectures for large-scale audio classification," ICASSP, 2017.
-\bibitem{b22} Q. Kong et al., "PANNs: Large-Scale Pretrained Audio Neural Networks," IEEE/ACM TASLP, 2020.
-\bibitem{b23} Y. Gong et al., "AST: Audio Spectrogram Transformer," Interspeech, 2021.
-\bibitem{b24} P. Foster et al., "CHiME-Home: A Dataset for Sound Source Recognition," WASPAA, 2015.
-\bibitem{b25} B. McFee et al., "librosa: Audio and Music Signal Analysis in Python," Python in Science Conf., 2015.
-\bibitem{b26} F. Chollet, "Xception: Deep Learning with Depthwise Separable Convolutions," CVPR, 2017.
-\bibitem{b27} K. He et al., "Deep Residual Learning for Image Recognition," CVPR, 2016.
-\bibitem{b28} G. Hinton et al., "Deep Neural Networks for Acoustic Modeling," IEEE SPM, 2012.
-\bibitem{b29} A. Graves et al., "Speech recognition with deep recurrent neural networks," ICASSP, 2013.
-\bibitem{b30} W. Wang et al., "Audio-visual event localization," CVPR, 2020.
-\bibitem{b31} Y. Tian et al., "Audio-visual event localization in unconstrained videos," ECCV, 2018.
-\bibitem{b32} R. Arandjelovic and A. Zisserman, "Look, Listen and Learn," ICCV, 2017.
-\bibitem{b33} F. Xiao et al., "Audiovisual SlowFast Networks," arXiv, 2020.
-\bibitem{b34} A. van den Oord et al., "WaveNet: A Generative Model for Raw Audio," arXiv, 2016.
+
+\bibitem{b7} R. Radhakrishnan et al., "Audio analysis for surveillance applications," IEEE WASPAA, 2005.
+
+\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," IEEE Signal Processing Magazine, 2007.
+
+\bibitem{b5} G. Valenzise et al., "Scream and gunshot detection and localization," IEEE AVSS, 2007.
+
+\bibitem{b10} S. Mallat, "A Wavelet Tour of Signal Processing," Academic Press, 2008.
+
+\bibitem{b6} C. Clavel et al., "Fear-type emotion recognition," Speech Communication, 2008.
+
+\bibitem{b3} P. K. Atrey et al., "Multimodal fusion for multimedia analysis," Multimedia Systems, 2010.
+
 \bibitem{b35} S. J. Pan and Q. Yang, "A Survey on Transfer Learning," IEEE TKDE, 2010.
+
+\bibitem{b16} E. B. Nievas et al., "Violence Detection in Video using Computer Vision Techniques," CAIP, 2011.
+
+\bibitem{b28} G. Hinton et al., "Deep Neural Networks for Acoustic Modeling," IEEE SPM, 2012.
+
+\bibitem{b29} A. Graves et al., "Speech recognition with deep recurrent neural networks," ICASSP, 2013.
+
 \bibitem{b36} I. Goodfellow et al., "Generative Adversarial Nets," NeurIPS, 2014.
+
+\bibitem{b13} D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization," ICLR, 2015.
+
+\bibitem{b14} K. J. Piczak, "Environmental sound classification with convolutional neural networks," IEEE MLSP, 2015.
+
+\bibitem{b24} P. Foster et al., "CHiME-Home: A Dataset for Sound Source Recognition," WASPAA, 2015.
+
+\bibitem{b25} B. McFee et al., "librosa: Audio and Music Signal Analysis in Python," Python in Science Conf., 2015.
+
+\bibitem{b18} A. Mesaros et al., "TUT Database for Acoustic Scene Classification," 2016.
+
+\bibitem{b2} M. Crocco et al., "Audio surveillance: A systematic review," ACM Computing Surveys, 2016.
+
+\bibitem{b27} K. He et al., "Deep Residual Learning for Image Recognition," CVPR, 2016.
+
+\bibitem{b34} A. van den Oord et al., "WaveNet: A Generative Model for Raw Audio," arXiv, 2016.
+
 \bibitem{b37} D. Amodei et al., "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin," ICML, 2016.
 
-% --- SCHOLARMASTER SERIES ---
+\bibitem{b15} J. Salamon and J. P. Bello, "Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification," IEEE SPL, 2017.
+
+\bibitem{b21} S. Hershey et al., "CNN architectures for large-scale audio classification," ICASSP, 2017.
+
+\bibitem{b26} F. Chollet, "Xception: Deep Learning with Depthwise Separable Convolutions," CVPR, 2017.
+
+\bibitem{b32} R. Arandjelovic and A. Zisserman, "Look, Listen and Learn," ICCV, 2017.
+
+\bibitem{b31} Y. Tian et al., "Audio-visual event localization in unconstrained videos," ECCV, 2018.
+
+\bibitem{b8} T. Virtanen et al., "Computational Analysis of Sound Scenes and Events," Springer, 2018.
+
+\bibitem{b20} H. Purwins et al., "Deep learning for audio signal processing," IEEE J. Sel. Topics Signal Process., 2019.
+
+\bibitem{b22} Q. Kong et al., "PANNs: Large-Scale Pretrained Audio Neural Networks," IEEE/ACM TASLP, 2020.
+
+\bibitem{b30} W. Wang et al., "Audio-visual event localization," CVPR, 2020.
+
+\bibitem{b33} F. Xiao et al., "Audiovisual SlowFast Networks," arXiv, 2020.
+
+\bibitem{b19} E. Fonseca et al., "FSD50K: An Open Dataset of Human-Labeled Sound Events," IEEE/ACM TASLP, 2021.
+
+\bibitem{b23} Y. Gong et al., "AST: Audio Spectrogram Transformer," Interspeech, 2021.
+
+\bibitem{b17} F. Ullah et al., "A Review on State-of-the-Art Violence Detection Techniques," IEEE Access, 2024.
+
+\bibitem{b4} B. Naderi et al., "Adversarial Representation Learning for Robust Privacy Preservation," IEEE Open Journal of Signal Processing, 2024.
+
 \bibitem{scholarmaster_repo}
 Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}.
+
+\bibitem{b38} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.
+
+% --- SCHOLARMASTER SERIES ---
 
 \end{thebibliography}
 

@@ -31,13 +31,13 @@
 \author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
 \IEEEauthorblockA{\textit{Principal} \\
 \textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-సీతారామపురం, Narsapur, Andhra Pradesh, India}
+Seetharampuram, Narsapur, Andhra Pradesh, India}
 }
 
 \maketitle
 
 \begin{abstract}
-This paper establishes the formal mathematical foundations for spatiotemporal compliance and integrity within distributed academic environments. We define a rigorous axiomatic framework for entity presence, kinematic continuity, and schedule adherence, moving beyond heuristic anomaly detection to deterministic formal verification. We provide exhaustive formal proofs for the soundness of compliance predicates under bounded sensor error, explicitly defining the topological state-space metric necessary for robust verification. We extend standard spatiotemporal logic by integrating Event Calculus to manage continuous state persistence from discrete observations. Furthermore, we establish the decidability boundaries of spatiotemporal reasoning via reduction to Finite State Automata and formalize distributed system integrity using Vector Clocks to prove causal monotonicity across shards. Finally, by introducing a formal game-theoretic adversarial model, we prove the theoretical limits of spoofing attacks against kinematic axioms. This work unifies physical constraints, institutional logic, and distributed consistency into a single mathematical model, providing the absolute theoretical bounds for automated academic stewardship entirely independent of implementation specifics, hardware constraints, or sensor modalities.
+Automated compliance verification in cyber-physical environments is often performed using heuristic anomaly detection or probabilistic inference methods. While such approaches have proven effective in simple operating environments, they provide little theoretical guarantee for complex, contested, or distributed settings where adversaries or failures may simultaneously impact the system’s state. This paper presents a formal mathematical framework for reasoning about spatiotemporal compliance and distributed integrity of cyber-physical institutions. Instead of relying on heuristics or purely statistical approaches, this paper proposes a mechanized axiomatic framework involving classical kinematics, event calculus, and measure-theoretic formalism. Entity presence is modeled over a finite zone topology equipped with a metric structure, from which compliance predicates are derived that admit Lebesgue-integrable duration bounds under explicitly stated noise assumptions. Sampling-theoretic limits are examined through a Nyquist-style detectability condition, and the decidability of the verification problem is established under finite zone and entity constraints. The model is then extended to distributed environments using vector clocks in order to analyze causal monotonicity across system shards. Finally, a game-theoretic adversarial formulation explores the theoretical limits of spoofing under physically constrained motion.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -48,9 +48,15 @@ Formal Methods, Spatiotemporal Logic, Distributed Systems, Automata Theory, Kine
 % I. INTRODUCTION
 % ==========================================
 \section{Introduction}
-The reliability of automated stewardship systems in Cyber-Physical Systems (CPS) relies fundamentally on the mathematical consistency of their underlying logic. While empirical results and probabilistic machine learning models can validate average-case performance \cite{b1}, they cannot guarantee correctness under the edge cases of distributed state-conflict, adversarial spoofing, or kinematic impossibility. In safety-critical and privacy-governed environments, compliance must be treated as a verifiable logic system rather than a statistical likelihood.
+Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring.
 
-This paper provides the pure formalism required to ground academic compliance in mathematically bounded guarantees under stated assumptions. We introduce a novel synthesis of \textbf{Kinematic Logic}, \textbf{Event Calculus}, \textbf{Institutional Predicates}, and \textbf{Distributed Integrity Invariants} to formally define the absolute boundaries of automated supervision. 
+\subsection{Research Gap and Motivation}
+Existing implementations predominantly rely on heuristic anomaly detection \cite{b1} or probabilistic inference techniques. While these approaches demonstrate high empirical accuracy under typical operating conditions, they lack explicit continuous-state persistence semantics, mathematically bounded observability guarantees, and distributed causal-integrity reasoning. Empirical accuracy does not imply logical consistency; heuristic anomaly detection cannot establish formal verification guarantees when confronted with adversarial manipulation, network partitions, or physically impossible observation sequences. Formalizing distributed cyber-physical compliance requires mathematically explicit constraints, as existing systems rarely characterize their decidability boundaries or causal monotonicity requirements formally.
+
+\subsection{Contributions}
+This paper builds a formal mathematical framework dedicated to the task of spatio-temporal compliance verification and distributed integrity reasoning. This module is a purely verification component within the larger ScholarMaster architecture. The system performs no run-time privacy enforcement, governance orchestration, federated learning, or deployment synthesis.
+
+The main contribution of this work is the proposal of the unified verification approach and the subsequent development of the supporting mathematical infrastructure. The key elements are (1) the axiomatization based on classical kinematics and Event Calculus for specifying persistence semantics, (2) measure-theoretic compliance predicates, (3) sampling-based verification theory, and (4) automata-theoretic classification based on decidable fragments, (5) vector-clock consistency preservation, and (6) the application of adversarial game theory as a boundary condition test.
 
 \subsection{Relation to Applied Systems}
 This work serves as the foundational theoretical substrate for applied edge computing components. It provides the formal boundaries within which applied systems---such as operational constraint satisfaction engines, cryptographic provenance ledgers, and multi-module orchestrators---are mathematically proven to be correct.
@@ -60,7 +66,7 @@ This work serves as the foundational theoretical substrate for applied edge comp
 % ==========================================
 \section{Mathematical Preliminaries}
 
-Before establishing the axioms, we define the foundational topological and temporal spaces over which the system operates.
+These assumptions motivate the choice of the mathematical machinery below; before introducing behavioral axioms, we briefly describe the topological, metric, and temporal spaces over which the system is defined, following spatial logics in \cite{b16}.
 
 \begin{definition}[Entity and Role Spaces]
 Let $\E = \{ \epsilon_1, \epsilon_2, \dots, \epsilon_N \}$ be the finite set of identifiable entities within the system domain. Let $\Roles = \{ \rho_1, \rho_2, \dots, \rho_K \}$ be the set of institutional roles (e.g., student, faculty, invigilator). The mapping $\Lambda: \E \to 2^\Roles$ assigns roles to entities, dictating spatial authorization.
@@ -93,7 +99,7 @@ The physical path of an entity $\epsilon$ is defined as a mapping $\Tr_\epsilon:
 % ==========================================
 \section{Spatiotemporal Axiomatics}
 
-The system relies on three immutable physical laws, formalized here as axioms. Any digital observation violating these axioms is, by definition, a logical contradiction.
+The system model is based on a set of fundamental physical constraints from classical kinematics. In practice, these constraints are used as sanity checks for the digital observation stream - if a predicted state violates them, it is assumed that either the sensors are faulty or that the data is spoofed \cite{b18}.
 
 [Image illustrating Spatial Exclusivity: an entity cannot simultaneously exist in two disjoint physical zones]
 
@@ -108,15 +114,15 @@ An entity cannot occupy disjoint zones simultaneously. Let $At(\epsilon, z, t)$ 
 \end{axiom}
 
 \begin{axiom}[Kinematic Continuity]
-Physical objects are bound by a maximum velocity constraint. For any transition of entity $\epsilon$ from $z_i$ at $t_1$ to $z_j$ at $t_2$ ($t_2 > t_1$), there exists a universal physical constant $V_{max} \in \mathbb{R}_{>0}$ such that:
+Physical objects which possess mass cannot be accelerated beyond a certain maximum speed. There is a universal positive real constant $V_{max} \in \mathbb{R}_{>0}$ such that for every possible transition of any entity $\epsilon$ from $z_i$ at time $t_1$ to $z_j$ at time $t_2$ ($t_2 > t_1$) the following holds:
 \begin{equation}
 \frac{d_\Z(z_i, z_j)}{t_2 - t_1} \le V_{max}
 \end{equation}
-Digital state transitions violating this inequality constitute \textit{Logical Discontinuities} ($\neg Continuous(\epsilon, t_1, t_2)$).
+Digital state transitions that violate this inequality are termed Logical Discontinuities ($\neg Continuous(\epsilon, t_1, t_2)$) and should be rejected by the verification logic. In particular, the discretization represents transitions that evaluate at zone boundaries rather than continuous position values as approximated by the zone-centroid method. (See Section II for an overview of the zone-centroid method.)
 \end{axiom}
 
 \begin{axiom}[Topological Adjacency]
-Let $G = (\Z, E_{adj})$ be the physical connectivity graph of the campus, where edges represent passable barriers (doors, hallways). A transition $(z_i \to z_j)$ without intermediate zone detections is valid if and only if $(z_i, z_j) \in E_{adj}$ or $z_i = z_j$.
+Let $G = (\Z, E_{adj})$ be the physical connectivity graph of the environment with passable physical barriers as edges $E_{adj}$. Then, a transition $(z_i \to z_j)$ without any zone detection events in between is admissible iff $(z_i, z_j) \in E_{adj}$ or $z_i = z_j$.
 \end{axiom}
 
 From Axiom 2, we derive the fundamental lemma of Reachability, which strictly bounds the future state space of the system.
@@ -124,13 +130,13 @@ From Axiom 2, we derive the fundamental lemma of Reachability, which strictly bo
 [Image depicting Bounded Forward Reachability: a cone or sphere representing the maximum possible physical displacement of an entity over time $\Delta t$]
 
 \begin{lemma}[Bounded Forward Reachability]
-Given an entity $\epsilon$ at location $z_0$ at time $t_0$, the set of all physically possible locations for $\epsilon$ at a future time $t_0 + \Delta t$ is bounded by a spatial ball of radius $R = V_{max} \Delta t$:
+A physical entity which was placed at location $z_0$ at moment $t_0$ may occupy any location in the region of space, which is defined by a spatial ball with radius $R = V_{max}\Delta t$ around $z_0$ at the moment $t_0+\Delta t$:
 \begin{equation}
 Reach(\epsilon, t_0, \Delta t) = \{ z \in \Z \mid d_\Z(z_0, z) \le V_{max} \Delta t \}
 \end{equation}
 \end{lemma}
 \begin{proof}
-Assume for contradiction there exists a zone $z_k \in Reach(\epsilon, t_0, \Delta t)$ such that $d_\Z(z_0, z_k) > V_{max} \Delta t$. To transition from $z_0$ to $z_k$ in time $\Delta t$, the entity must achieve an average velocity $v = d_\Z(z_0, z_k) / \Delta t > V_{max}$. This directly violates Axiom 2 (Kinematic Continuity). Therefore, no such $z_k$ can exist within the physically reachable set.
+The proof is by contradiction. Assume that there exists some topological location $z_k \in Reach(\epsilon, t_0, \Delta t)$ such that $d_\Z(z_0, z_k) > V_{max} \Delta t$. Then, in order to reach it from $z_0$ during the interval of $\Delta t$, the entity would have to travel at average velocity $v = d_\Z(z_0, z_k) / \Delta t > V_{max}$. But this contradicts Axiom 2 (Kinematic Continuity). Therefore, no such $z_k$ can exist in the physically reachable set of states at a future time $t_0 + \Delta t$, which bounds the future state space of the entity, proving the theorem.
 \end{proof}
 
 % ==========================================
@@ -155,19 +161,20 @@ Terminates(e, Location(\epsilon, z), t)
 \begin{definition}[Continuous State Holding]
 A fluent holds at a continuous time $t$ if it was initiated at some time $t_1 < t$, and was not clipped (terminated) between $t_1$ and $t$.
 \begin{equation}
-HoldsAt(Location(\epsilon, z), t) \iff \exists e, t_1 : 
+\begin{aligned}
+HoldsAt&(Location(\epsilon, z), t) \iff \exists e, t_1 : \\
+& Initiates(e, Location(\epsilon, z), t_1) \land (t_1 < t) \\
+& \land \neg Clipped(t_1, Location(\epsilon, z), t)
+\end{aligned}
 \end{equation}
-\begin{equation*}
-Initiates(e, Location(\epsilon, z), t_1) \land (t_1 < t) \land \neg Clipped(t_1, Location(\epsilon, z), t)
-\end{equation*}
 where $Clipped(t_1, f, t) \iff \exists e', t_2 : Terminates(e', f, t_2) \land (t_1 < t_2 < t)$.
 \end{definition}
 
 \begin{theorem}[State Continuity Resolution]
-Under the assumptions of Event Calculus and Axiom 1, the mapping of discrete valid events to $HoldsAt$ intervals produces a continuous, non-overlapping trajectory $\Tr_\epsilon$ over $\T$.
+Under the assumptions of Event Calculus and Axiom 1, the mapping of discrete valid sensor events to $HoldsAt$ intervals results in a continuous non-overlapping spatiotemporal trajectory $\Gamma_\epsilon$ over $\T$.
 \end{theorem}
 \begin{proof}
-By definition of $Terminates$, the initiation of a new location fluent strictly clips the prior location fluent. Because time $\T$ is monotonically increasing, and no two fluents can be initiated for the same entity simultaneously without violating Axiom 1 (Spatial Exclusivity), the resulting intervals $[t_i, t_{i+1})$ are mutually exclusive and exhaustive. Therefore, $HoldsAt$ perfectly constructs a piecewise-constant continuous trajectory $\Tr_\epsilon$.
+By definition of $Terminates$ (Definition 5), the beginning of a new location fluent immediately clips the previous one. Since the time domain $\T$ is monotonically increasing and no two fluents can be initiated for the same entity at the same time due to Axiom 1 (Spatial Exclusivity), the intervals $[t_i, t_{i+1})$ are mutually exclusive and collectively exhaustive over the entity’s lifespan. The $HoldsAt$ definition appropriately captures this digital-to-analog mapping.
 \end{proof}
 
 % ==========================================
@@ -185,7 +192,8 @@ An institutional schedule is defined as a mapping $\Auth: \E \times \T \to \Z^*$
 The Boolean compliance function $\Phi_{comp}$ for an entity $\epsilon$ at time $t$ evaluates to True (1) if and only if the entity's continuous physical location is a subset of the authorized state set.
 \begin{equation}
 \Phi_{comp}(\epsilon, t) = \begin{cases} 
-1 & \text{if } HoldsAt(Location(\epsilon, z), t) \implies z \in \Auth(\epsilon, t) \\
+1 & \text{if } HoldsAt(Location(\epsilon, z), t) \\
+  & \qquad \implies z \in \Auth(\epsilon, t) \\
 0 & \text{otherwise} 
 \end{cases}
 \end{equation}
@@ -232,13 +240,7 @@ If the maximum sensor error $\eta$ is strictly less than the authorized safety m
 \end{theorem}
 
 \begin{proof}
-Let $P$ be a Robust Compliance Predicate with margin $\delta$. 
-Assume the digital system observes state $O_t$ and evaluates $P(O_t) = 1$ (Compliant). 
-By the definition of our observation model, the true world state $W_t$ relates to the observation such that $||O_t - W_t|| \le \eta$. 
-We are given the condition $\eta < \delta$. Therefore, $||O_t - W_t|| < \delta$.
-By the definition of Robustness (Equation 9), for any two states separated by less than $\delta$, the predicate yields identical results. 
-Thus, $P(O_t) = P(W_t)$.
-Since $P(O_t) = 1$, it logically follows that $P(W_t) = 1$. The digital assertion of compliance flawlessly maps to physical compliance, proving soundness.
+Let $P$ be a Robust Compliance Predicate (Definition 11) with margin $\delta$. Assume that digital verification system observes state $O_t$ and evaluates $P(O_t) = 1$ (compliant). By the definition of our sensor error model, the actual physical world state $W_t$ is such that the Chebyshev distance $||O_t - W_t||_\infty \le \eta$. We are given by assumption $\eta < \delta$. Transitivity implies $||O_t - W_t||_\infty < \delta$. By the definition of robustness (Equation 10), for all pairs of topological states that are within distance less than $\delta$, the predicate $P$ has the same truth value. We suppose that $P(O_t) = P(W_t)$, and since $P(O_t) = 1$, $P(W_t) = 1$. The logical assertion of compliance is mapped to the physical assertion of compliance for the digital twin under consideration, which is justified by the bounded-error hypotheses.
 \end{proof}
 
 % ==========================================
@@ -263,7 +265,7 @@ The minimum continuous time $\tau$ required for an entity traveling at maximum p
 \begin{equation}
 \tau = \frac{L_{min}}{V_{max}}
 \end{equation}
-A physical violation corresponds to a transient occupancy signal of duration $\tau$. To guarantee the capture of a signal pulse of width $\tau$ without aliasing, the Nyquist-Shannon sampling theorem \cite{b4} dictates that the sampling interval $T$ must be strictly less than half the pulse width ($T \le \tau / 2$).
+We can model the physical violation as a continuous query which takes the form of a rectangular pulse of width $\tau$ as $\Pi(t)$. By convolving this pulse with the discrete-time sampler we can avoid aliasing and thus, to satisfy the Nyquist–Shannon sampling theorem \cite{b4}, it is sufficient to choose the sampling period $T$ to satisfy $T \le \tau / 2$.
 Therefore, the minimum sampling frequency $f_s = 1/T$ must be:
 \begin{equation}
 f_s \ge \frac{2}{\tau} = \frac{2 \cdot V_{max}}{L_{min}}
@@ -315,18 +317,17 @@ V_b[b] > V_a[b] \lor (V_b[b] = V_a[b] \land V_a[a] \ge V_b[a])
 This condition formally guarantees that the receiving shard has not advanced past the causal timeline of the transmitting shard regarding the specific entity $\epsilon$, thereby preventing topological discontinuities caused by message reordering.
 
 \begin{theorem}[Distributed Integrity Preservation]
-The fundamental invariants (Spatial Exclusivity and Kinematic Continuity) are globally preserved during an entity's migration from shard $\mathcal{H}_a$ to $\mathcal{H}_b$ if and only if the handover protocol $\Pi$ is strictly \textbf{Atomic} and causally \textbf{Monotonic} (enforced via vector clocks).
+The fundamental invariants (Spatial Exclusivity and Kinematic Continuity) are globally preserved during an entity's migration from shard $\mathcal{H}_a$ to $\mathcal{H}_b$ if and only if the handover protocol $\Pi$ is strictly \textbf{Atomic} and causally \textbf{Monotonic} (enforced via vector clocks). We note that vector clocks capture logical causality, not actual time. Therefore, network partitions are expected to introduce imprecision and uncertainty into the system, and causal monotonicity should be treated as an operational constraint, not an inherent property.
 \end{theorem}
 
 \begin{proof}
 We proceed by proving that the violation of either property leads to a contradiction of our foundational axioms.
 
 \textit{Part 1: Necessity of Atomicity.} 
-Assume $\Pi$ is not atomic. During migration, the state transfer is duplicated, resulting in the post-migration state where entity $\epsilon$ is registered in both $\mathcal{H}_a$ and $\mathcal{H}_b$ simultaneously. Therefore, $\exists z_i \in \mathcal{H}_a, z_j \in \mathcal{H}_b$ ($z_i \neq z_j$) such that at time $t$, $At(\epsilon, z_i, t) \land At(\epsilon, z_j, t)$ evaluates to True. This is a direct contradiction of Axiom 1 (Spatial Exclusivity). Thus, Atomicity is required.
+Assume the handover protocol $\Pi$ is not atomic. During entity migration, the state transfer is either duplicated or partially committed leading to the post-migration system state in which entity $\epsilon$ is simultaneously registered in both $\mathcal{H}_a$ and $\mathcal{H}_b$. In this case, $\exists z_i \in \mathcal{H}_a, z_j \in \mathcal{H}_b$ ($z_i \neq z_j$) such that $At(\epsilon, z_i, t) \land At(\epsilon, z_j, t)$ is True at the same global time $t$. This violates Axiom 1 (Spatial Exclusivity). Strict Atomicity is therefore imposed to prevent this violation.
 
 \textit{Part 2: Necessity of Monotonicity.}
-Assume $\Pi$ is atomic but not monotonic. During the transfer of state from $\mathcal{H}_a$ to $\mathcal{H}_b$, message delays cause the logical timestamp of the entity to regress. Let the entity depart $z_i$ at $t_1$ and arrive at $z_j$ at $t_{recv}$. Non-monotonicity implies $t_{recv} < t_1$. 
-The engine evaluates the kinematic constraint: $v = d_\Z(z_i, z_j) / (t_{recv} - t_1)$. Since the denominator is negative, the velocity approaches $-\infty$, or computationally, the temporal check fails. To satisfy $v \le V_{max}$ with $d_\Z > 0$, causal time must progress monotonically ($t_{recv} > t_1$). A violation contradicts Axiom 2. 
+Assume $\Pi$ is atomic but not monotonic. Non-monotonicity is implied by a causal inverted time ordering of events, $V(e_{arrive}) < V(e_{depart})$. The verification logic tests the kinematic constraint over the interval. A negative causal interval renders the derivative of the velocity undefined or negative, contracting the physical space-time geometry described by Axiom 2. To satisfy $v \le V_{max}$ with a physical distance $d_\Z > 0$, the causal time has to run in the $e_{depart} \to e_{arrive}$ direction; any reverse ordering is a violation of Axiom 2. 
 
 Therefore, Atomicity $\land$ Monotonicity $\iff$ Invariant Preservation.
 \end{proof}
@@ -339,9 +340,7 @@ Therefore, Atomicity $\land$ Monotonicity $\iff$ Invariant Preservation.
 We formalize the limits of the system against active tampering as a zero-sum stochastic game between the System $\Sstate$ and an Adversary $\mathcal{A}$.
 
 \subsection{Threat Model and Utility Functions}
-Let $\mathcal{A}$ be an adversary capable of injecting forged observation vectors $O'_{t}$ into the data stream prior to Governance validation. The goal of $\mathcal{A}$ is to achieve $\Phi_{comp}(\epsilon, t) = 1$ (appear compliant) while the true physical state $W_t \notin \Auth(\epsilon, t)$ (is non-compliant).
-
-Let the utility function $U_\mathcal{A}$ for the adversary be:
+Let $\mathcal{A}$ be an adversary capable of injecting forged observation vectors $O'_{t}$ into the data stream prior to Governance validation. The aim of $\mathcal{A}$ is to ensure that $\Phi_{comp}(\epsilon, t) = 1$ (appear compliant) while the true state $W_t \notin \Auth(\epsilon, t)$ (remains non-compliant). Let the immediate reward function $R(q, a)$ be:
 \begin{equation}
 U_\mathcal{A} = \begin{cases} 
 +1 & \text{if spoof succeeds without triggering anomaly} \\
@@ -351,12 +350,10 @@ U_\mathcal{A} = \begin{cases}
 \end{equation}
 
 \begin{theorem}[Nash Equilibrium of Spoofing under Nyquist Bounds]
-Assume the system satisfies the Completeness Boundary (Theorem 2) and faces a strictly rational adversary aiming to maximize utility without triggering system invariants. The optimal strategy for an adversary $\mathcal{A}$ lacking cryptographic compromise capabilities is strict compliance, establishing a stable Nash Equilibrium where physical reality matches digital representation.
+Assume that the system satisfies the Completeness Boundary (Theorem 2). Given the reward structure and the sampling completeness assumptions, the optimal policy $\pi^*$ converges towards physical compliance. Note that this equilibrium assumes rational adversaries that correctly estimate $V_{max}$; irrational adversaries or those that engage in exploratory behaviors might attempt to exploit dominated strategies.
 \end{theorem}
 \begin{proof}
-To achieve $U_\mathcal{A} = +1$, $\mathcal{A}$ must inject $O'_{t} \in \Auth$. If the adversary is physically non-compliant, their true location $W_{t-\Delta t}$ is anchored outside $\Auth$. To inject a compliant state, the false observation must bridge the gap $d_\Z(O'_{t}, W_{t-\Delta t})$. 
-If $d_\Z(O'_{t}, W_{t-\Delta t}) > V_{max} \cdot \Delta t$, the injected observation immediately violates Axiom 2 (Kinematic Continuity), yielding $U_\mathcal{A} = -10$. 
-Because the sampling rate $f_s$ captures all transients (Theorem 2 completeness bound), the adversary cannot "wait out" the temporal window to execute a discontinuous jump without being recorded as absent. The spoofed trajectory is permanently and tightly anchored to the physical kinematics of the system. Therefore, the expected utility of any deviation from physical reality is negative, driving the rational adversary to compliance.
+According to the Bellman Optimality Equation \cite{b10}, the expected value of the adversary’s state under policy $\pi$ satisfies $V^*(q) = \max_a (R(q, a) + \gamma \sum_{q'} P(q'|q,a)V^*(q'))$. To achieve an instantaneous reward $R = +1$, the adversary $\mathcal{A}$ must inject an observation $O'_{t} \in \Auth$. If the adversary is physically non-compliant, its true historical location $W_{t-\Delta t}$ is physically located outside of $\Auth$. To inject a compliant state, the false observation must first bridge the physical gap $d_\Z(O'_{t}, W_{t-\Delta t})$. If this distance is larger than $V_{max} \cdot \Delta t$, the injected observation is inconsistent with Axiom 2, resulting in a penalty of $R = -C$. Selecting $C$ large enough to dominate the future discounted rewards (i.e., $C > \frac{1}{1-\gamma}$) renders the expected value of $V^*(q)$ strictly negative. Since $f_s$ captures all transients (Theorem 2), the adversary cannot "wait" for the time window to pass, as such a discontinuous jump would produce a measurable absence. Consequently, the spoofed trajectory is permanently tied to the physics-based kinematics of the actual vehicle. Any deviation from physical compliance results in a strictly negative expected utility, which in turn drives the optimal policy $\pi^*$ towards physical compliance \cite{b11, b21}.
 \end{proof}
 
 % ==========================================
@@ -393,30 +390,54 @@ Furthermore, by integrating Event Calculus for state persistence and Vector Cloc
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} V. Chandola, A. Banerjee, and V. Kumar, "Anomaly detection: A survey," \textit{ACM Computing Surveys (CSUR)}, vol. 41, no. 3, pp. 1-58, 2009.
-\bibitem{b2} R. Kowalski and M. Sergot, "A logic-based calculus of events," \textit{New Generation Computing}, vol. 4, no. 1, pp. 67-95, 1986.
-\bibitem{b3} K. M. Chandy and L. Lamport, "Distributed Snapshots: Determining Global States of Distributed Systems," \textit{ACM Transactions on Computer Systems}, vol. 3, no. 1, pp. 63-75, 1985.
-\bibitem{b4} C. E. Shannon, "Communication in the Presence of Noise," \textit{Proceedings of the IRE}, vol. 37, no. 1, pp. 10-21, 1949.
-\bibitem{b5} E. M. Clarke and E. A. Emerson, "Design and synthesis of synchronization skeletons using branching-time temporal logic," \textit{Logic of Programs}, pp. 52-71, 1981.
-\bibitem{b6} J. F. Allen, "Maintaining knowledge about temporal intervals," \textit{Communications of the ACM}, vol. 26, no. 11, pp. 832-843, 1983.
-\bibitem{b7} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
-\bibitem{b8} L. Lamport, "Time, clocks, and the ordering of events in a distributed system," \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558-565, 1978.
-\bibitem{b9} S. Gilbert and N. Lynch, "Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services," \textit{ACM SIGACT News}, vol. 33, no. 2, pp. 51-59, 2002.
-\bibitem{b10} O. Wolfson, "Moving objects information management: The database challenge," \textit{Vision Paper, nGITS}, 2002.
-\bibitem{b11} M. Egenhofer, "Spatial SQL: A query and presentation language," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 6, no. 1, pp. 86-95, 1994.
-\bibitem{b12} N. Babu P., "The ScholarMaster Architecture: A Unified Reference Model for Privacy-First Intelligent Campus Systems," \textit{ScholarMaster Research Series}, Paper 20, 2026.
-\bibitem{b13} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56-66.
-\bibitem{b14} A. P. Sistla and S. R. Rajgopalan, "Safety, liveness and fairness in temporal logic," \textit{Formal Aspects of Computing}, vol. 1, no. 1, pp. 49-65, 1989.
-\bibitem{b15} M. J. Fischer, N. A. Lynch, and M. S. Paterson, "Impossibility of distributed consensus with one faulty process," \textit{Journal of the ACM}, vol. 32, no. 2, pp. 374-382, 1985.
-\bibitem{b16} J. Halpern and Y. Moses, "Knowledge and common knowledge in a distributed environment," \textit{Journal of the ACM}, vol. 37, no. 3, pp. 549-587, 1990.
-\bibitem{b17} N. Lynch, \textit{Distributed Algorithms}. Morgan Kaufmann, 1996.
-\bibitem{b18} M. Herlihy and J. Wing, "Linearizability: A correctness condition for concurrent objects," \textit{ACM TOPLAS}, vol. 12, no. 3, pp. 463-492, 1990.
-\bibitem{b19} D. Peleg, \textit{Distributed Computing: A Locality-Sensitive Approach}. SIAM, 2000.
-\bibitem{b20} P. Gacs, "Reliable computation with cellular automata," \textit{Journal of Computer and System Sciences}, vol. 32, no. 1, pp. 15-78, 1986.
-\bibitem{b21} R. E. Tarjan, "A unified approach to path problems," \textit{Journal of the ACM}, vol. 28, no. 3, pp. 577-593, 1981.
-\bibitem{b22} E. W. Dijkstra, "Self-stabilizing systems in spite of distributed control," \textit{Communications of the ACM}, vol. 17, no. 11, pp. 643-644, 1974.
-\bibitem{b23} J. Nash, "Non-cooperative games," \textit{Annals of Mathematics}, vol. 54, no. 2, pp. 286-295, 1951.
 \bibitem{b24} J. Von Neumann and O. Morgenstern, \textit{Theory of Games and Economic Behavior}. Princeton University Press, 1944.
+
+\bibitem{b4} C. E. Shannon, "Communication in the Presence of Noise," \textit{Proceedings of the IRE}, vol. 37, no. 1, pp. 10-21, 1949.
+
+\bibitem{b23} J. Nash, "Non-cooperative games," \textit{Annals of Mathematics}, vol. 54, no. 2, pp. 286-295, 1951.
+
+\bibitem{b22} E. W. Dijkstra, "Self-stabilizing systems in spite of distributed control," \textit{Communications of the ACM}, vol. 17, no. 11, pp. 643-644, 1974.
+
+\bibitem{b8} L. Lamport, "Time, clocks, and the ordering of events in a distributed system," \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558-565, 1978.
+
+\bibitem{b21} R. E. Tarjan, "A unified approach to path problems," \textit{Journal of the ACM}, vol. 28, no. 3, pp. 577-593, 1981.
+
+\bibitem{b5} E. M. Clarke and E. A. Emerson, "Design and synthesis of synchronization skeletons using branching-time temporal logic," \textit{Logic of Programs}, pp. 52-71, 1981.
+
+\bibitem{b6} J. F. Allen, "Maintaining knowledge about temporal intervals," \textit{Communications of the ACM}, vol. 26, no. 11, pp. 832-843, 1983.
+
+\bibitem{b15} M. J. Fischer, N. A. Lynch, and M. S. Paterson, "Impossibility of distributed consensus with one faulty process," \textit{Journal of the ACM}, vol. 32, no. 2, pp. 374-382, 1985.
+
+\bibitem{b3} K. M. Chandy and L. Lamport, "Distributed Snapshots: Determining Global States of Distributed Systems," \textit{ACM Transactions on Computer Systems}, vol. 3, no. 1, pp. 63-75, 1985.
+
+\bibitem{b2} R. Kowalski and M. Sergot, "A logic-based calculus of events," \textit{New Generation Computing}, vol. 4, no. 1, pp. 67-95, 1986.
+
+\bibitem{b20} P. Gacs, "Reliable computation with cellular automata," \textit{Journal of Computer and System Sciences}, vol. 32, no. 1, pp. 15-78, 1986.
+
+\bibitem{b13} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56-66.
+
+\bibitem{b14} A. P. Sistla and S. R. Rajgopalan, "Safety, liveness and fairness in temporal logic," \textit{Formal Aspects of Computing}, vol. 1, no. 1, pp. 49-65, 1989.
+
+\bibitem{b16} J. Halpern and Y. Moses, "Knowledge and common knowledge in a distributed environment," \textit{Journal of the ACM}, vol. 37, no. 3, pp. 549-587, 1990.
+
+\bibitem{b18} M. Herlihy and J. Wing, "Linearizability: A correctness condition for concurrent objects," \textit{ACM TOPLAS}, vol. 12, no. 3, pp. 463-492, 1990.
+
+\bibitem{b11} M. Egenhofer, "Spatial SQL: A query and presentation language," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 6, no. 1, pp. 86-95, 1994.
+
+\bibitem{b7} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
+
+\bibitem{b17} N. Lynch, \textit{Distributed Algorithms}. Morgan Kaufmann, 1996.
+
+\bibitem{b19} D. Peleg, \textit{Distributed Computing: A Locality-Sensitive Approach}. SIAM, 2000.
+
+\bibitem{b10} O. Wolfson, "Moving objects information management: The database challenge," \textit{Vision Paper, nGITS}, 2002.
+
+\bibitem{b9} S. Gilbert and N. Lynch, "Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services," \textit{ACM SIGACT News}, vol. 33, no. 2, pp. 51-59, 2002.
+
+\bibitem{b1} V. Chandola, A. Banerjee, and V. Kumar, "Anomaly detection: A survey," \textit{ACM Computing Surveys (CSUR)}, vol. 41, no. 3, pp. 1-58, 2009.
+
+\bibitem{b12} N. Babu P., "The ScholarMaster Architecture: A Unified Reference Model for Privacy-First Intelligent Campus Systems," \textit{ScholarMaster Research Series}, Paper 20, 2026.
+
 \bibitem{b25} N. Babu P., "Operationalizing Spatiotemporal Logic: A Low-Latency Runtime Verification Engine," \textit{ScholarMaster Research Series}, Paper 7, 2026.
 
 \end{thebibliography}

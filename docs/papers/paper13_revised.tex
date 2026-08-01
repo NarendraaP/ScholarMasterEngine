@@ -46,11 +46,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Edge-deployed neural networks often operate for extended periods within dynamic physical environments. Over time, gradual environmental changes modify the statistical properties of incoming sensor streams, creating continuous temporal distribution shifts. When models trained exclusively on historical data remain static under these evolving conditions, predictive reliability deteriorates. While centralized retraining paradigms successfully mitigate such drift, they inherently rely on continuous raw data aggregation, directly conflicting with institutional data-minimization policies and computational bandwidth limits.
+Edge-deployed neural networks frequently operate in an evolving physical domain, where slow and subtle shifts in the environment alter the properties of the sensor stream statistics. Thus, distributions of incoming observations change with time, which significantly impacts the prediction accuracy of models trained only on historical data. While centralized model retraining procedures address this issue, they require large amounts of data for retraining, which contradicts the data-minimization principles and the available bandwidth on edge devices.
 
-To address this persistent operational challenge, this work develops a localized, active-learning-centric drift-compensation framework. Specifically, the framework isolates the challenge of label sparsity in drifted domains by leveraging Bayesian Active Learning by Disagreement (BALD). The proposed acquisition function measures epistemic uncertainty via Monte Carlo dropout processing, selectively acquiring only the most informative out-of-distribution samples to minimize manual labeling requirements without transmitting raw payloads. These locally curated data parcels are then synchronized utilizing a privacy-preserving federated architecture. 
+In order to resolve the stated problem, the paper presents an active learning based drift compensation framework that is localized and relies on the acquisition function of Bayesian Active Learning by Disagreement (BALD). The latter selects informative training samples from the out-of-distribution domain with limited annotation needs, thus, reducing the amount of unstructured data that must be processed to update the model. The framework synchronizes the locally acquired information through a private federated mechanism.
 
-Extensive simulations modeling environmental lighting decay, demographic shifts, and physical occlusion across five edge nodes validate the approach. The active learning selection mechanism successfully recovered 79.6\% of the observed temporal accuracy degradation while restricting the annotation budget to roughly 15\% of total captured frames. Furthermore, this study demonstrates that strict layer-freezing geometries are not merely communication optimizations, but are mathematically required constraints to ensure learning trajectory stability under the obfuscation noise inherent to privacy-preserving federated aggregations.
+The extensive simulations of environment brightness decay, demography drift, and physical occlusions performed on the five edge nodes confirm the effectiveness of the proposed approach. In particular, our active learning sample selection mechanism managed to recover 79.6\% of the observed temporal degradation with only about 15\% of all video frames annotated. Furthermore, this study demonstrates that strict layer-freezing geometries are not merely communication optimizations, but are mathematically required constraints to ensure learning trajectory stability under the obfuscation noise inherent to privacy-preserving federated aggregations.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -62,15 +62,15 @@ Federated Drift Compensation, Active Learning Stability, Bayesian Uncertainty, E
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints}. Edge AI systems operate autonomously within persistent, dynamic physical environments \cite{b1}. Unlike controlled benchmark conditions, edge environments naturally evolve, systematically altering the statistical properties of sensory data and degrading the predictive accuracy of static neural networks---a phenomenon formally recognized as concept drift \cite{b28}.
+The dominant thesis of this paper is that \textbf{epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints}. The Edge AI systems are inherently developed to operate in a self-sustaining environment that is constantly changing \cite{b1}. Contrary to the controlled conditions under which standard performance tests are performed, the characteristics of the environment at the Edge change dynamically, leading to shifts in the statistics of the data acquired by sensors and consequent degradation of performance of analytical or predictive models, also known as concept drift \cite{b28}.
 
 \subsection{The Drift Adaptation Problem Under Label Scarcity}
-Federated synchronization alone does not provide fresh supervision. When an edge node encounters a drifted distribution, it lacks ground-truth annotations to orient the optimization trajectory. Static edge models progressively diverge from evolving environments, and naive continuous annotation is operationally infeasible---randomly requesting human verification for ongoing streams generates unmanageable annotation bottlenecks \cite{b19}. The core bottleneck is therefore selective supervision acquisition, not distributed optimization.
+Federated synchronization alone does not provide fresh supervision. When an edge node encounters a drifted distribution, it lacks ground-truth annotations to orient the optimization trajectory. Static edge models become increasingly detached from the evolving environment, and naive continuous annotation is infeasible due to the resulting annotation bottlenecks created by randomly requesting human verification on a continuous stream \cite{b19}. The key issue is not distributed optimization but rather selecting when to acquire supervision.
 
 In practical deployments, temporal distribution shifts manifest across three operationally distinct vectors:
 \begin{itemize}
-    \item \textbf{High-Frequency Covariate Shift (Lighting/Weather):} Daily or seasonal illumination variations skew coordinate input distributions. These shifts can impose accuracy reductions of 10--15\% over six-month windows \cite{b7}. Covariate drift primarily affects feature-space geometry without altering class semantics.
-    \item \textbf{Low-Frequency Prior Probability Shift (Demographics):} Gradual population turnover and evolving behavioral norms shift underlying categorical representations. Prior shift alters uncertainty differently from covariate drift---the model encounters genuinely novel class configurations rather than merely distorted features.
+    \item \textbf{High-Frequency Covariate Shift (Lighting/Weather):} Daily or seasonal changes in illumination can cause significant distortions in the coordinate distribution. Such distortions reduce accuracy by up to 10--15\% over a period of six months \cite{b7}. The covariate drift mostly affects geometrical characteristics of the feature space, not the class-separability properties.
+    \item \textbf{Low-Frequency Prior Probability Shift (Demographics):} Gradual population turnover and changing behavioral regularities will skew underlying categorical representations. In the former case, this skew is different from mere feature drift: the model encounters fundamentally new class configurations.
     \item \textbf{Structural Hardware Degradation (Occlusion/Focal):} Lens scratching, mounting shifts, and thermal degradation corrupt bounding box topologies and spatial geometries \cite{b8}. Hardware degradation corrupts abstraction quality rather than semantic distributions directly.
 \end{itemize}
 
@@ -90,10 +90,10 @@ Within the ScholarMaster architecture, this subsystem performs uncertainty-guide
 \section{Related Work}
 
 \subsection{Concept Drift in Streaming Environments}
-The machine learning community has extensively studied environmental drift, primarily grouping methodologies into passive and active adaptation suites. Passive adaptation ensembles, such as online gradient tracking, continuously update parameters in real-time \cite{b28}. Conversely, trigger-based adaptation requires formal detection of distribution boundaries via explicit statistical divergence checks (e.g., the Page-Hinkley test) \cite{b2}. While these temporal methods are mature, they predominantly assume immediate and cost-free access to ground-truth labels upon request, an assumption violently violated in unmonitored edge deployments.
+The machine learning community has extensively studied environmental drift, primarily grouping methodologies into passive and active adaptation suites. Passive adaptation ensembles, such as online gradient tracking, continuously update parameters in real-time \cite{b28}. On the other hand, trigger-based adaptation necessitates formal testing to identify the thresholds of the distribution shift, e.g., by means of a Page-Hinkley test \cite{b2}. Temporal methods indeed are well-established, but mostly rely on availability of ground-truth labels at any time-instant upon request, which is not always the case in an uncontrolled environment.
 
 \subsection{Bayesian Uncertainty and Active Learning}
-Active learning explicitly queries oracles (human operators) for labels solely on the most informative samples. Settles provides a foundational framework demonstrating how entropy-based queries consistently outperform uniform random sampling \cite{b19}. However, standard Softmax entropy captures overlapping confidence failures. Gal et al. pioneered the application of Monte Carlo (MC) Dropout to construct tractable Bayesian Neural Networks, allowing researchers to accurately approximate mutual information and structurally separate knowledge uncertainty from input noise \cite{b21, b33}. This work uniquely grounds MC Dropout inside a distributed sensing constraint topology.
+Our work fits within the literature of active learning, where an agent queries an oracle (in our case, human input) for information on only the most informative examples. Settles gives a broad overview of the field, illustrating how query strategies which utilize entropy of class probabilities produce much better results than simple random sampling \cite{b19}. While the classic softmax entropy captures overlapping confidence regions, Gal et al. were first to apply MC dropout to define a practical variational inference scheme of Bayesian Neural Networks, where one can calculate the mutual information and separate knowledge and noise induced entropy \cite{b21}, \cite{b33}. Our contribution is to ground MC dropout within a distributed sensing constraint topology.
 
 \subsection{Distributed Optimization Stability}
 Federated convergence bounds strongly depend on the variance among participating client updates. Zhao et al. theoretically established that highly divergent (non-IID) local objective trajectories severely retard global progression \cite{b7}. Furthermore, integrating differential privacy mechanics intrinsically injects scalar noise relative to parameter dimensionality \cite{b34}. Prior studies typically approach this as a trade-off, but fundamentally fail to explore the destructive feedback loops that occur when sparse active labels combine directly with high-dimensional noise injections—a gap this paper resolves via strict geometric layer-freezing bounds.
@@ -142,9 +142,9 @@ In this equation:
 Subtracting expected internal entropy from the global predictive entropy elegantly strips away Aleatoric noise. High mutual information signifies that individual parameter states are extremely confident in their predictions, but violently disagree with one another regarding the specific class. This disagreement pinpoints \textit{Epistemic Uncertainty}—the precise boundary of the temporal distribution shift where the model explicitly lacks data structure.
 
 \subsection{Monte Carlo Dropout Integration}
-Exact Bayesian integration over modern deep network weight spaces is computationally intractable under edge-resource constraints. MC Dropout provides an operationally tractable approximation: by maintaining active randomized dropout layers (rate $p_{drop}$) during inference, the network generates stochastic posterior samples without the memory and compute overhead of full variational inference \cite{b21, b33}.
+Exact Bayesian integration over modern deep network weight spaces is computationally intractable under edge-resource constraints. MC Dropout provides an operationally tractable approximation: by keeping dropout layers active (with dropout rate $p_{drop}$) at test time, the network produces stochastic posterior samples with no additional memory or computational burden on top of standard dropout training \cite{b21}, \cite{b33}.
 
-For an input $x_t$, the node executes $K$ independent stochastic forward passes, generating a sample distribution $\{\hat{y}^{(1)}, \dots, \hat{y}^{(K)}\}$. This approximation provides useful uncertainty estimates but should not be interpreted as exact posterior fidelity---the dropout distribution is a simplified variational family that may underestimate true epistemic uncertainty in regions far from the training manifold.
+For an input $\mathbf{x}_t$, the node is executed $K$ times, producing independent stochastic forward passes, ultimately yielding a sample distribution $\left\{\hat{\mathbf{y}}^{(1)}, \ldots, \hat{\mathbf{y}}^{(K)}\right\}$. Crucially, this distribution only provides approximate uncertainty guarantees - the dropout distribution is in fact a variational distribution that can underestimate the true epistemic uncertainty by virtue of being a poor approximation to the real posteriors (especially beyond the training manifold).
 
 Algorithm \ref{alg:mc_bald} details how this directly translates into an on-device sample acquisition engine.
 
@@ -173,7 +173,7 @@ Algorithm \ref{alg:mc_bald} details how this directly translates into an on-devi
         \STATE $y_{verified} \leftarrow \text{QueryHumanOracle}(x_t)$
         \STATE $B_{train}.\text{add}(x_t, y_{verified})$
         \STATE $Count \leftarrow Count + 1$
-    \ELSEIF{$H_{total} \le \tau_{confident}$}
+    \ELSIF{$H_{total} \le \tau_{confident}$}
         \STATE // Pseudo-label inclusion for base retention
         \STATE $D_{auto}.\text{add}(x_t, \text{argmax}(p_{mean}))$
     \ENDIF
@@ -183,7 +183,7 @@ Algorithm \ref{alg:mc_bald} details how this directly translates into an on-devi
 \label{alg:mc_bald}
 \end{algorithm}
 
-Setting $K=10$ provided acceptable variance bounds while ensuring the active learning pipeline did not induce thermal throttling on standard ARM Cortex processing arrays during real-time edge streaming. Increasing $K$ beyond 10 improved uncertainty estimates marginally but introduced latency spikes incompatible with continuous stream processing under thermal limits.
+Setting $K = 10$ proved optimal in terms of variance bounds while still allowing the active learning pipeline to avoid causing thermal throttling events in standard ARM Cortex cores during real-time edge streaming. Increasing $K$ beyond 10 only provided marginal improvements in uncertainty estimation while introducing unacceptable latency spikes to the processing pipeline for sustained streaming workloads.
 
 % ==========================================
 % V. NOISY DRIFT ADAPTATION STABILITY
@@ -216,11 +216,11 @@ By structurally immobilizing the early convolutional feature extractor and restr
 We analyze the active learning drift compensation architecture through controlled simulations designed to rigorously emulate physical degradation.
 
 \subsection{Environment and Controlled Drift Profiles}
-The generalized evaluation simulates a distributed array of five institutional edge nodes. To test adaptation capability fairly without triggering ethical surveillance boundaries, all active evaluations utilize heavily abstracted vector sets.
+The generalized assessment runs on a distributed array of five institutional edge nodes. In order to test adaptability without raising ethical concerns, all active evaluations make use of heavily abstracted vector sets.
 
 We constructed three severe temporal drift formulations spanning extended operational windows:
 \begin{itemize}
-    \item \textbf{Lighting Drift Scenario:} Simulates progressive sunset trajectories and structural window degradation. Abstract vector spaces are skewed universally by a sliding coordinate suppression factor ($-15\%$) coupled with localized multi-variant Gaussian additive static.
+    \item \textbf{Lighting Drift Scenario:} Simulates gradual sunset progressions and structural window degradation. Abstract vector spaces skewed universally by a sliding coordinate suppression factor ($-15\%$) coupled with localized multi-variant Gaussian additive static.
     \item \textbf{Demographic Turnover Scenario:} Replaces an advancing 15\% cohort of the local sample arrays with extreme out-of-distribution abstract classifications.
     \item \textbf{Spatial Occlusion Scenario:} Introduces fixed masking bounds across positional geometries, mirroring the accumulation of physical debris or shifted seating architectures typical in crowded dynamic spaces.
 \end{itemize}
@@ -360,19 +360,31 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} W. Y. B. Lim et al., "Federated Learning in Mobile Edge Networks: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 3, pp. 2031-2063, 2020.
-\bibitem{b2} J. Lu et al., ``Learning Under Concept Drift: A Review,'' \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 31, no. 12, 2018.
-\bibitem{b3} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, 2016.
-\bibitem{b4} European Parliament, ``Regulation (EU) 2016/679 (GDPR),'' \textit{Official Journal of the European Union}, 2016.
-\bibitem{b7} Z. Zhao et al., ``Federated Learning with Non-IID Data,'' \textit{Neurocomputing}, vol. 465, pp. 465-475, 2021.
-\bibitem{b8} M. S. Hossain et al., ``Edge Computing in IoT: A Review,'' \textit{IEEE IoT Journal}, 2019.
 \bibitem{b19} B. Settles, ``Active Learning Literature Survey,'' \textit{University of Wisconsin-Madison}, Computer Sciences Technical Report 1648, 2009.
-\bibitem{b21} Y. Gal et al., ``Deep Bayesian Active Learning with Image Data,'' \textit{ICML Proceedings}, 2017.
+
 \bibitem{b28} J. Gama et al., ``A survey on concept drift adaptation,'' \textit{ACM Computing Surveys}, vol. 46, no. 4, 2014.
-\bibitem{b29} Q. Yang et al., ``Federated machine learning: Concept and applications,'' \textit{ACM TIST}, vol. 10, no. 2, 2019.
+
+\bibitem{b3} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, 2016.
+
+\bibitem{b4} European Parliament, ``Regulation (EU) 2016/679 (GDPR),'' \textit{Official Journal of the European Union}, 2016.
+
+\bibitem{b21} Y. Gal et al., ``Deep Bayesian Active Learning with Image Data,'' \textit{ICML Proceedings}, 2017.
+
 \bibitem{b33} A. Kendall and Y. Gal, ``What uncertainties do we need in bayesian deep learning for computer vision?'' \textit{NeurIPS}, 2017.
+
+\bibitem{b2} J. Lu et al., ``Learning Under Concept Drift: A Review,'' \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 31, no. 12, 2018.
+
+\bibitem{b29} Q. Yang et al., ``Federated machine learning: Concept and applications,'' \textit{ACM TIST}, vol. 10, no. 2, 2019.
+
 \bibitem{b34} S. Truex et al., ``A hybrid approach to privacy-preserving federated learning,'' \textit{ACM Workshop on Artificial Intelligence and Security}, 2019.
+
 \bibitem{b35} S. Wang et al., ``Adaptive federated learning in resource constrained edge computing systems,'' \textit{IEEE JSAC}, vol. 37, no. 6, 2019.
+
+\bibitem{b8} M. S. Hossain et al., ``Edge Computing in IoT: A Review,'' \textit{IEEE IoT Journal}, 2019.
+
+\bibitem{b7} Z. Zhao et al., ``Federated Learning with Non-IID Data,'' \textit{Neurocomputing}, vol. 465, pp. 465-475, 2021.
+
+\bibitem{b1} W. Y. B. Lim et al., "Federated Learning in Mobile Edge Networks: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 3, pp. 2031-2063, 2020.
 
 \end{thebibliography}
 

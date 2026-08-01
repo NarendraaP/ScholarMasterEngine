@@ -36,10 +36,23 @@
 % ==========================================
 % AUTHOR & AFFILIATION
 % ==========================================
-\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
-\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-Seetharampuram, Narsapur, Andhra Pradesh, India}
+\author{
+\IEEEauthorblockN{
+Polisetti Narendra\IEEEauthorrefmark{1}, 
+Vijaya Raju Motru\IEEEauthorrefmark{2}, 
+Suresh Kumar Sreedharan\IEEEauthorrefmark{3}, 
+Praveena Mallampalli\IEEEauthorrefmark{4}, \\
+T Murali Mohan\IEEEauthorrefmark{5}, and
+T V Satyasheela\IEEEauthorrefmark{6}
+}
+\IEEEauthorblockA{\textit{Department of CSE, Swarnandhra College of Engineering and Technology}\\
+Narasapur, Andhra Pradesh, India \\
+\IEEEauthorrefmark{1}ORCID: 0009-0002-6355-138X, narendresh@yahoo.com \\
+\IEEEauthorrefmark{2}vijayaraju.m@gmail.com, 
+\IEEEauthorrefmark{3}ORCID: 0000-0001-9912-5927, nice.ssk@gmail.com \\
+\IEEEauthorrefmark{4}praveena.iduri@gmail.com, 
+\IEEEauthorrefmark{5}drtmm512@gmail.com, 
+\IEEEauthorrefmark{6}satyasheela0506@gmail.com}
 }
 
 \maketitle
@@ -48,11 +61,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Many indoor environments contain regions where optical perception cannot provide timely detection. Corridor bends, architectural junctions, and partially occluded spaces create persistent blind zones in camera-based sensing deployments. Acoustic sensing offers a complementary physical modality: sound propagates omnidirectionally and diffracts beyond visual boundaries.
+There are areas in many indoor situations where optical detection cannot indicate in time. The deployment of cameras in areas with bends, architectural junctions and partly occluded space generates permanent blind spots. The phenomenon of sound propagating and diffracting everywhere could offer a possible new physical modality.
 
-This work develops a deterministic acoustic sensing module for detecting high-decibel impulsive events originating from visually occluded corridor regions. Incoming audio is processed within a bounded circular RAM buffer secured against swap persistence. A Short-Time Fourier Transform (STFT)-based spectral gate isolates broadband impulse signatures, while an autocorrelation-derived periodicity rejection metric suppresses recurring mechanical artifacts. For directional estimation within reverberant corridor geometries, Generalized Cross-Correlation with Phase Transform (GCC-PHAT) is applied under a formally defined reverberant-field operating regime ($\mathcal{R}_{rev}$).
+The proposed work designs a deterministic acoustic sensor unit to detect high-decibel impulse events occurring at sources hidden by visual obstruction from corridor locations. Input audio signals are processed using a finite-size circular RAM buffer, which is immune to swap persistence attacks. An STFT-based spectral gating system is used to filter broadband impulse signals, whereas an autocorrelation-based periodicity filtering function eliminates any periodic mechanical signal artifacts. GCC-PHAT is employed in the directional analysis process for reverberating corridors in a well-defined reverberant field operational mode ($\mathcal{R}_{rev}$).
 
-Under controlled corridor evaluation, detection probability exceeded 95\% within a 15-meter safety envelope, with end-to-end latency remaining below approximately 120 ms. Raw PCM segments are overwritten immediately following feature extraction, limiting retained information to lightweight directional metadata. These results demonstrate that physics-driven acoustic processing can extend spatial awareness into non-line-of-sight environments while operating within bounded latency and bounded audio retention constraints.
+In controlled corridor evaluation, detection probability of more than 95\% was achieved within a 15 m safety envelope and end-to-end latency remained below about 120 ms.  Raw PCM segments are overwritten right after feature extraction. Hence, the light-weight directional metadata is all that is retained. The results show that one can use physics-driven acoustic processing to extend spatial awareness into non-line-of-sight environments under bounded latency and bounded audio retention.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -67,24 +80,24 @@ Reverberant Acoustic Sensing, Non-Line-of-Sight Detection, Spectral Gating, GCC-
 The dominant thesis of this paper is that \textbf{deterministic signal-processing pipelines can reliably detect impulsive NLOS anomalies under reverberant corridor conditions while preserving bounded latency and bounded retention behavior}.
 
 \subsection{Spatial Blindness in Line-of-Sight Monitoring}
-Optical perception within indoor environments is fundamentally constrained by line-of-sight geometry. Corridor bends and junctions inherently create visual occlusion. Camera placement cannot eliminate all blind regions, but acoustic diffraction extends beyond optical visibility. Non-line-of-sight (NLOS) awareness emerges from wave propagation rather than imaging. The sensing problem is fundamentally geometric, not merely insufficient camera coverage.
+The optical perception in indoor settings is intrinsically limited due to line-of-sight geometry constraints. Bends and junctions in corridors automatically lead to visual obstruction. It is impossible for cameras to cover all possible blind areas, while acoustic diffraction operates on a different domain than visual perception. NLOS perception is achieved via wave behavior, not imaging.
 
 Acoustic sensing provides an alternative physical modality. Sound propagates omnidirectionally and diffracts around physical obstacles. In enclosed corridors, reflections from rigid surfaces extend acoustic reach well beyond visual coverage.
 
 \subsection{Subsystem Scope and Canonical Separation}
-This subsystem exists ONLY to detect impulsive acoustic anomalies, estimate directional metadata, and operate under bounded latency while suppressing periodic mechanical noise. It constrains audio retention operationally during acoustic processing. This subsystem does NOT formalize irreversible privacy architecture (Paper 3), orchestrate activation governance (Paper 9), manage cryptographic provenance (Paper 8), derive runtime verification theorems (Paper 18), or perform semantic audio understanding.
+This subsystem exists SOLELY for impulsive acoustic anomaly detection, directional metadata estimation, bounded-latency operation, and periodic mechanical noise filtering. It restricts audio storage operationally in the context of acoustic processing. This subsystem does NOT define immutable privacy policy , activate governance coordination , handle cryptographic provenance , establish runtime verifiability theorems , or understand semantically audio.
 
 \subsection{Operational Constraints in Reverberant Corridors}
-Deploying acoustic sensing within indoor corridors introduces several practical constraints. Long and narrow geometries constructed with painted concrete, vinyl tile, and rigid ceilings generate strong multipath reflections. In such settings, the reverberant field often dominates direct-path energy beyond a few meters \cite{b25}.
+The use of acoustic sensing in indoor corridor environments comes with various limitations. Large and long corridors built using painted concrete, vinyl tile, and hard ceilings tend to cause multipath reflection effects. In such an environment, multipath reverberations usually exceed direct path energy beyond a few meters \cite{b25}.
 
-Simple amplitude triggers often perform poorly in these conditions. Volume spikes from mechanical systems, dropped objects, or transient impacts routinely exceed fixed thresholds. Standard Time Difference of Arrival (TDOA) localization degrades as delayed echoes obscure the earliest arrival.
+Amplitude-based triggering is usually not very effective in such scenarios. Sound bursts produced by mechanical mechanisms, falling objects, or any form of sudden impact often surpass preset thresholds. TDOA-based positioning deteriorates due to echoes that arrive after a delay.
 
-At the same time, deep-learning-based Acoustic Event Detection (AED) models introduce their own limitations. Architectures such as Audio Spectrogram Transformers (AST) require multi-second context windows and significant memory allocation. In safety-critical scenarios, buffering multi-second audio segments before inference is generally incompatible with sub-150 ms response requirements \cite{b26}.
+On the other hand, deep learning acoustic event detection models have some inherent drawbacks. For instance, AST models need to consider multi-second context windows and allocate adequate memory resources for inference. In cases where real-time detection is necessary, buffering multi-second chunks of audio data before inference cannot be achieved within 150 ms \cite{b26}.
 
-The acoustic sensing module presented here adopts a different approach. Rather than semantic classification, it performs localized physical signal discrimination within a circular RAM buffer. Only derived features---energy ratios, periodicity metrics, azimuth estimates---are retained. Raw PCM segments are overwritten immediately after evaluation.
+However, the acoustic sensing unit described below follows a different methodology. Instead of classification of semantic content, it implements physical signal distinction on a local basis inside a circular RAM buffer. Derived characteristics, such as energy ratio, periodicity measure, and azimuth angle, are preserved, while PCM data samples are erased right away.
 
 \subsection{Contributions}
-This work operationalizes acoustic sensing under explicit latency and data-retention constraints. All detection is based on deterministic signal processing; no machine learning or adaptive models are employed. The principal elements include:
+The system is designed with respect to latency and storage issues. It utilizes only deterministic signal processing, and not any machine learning techniques. The key components are:
 \begin{itemize}
     \item A formal definition of a reverberant-field operating regime, $\mathcal{R}_{rev}$, aligned with corridor geometries where the safety envelope substantially exceeds the acoustic critical distance.
     \item A two-stage filtering architecture combining spectral discrimination ($\delta$) and periodicity rejection ($\rho$) to suppress mechanical false positives.
@@ -100,15 +113,17 @@ The detection model does not attempt semantic audio interpretation. Its scope is
 \section{Related Work}
 
 \subsection{Deep Learning AED vs. Edge Signal Processing}
-Most recent acoustic event detection systems rely on deep neural architectures trained for semantic sound classification \cite{b8, b12}. Architectures such as PANNs \cite{b22} and AST \cite{b23} achieve strong performance on benchmark datasets including FSD50K. These systems operate on mel-spectrogram patches, often spanning several seconds.
 
-Longer temporal context windows can improve semantic recognition accuracy but introduces structural latency. Buffering 10-second windows before inference inherently violates strict response constraints. Additionally, large transformer-based models (e.g., $\sim$85M parameters) impose heavy memory and bandwidth demands \cite{b15, b16}, especially on ARM-based edge hardware lacking dedicated NPUs.
+The latest systems for detecting acoustic events depend on deep neural architectures designed for doing semantic sound classification \cite{b8, b12}. Architectures such as PANNs \cite{b22} and AST \cite{b23} can achieve strong performance on the FSD50K benchmark. These systems run on mel-spectrogram patches often spanning a few seconds.
 
-In safety contexts, the objective differs from environmental classification. The goal is rapid detection of high-energy anomalies. The proposed pipeline therefore favors deterministic signal processing over semantic categorization. Table \ref{tab:comparison} illustrates this architectural divergence. The signal-processing pipeline therefore trades semantic richness for bounded latency and minimal memory footprint.
+When you have larger temporal context windows, they help enhance your performing semantic recognition accuracy but at the same time introduce structural latency. Introducing 10-second windows before inference is inherently against strict response constraints. Furthermore, large transformer-based models, such as those containing around 85 million parameters, require excessive memory and bandwidth \cite{b15, b16}. These models are particularly onerous on edge hardware based on ARM that does not contain NPU. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \cite{b34}, while the present work focuses on reverberant acoustic sensing.
+
+Safety applications have a different goal from those used for environmental classification or strain monitoring. In safety, early detection of high energy events is required. Deterministic signal processing is therefore more significant than their semantic processing in the pipeline system proposed. Table \ref{tab:comparison} below exemplifies this categorization.
 
 \begin{table}[htbp]
 \caption{Applicability Analysis: Benchmark AED vs. Proposed System}
 \begin{center}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcc}
 \toprule
 \textbf{Criterion} & \textbf{CNN / AST (SOTA)} & \textbf{Ours (Safety Signal Proc.)} \\
@@ -119,19 +134,20 @@ Memory Footprint & Heavy ($>200$MB) & Lightweight ($<5$MB) \\
 NLOS Ranging & Mono-only & Array-based (GCC-PHAT) \\
 Semantic Inference & High (Categorization) & None (Physics-based) \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{center}
 \label{tab:comparison}
 \end{table}
 
 \subsection{Source Localization Under Reverberation}
-Source localization is fundamentally governed by the physics of acoustic wave propagation \cite{b9}. Microphone array approaches have demonstrated effective detection of screams and gunshot events \cite{b5}, but indoor corridors introduce severe reverberation \cite{b25}.
+Source localization depends on the physics of acoustic waves propagation \cite{b9}. The microphone arrays approach has shown its efficiency for detecting screams and gun shots \cite{b5}; however, indoor environment with corridors causes problems of reverberations \cite{b25}.
 
 Steered Response Power with PHAT weighting (SRP-PHAT) \cite{b27} achieves high localization accuracy but requires scanning large spatial grids, increasing computational load beyond what lightweight edge nodes comfortably sustain.
 
 Standard cross-correlation TDOA methods, though inexpensive, degrade rapidly when multipath reflections dominate. Echoes introduce multiple delayed peaks, obscuring the true time offset.
 
-GCC-PHAT \cite{b20} offers a compromise. By normalizing the cross-spectrum magnitude, it emphasizes phase alignment and mitigates reverberant smearing while retaining manageable computational complexity. This balance makes it practical for bounded-latency edge deployment.
+\cite{b20} GCC-PHAT provides a middle ground. Through normalization of the magnitude of the cross-spectrum, it focuses on the importance of phase matching while reducing the effects of reverberation, yet remains computationally efficient.
 
 % ==========================================
 % III. THEORETICAL FRAMEWORK
@@ -141,7 +157,7 @@ GCC-PHAT \cite{b20} offers a compromise. By normalizing the cross-spectrum magni
 To analyze the feasibility of acoustic monitoring in visually occluded corridors, we begin by examining the physical propagation characteristics of sound in such environments.
 
 \subsection{Corridor Acoustics and SPL Calibration}
-Sound propagation in long corridors deviates substantially from free-field assumptions. The classical inverse-square decay relationship applies primarily when direct-path energy dominates and reflections are negligible. In institutional hallways with hard, reflective surfaces, multipath reinforcement alters this behavior.
+Propagations of sound waves in long hallways are different compared to the ideal situation where sound propagation occurs in a free space condition. The inverse square law of sound attenuation can only be applied when there is pure propagation of sound energy without any effect of reflection.
 
 The Sound Pressure Level (SPL) at distance $r$ from an omnidirectional source of sound power $L_W$ is given by:
 \begin{equation}
@@ -149,7 +165,7 @@ L_p(r) = L_W + 10 \log_{10}\left(\frac{Q}{4\pi r^2} + \frac{4}{R_c}\right)
 \end{equation}
 where $Q$ denotes the source directivity factor and $R_c$ is the room constant.
 
-In practical terms, a human scream often produces approximately 95–105 dB at a one-meter distance \cite{b5}. Glass fracture events frequently exceed 100 dB. Using representative corridor absorption coefficients ($\alpha \approx 0.05–0.1$) and measured geometry, a 100 dB impulse generated in a blind segment registers approximately 74 dB at a sensor positioned 20 meters away.
+Practically, a person’s scream can emit around 95 to 105 dB at one meter \cite{b5}. Glass breaking incidents generally generate levels greater than 100 dB. With typical absorption values for corridors ($\alpha \approx 0.05$--$0.1$) and geometric data, a 100 dB burst created in an end section can be recorded at around 74 dB at 20 meters from a sensor.
 
 Rather than triggering on raw received amplitude, the signal-processing pipeline calibrates its primary threshold relative to an equivalent 95 dB source level mapped onto a defined safety envelope:
 \begin{equation}
@@ -158,7 +174,7 @@ S_{env} = 15m
 This mapping suppresses distant, irrelevant disturbances while preserving sensitivity to high-energy events within the operational radius.
 
 \subsection{Reverberation and the Operating Regime}
-In many institutional corridors, reverberation becomes the dominant acoustic phenomenon beyond a short distance from the source. The transition between direct-field and reverberant-field dominance occurs at the critical distance $D_c$, defined as the point where direct and reverberant energies are equal.
+The critical distance is when the sound field is equally comprised of both direct sound and reverberant sound and it is given the symbol $D_c$. Beyond that point, reverberation will be the predominant effect in any corridors within the institution.
 
 Using Sabine’s formula, the reverberation time $RT_{60}$ is:
 \begin{equation}
@@ -175,7 +191,7 @@ The operational regime is therefore explicitly defined as:
 \begin{equation}
 \mathcal{R}_{rev} = \{ r : r > D_c \}
 \end{equation}
-This is not a near-field voice assistant environment. The sensing pipeline is intentionally optimized for reverberant-field behavior, not idealized direct-path acoustics. The detection model is tuned for conditions where corridor multipath persistence dominates and the safety envelope satisfies:
+This is not an acoustic scenario of near-field interaction with a voice assistant. It is deliberately designed for reverberant-field conditions rather than perfect direct-path acoustics. For the detection model to function optimally, corridor multipath persistence must dominate and the safety envelope meet the following criteria:
 \begin{equation}
 S_{env} \gg D_c
 \end{equation}
@@ -198,11 +214,11 @@ Impulsive safety events generally produce rapidly decaying autocorrelation struc
 \begin{equation}
 \rho_{thresh} = 0.65
 \end{equation}
-Mechanical signals, by contrast, typically exhibit repeated peaks and elevated $\rho$. During early deployment tests, HVAC startup transients occasionally bypassed the spectral gate due to broadband onset energy. Increasing $k_{min}$ mitigated this issue by excluding short-lag reinforcement patterns associated with mechanical cycling. This adjustment was empirical rather than theoretical, reflecting corridor-specific acoustics.
+In comparison, mechanical signals normally have multiple peaks and higher $\rho$. In the early stages of field testing, HVAC start-up transients sometimes slipped past the spectral filter because of the broadband nature of their initial energy content. Raising $k_{min}$ resolved this problem since it prevented reinforcement cycles of short lag from being included.
 
 \subsection{GCC-PHAT for Multipath Mitigation}
 
-Estimating source direction under strong multipath conditions presents an additional challenge. Within $\mathcal{R}_{rev}$, naive cross-correlation methods often fail to isolate the true time delay because reflections create multiple high-energy peaks. The Generalized Cross-Correlation framework addresses this limitation by operating in the frequency domain.
+Estimating source location based on multipath environments is another problem that arises. In $\mathcal{R}_{rev}$, simple cross-correlation will not be able to extract accurate time delay information due to multipaths, which generate multiple peaks. This is where Generalized Cross-Correlation comes into play since it works in the frequency domain.
 
 The Cross-Power Spectral Density between two microphone signals is:
 \begin{equation}
@@ -214,7 +230,7 @@ R_{phat}(f) = \frac{G_{12}(f)}{|G_{12}(f)|} = e^{j\angle G_{12}(f)}
 \end{equation}
 This normalization effectively whitens the spectrum. In the ideal case, the inverse Fourier transform of $e^{j\angle G_{12}(f)}$ ideally produces a Dirac impulse $\delta(t - \tau)$ at the true delay $\tau$.
 
-In practice, GCC-PHAT mitigates reverberation effects probabilistically, not perfectly reconstructing true directionality. Localization stability emerges from phase emphasis, suppressing reverberant magnitude dominance. However, the method remains a compromise under severe multipath. Under extreme narrowband interference, PHAT weighting can amplify spectral irregularities and broaden the peak. In metallic corridor segments, azimuth deviations of approximately $\pm 8^\circ$ were occasionally observed. Pre-bandpass filtering in the 2–4 kHz impulse band mitigated this effect and sharpened the delay peak. The approach therefore balances theoretical robustness with corridor-specific tuning.
+As a consequence, GCC-PHAT reduces the impact of the reverberation effect in probabilistic terms without providing true directional recovery. The ability to accurately locate a target relies on the phase dominance achieved. Nevertheless, the algorithm is still suboptimal in cases of very strong multipath. When the conditions of narrowband interference become highly adverse, the effect may lead to distortion of the spectrum shape, which causes the broadening of the peak. Azimuth errors of up to ±8◦ were noticed for metal-lined corridors. Pre-filtering the 2–4 kHz impulse band alleviated this problem.
 
 % ==========================================
 % IV. SYSTEM IMPLEMENTATION
@@ -224,7 +240,7 @@ In practice, GCC-PHAT mitigates reverberation effects probabilistically, not per
 The proposed acoustic sensing module was implemented as a lightweight pipeline designed for deterministic latency.
 
 \subsection{Hardware Architecture and Sensor Geometry}
-The signal-processing algorithms were evaluated on a commodity ARM Cortex-A72 hardware platform equipped with a linear four-microphone array. Audio sampling was performed at 44.1 kHz with 16-bit resolution—sufficient to capture broadband impulsive signatures without excessive computational overhead.
+The signal processing algorithms were tested using commodity ARM Cortex-A72 hardware equipped with a linear four-microphone array. Audio samples were taken at a sampling rate of 44.1 kHz with 16-bit precision, which is enough for recording broadband impulse responses without high computation cost.
 
 Microphone spacing directly influences spatial aliasing constraints. The spatial aliasing frequency limit is defined as:
 \begin{equation}
@@ -236,22 +252,22 @@ To ensure reliable operation in the 2–4 kHz band—critical for impulse discri
 \begin{equation}
 f_{alias} = \frac{343}{2 \cdot 0.042} \approx 4083 \text{ Hz}
 \end{equation}
-This places the aliasing boundary safely above the 4 kHz operational ceiling. In practice, this margin prevents spatial ambiguity for the target impulse frequencies. The geometry is deliberately simple. While volumetric arrays provide elevation resolution, the linear configuration balances directional capability with deployability in corridor ceilings.
+The aliasing limit will thus be comfortably above the 4 kHz operating threshold. Functionally, this ensures that there will be no spatial confusion for the target frequencies of the impulses. The design is deliberately kept simple. Although the volumetric array allows elevation discrimination, the linear array strikes a balance between directionality and mobility.
 
 \subsection{Buffer Management and Latency Bounding}
-Bounded latency is a safety-response systems constraint, not merely a performance optimization target. Deterministic response timing matters more than semantic richness, as queue accumulation destabilizes safety responsiveness. Bounded buffering constrains latency propagation. The pipeline uses a lock-free circular ring buffer for PCM ingestion, avoiding blocking synchronization that introduces unpredictable delays.
+Latency Boundaries represent a constraint on a safety-response system and not an objective. In order to be deterministic, we must value determinism over semantical depth since the accumulation of messages can undermine a safety-responsiveness system. Bounded Buffering limits latency. The Pipeline utilizes a lock-free circular ring buffer for PCM input.
 
 Let:
 \begin{itemize}
     \item $T_{frame} = 100ms$ represent the window length required to capture the transient decay of an impulsive event.
-    \item $T_{proc} \approx 15–20ms$ represent processing time on the target ARM hardware.
+    \item $T_{proc} \approx 15$--$20$~ms represent processing time on the target ARM hardware.
 \end{itemize}
 
-Processing time decomposes into $T_{fft} \approx 10–15ms$ and $T_{gcc} \approx 5–10ms$. The total pipeline latency therefore satisfies:
+Processing time decomposes into $T_{fft} \approx 10$--$15$~ms and $T_{gcc} \approx 5$--$10$~ms. The total pipeline latency therefore satisfies:
 \begin{equation}
 T_{total} = T_{frame} + T_{proc} < 120ms
 \end{equation}
-This bound was measured empirically under single-stream load. By constraining latency explicitly, the architecture avoids queue accumulation and ensures near-immediate response for subsequent processing stages. Once spectral and periodicity features are extracted—and either accepted or rejected—the corresponding PCM segment is marked for overwrite. The acoustic module does not retain raw audio beyond the processing window.
+The bound was determined based on empirical findings under single-stream loading. This approach prevents latency buildup because of an explicit bound, thus ensuring an almost instantaneous reaction for downstream processes. When features have been extracted from the PCM segment—whether it is accepted or discarded—the PCM segment is labeled for overwriting. There will be no further retention of the original raw audio signal.
 
 \subsection{Computational Complexity}
 The processing pipeline was intentionally designed to remain computationally lightweight. For a frame of $N$ samples:
@@ -260,12 +276,12 @@ The processing pipeline was intentionally designed to remain computationally lig
     \item Spectral gating requires an FFT with complexity $O(N \log N)$.
     \item GCC-PHAT localization requires two forward FFTs and one inverse FFT, also bounded by $O(N \log N)$.
 \end{itemize}
-Because no spatial grid search (e.g., SRP-PHAT) is performed, complexity does not scale with 3D search resolution. On the evaluated quad-core ARM device, total CPU utilization remained below 15\%, leaving headroom for concurrent node processes. The complexity profile was chosen deliberately to ensure scalability across dense institutional deployments.
+Since there is no spatial grid-based search (for example, SRP-PHAT), there is no complexity increase based on 3D search precision. With regard to CPU usage on the tested quad-core ARM device, it did not exceed 15\% at any time during testing, enabling the running of additional processes. Complexity was consciously selected to allow scalability.
 
 \subsection{Anomaly Verification Routine (Spectral Gating)}
 High-energy amplitude alone does not reliably indicate a safety anomaly. To distinguish impulsive broadband events from benign impacts, we compute a logarithmic discrimination index $\delta$ comparing energy in high- and low-frequency bands.
 
-[Image showing acoustic spectral gating identifying a high-frequency impulsive anomaly against low-frequency background noise]
+
 
 Prior to frequency transformation, each frame is windowed using a Hann function to reduce spectral leakage:
 \begin{equation}
@@ -282,7 +298,7 @@ Because the ratio is logarithmic, amplitude scaling effects are normalized. Impu
 \end{equation}
 This corresponds to approximately a 2.5× linear energy ratio. Mechanical impacts, by contrast, concentrate energy at lower frequencies and produce $\delta$ values near zero or negative.
 
-Algorithm \ref{alg:verification} implements this two-stage verification: spectral gating followed by periodic rejection. The structure intentionally favors early rejection to conserve compute cycles before invoking autocorrelation. The filtering sequence proved essential in reducing false positives during corridor testing.
+This is accomplished using Algorithm \ref{alg:verification} for a two-stage authentication technique, namely spectral gating and periodic rejection. The system has been designed to ensure rejection at an early point to avoid any unnecessary computation before running the autocorrelation operation. This filtration process became very important to reduce false detection in the corridor trials.
 
 % --- ALGORITHM 1 ---
 \begin{algorithm}
@@ -318,14 +334,14 @@ Algorithm \ref{alg:verification} implements this two-stage verification: spectra
 \section{Experimental Setup}
 
 \subsection{Physical Testbed Description}
-Experimental evaluation was conducted in a corridor environment chosen specifically to replicate non-line-of-sight monitoring conditions. The corridor measured 2.4 m in width, 3.0 m in height, and 30 m in length, including an intersecting L-shaped junction.
+Experimental tests were carried out inside the corridor setting, specifically chosen owing to its feasibility in generating non-line-of-sight observation cases. The corridor had dimensions of 2.4m in width, 3.0m in height, and 30m in length, with an intersection taking an L-shaped form.
 
-Impulse response profiling yielded $RT_{60} \approx 1.2s$ and $D_c \approx 2.1m$. These measurements confirm that the environment lies well within the reverberant operating regime $\mathcal{R}_{rev}$ defined earlier. In other words, beyond approximately two meters, reverberant energy dominates the direct path. This condition stresses localization algorithms and serves as a meaningful validation scenario rather than a favorable acoustic case.
+Impulse response profiling yielded $RT_{60} \approx 1.2s$ and $D_c \approx 2.1m$. These figures prove that the environment is well inside the reverberant operational range $\mathcal{R}_{rev}$ discussed above. Namely, beyond two meters, the reverberant field dominates over the LOS field. This poses problems for localization techniques and provides a good testbed rather than a good acoustic environment.
 
 \subsection{Dataset Generation via RIR Convolution}
-To avoid relying exclusively on live staged events, a hybrid dataset was constructed. First, the Room Impulse Response (RIR) of the corridor was measured using logarithmic sine sweeps emitted from a calibrated omnidirectional loudspeaker at multiple distances along the NLOS segment. The image-source method \cite{b30} was used to characterize reflection paths.
+To avoid total reliance on the live experiment, a combination of data sets were obtained. Initially, it was necessary to measure the room impulse response of the corridor using logarithmic sine sweeps from an omnidirectional speaker mounted along the NLOS route. Reflection paths were characterized using the image source method \cite{b30}.
 
-Next, dry anechoic samples from FSD50K (impulsive vocals) and MIVIA (glass break events) were convolved with the measured RIRs. This procedure embeds the true multipath structure of the corridor into otherwise clean samples, preserving realistic reverberation characteristics. Controlled SNR injection was then applied to evaluate performance degradation under varying ambient floors.
+Impulse response anechoic recordings of vocal and break glass noises, which were taken from FSD50K and MIVIA datasets respectively, were convoluted using the experimental impulse responses. This allows the effects of multiple reflections in the room to be embedded into the anechoic recordings. The last stage was adding SNR for measuring the effects of system degradation under various environmental floors.
 
 Table \ref{tab:dataset} summarizes dataset composition. The resulting corpus combines physical recordings with convolved impulse events, providing both realism and repeatability.
 
@@ -356,9 +372,9 @@ Door Slams & Synthesized (Convolved) & 150 \\
 The evaluation focuses on whether acoustic sensing can reliably detect impulsive events originating from visually occluded regions.
 
 \subsection{NLOS Safety Envelope Validation}
-To assess blind-spot performance, impulse sources were positioned around the architectural corner—completely occluded from any hypothetical camera viewpoint. For each distance bin, 20 randomized placements were executed to reduce spatial bias.
+Testing of blind spots required setting of impulses in front of the building corners that could not be seen by an imaginary camera at any distance. Setting of impulses was performed randomly, and impulses were placed at 20 different locations per each distance interval.
 
-Table \ref{tab:blindspot} demonstrates a clear contrast: visual detection remains at 0\% beyond the occlusion boundary, whereas acoustic detection remains perfect within 15 meters under controlled conditions. At 25 meters, detection probability declines modestly to 89\%. At 35 meters, performance drops further to 57\%, reflecting attenuation and reverberant smearing at extended range.
+It is clear from Table \ref{tab:blindspot} that there is a definite difference between visual detection, which remains zero even above the occlusion range, and acoustic detection, which continues to remain perfect even up to 15 meters. The efficiency of detection decreases a little to 89\% at 25 meters and further to 57\% at 35 meters.
 
 \begin{table}[htbp]
 \caption{Safety Envelope Detection Rates (NLOS Corridor)}
@@ -378,7 +394,7 @@ Table \ref{tab:blindspot} demonstrates a clear contrast: visual detection remain
 \label{tab:blindspot}
 \end{table}
 
-These results illustrate the practical reach of diffraction-based propagation within the observed acoustic geometry. Within the defined safety envelope ($S_{env} = 15m$), detection remained above roughly 95\% under the tested SNR regime. Importantly, the source SPL was fixed at 100 dB with a -60 dB SNR floor for these trials, establishing a repeatable reference condition, though reverberation properties will vary materially across different buildings.
+These results have shown that propagation through diffraction techniques can be effectively implemented in the practical environment. In the established safety zone ($S_{env} = 15m$), the detection rate has been consistently kept at 95\% and above, depending on the utilized SNR value. It is noteworthy to mention here that the sound pressure level of the sound source has remained constant (100dB) with the minimum SNR value of -60dB.
 
 \subsection{SNR Stress Testing and Precision-Recall Behavior}
 Performance under increasing ambient noise provides a more realistic view of operational viability. Table \ref{tab:snr} reports Precision, Recall, and F1 scores under progressively elevated ambient floors.
@@ -401,16 +417,16 @@ Performance under increasing ambient noise provides a more realistic view of ope
 \label{tab:snr}
 \end{table}
 
-At 40–50 dB ambient levels, performance remains effectively saturated. Even at 60 dB ambient noise (traffic-like background), F1 remains at 96.3\%. At 70 dB ambient noise (crowd-level chatter), Recall drops to 78.0\% while Precision remains comparatively stronger (90.3\%). This asymmetry suggests that the signal-processing pipeline tends toward conservative suppression rather than false triggering.
+Performance saturation still occurs even if the ambient sound level is within the range of 40–50 dB. The recall rate for F1 remains 96.3\% even if the ambient sound level is 60 dB, which represents traffic sounds from the surroundings. When the ambient sound level increases to 70 dB, corresponding to the sounds from people’s conversations, the recall rate drops to 78\% while precision is relatively stable(90.3\%).
 
-The degradation aligns with frequency masking theory \cite{b31}. Crowd chatter overlaps spectrally with the 2–4 kHz band used for discrimination, compressing dynamic range and narrowing threshold separation. The observed behavior reflects a known physical limitation rather than algorithmic instability.
+The effect correlates well with frequency masking \cite{b31}. The noise from the crowd masks the signal in the frequency band 2 to 4 kHz, which is responsible for discrimination. In addition, it lowers the dynamic range and narrows the threshold difference. Such a reaction is caused by a physiological limitation.
 
 \subsection{Ablation Study on Heuristic Filters}
 To isolate the contribution of each filtering stage, a 300-event mixed subset (150 true impulses, 150 mechanical/impact noises) was evaluated under incremental pipeline configurations.
 
 The baseline SPL-only trigger yields a Recall of 99.5\% but a False Positive Rate of 42.6\%. This configuration is operationally unusable; benign door slams and HVAC events frequently exceed amplitude thresholds.
 
-Introducing the logarithmic spectral gate ($\delta$) reduces FPR dramatically to 8.2\%, while Recall drops modestly to 96.0\%. This confirms that frequency discrimination eliminates many heavy impact artifacts. Adding periodic rejection ($\rho$) further reduces FPR to 1.8\%, with Recall at 94.5\% (Table \ref{tab:ablation}). The slight recall reduction reflects conservative filtering, but the false positive suppression is substantial. The ablation confirms that both heuristics are necessary. Either in isolation leaves the pipeline vulnerable to specific mechanical artifacts.
+The introduction of the logarithmic spectral gate ($\delta$) lowers the False Positive Rate to 8.2\%, though Recall decreases to 96.0\%. This proves that frequency discrimination helps exclude many artifacts due to their heavy impact. With the inclusion of periodic rejection ($\rho$), the False Positive Rate falls even further to 1.8\%, Recall being 94.5\% (Table \ref{tab:ablation}). This shows that both methods are required for effective detection as either alone exposes the system to certain mechanical artifacts.
 
 \begin{table}[htbp]
 \caption{Ablation Study on Filtering Heuristics (Mixed Dataset)}
@@ -429,7 +445,7 @@ SPL Volume Trigger Only & 99.5\% & 42.6\% \\
 \end{table}
 
 \subsection{Spectral Discrimination Profile}
-Figure \ref{fig:spectral} visualizes the physical intuition behind the $\delta$ index. Impulsive anomalies exhibit concentrated energy above 2 kHz, while benign door slams remain dominated by low-frequency components. High-frequency impulse energy physically motivates the discrimination band. The separation is physically grounded rather than statistically learned. The detector exploits physically interpretable acoustic structure, not semantic sound understanding. The spectral bands were therefore selected based on observed centroid clustering rather than arbitrary division, though threshold calibration remains corridor-dependent.
+Figure \ref{fig:spectral} illustrates the physics intuition that underlies the $\delta$ index. Impulsive anomalies contain a lot of energy at frequencies higher than 2 kHz, while non-threatening sounds such as slamming doors have low-frequency energies dominant. The high-frequency energies in impulsive anomalies provide physical reasoning for the discrimination band. The distinction is thus physical rather than statistical. The detector relies on physical insights into the acoustics, and not semantic understanding of sounds. The bands were hence chosen based on clustering of centroids, not random selection.
 
 \begin{figure}[htbp]
 \centering
@@ -468,23 +484,23 @@ Figure \ref{fig:spectral} visualizes the physical intuition behind the $\delta$ 
 The experimental results highlight several practical tradeoffs associated with deploying deterministic acoustic sensing in reverberant environments.
 
 \subsection{Acoustic Robustness versus Semantic Richness}
-Unlike transformer-based AED systems, this pipeline intentionally avoids high-level semantic categorization. In low-latency edge safety sensing, exact event labeling is less critical than rapid, deterministic spatial localization. Semantic models introduce unavoidable buffering latency and memory overhead that conflict with sub-150 ms response constraints. The proposed layered heuristic filtering---combining spectral and periodic rejection---stabilizes the alert stream while preserving bounded processing time. The pipeline intentionally sacrifices semantic richness to guarantee deterministic latency behavior.
+The proposed AED system, in contrast to transformer-based systems, does not rely on higher-order semantics for classification. In real-time edge safety applications, the precise labeling of events is less important than timely, deterministic location. The use of semantic models adds additional latency due to buffering and increases memory requirements, which violate the requirement of sub-150 milliseconds. The proposed layered filter using spectral and periodic rejection provides stability in the alerts while maintaining deterministic latency.
 
 \subsection{Privacy by Architectural Constraint}
 Continuous acoustic sensing frequently encounters privacy objections \cite{b4, b33}. The proposed architecture addresses this through structural processing restrictions rather than policy enforcement alone.
 
-Raw PCM audio is ingested into a bounded RAM buffer and overwritten immediately following feature extraction. No speech-to-text reconstruction or persistent audio retention is performed. The module emits only lightweight directional metadata:
+PCM audio is loaded into a bounded RAM buffer and is immediately overwritten after feature extraction. There is no conversion to speech-to-text or any form of audio storage. The module generates only minimal directional metadata:
 \begin{equation}
 [\texttt{TIMESTAMP, ANOMALY\_CONFIDENCE, AZIMUTH\_ANGLE}]
 \end{equation}
 
-This structural data minimization aligns with architectural privacy principles \cite{b32}. The sensing node cannot reconstruct semantic conversations because the physical data is deterministically destroyed. This constraint also yields operational scalability: metadata payloads consume minimal bandwidth, allowing dense sensor deployment without network saturation.
+Such data reduction is in line with privacy principles within architecture \cite{b32}. The sensing node cannot interpret semantic exchanges, as the data are deterministically obfuscated. This design feature ensures scalability for operation; metadata data packets require little bandwidth usage, and can be extensively deployed without congesting the network infrastructure.
 
 \subsection{Limitations}
 The evaluation exposes several physical and architectural limitations inherent to the proposed framework:
 \begin{itemize}
-    \item \textbf{Corridor-Specific Thresholding:} The periodic and spectral thresholds ($\rho$, $\delta$) are tuned for the hard surfaces of institutional corridors; highly absorptive environments, occupancy-induced reverberation shifts, or HVAC activation variability would require recalibration.
-    \item \textbf{Azimuth-Only Localization:} The linear microphone array resolves azimuth only. Multi-level environments require volumetric arrays to recover elevation, increasing computational load. Ceiling-mount vibration artifacts or microphone aging can further perturb localization.
+    \item \textbf{Corridor-Specific Thresholding:} Periodic and spectral thresholds ($\rho$, $\delta$) have been optimized for the reflective surface characteristics of institutional corridor environments; changes in absorptive conditions, occupancy-related reverberation time, or HVAC system operational variations would necessitate adjustment.
+    \item \textbf{Azimuth-Only Localization:} Linear microphone array localizes only along the azimuth. Volumetric arrays are required in multi-layered environments for elevation determination. The vibration effect caused by mounting on the ceiling or aging of microphones may disturb the localization process.
     \item \textbf{Reverberant Drift and Multi-Source Overlap:} While GCC-PHAT mitigates multipath smearing, multi-source overlap conditions and metallic reflection artifacts can still induce angular drift ($\pm 8^{\circ}$).
     \item \textbf{Crowd-Noise Masking:} Dense crowd chatter masks the 2--4 kHz impulse band, degrading recall under 70 dB ambient conditions.
     \item \textbf{Absence of Semantic Intent:} The pipeline detects physical impulses but cannot interpret semantic intent or context, making it strictly a deterministic anomaly detector.
@@ -494,42 +510,68 @@ The evaluation exposes several physical and architectural limitations inherent t
 % VIII. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This study demonstrated that deterministic signal-processing pipelines can reliably detect impulsive NLOS anomalies under reverberant corridor conditions while preserving bounded latency and bounded retention behavior. By combining STFT-based spectral discrimination, autocorrelation-derived periodic rejection, and GCC-PHAT localization, the acoustic module identifies impulsive anomalies within a formally defined reverberant operating regime.
+The experiment proved that deterministic signal processing chains could effectively recognize impulsive NLOS events within a reverberant corridor environment with bounded latency and bounded retention properties intact. Through spectral discrimination based on the STFT, periodic rejection via autocorrelation analysis, and GCC-PHAT location determination, the acoustic processing component recognizes impulsive events in an officially defined reverberant operation domain.
 
-Evaluation confirmed that, within the evaluated corridor conditions, detection rates exceed 95\% within a 15-meter NLOS safety envelope. By processing within a strict memory envelope and overwriting raw audio immediately, end-to-end latency is bounded below 120 ms. While the approach suffers recall degradation under high-chatter SNR conditions, it effectively suppresses periodic mechanical noise.
+Assessment revealed that, given the tested corridor environment, detection accuracy surpasses 95\% within a 15m NLOS safety range. With an operation within a tight memory range, along with the immediate overwriting of the raw audio input, latency remains less than 120ms. Although there is a reduction in the recall capability during high chatter SNR, the system can mitigate periodic mechanical noise.
 
-Within the broader ScholarMaster ecosystem, this architecture functions exclusively as a deterministic acoustic-sensing subsystem---extracting constrained spatial abstractions without formalizing irreversible privacy doctrine (Paper 3) or orchestrating activation governance (Paper 9). It operates strictly to detect impulsive acoustic anomalies and estimate directional metadata, passing localized cues to upstream layers.
+With regard to the larger ScholarMaster framework, this architecture can serve solely as a deterministic sub-system for detecting sounds using acoustics—abstracting space-based information but without enacting any privacy policies or implementing any activation governance structure . It is utilized only for detecting acoustic events and calculating metadata based on their directionality.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," \textit{IEEE Signal Processing Magazine}, vol. 24, no. 2, pp. 168-169, 2007.
-\bibitem{b2} M. Crocco, M. Cristani, A. Trucco, and V. Murino, "Audio surveillance: A systematic review," \textit{ACM Computing Surveys}, vol. 48, no. 4, pp. 1-46, 2016.
-\bibitem{b4} B. Naderi, S. Möller, and R. Polzehl, "Adversarial Representation Learning for Robust Privacy Preservation in Audio," \textit{IEEE Open Journal of Signal Processing}, vol. 5, 2024.
-\bibitem{b5} G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, "Scream and gunshot detection and localization for audio-surveillance systems," in \textit{2007 IEEE Conference on Advanced Video and Signal Based Surveillance}, pp. 21-26, 2007.
-\bibitem{b8} T. Virtanen, M. D. Plumbley, and D. Ellis, \textit{Computational Analysis of Sound Scenes and Events}, Springer, 2018.
-\bibitem{b9} J. Blauert, \textit{Spatial Hearing: The Psychophysics of Human Sound Localization}, MIT Press, 1997.
-\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing}, Academic Press, 2008.
-\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}, Prentice Hall, 1993.
-\bibitem{b12} D. Barchiesi, D. Giannoulis, D. Stowell, and M. D. Plumbley, "Acoustic scene classification: Classifying environments from the sounds they produce," \textit{IEEE Signal Processing Magazine}, vol. 32, no. 3, pp. 16-34, 2015.
-\bibitem{b15} J. Chen and X. Ran, "Deep Learning With Edge Computing: A Review," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1655-1674, 2019.
-\bibitem{b16} N. D. Lane et al., "DeepX: A Software Accelerator for Low-Power Deep Learning Inference on Mobile Devices," in \textit{IPSN}, 2016.
-\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
 \bibitem{b20} C. Knapp and G. Carter, "The generalized correlation method for estimation of time delay," \textit{IEEE Transactions on Acoustics, Speech, and Signal Processing}, vol. 24, no. 4, pp. 320-327, 1976.
-\bibitem{b21} M. Gruteser and D. Grunwald, "Anonymous usage of location-based services through spatial and temporal cloaking," in \textit{Proceedings of the 1st International Conference on Mobile Systems, Applications and Services}, 2003, pp. 31-42.
-\bibitem{b22} Q. Kong et al., "PANNs: Large-scale Pretrained Audio Neural Networks for Audio Pattern Recognition," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 28, pp. 2880-2894, 2020.
-\bibitem{b23} Y. Gong, Y.-A. Chung, and J. Glass, "AST: Audio Spectrogram Transformer," in \textit{Proc. Interspeech}, 2021, pp. 571-575.
-\bibitem{b25} P. A. Naylor and N. D. Gaubitch, \textit{Speech Dereverberation}, Springer, 2010.
-\bibitem{b26} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-\bibitem{b27} J. H. DiBiase, "A high-accuracy, closed-form approximation to the equivalency between SRP-PHAT and TDOA," in \textit{Proc. IEEE ICASSP}, 2000.
-\bibitem{b28} H. Kuttruff, \textit{Room Acoustics}, 5th ed. CRC Press, 2009.
-\bibitem{b29} J. Benesty, J. Chen, and Y. Huang, \textit{Microphone Array Signal Processing}, Springer Science \& Business Media, 2008.
+
 \bibitem{b30} J. B. Allen and D. A. Berkley, "Image method for efficiently simulating small-room acoustics," \textit{The Journal of the Acoustical Society of America}, vol. 65, no. 4, pp. 943-950, 1979.
+
+\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}, Prentice Hall, 1993.
+
+\bibitem{b9} J. Blauert, \textit{Spatial Hearing: The Psychophysics of Human Sound Localization}, MIT Press, 1997.
+
+\bibitem{b27} J. H. DiBiase, "A high-accuracy, closed-form approximation to the equivalency between SRP-PHAT and TDOA," in \textit{Proc. IEEE ICASSP}, 2000.
+
+\bibitem{b21} M. Gruteser and D. Grunwald, "Anonymous usage of location-based services through spatial and temporal cloaking," in \textit{Proceedings of the 1st International Conference on Mobile Systems, Applications and Services}, 2003, pp. 31-42.
+
 \bibitem{b31} H. Fastl and E. Zwicker, \textit{Psychoacoustics: Facts and Models}, Springer Science \& Business Media, 2006.
+
+\bibitem{b1} A. Cavallaro, "Privacy in video surveillance," \textit{IEEE Signal Processing Magazine}, vol. 24, no. 2, pp. 168-169, 2007.
+
+\bibitem{b5} G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, "Scream and gunshot detection and localization for audio-surveillance systems," in \textit{2007 IEEE Conference on Advanced Video and Signal Based Surveillance}, pp. 21-26, 2007.
+
+\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing}, Academic Press, 2008.
+
+\bibitem{b29} J. Benesty, J. Chen, and Y. Huang, \textit{Microphone Array Signal Processing}, Springer Science \& Business Media, 2008.
+
+\bibitem{b28} H. Kuttruff, \textit{Room Acoustics}, 5th ed. CRC Press, 2009.
+
 \bibitem{b32} A. Cavoukian, "Privacy by Design: The 7 Foundational Principles," \textit{Information and Privacy Commissioner of Ontario}, 2009.
+
+\bibitem{b25} P. A. Naylor and N. D. Gaubitch, \textit{Speech Dereverberation}, Springer, 2010.
+
 \bibitem{b33} J. H. Ziegeldorf, O. G. Morchon, and K. Wehrle, "Privacy in the Internet of Things: threats and challenges," \textit{Security and Communication Networks}, vol. 7, no. 12, pp. 2728-2742, 2014.
+
+\bibitem{b12} D. Barchiesi, D. Giannoulis, D. Stowell, and M. D. Plumbley, "Acoustic scene classification: Classifying environments from the sounds they produce," \textit{IEEE Signal Processing Magazine}, vol. 32, no. 3, pp. 16-34, 2015.
+
+\bibitem{b16} N. D. Lane et al., "DeepX: A Software Accelerator for Low-Power Deep Learning Inference on Mobile Devices," in \textit{IPSN}, 2016.
+
+\bibitem{b2} M. Crocco, M. Cristani, A. Trucco, and V. Murino, "Audio surveillance: A systematic review," \textit{ACM Computing Surveys}, vol. 48, no. 4, pp. 1-46, 2016.
+
+\bibitem{b26} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
+\bibitem{b8} T. Virtanen, M. D. Plumbley, and D. Ellis, \textit{Computational Analysis of Sound Scenes and Events}, Springer, 2018.
+
+\bibitem{b15} J. Chen and X. Ran, "Deep Learning With Edge Computing: A Review," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1655-1674, 2019.
+
+\bibitem{b22} Q. Kong et al., "PANNs: Large-scale Pretrained Audio Neural Networks for Audio Pattern Recognition," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 28, pp. 2880-2894, 2020.
+
+\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
+
+\bibitem{b23} Y. Gong, Y.-A. Chung, and J. Glass, "AST: Audio Spectrogram Transformer," in \textit{Proc. Interspeech}, 2021, pp. 571-575.
+
+\bibitem{b4} B. Naderi, S. Möller, and R. Polzehl, "Adversarial Representation Learning for Robust Privacy Preservation in Audio," \textit{IEEE Open Journal of Signal Processing}, vol. 5, 2024.
+
+\bibitem{b34} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.
 
 \end{thebibliography}
 

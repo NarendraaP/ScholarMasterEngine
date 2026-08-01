@@ -28,6 +28,9 @@
     frame=single,
     numbers=left, 
     numberstyle=\tiny,
+    numbersep=8pt,
+    xleftmargin=2.5em,
+    framexleftmargin=2.0em,
     language=Python,
     keywordstyle=\color{blue},
     commentstyle=\color{green!60!black},
@@ -56,7 +59,7 @@
 \author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
 \IEEEauthorblockA{\textit{Principal} \\
 \textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-సీతారామపురం, Narsapur, Andhra Pradesh, India}
+Seetharampuram, Narsapur, Andhra Pradesh, India}
 }
 
 \maketitle
@@ -94,7 +97,7 @@ Section II defines the threat model and failure taxonomy. Section III describes 
 \section{Threat Model and Failure Taxonomy}
 
 \subsection{Threat Model}
-We assume an adversary who cannot modify the deployed binary or hardware but can observe system behavior during and after failures. This threat model aligns with edge appliance deployment in managed institutional environments. The adversary's goal is to extract raw sensor data (RGB frames, audio waveforms) that should have been destroyed. The adversary may exploit:
+This threat model fits deploying edge appliances for use within managed institutional settings. The adversary wishes to exfiltrate raw sensor data (RGB frames, audio waveforms) which should have been shredded. The adversary could leverage:
 \begin{itemize}
     \item Timing windows during normal operation
     \item Memory residue after process termination
@@ -103,9 +106,9 @@ We assume an adversary who cannot modify the deployed binary or hardware but can
 \end{itemize}
 
 \subsection{Failure Taxonomy: Operational Necessity}
-Privacy systems frequently fail during abnormal states. Crash conditions are critically underexplored in edge AI literature, where most evaluation focuses on ideal conditions. Fault-state verification is fundamentally distinct from steady-state benchmarking. Therefore, enumerating this failure taxonomy is operationally necessary to evaluate privacy boundaries:
+Privacy systems often exhibit failures during the abnormal state. Crash conditions are rarely considered in edge AI literature, where the majority of the evaluations are performed in an ideal scenario. The verification process under faulty-state assumptions is significantly different from the standard steady-state benchmarking. As such, outlining the failure taxonomy is operationally necessary to assess the privacy guarantees:
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Failure Taxonomy}
 \centering
 \begin{tabular}{p{2.5cm} p{5cm}}
@@ -177,7 +180,7 @@ The TTL constants are:
     \item \texttt{AUDIO\_TTL\_MS = 3000} (audio buffers)
 \end{itemize}
 
-The TTL thresholds are derived from frame cadence (30 FPS) and bounded buffering constraints defined in Paper 17; they represent upper bounds rather than average destruction time. The TTL enforcement thread executes at \texttt{SCHED\_FIFO} priority above inference threads, ensuring deterministic execution within bounded jitter (<2ms measured under synthetic CPU saturation (100\% load across all cores)).
+The TTL thresholds mentioned in the previous paragraph are calculated with respect to the frame cadence (30 FPS) and the bounded buffering constraints described in Paper 17; they must be treated as hard deadlines rather than average destruction times, as the implementation of the TTL enforcement thread runs in SCHED\_FIFO priority domain with inference threads. The enforcement thread has deterministic execution bounds (jitter <2ms) measured on a CPU with all cores saturated (100\% utilization).
 
 \subsection{Forced Zeroization}
 Before deallocation, all raw buffers are explicitly zeroized using compiler-safe techniques to prevent dead-store elimination optimization. Zeroization strictly removes application-layer recoverability; DRAM remanence forensics are outside scope.
@@ -321,7 +324,7 @@ We employ systematic fault injection to verify invariant preservation under fail
 
 \subsection{Failure Scenarios}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Fault Injection Scenarios}
 \centering
 \begin{tabular}{p{1cm} p{2cm} p{4cm}}
@@ -381,7 +384,7 @@ We utilized the Linux Kernel Fault Injection framework to perform synthetic fail
     \item \texttt{fail\_alloc\_page}: To simulate OOM conditions in the middle of inference.
     \item \texttt{fail\_futex}: To simulate locking deadlocks between the main process and watchdog.
 \end{itemize}
-The test harness runs these scenarios continuously for 24 hours (``Soak Testing'') to characterize runtime resilience. Under these tested operational conditions, no invariant violations were observed across 14,000+ injected faults. Laboratory conditions cannot exhaust all failure combinations, but these results establish high operational confidence.
+The test harness is run for 24 hrs ("Soak Testing") to observe runtime resilience. With no invariant violations found across 14000+ injected failures under these test conditions, and noting that the limitations of laboratory test conditions can rarely encompass all possible failure modes, confidence is high that the software is operating safely under normal conditions.
 
 % ==========================================
 % 6. RESULTS
@@ -390,7 +393,7 @@ The test harness runs these scenarios continuously for 24 hours (``Soak Testing'
 
 \subsection{TTL Enforcement}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{TTL Enforcement Results}
 \centering
 \begin{tabular}{l r r}
@@ -409,7 +412,7 @@ Watchdog Interventions & 0 & 0 \\
 
 \subsection{Watchdog Behavior}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Watchdog Termination Results}
 \centering
 \begin{tabular}{l l}
@@ -427,7 +430,7 @@ Governance Timeout & 0 (n=50) \\
 
 \subsection{Post-Crash Application-Layer Data Residue}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Post-Crash Residue Detection (Application Layer)}
 \centering
 \begin{tabular}{l r r}
@@ -450,7 +453,7 @@ Memory Pressure (OOM) & 50 & 0 \\
 
 \subsection{System Halt Correctness}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{System Halt Behavior}
 \centering
 \begin{tabular}{l l}
@@ -469,7 +472,7 @@ LED State UNKNOWN & 0 \\
 
 \subsection{Invariant Verification Summary}
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Invariant Verification}
 \centering
 \resizebox{\columnwidth}{!}{%
@@ -500,7 +503,7 @@ We empirically validate that fail-closed semantics trigger correctly under invar
 % --- FIGURE 2: FAILURE STATE MACHINE ---
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[->, >=stealth', shorten >=1pt, auto, node distance=3cm, thick]
+\begin{tikzpicture}[->, >=stealth', shorten >=1pt, auto, node distance=3.6cm, thick]
   \tikzstyle{state} = [circle, draw, minimum size=1.8cm, align=center, fill=gray!10]
 
   \node[state, fill=green!20] (Normal) {Normal\\Op};
@@ -508,19 +511,18 @@ We empirically validate that fail-closed semantics trigger correctly under invar
   \node[state, fill=red!20] (Halt) [below of=Normal] {HALT\\(Secure)};
 
   \path 
-    (Normal) edge node [above] {Net Loss} (Degraded)
-    (Degraded) edge node [below] {Net Restore} (Normal)
-    (Normal) edge node [left] {TTL Fail} (Halt)
-    (Normal) edge node [right] {Watchdog} (Halt)
-    (Degraded) edge node [right] {TTL Fail} (Halt);
+    (Normal) edge[bend left=15] node [above, font=\small] {Net Loss} (Degraded)
+    (Degraded) edge[bend left=15] node [below, font=\small] {Net Restore} (Normal)
+    (Normal) edge node [left, font=\small] {TTL Fail} (Halt)
+    (Normal) edge node [above right, font=\small] {Watchdog} (Halt)
+    (Degraded) edge node [below left, font=\small] {TTL Fail} (Halt);
 \end{tikzpicture}
-\caption{Fail-Closed State Machine. Any critical invariant violation (TTL, Watchdog) forces a transition to the HALT state. Network issues only trigger the Degraded (Safe) state, where no output is emitted but local processing continues.}
+\caption{Fail-Closed State Machine. Any critical invariant violation (TTL, Watchdog) causes transition to the HALT state. The only possible transition caused by network problems is the move to the Degraded (Safe) state, from which no outputs are produced, but the local processing is still allowed.}
 \label{fig:states}
 \end{figure}
 
 \subsection{Adversarial Timing Analysis (TOCTOU)}
-We analyzed the system for Time-of-Check-to-Time-of-Use (TOCTOU) vulnerabilities during the destruction window. An adversary might attempt to read memory *after* the TTL check but *before* zeroization.
-However, the `zeroize()` function executes atomically with respect to the memory allocator. The pointer is not freed until `memset` completes. Since the memory is mapped as `private` and `anonymous`, no other process can map it. The only window of vulnerability is a physical cold-boot attack during the 33ms window, which requires physical memory extraction techniques outside the assumed adversarial model.
+We checked the system for Time-of-Check-to-Time-of-Use (TOCTOU) vulnerabilities during the destruction window. An attacker could possibly read the memory contents directly after the TTL check and before zeroization. However, the `zeroize()` function is executed atomically with respect to the memory allocator. The pointer is not released until `memset` completes. Moreover, the memory is mapped as `private` and `anonymous,' so that no other process can observe it. The only viable attack scenario we can think of would require a cold-boot physical memory dump of the server during the 33ms window, which is outside the scope of our threat model.
 
 \subsection{Defense in Depth}
 The enforcement mechanisms provide defense in depth:
@@ -576,51 +578,71 @@ This runtime-verification study demonstrates that architectural privacy claims c
 % ==========================================
 \begin{thebibliography}{00}
 
-% Fault Injection and Testing
-\bibitem{b1} J. Arlat et al., ``Fault injection for dependability validation: A methodology and some applications,'' \textit{IEEE Trans. Software Engineering}, vol. 16, no. 2, pp. 166--182, 1990.
-\bibitem{b2} M. Hsueh, T. Tsai, and R. Iyer, ``Fault injection techniques and tools,'' \textit{Computer}, vol. 30, no. 4, pp. 75--82, 1997.
+\bibitem{b19} C. A. R. Hoare, ``An axiomatic basis for computer programming,'' \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
 
-% Watchdog Systems
-\bibitem{b3} A. Benso et al., ``A Watchdog Processor to Detect Data and Control Flow Errors,'' \textit{IEEE Design \& Test of Computers}, vol. 15, no. 4, pp. 24--32, 1998.
-
-% Secure Deletion
-\bibitem{b4} P. Gutmann, ``Secure deletion of data from magnetic and solid-state memory,'' \textit{USENIX Security}, 1996.
-
-% Fail-Safe Systems
-\bibitem{b5} N. G. Leveson, \textit{Safeware: System Safety and Computers}. Addison-Wesley, 1995.
-
-% Privacy by Design
-\bibitem{b6} A. Cavoukian, ``Privacy by design: The 7 foundational principles,'' Information and Privacy Commissioner of Ontario, 2009.
-
-% Edge AI
-\bibitem{b7} Y. Mao et al., ``A survey on mobile edge computing,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 19, no. 4, pp. 2322--2358, 2017.
-
-% Memory Safety
-\bibitem{b8} L. Szekeres et al., ``SoK: Eternal war in memory,'' \textit{IEEE S\&P}, 2013.
-
-% Differential Privacy (Referenced in Context)
-\bibitem{b9} C. Dwork et al., ``The algorithmic foundations of differential privacy,'' \textit{Foundations and Trends in Theoretical CS}, 2014.
-
-% ScholarMaster Series
-\bibitem{b10} N. Babu P., ``Privacy-preserving pose analytics via architectural irreversibility,'' \textit{ScholarMaster Series}, Paper 3, 2025.
-\bibitem{b11} N. Babu P., ``Mandatory governance gates for edge AI systems,'' \textit{ScholarMaster Series}, Paper 10, 2025.
-\bibitem{b12} N. Babu P., ``Visible privacy indicators in intelligent environments,'' \textit{ScholarMaster Series}, Paper 11, 2025.
-\bibitem{b13} N. Babu P., ``Fail-safe semantics for privacy-critical edge systems,'' \textit{ScholarMaster Series}, Paper 9, 2025.
-\bibitem{b17} N. Babu P., ``Architectural irreversibility: Enforcing privacy, governance, and trust in intelligent campus systems,'' \textit{ScholarMaster Series}, Paper 17 (Capstone), 2026.
-
-% Systems Verification
-\bibitem{b14} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
 \bibitem{b15} L. Lamport, ``Proving the correctness of multiprocess programs,'' \textit{IEEE Trans. Software Engineering}, vol. 3, no. 2, pp. 125--143, 1977.
 
 % Runtime Verification
+
+\bibitem{b1} J. Arlat et al., ``Fault injection for dependability validation: A methodology and some applications,'' \textit{IEEE Trans. Software Engineering}, vol. 16, no. 2, pp. 166--182, 1990.
+
+\bibitem{b5} N. G. Leveson, \textit{Safeware: System Safety and Computers}. Addison-Wesley, 1995.
+
+% Privacy by Design
+
+\bibitem{b4} P. Gutmann, ``Secure deletion of data from magnetic and solid-state memory,'' \textit{USENIX Security}, 1996.
+
+% Fail-Safe Systems
+
+\bibitem{b2} M. Hsueh, T. Tsai, and R. Iyer, ``Fault injection techniques and tools,'' \textit{Computer}, vol. 30, no. 4, pp. 75--82, 1997.
+
+% Watchdog Systems
+
+\bibitem{b3} A. Benso et al., ``A Watchdog Processor to Detect Data and Control Flow Errors,'' \textit{IEEE Design \& Test of Computers}, vol. 15, no. 4, pp. 24--32, 1998.
+
+% Secure Deletion
+
+\bibitem{b14} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
+
+\bibitem{b22} J. Rushby, ``Partitioning in avionics architectures: Requirements, mechanisms, and assurance,'' \textit{NASA Contractor Report}, 1999.
+
 \bibitem{b16} M. Leucker and C. Schallhart, ``A brief account of runtime verification,'' \textit{Journal of Logic and Algebraic Programming}, vol. 78, no. 5, pp. 293--303, 2009.
 
 % New References
-\bibitem{b18} R. Natella et al., ``Assessing dependability with software fault injection: A survey,'' \textit{ACM Computing Surveys}, vol. 48, no. 3, pp. 1--27, 2016.
-\bibitem{b19} C. A. R. Hoare, ``An axiomatic basis for computer programming,'' \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
-\bibitem{b20} V. Costan and S. Devadas, ``Intel SGX Explained,'' \textit{IACR Cryptology ePrint Archive}, 2016.
+
+\bibitem{b6} A. Cavoukian, ``Privacy by design: The 7 foundational principles,'' Information and Privacy Commissioner of Ontario, 2009.
+
+% Edge AI
+
+\bibitem{b8} L. Szekeres et al., ``SoK: Eternal war in memory,'' \textit{IEEE S\&P}, 2013.
+
+% Differential Privacy (Referenced in Context)
+
 \bibitem{b21} A. S. Tanenbaum and H. Bos, \textit{Modern Operating Systems}, 4th ed. Pearson, 2014.
-\bibitem{b22} J. Rushby, ``Partitioning in avionics architectures: Requirements, mechanisms, and assurance,'' \textit{NASA Contractor Report}, 1999.
+
+\bibitem{b9} C. Dwork et al., ``The algorithmic foundations of differential privacy,'' \textit{Foundations and Trends in Theoretical CS}, 2014.
+
+% ScholarMaster Series
+
+\bibitem{b18} R. Natella et al., ``Assessing dependability with software fault injection: A survey,'' \textit{ACM Computing Surveys}, vol. 48, no. 3, pp. 1--27, 2016.
+
+\bibitem{b20} V. Costan and S. Devadas, ``Intel SGX Explained,'' \textit{IACR Cryptology ePrint Archive}, 2016.
+
+\bibitem{b7} Y. Mao et al., ``A survey on mobile edge computing,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 19, no. 4, pp. 2322--2358, 2017.
+
+% Memory Safety
+
+\bibitem{b10} N. Babu P., ``Privacy-preserving pose analytics via architectural irreversibility,'' \textit{ScholarMaster Series}, Paper 3, 2025.
+
+\bibitem{b11} N. Babu P., ``Mandatory governance gates for edge AI systems,'' \textit{ScholarMaster Series}, Paper 10, 2025.
+
+\bibitem{b12} N. Babu P., ``Visible privacy indicators in intelligent environments,'' \textit{ScholarMaster Series}, Paper 11, 2025.
+
+\bibitem{b13} N. Babu P., ``Fail-safe semantics for privacy-critical edge systems,'' \textit{ScholarMaster Series}, Paper 9, 2025.
+
+\bibitem{b17} N. Babu P., ``Architectural irreversibility: Enforcing privacy, governance, and trust in intelligent campus systems,'' \textit{ScholarMaster Series}, Paper 17 (Capstone), 2026.
+
+% Systems Verification
 
 \end{thebibliography}
 

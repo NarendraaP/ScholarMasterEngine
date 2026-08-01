@@ -58,7 +58,7 @@
 \definecolor{scetred}{RGB}{255, 0, 0}      % Pure Primary Red for Degree/University Details
 \definecolor{scetgreen}{RGB}{0, 153, 76}   % Forest Green for Submission Phrases
 \definecolor{scetorange}{RGB}{230, 100, 0} % Golden/Orange for Candidate Details
-\definecolor{scetpurple}{RGB}{120, 30, 120} % Purple for Internal Examiner
+\definecolor{scetpurple}{RGB}{120, 30, 120} % Purple for External Examiner
 \definecolor{textblue}{RGB}{0, 102, 204}   % Bright Blue for Project Title in Certificate
 \definecolor{textred}{RGB}{220, 30, 30}    % Red for Certificate Text
 \definecolor{textgreen}{RGB}{0, 153, 76}   % Green for Student Name/Roll Number in Certificate
@@ -68,71 +68,71 @@
 % 1. COVER PAGE (STRICT 1-PAGE PERFECTLY BALANCED LAYOUT)
 % ---------------------------------------------------------
 \begin{titlepage}
+\newgeometry{left=1.5in, right=1.0in, top=0.8in, bottom=0.8in}
+\setlength{\parskip}{4pt}
 \begin{center}
-    \vspace*{6pt} % Reduced top margin cushion
-    \setstretch{1.0} % Set to single spacing for layout safety
+    \vspace*{0.15in}
+    \setstretch{1.1}
     
-    % MAIN TITLE (All Caps, Black)
-    {\fontsize{14}{16}\bfseries\selectfont\color{black} BEYOND THE PRIVACY-UTILITY TRADE-OFF: A SPATIOTEMPORAL-CONSTRAINT AND SECURE INTELLIGENT CAMPUS MONITORING SYSTEM\par}
+    % MAIN TITLE (All Caps, Black, Prominent font size)
+    {\fontsize{18}{22}\bfseries\selectfont\color{black} BEYOND THE PRIVACY-UTILITY TRADE-OFF: A SPATIOTEMPORAL-CONSTRAINT AND SECURE INTELLIGENT CAMPUS MONITORING SYSTEM\par}
     
-    \vspace{4pt}
+    \vspace{0.2in}
     % REPORT LEVEL (ALL CAPS - Red)
-    {\fontsize{11}{13}\bfseries\selectfont\color{scetred} A PROJECT REPORT\par}
-    \vspace{1pt}
+    {\fontsize{12}{14}\bfseries\selectfont\color{scetred} A PROJECT REPORT\par}
+    \vspace{0.02in}
     {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} Submitted in partial fulfillment of the requirements to\par}
     
-    \vspace{4pt}
+    \vspace{0.05in}
     % UNIVERSITY SPECIFICATION (ALL CAPS - Red)
-    {\fontsize{12}{14}\bfseries\selectfont\color{scetred} JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY KAKINADA\par}
-    \vspace{1pt}
-    {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} For the award of the degree\par}
+    {\fontsize{13}{15}\bfseries\selectfont\color{scetred} JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY KAKINADA\par}
+    \vspace{0.02in}
+    {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} For the award of the degree of\par}
     
-    \vspace{4pt}
-    % ACADEMIC DEGREE BLOCK (ALL CAPS - Red / Green "In")
-    {\fontsize{13}{15}\bfseries\selectfont\color{scetred} MASTER OF TECHNOLOGY\par}
-    \vspace{2pt}
+    \vspace{0.05in}
+    % ACADEMIC DEGREE BLOCK (ALL CAPS - Red)
+    {\fontsize{14}{16}\bfseries\selectfont\color{scetred} MASTER OF TECHNOLOGY\par}
+    \vspace{0.02in}
     {\fontsize{10}{12}\itshape\bfseries\selectfont\color{scetgreen} In\par} 
-    \vspace{2pt}
-    {\fontsize{13}{15}\bfseries\selectfont\color{scetred} COMPUTER SCIENCE \& ENGINEERING\par}
+    \vspace{0.02in}
+    {\fontsize{14}{16}\bfseries\selectfont\color{scetred} COMPUTER SCIENCE \& ENGINEERING\par}
     
-    \vspace{4pt}
-    {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} Submitted\par}
-    \vspace{1pt}
-    {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} By\par}
-    \vspace{2pt}
+    \vspace{0.12in}
+    {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} Submitted by\par}
+    \vspace{0.02in}
     % STUDENT CREDENTIALS (ALL CAPS - Orange | Roll No: 24A21D5827)
     {\fontsize{13}{15}\bfseries\selectfont\color{scetorange} POLISETTI NARENDRA\par}
     {\fontsize{11}{13}\bfseries\selectfont\color{scetorange} (24A21D5827)\par}
     
-    \vspace{4pt}
+    \vspace{0.12in}
     {\fontsize{10}{12}\itshape\selectfont\color{scetgreen} Under the esteemed guidance of\par}
-    \vspace{2pt}
+    \vspace{0.02in}
     % GUIDE LINE (Title Case - Black, Role - Red)
-    {\fontsize{12}{14}\bfseries\selectfont\color{black} Dr. S. Suresh Kumar, \textmd{M.Tech, Ph.D, PDF,}\par}
-    {\fontsize{11}{13}\bfseries\selectfont\color{scetred} Professor(CSE)/Principal\par}
+    {\fontsize{12}{14}\bfseries\selectfont\color{black} Dr. S. Suresh Kumar, \textmd{M.Tech, Ph.D, PDF}\par}
+    {\fontsize{11}{13}\bfseries\selectfont\color{scetred} Professor \& Principal, Dept. of CSE\par}
     
-    \vspace{4pt}
+    \vspace{0.15in}
     \includegraphics[scale=0.55]{logo.png}\par
     
-    \vspace{4pt}
-    % Academic Year (Black, bold)
-    {\fontsize{11}{13}\bfseries\selectfont\color{black} 2024-2026\par}
-    
-    \vspace{4pt}
+    \vspace{0.15in}
     % DEPARTMENTAL BLOCK (ALL CAPS - Steel/Navy Blue)
-    {\fontsize{11}{13}\bfseries\selectfont\color{scetblue} DEPARTMENT OF COMPUTER SCIENCE \& ENGINEERING\par}
+    {\fontsize{12}{14}\bfseries\selectfont\color{scetblue} DEPARTMENT OF COMPUTER SCIENCE \& ENGINEERING\par}
     
-    \vspace{2pt}
+    \vspace{0.02in}
     % COLLEGE INST HEADER (ALL CAPS - Steel/Navy Blue)
-    {\fontsize{13}{15}\bfseries\selectfont\color{scetblue} SWARNANDHRA COLLEGE OF ENGINEERING AND TECHNOLOGY\par}
-    
-    \vspace{2pt}
-    {\fontsize{10}{12}\bfseries\selectfont\color{scetblue} (Autonomous)\par}
+    {\fontsize{14}{16}\bfseries\selectfont\color{scetblue} SWARNANDHRA COLLEGE OF ENGINEERING AND TECHNOLOGY\par}
+    {\fontsize{11}{13}\bfseries\selectfont\color{scetblue} (Autonomous)\par}
+    \vspace{0.02in}
     {\fontsize{9}{11}\bfseries\selectfont\color{scetblue} (Approved by AICTE \& Permanently Affiliated to JNTUK)\par}
     {\fontsize{9}{11}\bfseries\selectfont\color{scetblue} (Accredited by NAAC with ``A'' Grade, NBA)\par}
     {\fontsize{10}{12}\bfseries\selectfont\color{scetblue} Seetharampuram, Narasapur-534280\par}
+    
+    \vspace{0.1in}
+    % Academic Year (Black, bold)
+    {\fontsize{12}{14}\bfseries\selectfont\color{black} 2024-2026\par}
 \end{center}
 \end{titlepage}
+\restoregeometry
 
 % ---------------------------------------------------------
 % 2. COLLEGE BONAFIDE CERTIFICATE (SIGNATURE STRUCT RE-ALIGNED)
@@ -167,13 +167,13 @@
 % Two columns setup matching page 2 screenshot exactly
 \noindent
 \begin{tabular}{@{}p{0.5\textwidth}p{0.5\textwidth}@{}}
-    \centering {\color{scetbrown}\textbf{Guide}} \\ [2pt] {\color{scetred}\textbf{Dr. S. Suresh Kumar, \textmd{M.Tech, Ph.D, PDF}}} \\ {\color{scetred}\small\textbf{Professor(CSE)/Principal}} \\ {\color{scetred}\small\textbf{Department of CSE}} &
+    \centering {\color{scetbrown}\textbf{Guide}} \\ [2pt] {\color{scetred}\textbf{Dr. S. Suresh Kumar, \textmd{M.Tech, Ph.D, PDF}}} \\ {\color{scetred}\small\textbf{Professor \& Principal}} \\ {\color{scetred}\small\textbf{Department of CSE}} &
     \centering {\color{scetbrown}\textbf{Head of the Department}} \\ [2pt] {\color{scetred}\textbf{Dr.P.Srinivasulu, \textmd{M.Tech,Ph.D}}} \\ {\color{scetred}\small\textbf{Professor \& HOD}} \\ {\color{scetred}\small\textbf{Department of CSE}}
 \end{tabular}
 
 \vspace{0.4in}
 \begin{center}
-    {\color{scetpurple}\textbf{Internal Examiner}}
+    {\color{scetpurple}\textbf{Signature of the External Examiner}}
 \end{center}
 
 % ---------------------------------------------------------
@@ -190,7 +190,7 @@
 \noindent {\setstretch{1.5}\large I certify that\par}
 \begin{itemize}
     \setlength{\itemsep}{12pt}
-    \item[a.] The project work contained in the report is original and has been done by under the guidance of my supervisor.
+    \item[a.] The project work contained in the report is original and has been done by me under the guidance of my supervisor, \textbf{Dr. S. Suresh Kumar}.
     \item[b.] The work has not been submitted to any other university for the award of any degree or diploma.
     \item[c.] The guidelines of the university are followed in writing the report.
 \end{itemize}
@@ -199,7 +199,7 @@
 % Dynamically sets column matrices to match text width flawlessly
 \noindent\begin{tabular}{@{}p{0.35\textwidth}p{0.65\textwidth}@{}}
     \textbf{Date:} & \textbf{Name of the Student:} POLISETTI NARENDRA \\ [0.15in]
-    \textbf{Place:} Narasapur & \textbf{Roll No:} 24A21D5827 \\ [0.15in]
+    \textbf{Place:} Seetharampuram & \textbf{Roll No:} 24A21D5827 \\ [0.15in]
                    & \textbf{Signature:} \underline{\hspace{2.0in}}
 \end{tabular}
 
@@ -212,24 +212,32 @@
     \vspace*{0.1in}
     {\fontsize{14}{16}\bfseries\selectfont ACKNOWLEDGEMENT\par}
 \end{center}
-\vspace{0.3in}
+\vspace{0.25in}
 
-\noindent I would like to express my sincere gratitude to Management for providing us with all the necessary facilities, constant encouragement and support throughout the course of studies.
+\begingroup
+\setlength{\parskip}{4pt}
 
-\noindent I hugely indebted to Dr. S. Suresh Kumar, Principal for finding out time for us to share knowledge for being ever so kind to show interest in my work and for giving his precious and kind advice for the same.
+\noindent A Project of this kind is never accomplished alone. It is supported by the encouragement and guidance of many well-wishers. I take this opportunity to express my sincere gratitude to all those who helped me turn my idea into reality.
 
-\noindent I would like to express my grateful thanks to Dr. P. Srinivasulu, Professor \& Head, Department of Computer Science and Engineering, for his valuable suggestions and guidance regarding the software analysis, Design and also for his continuous effort in the successful completion of the project.
+First and foremost, I thank the \textbf{Almighty} for giving me the strength, knowledge, and perseverance to complete this project. I express my heartfelt gratitude to the \textbf{Management of Swarnandhra College of Engineering \& Technology}: \textbf{Sri K. V. Satyanarayana, Chairman}, \textbf{Sri K. V. Swamy, Treasurer}, and \textbf{Sri A. Sri Hari, Director} for providing all the necessary facilities and support.
 
-\noindent My deepest appreciation to the project coordinator Mr. N. Tulasi Raju, Associate Professor, Department of Computer Science and Engineering for his valuable guidance for efficacious completion of the project.
+I am hugely indebted to my supervisor and guide \textbf{Dr. S. Suresh Kumar, Professor \& Principal, Dept. of CSE}, for finding out time to share his knowledge, for being ever so kind to show interest in my work, and for giving his precious and kind advice throughout the project. I also thank him and \textbf{Dr. A. Gopichand, Vice Principal}, Swarnandhra College of Engineering and Technology, Seetharamapuram, for granting me permission to undertake this project.
 
-\noindent I also place on record, my thanks to one and all who directly or indirectly have lent their helping hand this venture.
+I extend my sincere thanks to \textbf{Dr. P. Srinivasulu, Professor \& Head, Department of Computer Science and Engineering}, for his suggestions, guidance, and continuous effort in the successful completion of the project.
 
-\vspace{0.6in}
+My deepest appreciation to the project coordinator \textbf{Dr. N. Tulasi Raju, Associate Professor, Department of Computer Science and Engineering}, for his valuable guidance, consistent encouragement, and project coordination throughout the project.
+
+I also place on record my thanks to all the faculty members, non-teaching staff, and one and all who directly or indirectly have lent their helping hand in this venture.
+
+Finally, I extend my heartfelt gratitude to my parents for their constant encouragement, unwavering support, and endless motivation, all of which made this achievement possible.
+
+\vspace{0.25in}
 \begin{flushright}
     \setstretch{1.1}
     \textbf{POLISETTI NARENDRA}\\
     \textbf{(24A21D5827)}
 \end{flushright}
+\endgroup
 
 % ---------------------------------------------------------
 % 5. ABSTRACT
@@ -597,7 +605,7 @@ The application boundaries cover four core software modules:
     \item \textbf{Scalability (NFR-2):} The similarity search index (FAISS) must scale efficiently to query against 100,000 enrolled identity vectors with sub-millisecond retrieval.
     \item \textbf{Privacy (NFR-3):} The system must guarantee compliance with GDPR Article 25 (Privacy by Design) by enforcing a strict layer boundary that prevents raw images or audio waveforms from persisting on non-volatile storage.
     \item \textbf{Security (NFR-4):} All database operations, role assignments, and attendance logs must be validated against a 7-layer RBAC boundary to prevent unauthorized data access.
-    \item \textbf{Reliability \& Thermal Controls (NFR-5):} The system must include thermal throttling controls that dynamically scale the video analysis rate from 30 FPS to 15 FPS if system temperature exceeds $85^\circ\text{C}$ to maintain stability.
+    \item \textbf{Reliability \& Thermal Controls (NFR-5):} The system must include thermal throttling controls that dynamically scale the video analysis rate from 30 FPS to 15 FPS if system temperature exceeds $85^\circ\text{C}$ to maintain stability \cite{mbeee2026}.
     \item \textbf{Maintainability (NFR-6):} The database schema must be fully abstracted through an Object-Relational Mapper (SQLAlchemy ORM) to allow database portability and schema migrations.
 \end{itemize}
 
@@ -1644,7 +1652,7 @@ The Video Thread operates at the highest frequency (30 FPS) and performs the com
 \centering
 \begin{tikzpicture}[
     thread/.style={rectangle, draw=blue!80, fill=blue!5, text width=2.5cm, align=center, rounded corners=3pt, minimum height=0.75cm, font=\scriptsize},
-    db/.style={cylinder, cylinder points=20, shape border rotate=90, draw=orange!80, fill=orange!5, text width=1.8cm, align=center, minimum height=1.0cm, font=\scriptsize},
+    db/.style={cylinder, shape border rotate=90, draw=orange!80, fill=orange!5, text width=1.8cm, align=center, minimum height=1.0cm, font=\scriptsize},
     arrow/.style={->, >=stealth, thick, draw=gray!70},
     lockarrow/.style={<->, >=stealth, thick, draw=red!70, dashed}
 ]
@@ -1978,6 +1986,9 @@ B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, ``Communication-
 \bibitem{minalah2020smart}
 N. Min-Allah and S. Alrashed, ``Smart campus: A sketch,'' \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
 
+\bibitem{mbeee2026}
+P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{ScholarMaster Series}, Paper 5, 2026.
+
 \bibitem{murphy2009headpose}
 E. Murphy-Chutorian and M. M. Trivedi, ``Head Pose Estimation in Computer Vision: A Survey,'' \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 31, no. 4, pp. 607--626, 2009.
 
@@ -2070,6 +2081,7 @@ Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, ``Edge Intelligence: Pav
     \item Y. A. Malkov and D. A. Yashunin, ``Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs,'' \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 42, no. 4, pp. 824--836, 2018.
     \item S. Newman, \textit{Building Microservices: Designing Fine-Grained Systems}, Sebastopol, CA, USA: O'Reilly Media, 2015.
     \item S. Nithyakalyani and S. Suresh Kumar, ``Optimal Clustering Algorithm for Energy Efficient Data Aggregation in WSN,'' \textit{European Journal of Scientific Research}, 2012.
+    \item P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{ScholarMaster Series}, Paper 5, 2026.
     \item \textit{OpenCV: Open Source Computer Vision Library Reference Manual}, available at opencv.org, 2023.
     \item D. L. Parnas, ``On the criteria to be used in decomposing systems into modules,'' \textit{Communications of the ACM}, vol. 15, no. 12, pp. 1053--1058, 1972.
     \item \textit{SQLAlchemy ORM Framework Official Documentation and Migration Guides}, available at sqlalchemy.org, 2023.

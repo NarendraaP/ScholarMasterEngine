@@ -44,9 +44,9 @@
 % AUTHOR
 % ==========================================
 \author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
-\IEEEauthorblockA{\textit{Department of Computer Science,\\
-Swarnandhra College of Engineering and Technology,\\
-Narsapur, Andhra Pradesh, India}}
+\IEEEauthorblockA{\textit{Department of Computer Science},\\
+\textit{Swarnandhra College of Engineering and Technology},\\
+\textit{Narsapur, Andhra Pradesh, India}}
 }
 
 \maketitle
@@ -55,11 +55,11 @@ Narsapur, Andhra Pradesh, India}}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Edge deployments that combine multiple AI perception modules often encounter orchestration difficulties that are not directly related to model accuracy. Coordinating heterogeneous inference pipelines under shared latency, compute, and policy constraints introduces a system-level control problem. Tight coupling among these components can introduce cascading failure risks across the sensing pipeline, whereas cloud-mediated orchestration often conflicts with the real-time responsiveness expected in instructional settings.
+Edge deployments of multi-model AI perception pipelines face orchestration challenges that are largely independent of individual model accuracy. Dynamic coordination of heterogeneous inference pipelines subject to shared latency, computational, and policy constraints presents a control theory challenge. The tight coupling of such systems can create cascading fault conditions in the perception pipeline while introducing unacceptable response time delays in the cloud-coordination approach for instructional contexts.
 
-To address this orchestration problem, this work introduces a hierarchical control-plane abstraction for policy-aware coordination of multi-module AI workloads at the edge. The design assumes a layered execution environment—Perception, Reasoning, and Governance—while restricting cross-layer communication to typed, bounded context vectors. To regulate computational cost, we introduce a Compute Justification Model that formalizes Inference Rate Governance (IRG). This mechanism enables dynamic activation or suppression of sensing modules according to lecture phase and predefined operational heuristics.
+To deal with this orchestration problem, this work proposes a hierarchical control-plane abstraction for policy-aware coordination of multi-module AI workloads at the edge. The paper describes a layered execution environment, including Perception, Reasoning, and Governance, with limited cross-layer communication via typed, bounded context vectors. It introduces the Compute Justification Model for Inference Rate Governance (IRG), which allows for dynamic activation/suppression of sensing modules based on lecture phase and associated heuristics in order to manage computational cost.
 
-System resilience is evaluated via fault injection that subjects the orchestrator to deterministic failure scenarios including module timeouts, memory pressure, and routing perturbations. To evaluate orchestration behavior independently of downstream model accuracy, we define four policy-aware metrics: Inference Suppression Ratio (ISR), Ethical Compute Utilization (ECU), Context-Aware Duty Cycle (CADC), and Layer Isolation Factor (LIF). Experimental observations indicate that hierarchical orchestration can confine localized failures. It also aligns compute activation with predefined operational policies.
+System resilience is evaluated via fault injection that exposes particular orchestrator to deterministic failure scenarios including module timeouts, memory pressure, and routing perturbations. To assess orchestration behavior independently from downstream model accuracy, we introduce four policy-aware metrics: Inference Suppression Ratio, Ethical Compute Utilization, Context-Aware Duty Cycle, and Layer Isolation Factor. The experiments demonstrate that orchestration according to hierarchical policies can localize failures and enforce operating policies down to individual model layers.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -71,13 +71,13 @@ Hierarchical Orchestration, Policy-Aware Control Plane, Inference Rate Governanc
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{hierarchical policy-aware orchestration enables deterministic and fault-contained coordination of heterogeneous edge AI modules under shared operational constraints}. Edge-based intelligent environments increasingly rely on multiple specialized AI modules operating concurrently, such as biometric recognition, pose estimation, and speech interpretation. Although each component can be optimized independently, coordinating them within a shared runtime introduces a distinct orchestration control problem \cite{b14, b21}.
+The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems often feature multiple domainspecific AI modules hosted at the edge, running concurrently, for instance, biometric recognition, pose estimation, and speech understanding. While each can be optimized individually, their joint orchestration in a shared runtime environment introduces a distinct coordination problem \cite{b14, b21}.
 
 \subsection{Architectural Fragility in Flat Multi-Model Pipelines}
-When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention destabilizes otherwise independent modules, while cloud-mediated orchestration introduces unpredictable network latency that cannot support real-time interaction modeling \cite{b4, b15}. Furthermore, naive always-on sensing wastes operational resources by executing compute-intensive models when they are not contextually required. Orchestration instability emerges fundamentally from coordination topology, not merely from underlying model inefficiency.
+When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention interferes with other wise independent modules, while cloud mediated orchestration introduces unpredictable network latency that fails to meet the demands of interactive modeling \cite{b4, b15}. Furthermore, naive always-on sensing waste computing resources by performing heavy duty processing when not needed. Orchestration destabilization is caused by topological factors rather than mere compute model inefficiency.
 
 \subsection{Contributions and Subsystem Scope}
-This work investigates whether a logical control-plane abstraction can address these coordination limits. We assume a layered execution environment—Perception, Reasoning, and Governance—that enforces structured isolation. Specifically, our contributions are:
+This work explores whether a logical control-plane abstraction can be leveraged to address these coordination challenges. We envision a layered execution paradigm, where the system is partitioned into three distinct spheres of influence: Perception, Reasoning, and Governance. By enforcing information and decision isolation within these domains, we propose the following contributions:
 \begin{itemize}
     \item A hierarchical control-plane abstraction relying on typed context vectors for orchestration isolation \cite{b17}.
     \item A Compute Justification Model formalizing Inference Rate Governance (IRG) for policy-aligned module activation.
@@ -85,20 +85,20 @@ This work investigates whether a logical control-plane abstraction can address t
     \item Validation via fault injection to confirm orchestration resilience under deterministic failure scenarios \cite{b28}.
 \end{itemize}
 
-Within the ScholarMaster architecture, this subsystem coordinates module activation, governs orchestration logic, and enforces deterministic degradation only. It does not evaluate survivability envelopes (Paper 10), optimize flash endurance (Paper 12), optimize federated adaptation (Paper 13), derive runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
+Within the ScholarMaster architecture, this subsystem takes care of the activation of other modules, controls their orchestration logic, and only these three things. It does not assess survivability envelopes (Paper 10), optimize flash memory durability (Paper 12), optimize federated adaptation (Paper 13), develop runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
 
 % ==========================================
 % II. RELATED WORK
 % ==========================================
 \section{Related Work}
 
-Prior work on AI orchestration has largely focused on cloud-based coordination frameworks. Cloud platforms such as AWS IoT Hub provide robust centralized orchestration capabilities for distributed sensing systems \cite{b6}. However, the inherent latency associated with cloud round-trips frequently violates the real-time requirements necessary for classroom interaction analysis. In our design, event stream processing remains local to the edge device to maintain low-latency control loops. While recent cloud reference architectures emphasize horizontal scalability, they generally struggle with the strict latency constraints required by edge-native pedagogical analytics.
+Prior work on AI orchestration is dominated by cloud- centered approaches. For example, AWS IoT Hub offers cloud-based orchestration of distributed sensor systems \cite{b6}, but such approaches typically incur unacceptable latencies due to the round-trip time to the cloud. Our approach keeps event stream processing on the edge in order to minimize control loop delays. Recent cloud-first reference architectures for edge analytics emphasize horizontal scalability but are typically unable to meet the latency constraints of time-critical classroom analysis.
 
-In the commercial space, affect recognition platforms typically deploy monolithic models to perform end-to-end facial emotion recognition \cite{b7}. While these systems are edge-resident, they often exhibit brittle failure modes: if the primary facial model crashes due to a corrupted input frame or memory exhaustion, the entire sensing pipeline halts. By contrast, the hierarchical design allows the orchestrator to route logic to fallback modes when necessary—such as pose-only sensing—when heavy perception models fail \cite{b24}. Furthermore, while edge frameworks like TensorFlow Lite effectively optimize individual model inference \cite{b10, b31}, they typically lack built-in mechanisms for cross-module coordination, operational policy enforcement, or failure-aware scheduling.
+In the commercial sector, affect recognition platforms typically utilize monolithic models that carry out end-to-end facial emotion recognition \cite{b7}. These systems are often resident on an edge device, but can have brittle failure modes, for instance, if the primary facial model crashes due to a faulty input frame or memory constraints, downstream processing is halted completely. By contrast, the hierarchical design allows the orchestrator to route logic to fallback modes when necessary—such as pose-only sensing—when heavy perception models fail \cite{b24}. Furthermore, while edge frameworks such as TensorFlow Lite perform well on optimizing single model inference \cite{b10, b31}, they tend to have limited support for coordination between modules, operational policies, and failure-aware scheduling.
 
-Federated learning frameworks, including TensorFlow Federated and PySyft, address privacy-preserving model training across distributed nodes \cite{b8}. These tools focus primarily on weight aggregation during the training phase, not on real-time inference orchestration, failure tolerance, or operational governance. Our work addresses the orthogonal challenge of coordinating pre-trained, heterogeneous models directly at inference time \cite{b23}.
+Federated learning frameworks such as TensorFlow Federated \cite{b8} and PySyft aim to enable privacy-preserving model training at distributed nodes. They mainly focus on the aggregation of model weights during the training phase but leave the coordination of models at inference time, fault tolerance, and governance to higher level infrastructure. In this work, we contribute to the related but distinct problem of orchestrating pre-trained and heterogeneous models at inference time \cite{b23}.
 
-Recent evaluations have shown the viability of deploying microservices at the edge for continuous video analytics \cite{b21}. Standard orchestrators, however, lack native primitives for privacy-aware module suppression. Establishing structured sensing boundaries in smart educational environments is widely recognized as a necessity. The proposed framework implements this governance directly within the orchestration plane using a Compute Justification Model, aligning the system's behavior with privacy-preserving operational norms \cite{b27}.
+Recent evaluations have shown the feasibility of executing microservices at the edge for the continuous video analytics \cite{b21}. Standard orchestrators do not provide native primitives for the suppression of privacy-sensitive modules. The establishment of structured sensing boundaries in smart educational environments is widely acknowledged to be a necessity. The proposed framework performs this task by design within the orchestration layer using a Compute Justification Model that adheres to privacy-by-design principles \cite{b27}.
 
 % ==========================================
 % III. PROBLEM STATEMENT
@@ -112,10 +112,10 @@ Coordinating heterogeneous AI modules inside a single edge deployment introduces
     \item \textbf{Failure Tolerance:} Individual module faults should gracefully degrade overall functionality rather than halting the entire sensing system \cite{b24}.
 \end{enumerate}
 
-Architectures that strongly emphasize one of these dimensions may inadvertently compromise the others. The proposed hierarchical design attempts to balance these constraints through explicit layering and policy-mediated module activation.
+Architectures that favours one of the dimension heavily may neglect others. The proposed hierarchical design attempt to alleviate constraint of these dimension by being explicit through layering and policy driven activation of modules.
 
 \subsection{The Compute Allocation Problem}
-One manifestation of this orchestration challenge is inefficient compute allocation during typical classroom activity. To illustrate the practical inefficiency of continuous orchestration, consider a standard 60-minute lecture divided into distinct pedagogical phases: an initial 10 minutes for attendance taking, 30 minutes of passive video presentation where cognitive load is low, a 15-minute high-engagement Q\&A session, and a 5-minute dismissal period.
+One manifestation of this orchestration challenge is inefficient compute allocation during typical classroom activity. To illustrate the potential of such orchestration to be non-optimal in terms of computing resources, let us take a standard 60 minute class, broken down into a 10 minute attendance-taking segment, 30 minutes of passive video-based instruction during which the cognitive load is relatively low, a 15 minute question-and-answer segment with high cognitive load, and a 5 minute segment for dismissing the class.
 
 A naive edge deployment might execute face detection, pose estimation, and ASR continuously at 30 frames per second for the full hour, consuming:
 \begin{equation}
@@ -127,17 +127,17 @@ However, heavy compute is actually only operationally justified during the atten
 C_{justified} = (10 + 15) \times 60 \times 30 = 45,000 \text{ inference cycles}
 \end{equation}
 
-In this scenario, the naive system expends roughly 63,000 cycles performing scanning that is not operationally justified. The proposed framework dynamically suppresses these unnecessary cycles, maintaining functional coverage only when dictated by a defined operational policy.
+Consider that the naive algorithm would spend about 63000 cycles scanning the input where there is no valid data. Our algorithm effectively removes this overhead and only scans those parts of the input which are needed for processing according to the operational policy.
 
 % ==========================================
 % IV. HIERARCHICAL CONTROL PLANE
 % ==========================================
 \section{Hierarchical Control Plane Abstraction}
 
-To address these orchestration constraints, we assume a layered execution environment that supervises module activation. The logical control abstraction is formalized as a supervisory automaton governing module activation. These logical divisions operate within the broader runtime architecture, maintaining strict logical separation from the underlying data plane.
+To address the aforementioned orchestration constraints we propose to consider a layered execution environment that supervises module activation. The logical control abstraction is formalized as a supervisory automaton governing module activation. These logical divisions operate within the broader runtime architecture, maintaining strict logical separation from the underlying data plane.
 
 \subsection{Supervisory Automaton Formalization}
-Formally, let $M$ represent the set of available perception modules (e.g., vision, audio). Let $H: M \rightarrow \{\text{healthy, degraded, failed}\}$ describe the current health state of each module. Let $P(t)$ be the active policy state at time $t$, and let $B_{remaining}$ represent the remaining computational budget for the day. 
+Formally, let $M$ denote the set of all available perception modules (e.g., vision, audio), and let $H: M \rightarrow \{\text{healthy, degraded, failed}\}$ indicate the health of each module. Let $P(t)$ and $B_{remaining}$ denote the policy chosen at time $t$ and the computational budget remaining for the day, respectively.
 
 We define a governance activation function that outputs the active module set $A(t) \subseteq M$:
 \begin{equation}
@@ -157,7 +157,7 @@ Maintaining strict separation between architectural layers requires more than an
 By receiving only abstracted event tuples via $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers operate without direct exposure to raw sensory data. Typed vectors constrain semantic propagation so that upper layers receive bounded abstractions instead of high-fidelity signals. Orchestration isolation structurally depends on this restricted cross-layer visibility.
 
 \subsection{Layer Isolation Factor (LIF)}
-To evaluate the success of the orchestration topology, we introduce the Layer Isolation Factor (LIF). Measured per fault injection lifecycle, LIF captures containment topology rather than overall uptime probability; it identifies whether an isolated crash propagates into a cascading failure:
+To assess the quality of orchestration topology, we define Layer Isolation Factor (LIF). Scored per each fault injection scenario, LIF quantifies isolation topology, not uptime probability. Given an isolated crash, does it cascade?
 \begin{equation}
 LIF = \frac{\text{Failures Contained in Origin Layer}}{\text{Total Module Failures}} \times 100\%
 \end{equation}
@@ -168,10 +168,10 @@ In our evaluations, LIF averaged 95\%, demonstrating strong boundary confinement
 % ==========================================
 \section{Compute Justification Model}
 
-Continuous activation of all perception modules seldom reflects the operational needs of instructional environments. The Compute Justification Model dictates that compute allocation is governed by policy context, not merely energy optimization. The Governance layer gates module execution based on predefined heuristic schedules corresponding to lecture phases, ensuring that inference suppression is driven by contextual operational relevance.
+Continuous use of all perceptual modules rarely takes place in instruction, as the Compute Justification Model highlights by stating that allocations are made according to policy context rather than energy considerations alone. The Governance layer allows individual modules to operate according to a heuristic schedule defined for the type of lecture being given, thus making inference suppression contextually appropriate.
 
 \subsection{Scheduling Formalism and IRG}
-We formalize Inference Rate Governance (IRG) as an orchestration-aware compute restraint mechanism rather than generic power-saving logic. IRG constrains unnecessary sensing activation, and this scheduling suppression directly reduces orchestration pressure. Let $C_{sched}(t)$ denote the scheduled inference cycles at time $t$ for a continuous, full-session baseline. Let $J(t) \in \{0,1\}$ denote the binary policy justification signal, where $1$ indicates a phase requiring active sensing (e.g., a Q\&A session) and $0$ indicates a rest phase. The executed inference cycles $C_{exec}(t)$ are defined as:
+We formalize Inference Rate Governance (IRG) as an orchestration-aware compute restraint mechanism, rather than generic power-saving logic. IRG governs unnecessary sensing activation, and this scheduling suppression directly brings down orchestration pressure. Let $C_{sched}(t)$ be the scheduled inference cycles at time $t$, for a continuously-running, full-session baseline. And let $J(t) \in \{0,1\}$ be a binary policy justification, indicating whether a phase requires active sensing (1) versus rest (0). The executed inference cycles $C_{exec}(t)$ are defined as:
 \begin{equation}
 C_{exec}(t) = C_{sched}(t) \cdot J(t)
 \end{equation}
@@ -202,7 +202,7 @@ Under this model, computationally heavy models are restricted to minimal CADC pr
 \section{Failure Containment Design}
 
 \subsection{Failure Mode Analysis}
-Because edge runtimes inevitably experience localized component faults, asynchronous health-report lag, and scheduling jitter, the orchestration layer must provide explicit containment mechanisms. Table I formalizes the failure scenarios and our containment strategies, drawing on dependable computing taxonomies \cite{b18} and common microservice degradation patterns \cite{b24}. Graceful degradation is an orchestration objective, not merely a side effect of modularity. The system prioritizes operational continuity over sensing completeness; fallback sensing preserves partial functionality when primary modules crash.
+Because edge runtimes are inherently susceptible to local component failures, asynchronous health-report lag, and jittery scheduling, the orchestration layer actively contains these effects. Table I specifies the failure scenarios and containment measures that we implement, which are inspired by dependable computing taxonomies \cite{b18} and common microservice degradations \cite{b24}. Graceful degradation is pursued as an orchestration design goal, and not an accidental outcome of modularity. The system is engineered to favor operational continuity over sensing completeness: fallback sensing mechanisms are implemented at all levels so that secondary modules can be brought to bear when primary modules fail.
 
 \begin{table}[htbp]
 \caption{Failure Mode Analysis and Mitigation}
@@ -240,14 +240,14 @@ B_{module}(day) \leq B_{max} = 100 \text{ activations/day}
 When the daily operational budget is exhausted, the system automatically falls back to lower-tier operational modes to conserve energy and compute resources.
 
 \subsection{Session Boundary Enforcement}
-At the conclusion of a lecture, the Governance layer explicitly triggers teardown procedures to cleanly terminate the active perception processes and reset the logical context state for the next session. This rigid boundary enforcement ensures that no state machine artifacts bleed across distinct pedagogical events.
+At the end of a lecture, the Governance layer actively triggers teardowns to terminate the active perceptual processes and reset the logical context for the subsequent lecture, thus establishing strict boundaries between different pedagogical events.
 
 % ==========================================
 % VIII. VALIDATION ABSTRACTION
 % ==========================================
 \section{Validation via Fault Injection}
 
-While detailed systemic validation belongs to the evaluation layer of this series \cite{b28}, the proposed control-plane behavior was evaluated under fault injection to verify logical isolation. This confirmed that abstract state transitions occur deterministically even when simulated lower-level perception modules timeout or report memory pressure. We explicitly defer claims of system-level chaos survivability, recovery convergence times, or runtime latency guarantees to the validation architecture, focusing here solely on the fact that the control decisions align with the defined policy.
+While detailed systematic evaluation is a matter for the validation layer \cite{b28}, the control-plane behavior described was stress-tested under fault injection to establish logical isolation. This was found to be the case in the current implementation: abstract state transition proceed deterministically even when lower-level perception modules time out or return memory pressure. Claims about the system’s ability to withstand chaos, convergence time to policy-preserving states after faults, or latency properties are deferred to the validation architecture; for now, sufficiency is established for the control decisions to respect the policy.
 
 % ==========================================
 % IX. EXPERIMENTAL RESULTS
@@ -258,13 +258,13 @@ We now examine the operational behavior of the control-plane architecture under 
 
 \begin{center}
 \fbox{\parbox{0.9\columnwidth}{
-\textbf{Evaluation Scope:} Metric profiling was conducted within a controlled orchestration test harness. These metrics validate the control plane logic and activation states; they do not represent overarching system performance or end-to-end task latency.
+\textbf{Evaluation Scope:} Metric profiling was performed as part of controlled orchestration test harness. The metrics reflect the control plane logic and activation states, they are not indicative of the overall system performance or end to end task latency.
 }}
 \end{center}
 
 
 \subsection{Inference Suppression Statistics}
-During a simulated 60-minute lecture, the Compute Justification Model achieved a significant reduction in active cycles. The system recorded a 72\% ISR for the heavy vision modules, confirming that resource-intensive capture primarily occurs during justified instructional phases. Similarly, the ASR module reached an 85\% suppression rate, while the lightweight pose estimator remained largely active with only a 12\% ISR.
+During a 60-minute simulation lecture, the Compute Justification Model demonstrated a substantial decrease in the number of active cycles. The system registered 72\% of the heavy vision modules’ ISR, indicating that most intensive capture was performed during justified time. In addition, the ASR module suppression hit 85\%, while the lightweight pose estimator utilization reached 12\% ISR.
 
 \begin{figure}[htbp]
 \centering
@@ -292,7 +292,7 @@ During a simulated 60-minute lecture, the Compute Justification Model achieved a
 \label{fig:isr}
 \end{figure}
 
-It is worth noting that initial system tuning yielded suppression rates exceeding 80\% for the heavy vision modules, but this caused delayed responsiveness during spontaneous, unscripted Q\&A interaction. The suppression aggressiveness was subsequently relaxed to balance computational savings with interactivity.
+It is noteworthy that preliminary tuning achieved suppression rates of over 80\%, for the heavy vision modules, but at the expense of responsiveness during spontaneous dialogues. The suppression was later reduced to acceptable levels for the dialog module, to preserve interactive responsiveness.
 
 \subsection{Module Activation Timeline}
 % --- REVISED FIGURE 4: PERFECTLY BOUNDED TIMELINE ---
@@ -336,7 +336,7 @@ It is worth noting that initial system tuning yielded suppression rates exceedin
 \label{fig:timeline}
 \end{figure}
 
-Figure \ref{fig:timeline} visualizes the varying module activation patterns throughout the course of the simulated lecture. Heavy vision modules were activated for only 25 out of the 60 minutes, yielding a 42\% Context-Aware Duty Cycle (CADC). In contrast, the lightweight pose modules maintained a steady 75\% CADC, providing continuous geometric context without heavy processing overhead.
+Figure \ref{fig:timeline} shows the variation of the activated modules over the time of the demo lecture. Heavy vision modules were only active for 25 out of the total 60 min, therefore reaching only 42\% Context-Aware Duty Cycle (CADC). On the other hand, the lightweight pose modules provided a constant 75\% CADC, supplying the geometric context continuously without notable overhead.
 
 \subsection{Limitations}
 The orchestration framework exposes several operational limitations:
@@ -344,7 +344,7 @@ The orchestration framework exposes several operational limitations:
     \item \textbf{Heuristic-Policy Dependence:} The model relies on defined heuristic schedules; spontaneous classroom interaction shifts or organic deviation may result in unintended sensing suppression.
     \item \textbf{Calibration Sensitivity:} Tuning the Inference Suppression Ratio (ISR) to balance operational savings with interactive responsiveness requires site-specific empirical calibration.
     \item \textbf{Scheduling Rigidity:} Rigid enforcement of lecture session boundaries struggles with overlapping room utilization or ad-hoc interactions.
-    \item \textbf{Asynchronous Race-Condition Risk:} The abstract state transitions are evaluated via fault injection rather than formal methods; unexpected race conditions may exist within asynchronous health monitoring loops under high edge-runtime contention.
+    \item \textbf{Asynchronous Race-Condition Risk:} Abstract state transitions are validated by fault injection only; unexpected race-conditions might be present in the asynchronous healty monitoring loops under heavy contention of edge-runtime.
     \item \textbf{Workload Unpredictability:} Heavy vision modules exhibit variable execution times depending on frame complexity, introducing scheduling jitter that synchronous timeout boundaries may misinterpret as module failure.
 \end{itemize}
 
@@ -353,11 +353,11 @@ The orchestration framework exposes several operational limitations:
 % ==========================================
 \section{Discussion}
 
-Embedding policy constraints directly within the orchestration layer alters how edge systems allocate computational resources. Instead of continuously capturing and processing all available signals in a brute-force manner, the framework selectively enables modules in accordance with predefined institutional boundaries \cite{b4}.
+Modifying Policy Constraints Encoded inside the Orchestration Layer The way edge systems allocate their computational resources changes when policy constraints are embedded into the orchestration layer, as it no longer utilizes a brute force approach to constantly capture and process all available signals, but rather only enables certain modules according to institutional constraints \cite{b4}.
 
-However, deployment calibration remains a practical engineering challenge. Setting the activation thresholds for diverse classroom layouts requires iterative engineering during initial setup. Refining the heuristic triggers is essential to avoid the false suppression of valid engagement signals while still achieving meaningful compute savings. 
+However, deployment calibration remains an engineering challenge. Adjusting the thresholds according to different classroom layouts might require some iterative engineering during installations. Adjusting these heuristics is crucial to ensure not wasting computation on false positives and to achieve substantial savings in compute.
 
-Future extensions of this work may incorporate predictive IRG scaling, leveraging machine learning to preemptively anticipate lecture phases and scale module readiness before explicit triggers occur. Additionally, expanding the control plane to handle multi-classroom orchestration across a federated cluster of edge nodes represents a logical next step.
+Future directions in this line of research include predictive IRG scaling based on machine-learned anticipation of the lecture phase to elastically scale the module before a trigger, as well as multi-classroom control plane orchestration across a federated cluster of edge nodes.
 
 % ==========================================
 % XII. CONCLUSION
@@ -366,7 +366,7 @@ Future extensions of this work may incorporate predictive IRG scaling, leveragin
 
 This study investigated whether heterogeneous AI modules operating at the edge can be coordinated through a layered control-plane abstraction that preserves policy-aware activation, fault containment, and deterministic degradation. By separating Perception, Reasoning, and Governance responsibilities and restricting cross-layer communication to typed context vectors, the architecture isolates orchestration faults and prevents localized module crashes from causing cascading pipeline failure.
 
-The Compute Justification Model explicitly aligns module activation with predefined operational phases, confirming that hierarchical orchestration enables deterministic coordination under shared operational constraints. Fault injection within the evaluated orchestration environment confirmed that the control plane reduces unnecessary activation and gracefully degrades functionality when primary perception pipelines fail.
+The Compute Justification Model explicitly defines the activation of the given modules according to the defined phases, which proves that orchestration under the given constraints can be deterministic. The analysis of the fault injection in the control plane of the considered orchestration shows that it is possible to minimize the extra activation of the elements by deterring the failure of the critical perception pipelines.
 
 The proposed metrics---ISR, ECU, CADC, and LIF---provide a quantitative framework for analyzing activation governance. Within the ScholarMaster architecture, this framework operates exclusively as the runtime-governance orchestration subsystem---managing deterministic module coordination and activation transitions without evaluating survivability envelopes (Paper 10), proposing new federated models (Paper 13), or defining irreversible privacy architectures (Paper 17).
 
@@ -375,43 +375,63 @@ The proposed metrics---ISR, ECU, CADC, and LIF---provide a quantitative framewor
 % ==========================================
 \begin{thebibliography}{00}
 
-% --- PRIVACY & GDPR ---
+\bibitem{b18} A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
+
+\bibitem{b28} P. Alvaro et al., ``Lineage-driven Fault Injection,'' in \textit{Proc. ACM SIGMOD}, 2015, pp. 331-346.
+
+\bibitem{b10} M. Abadi et al., ``TensorFlow: A System for Large-Scale Machine Learning,'' in \textit{Proc. OSDI}, 2016, pp. 265-283.
+
+\bibitem{b11} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
 \bibitem{b4} ``Regulation (EU) 2016/679 (General Data Protection Regulation),'' \textit{Official Journal of the European Union}, L119, 2016.
-\bibitem{b5} S. Zuboff, \textit{The Age of Surveillance Capitalism}. PublicAffairs, 2019.
-\bibitem{b16} P. Voigt and A. Von dem Bussche, \textit{The EU General Data Protection Regulation (GDPR): A Practical Guide}. Springer, 2017.
 
-% --- CLOUD ORCHESTRATION ---
 \bibitem{b6} M. Chiang and T. Zhang, ``Fog and IoT: An Overview of Research Opportunities,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 6, pp. 854-864, 2016.
-\bibitem{b15} R. Buyya et al., ``Manifesto for Future Generation Cloud Computing: Research Directions for the Next Decade,'' \textit{ACM Computing Surveys}, vol. 51, no. 5, pp. 1-38, 2018.
 
-% --- MONOLITHIC FER SYSTEMS ---
 \bibitem{b7} D. McDuff et al., ``AFFDEX SDK: A Cross-Platform Real-Time Multi-Face Expression Recognition Toolkit,'' in \textit{Proc. CHI Extended Abstracts}, 2016, pp. 3723-3726.
 
 % --- FEDERATED LEARNING ---
+
+\bibitem{b16} P. Voigt and A. Von dem Bussche, \textit{The EU General Data Protection Regulation (GDPR): A Practical Guide}. Springer, 2017.
+
+% --- CLOUD ORCHESTRATION ---
+
+\bibitem{b17} N. Dragoni et al., ``Microservices: Yesterday, Today, and Tomorrow,'' in \textit{Present and Ulterior Software Engineering}, Springer, 2017, pp. 195-216.
+
+\bibitem{b23} Y. Kang et al., ``Neurosurgeon: Collaborative Intelligence Between the Cloud and Edge Microcloud,'' in \textit{Proc. ASPLOS}, 2017, pp. 615-629.
+
 \bibitem{b8} B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' in \textit{Proc. AISTATS}, 2017, pp. 1273-1282.
 
 % --- EDGE AI FRAMEWORKS ---
-\bibitem{b9} A. Ignatov et al., ``AI Benchmark: Running Deep Neural Networks on Android Smartphones,'' in \textit{Proc. ECCV Workshops}, 2018, pp. 288-314.
-\bibitem{b10} M. Abadi et al., ``TensorFlow: A System for Large-Scale Machine Learning,'' in \textit{Proc. OSDI}, 2016, pp. 265-283.
-\bibitem{b14} J. Verbraeken et al., ``A Survey on Distributed Machine Learning,'' \textit{ACM Computing Surveys}, vol. 53, no. 2, pp. 1-33, 2020.
 
-% --- EDGE COMPUTING ---
-\bibitem{b11} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+\bibitem{b15} R. Buyya et al., ``Manifesto for Future Generation Cloud Computing: Research Directions for the Next Decade,'' \textit{ACM Computing Surveys}, vol. 51, no. 5, pp. 1-38, 2018.
+
+% --- MONOLITHIC FER SYSTEMS ---
+
+\bibitem{b21} A. H. Jiang et al., ``Mainstream: Dynamic Stem-Sharing for Multi-Tenant Video Processing,'' in \textit{Proc. USENIX Annual Technical Conference (ATC)}, 2018, pp. 29-42.
+
+\bibitem{b26} M. Nardelli et al., ``Elastic Stream Processing for Distributed Environments,'' \textit{IEEE Internet Computing}, vol. 22, no. 1, pp. 54-58, 2018.
+
+\bibitem{b9} A. Ignatov et al., ``AI Benchmark: Running Deep Neural Networks on Android Smartphones,'' in \textit{Proc. ECCV Workshops}, 2018, pp. 288-314.
+
 \bibitem{b20} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
 
 % --- ARCHITECTURE & RELIABILITY ---
-\bibitem{b17} N. Dragoni et al., ``Microservices: Yesterday, Today, and Tomorrow,'' in \textit{Present and Ulterior Software Engineering}, Springer, 2017, pp. 195-216.
-\bibitem{b18} A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
+
+\bibitem{b24} Y. Gan et al., ``An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud \& Edge Systems,'' in \textit{Proc. ASPLOS}, 2019, pp. 3-18.
+
+\bibitem{b31} E. Li et al., ``Edge AI: On-Demand Accelerating Deep Neural Network Inference via Edge Computing,'' \textit{IEEE Transactions on Wireless Communications}, vol. 18, no. 1, pp. 347-359, 2019.
+
+\bibitem{b5} S. Zuboff, \textit{The Age of Surveillance Capitalism}. PublicAffairs, 2019.
+
+\bibitem{b14} J. Verbraeken et al., ``A Survey on Distributed Machine Learning,'' \textit{ACM Computing Surveys}, vol. 53, no. 2, pp. 1-33, 2020.
+
+% --- EDGE COMPUTING ---
+
 \bibitem{b19} N. Min-Allah and S. Alrashed, ``Smart Campus: A Sketch,'' \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
 
 % --- GENUINE REPLACEMENTS (2015-2022) ---
-\bibitem{b21} A. H. Jiang et al., ``Mainstream: Dynamic Stem-Sharing for Multi-Tenant Video Processing,'' in \textit{Proc. USENIX Annual Technical Conference (ATC)}, 2018, pp. 29-42.
-\bibitem{b23} Y. Kang et al., ``Neurosurgeon: Collaborative Intelligence Between the Cloud and Edge Microcloud,'' in \textit{Proc. ASPLOS}, 2017, pp. 615-629.
-\bibitem{b24} Y. Gan et al., ``An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud & Edge Systems,'' in \textit{Proc. ASPLOS}, 2019, pp. 3-18.
-\bibitem{b26} M. Nardelli et al., ``Elastic Stream Processing for Distributed Environments,'' \textit{IEEE Internet Computing}, vol. 22, no. 1, pp. 54-58, 2018.
+
 \bibitem{b27} F. Yi et al., ``Privid: Practical, Privacy-Preserving Video Analytics Queries,'' in \textit{Proc. NSDI}, 2022, pp. 287-306.
-\bibitem{b28} P. Alvaro et al., ``Lineage-driven Fault Injection,'' in \textit{Proc. ACM SIGMOD}, 2015, pp. 331-346.
-\bibitem{b31} E. Li et al., ``Edge AI: On-Demand Accelerating Deep Neural Network Inference via Edge Computing,'' \textit{IEEE Transactions on Wireless Communications}, vol. 18, no. 1, pp. 347-359, 2019.
 
 \end{thebibliography}
 

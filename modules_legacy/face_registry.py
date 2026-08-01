@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import numpy as np
 import faiss
@@ -40,6 +41,23 @@ class FaceRegistry:
             # Create empty file immediately
             with open(self.identity_map_file, "w") as f:
                 json.dump(self.identity_map, f)
+        
+        self.last_load_time = time.time()
+
+    def hot_reload(self):
+        """Reloads the FAISS index and identity map from disk if modified."""
+        try:
+            if os.path.exists(self.index_file):
+                mtime = os.path.getmtime(self.index_file)
+                if mtime > self.last_load_time:
+                    print("[HOT-RELOAD] Detected new biometric enrollment. Syncing Edge Node...")
+                    self.index = faiss.read_index(self.index_file)
+                    with open(self.identity_map_file, "r") as f:
+                        self.identity_map = json.load(f)
+                    self.last_load_time = time.time()
+                    print("[HOT-RELOAD] Edge Node Sync Complete.")
+        except Exception as e:
+            print(f"[HOT-RELOAD] Error syncing: {e}")
 
     def register_face(self, image_array, user_id, name, role, dept=None, user_role=None):
         """

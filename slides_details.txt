@@ -1,0 +1,147 @@
+
+================ SLIDE 4: Existing vs. Proposed System ================
+Shape 0: Name='Google Shape;105;g3a6045bda6f_0_61', Type=PLACEHOLDER (14)
+  Text contents:
+    - Existing vs. Proposed System
+Shape 1: Name='Google Shape;106;g3a6045bda6f_0_61', Type=TEXT_BOX (17)
+  Text contents:
+Shape 2: Name='Google Shape;107;g3a6045bda6f_0_61', Type=TABLE (19)
+  Table contents:
+    Row 0: ['Existing: Manual rolls', 'Proposed: Multi-threaded edge sensing']
+    Row 1: ['RFID swipe', 'Multi-threaded edge sensing']
+    Row 2: ['Closed-set recognition', 'Spatiotemporal Constraint check']
+    Row 3: ['Plain database storage (vulnerable).', 'Merkle ledger write.']
+Shape 3: Name='Google Shape;108;g3a6045bda6f_0_61', Type=PICTURE (13)
+
+================ SLIDE 6: Technology Stack ================
+Shape 0: Name='Google Shape;120;g3b13e486e5b_0_15', Type=PLACEHOLDER (14)
+  Text contents:
+    - Technology Stack
+Shape 1: Name='Google Shape;121;g3b13e486e5b_0_15', Type=TEXT_BOX (17)
+  Text contents:
+    - Inference: InsightFace (ArcFace), YOLOv8-pose, MediaPipe.
+    - Search & Backend: FAISS, SQLite, FastAPI.
+    - Frontend: Streamlit (7-Role RBAC UI).
+    - Hardware Target: Apple Silicon M-series unified memory architecture (edge-node emulation).
+
+================ SLIDE 7: Multi-Threaded Runtime Architecture ================
+Shape 0: Name='Google Shape;126;g3b13e486e5b_0_22', Type=PLACEHOLDER (14)
+  Text contents:
+    - Multi-Threaded Runtime Architecture
+Shape 1: Name='Google Shape;127;g3b13e486e5b_0_22', Type=TEXT_BOX (17)
+  Text contents:
+    - The 5 daemon threads spawned by main.py:
+    - Video Thread: Face detection + pose skeleton extraction (30 FPS).
+    - Audio Thread: Microphone capture + FFT spectral features (100ms chunks).
+    - Compliance Thread: ST-CSF schedule evaluation (5s window).
+    - Power Thread: Thermal and resource sampling (10s window).
+    - Dashboard Thread: Console UI updates (1s window).
+
+================ SLIDE 10: Acoustic Anomaly Detection ================
+Shape 0: Name='Google Shape;146;g3b13e486e5b_0_55', Type=PLACEHOLDER (14)
+  Text contents:
+    - Acoustic Anomaly Detection
+Shape 1: Name='Google Shape;147;g3b13e486e5b_0_55', Type=TEXT_BOX (17)
+  Text contents:
+    - FFT feature extraction (100ms frames).
+    - Calculations: Spectral Centroid (Cs), Zero-Crossing Rate (ZCR), and Spectral Flux (SF).
+    - Context-aware thresholds (strict limits during exams vs. relaxed during breaks).
+
+================ SLIDE 12: Backtracking Timetable Scheduler ================
+Shape 0: Name='Google Shape;159;g3a6045bda6f_0_77', Type=PLACEHOLDER (14)
+  Text contents:
+    - Backtracking Timetable Scheduler
+Shape 1: Name='Google Shape;160;g3a6045bda6f_0_77', Type=TEXT_BOX (17)
+  Text contents:
+    - Timetabling modeled as a Constraint Satisfaction Problem.
+    - Heuristics: Minimum-Remaining-Values (MRV) variable selection.
+    - Execution: DFS backtracking with forward checking.
+
+================ SLIDE 14: Database Design & Entity Relationships ================
+Shape 0: Name='Google Shape;172;g3f15a98193e_0_167', Type=PLACEHOLDER (14)
+  Text contents:
+    - Database Design & Entity Relationships
+Shape 1: Name='Google Shape;173;g3f15a98193e_0_167', Type=TEXT_BOX (17)
+  Text contents:
+    - SQLite schema (campus.db).
+    - Core entities: Student, Device, Room, Schedule, AttendanceLog, Alert.
+    - JSON flat files used for zero-latency queue states (alerts.json, teachers.json).
+Shape 2: Name='Google Shape;174;g3f15a98193e_0_167', Type=PICTURE (13)
+
+================ SLIDE 15: Presentation Layer & 7-Role RBAC ================
+Shape 0: Name='Google Shape;179;g3f15a98193e_0_162', Type=PLACEHOLDER (14)
+  Text contents:
+    - Presentation Layer & 7-Role RBAC
+Shape 1: Name='Google Shape;180;g3f15a98193e_0_162', Type=TEXT_BOX (17)
+  Text contents:
+    - Streamlit Wide-Layout Application (admin_panel.py).
+    - Menu tab isolation based on session state roles:
+    - Super Admin: Full system access.
+    - Faculty: Own schedule views only.
+    - Student: Read-only schedule details.
+Shape 2: Name='Google Shape;181;g3f15a98193e_0_162', Type=PICTURE (13)
+
+================ SLIDE 17: Experimental Results: Open-Set Biometrics ================
+Shape 0: Name='Google Shape;193;g3f15a98193e_0_195', Type=PLACEHOLDER (14)
+  Text contents:
+    - Experimental Results: Open-Set Biometrics
+Shape 1: Name='Google Shape;194;g3f15a98193e_0_195', Type=TEXT_BOX (17)
+  Text contents:
+    - Achieved Metrics: 99.2% OSIR, 99.5% UIRR, and 0.5% OSIE.
+    - Rejection efficiency of unregistered strangers to prevent unauthorized access.
+Shape 2: Name='Google Shape;195;g3f15a98193e_0_195', Type=PICTURE (13)
+
+================ SLIDE 18: Experimental Results: Attendance Compliance ================
+Shape 0: Name='Google Shape;200;g3f15a98193e_0_190', Type=PLACEHOLDER (14)
+  Text contents:
+    - Experimental Results: Attendance Compliance
+Shape 1: Name='Google Shape;201;g3f15a98193e_0_190', Type=TEXT_BOX (17)
+  Text contents:
+    - Sensitivity: 98.2%.
+    - Precision: 97.5%.
+    - F1-Score: 97.8% on truancy detection.
+    - The 30-second temporal debounce filter reduces false alerts by 85%.
+Shape 2: Name='Google Shape;202;g3f15a98193e_0_190', Type=PICTURE (13)
+
+================ SLIDE 19: Scalability Analysis ================
+Shape 0: Name='Google Shape;207;g3f15a98193e_0_185', Type=PLACEHOLDER (14)
+  Text contents:
+    - Scalability Analysis
+Shape 1: Name='Google Shape;208;g3f15a98193e_0_185', Type=TEXT_BOX (17)
+  Text contents:
+    - Memory footprint: 2 KB per student embedding.
+    - 100k students gallery requires ~200MB memory.
+    - Search latency: Flat KNN index vs. IVF-PQ index scaling curves.
+Shape 2: Name='Google Shape;209;g3f15a98193e_0_185', Type=PICTURE (13)
+
+================ SLIDE 20: GDPR Compliance Mapping ================
+Shape 0: Name='Google Shape;214;g3f15a98193e_0_204', Type=PLACEHOLDER (14)
+  Text contents:
+    - GDPR Compliance Mapping
+Shape 1: Name='Google Shape;215;g3f15a98193e_0_204', Type=TEXT_BOX (17)
+  Text contents:
+    - Article 5(1)(c) (Data Minimization) → 33ms volatile TTL boundary.
+    - Article 17 (Right to Erasure) → Cascading DB delete of biometric keys.
+    - Article 25 (Privacy by Design) → Concentric Onion architecture.
+Shape 2: Name='Google Shape;216;g3f15a98193e_0_204', Type=PICTURE (13)
+
+================ SLIDE 21: Limitations & Challenges ================
+Shape 0: Name='Google Shape;221;g3f15a98193e_0_215', Type=PLACEHOLDER (14)
+  Text contents:
+    - Limitations & Challenges
+Shape 1: Name='Google Shape;222;g3f15a98193e_0_215', Type=TEXT_BOX (17)
+  Text contents:
+    - Sensitivities to classroom lighting variations.
+    - Single-camera occlusions (hidden students).
+    - Platform restriction: Validated primarily on macOS Apple Silicon hardware architectures.
+Shape 2: Name='Google Shape;223;g3f15a98193e_0_215', Type=PICTURE (13)
+
+================ SLIDE 22: Conclusion & Future Work ================
+Shape 0: Name='Google Shape;228;g3f15a98193e_0_222', Type=PLACEHOLDER (14)
+  Text contents:
+    - Conclusion & Future Work
+Shape 1: Name='Google Shape;229;g3f15a98193e_0_222', Type=TEXT_BOX (17)
+  Text contents:
+    - Proven resolution of the privacy-utility conflict.
+    - Future Work: INT8 model quantization for IoT micro-controllers and blockchain integration for decentralizing the Merkle tree root hashes.
+    - Advisor Publications: Keystroke dynamics (2016), Smart grids (2016), and WSN data aggregation (2012).

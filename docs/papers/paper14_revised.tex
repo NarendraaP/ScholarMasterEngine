@@ -49,13 +49,13 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Distributed machine-learning systems operating across multiple institutions often encounter domain heterogeneity that degrades the transferability of locally trained models. Variations in environmental conditions, sensor placement, and population characteristics introduce persistent cross-domain differences that cannot be resolved efficiently through isolated training pipelines. Although federated learning enables collaborative optimization without exchanging raw data, conventional flat architectures do not adequately model real-world hierarchical aggregation boundaries.
+Distributed machine-learning systems that span multiple institutions often face the challenge of domain heterogeneity that limits the prediction performance of a model learned by any single institution. The differences in environments and populations between institutions produce persistent shifts in the data distribution that cannot be easily captured through classical approaches that operate on the data of one or several institutions alone. While federated learning allows for collaborative optimization of models without sharing data directly, flat architectures fail to encode realistic aggregation hierarchies.
 
-This study develops Hierarchical Federated Averaging (H-FedAvg), a multi-tier distributed learning formulation designed to accommodate a hierarchical aggregation setting and severe asynchronous participation gaps. The formulation explicitly models dual-level Non-IID data divergence (structural covariate shift compounding with Dirichlet label skew). Furthermore, it incorporates a polynomial staleness-aware dampening mechanism to moderate delayed structural updates without explicitly triggering exponential discard. A two-tier differential privacy mechanism further introduces structured gradient obfuscation across theoretical administrative partitions.
+This study presents Hierarchical Federated Averaging (H-FedAvg) as a multi-tiered distributed learning formulation allowing for a hierarchical aggregation setting and large asynchronous participation gaps. In doing so, the algorithm explicitly models dual-level Non-IID data divergence (structural covariate shift + Dirichlet skew). Furthermore, a polynomial staleness-aware dampening mechanism is proposed which allows to limit delayed structural updates’ influence without resorting to direct exponential discarding. Finally, a two-tier differential privacy technique is also introduced which factorizes structured gradient obfuscation into theoretical administrative partitions.
 
-In simulated multi-domain experiments, the framework improves average cross-domain F1-score by 4.8\% (absolute) relative to isolated local training baselines. Under induced temporal delay and up to 50\% institutional node dropout, the asynchronous optimization structurally maintains stable convergence above 90\% accuracy. 
+In multi-domain experiments the framework achieves 4.8 absolute percent increase in average cross-domain F1-score over isolated local training baselines. With simulated temporal delay and up to 50\% institutional node dropout the asynchronous optimization process demonstrates emprical robustness with over 90\% accuracy convergence.
 
-The empirical results demonstrate mathematically that hierarchical aggregation successfully mitigates cross-domain drift. It structurally isolates internal variance while maintaining stable optimization bounds under highly asynchronous update arrival constraints typical of distinct organizational deployments.
+The results show that with mathematics, hierarchical aggregation is able to eliminate cross domain drift. It isolates the variance of the internal domains and retains the optimization bounds even when the updates arrive very asynchronously as may happen with different organizations.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -67,10 +67,10 @@ Hierarchical Federated Optimization, Asynchronous Aggregation, Dual-Level Non-II
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{hierarchical aggregation reduces optimization instability under asynchronous and dual-level Non-IID participation}. Machine-learning systems deployed across independent institutions encounter measurable performance degradation when models trained in one environment are applied in another. Differences in physical infrastructure, sensing geometry, and behavioral distributions introduce persistent structural domain shifts that compound optimization variance over time \cite{b13}.
+The main idea of this paper is that \textbf{hierarchical aggregation helps reduce instability in optimization with asynchronous and dual-level Non-IID participation}. Machine learning models in different independent institutions experience performance degradation when applied in different institutions than the ones they were trained in. This is due to the physical infrastructure, geometry, and behavioral differences that introduce structural domain shifts and add to optimization instability \cite{b13}.
 
 \subsection{Structural Limitations of Flat Federated Aggregation}
-Conventional federated learning architectures assume flat communication topologies with approximately synchronous participation. In authentic multi-institutional settings, this assumption routinely fails. Real deployments contain hierarchical organizational boundaries; asynchronous participation produces stale-gradient instability; and severe cross-domain Non-IID skew degrades convergence quality. Optimization instability emerges structurally from participation topology, not merely from insufficient training data. Flat architectures cannot exploit the intermediate variance-smoothing potential inherent to localized geographical or institutional clusters \cite{b1, b5}.
+Standard federated learning approaches are typically built upon flat communication topologies where model updates are approximately synchronous across participants. In realistic multi-institutional settings, however, these assumptions are frequently violated. Hierarchical participant relations, asynchronous communication patterns resulting in stale gradients, and significant cross-participant Non-IID data distributions all contribute to optimization instabilities that standard methods are ill-equipped to handle. Crucially, such challenges are not primarily driven by a lack of training samples, but rather emerge from the structure of the communication topology itself. Flat architectures cannot exploit the intermediate variance-smoothing potential inherent to localized geographical or institutional clusters \cite{b1}, \cite{b5}.
 
 \subsection{Contributions and Subsystem Scope}
 This work develops \textbf{Hierarchical Federated Averaging (H-FedAvg)}---a three-tier optimization formulation designed for hierarchical aggregation under severe asynchronous participation \cite{b30}. The algorithm contributes: (1) integration mechanics for dual-level Non-IID divergence, (2) a polynomial staleness-aware dampening formula to stabilize asynchronous gradient integration, and (3) a lightweight two-tier differential privacy mechanism.
@@ -85,10 +85,10 @@ Within the ScholarMaster architecture, this subsystem manages hierarchical aggre
 The optimization formulation proposed in this deployment overlaps strategically with three mature theoretical domains: federated learning under heterogeneity, asynchronous gradient integration, and multi-tier optimization structures.
 
 \subsection{Federated Optimization under Heterogeneity}
-Canonical Federated Averaging (FedAvg) \cite{b1} assumes identical or smoothly overlapping data distributions. In practice, clients possess highly skewed, non-Independent and Identically Distributed (Non-IID) sets. Zhao et al. \cite{b5} demonstrated that distribution divergence between clients shifts the local empirical objectives away from the targeted global optimum, bounding the optimization trajectory by the Wasserstein distance separating the data silos. Frameworks such as FedProx \cite{b15} attempt to stabilize this by adding a proximal L2 distance penalty pulling local weights back to the global center. SCAFFOLD \cite{b16} corrects client-drift using stored control variates. While effective, these methods fundamentally assume flat architectural topologies, failing to exploit the intermediate smoothing potential inherent to localized geographical or institutional clusters.
+Canonical Federated Averaging (FedAvg) \cite{b1} assumes identical or smoothly overlapping data distributions. In practice, clients possess highly skewed, non-Independent and Identically Distributed (Non-IID) sets. Zhao et al. \cite{b5} demonstrated that distribution divergence between clients shifts the local empirical objectives away from the targeted global optimum, bounding the optimization trajectory by the Wasserstein distance separating the data silos. Frameworks such as FedProx \cite{b15} seek to address this by introducing a proximal L2 distance penalty that pulls local weight updates towards the global center while optimizing the loss. Similarly SCAFFOLD \cite{b16} tackles client-drift by leveraging stored control variates. However, these approaches essentially assume flat structures, ignoring any potential hierarchy of smoothness within regions of geographic or institutional clustering.
 
 \subsection{Asynchronous Optimization}
-Standard FedAvg executes synchronously; the global aggregation phase inherently stalls until all designated clients successfully report their parameter deltas. When managing distinct institutional domains, straggler nodes frequently encounter delays spanning hours or days \cite{b17}. Asynchronous Decentralized Parallel SGD (ADPSGD) mitigates blocking by applying updates functionally upon arrival \cite{b26}. However, incorporating hopelessly stale gradients directly biases the global loss landscape back toward previously abandoned local minima. Xie et al. addressed this via aggressive exponential decay factoring \cite{b4}. Our formulation rejects the aggressive exponential discard, introducing instead a polynomial structural dampening formula designed specifically to preserve valuable extreme edge-case characteristics arriving from severely delayed institutional nodes.
+The standard FedAvg is synchronous by nature; the global aggregation steps waits for all designated clients to report their deltas. In a cross institutional setting, this can lead to situations where some clients are slow to respond (stragglers), taking hours or even days to reply \cite{b17}. Asynchronous Decentralized Parallel SGD (ADPSGD) resolves this issue by applying the gradients as they come in \cite{b26}. However, applying hopelessly stale gradients directly interferes with the global loss landscape, biasing it towards previously abandoned local minima. Xie et al. resolved this problem by applying aggressive exponential decay factoring \cite{b4}. We argue that using an exponentially decaying factor is not suitable in this context, and propose our own polynomially decaying dampening factor that retains useful extremes from hopelessly delayed institutional clients.
 
 \subsection{Hierarchical Aggregation Architectures}
 Recent theoretical formulations have explored multi-tier extensions of FL. Liu et al. introduced Client-Edge-Cloud hierarchical frameworks to mitigate bandwidth ceilings \cite{b30}. Similarly, Abad et al. demonstrated that executing multiple rapid, synchronous localized federated rounds before resolving a heavy, asynchronous global cycle strictly reduces overall communication volume \cite{b31}. While structurally adjacent, these works do not natively target the compounding effects inflicted by dual-layer (intra-silo and cross-silo) non-IID properties acting sequentially.
@@ -117,7 +117,7 @@ The integrated global dataset is mathematically treated as virtually partitioned
 \subsection{Dual-Level Non-IID Divergence Architecture}
 Data heterogeneity in multi-institutional environments arises via two structurally distinct strata. The architecture mitigates variance hierarchically rather than eliminating Non-IID behavior completely.
 
-\textbf{1. Intra-Silo Covariate Drift:} Within a single domain $C_i$, nodes exhibit variability due to sensing geometry, environmental conditions, and temporal sampling differences. Let $P_{e_{i,j}}(x,y)$ denote the joint distribution at endpoint $e_{i,j}$. Covariate shift manifests as:
+\textbf{1. Intra-Silo Covariate Drift:} The nodes inside a single domain $C_i$ can vary with different sensing geometries, environments, and time samples. Let $P_{e_{i,j}}(x,y)$ be the joint distribution at end point $e_{i,j}$. The covariate shift can be written as follows:
 \begin{equation}
 P_{e_{i,1}}(x) \neq P_{e_{i,2}}(x) \quad \text{while} \quad P(y|x) \text{ remains largely shared}
 \end{equation}
@@ -128,7 +128,7 @@ This produces feature-space divergence without corrupting underlying label depen
 \mathbf{p}^i \sim \text{Dir}(\beta \mathbf{p})
 \end{equation}
 
-With $\beta \approx 0.5$, some domains entirely lack records for specific categories. The dual-level divergence---intra-silo covariate drift compounding with cross-silo label skew---expands optimization variance substantially relative to single-layer Non-IID topologies \cite{b5}.
+Using $\beta \approx 0.5$, certain domains completely lack entries for particular classes. The combined impact of both intra-silo covariate shift and inter-silo label imbalance increases optimization variance significantly compared to a single Non-IID topology \cite{b5}.
 
 \textbf{3. Temporal Participation Divergence:} Beyond data heterogeneity, institutional participation itself varies temporally. Maintenance outages, bandwidth asymmetry, and heterogeneous compute capacity produce intermittent connectivity that is structurally unavoidable in multi-institution environments.
 
@@ -137,15 +137,15 @@ With $\beta \approx 0.5$, some domains entirely lack records for specific catego
 % ==========================================
 \section{Asynchronous Optimal Objective}
 
-Minimizing the hierarchical federation structure requires solving a massively distributed empirical risk optimization function. To prevent the entirety of the optimization process from stalling indefinitely due to localized institutional failure, our specific algorithm fundamentally assumes and calculates continuous asynchronous update arrival distributions.
+Minimizing the hierarchical federation structure is a large-scale optimization of an empirical risk function. To ensure that the entire optimization process is not hampered by a few institutional failures at once, our proposed algorithm inherently assumes and estimates asynchronous arrival distributions on updates.
 
 \subsection{Hierarchical Empirical Risk Minimization}
-Let the defined neural network classifier $f(x; w)$ be completely parameterized by continuous weights $w \in \mathbb{R}^d$. The empirical risk score evaluated for endpoint $j$ resting inside domain $i$ operates conventionally:
+Let the defined neural network classifier $f(x;w)$ be completely parameterized by the continuous weights $w \in \mathbb{R}^d$. The empirical risk score for endpoint $j$, which is placed inside the domain $i$, is given conventionally:
 \begin{equation}
 F_{i,j}(w) = \frac{1}{n_{i,j}} \sum_{(x,y) \in \mathcal{D}_{i,j}} \ell(f(x; w), y)
 \end{equation}
 
-The intermediate objective explicitly calculated for the domain aggregator $C_i$, presently managing $n_i = \sum_j n_{i,j}$ localized composite samples, is simply the precise size-weighted sum bounding its edge risks:
+The intermediate objective explicitly calculated for the domain aggregator $C_i$, currently hosting $n_i = \sum_j n_{i,j}$ localized composite samples, is simply the precise size-weighted sum bounding its edge risks:
 \begin{equation}
 F_i(w) = \sum_{j=1}^{N_i} \frac{n_{i,j}}{n_i} F_{i,j}(w)
 \end{equation}
@@ -154,7 +154,7 @@ The overarching global optimization objective tracking $n = \sum_i n_i$ total co
 \begin{equation}
 \min_{w \in \mathbb{R}^d} F(w) = \sum_{i=1}^{M} \frac{n_i}{n} F_i(w) + \frac{\lambda}{2}\|w\|^2
 \end{equation}
-where the added penalty structural component $\frac{\lambda}{2}\|w\|^2$ establishes an $L_2$ regularization anchor. This specifically mitigates violent divergent parameter drift across severely disjoint domains, aligning deeply with conceptual proximal constraints documented in foundational federated optimization analyses \cite{b15, b32}.
+where the added penalty structural component $\frac{\lambda}{2}\|w\|^2$ establishes an $L_2$ regularization anchor. This specifically helps in curbing the violent divergent parameter drifts that would otherwise be inevitable over severely disjoint domains, as also discussed in conceptual proximal considerations pertinent to federated optimization \cite{b15}, \cite{b32}.
 
 \subsection{Multi-Tier Algebra Update Schedule}
 The underlying mathematical optimization workflow advances sequentially through carefully isolated stages.
@@ -175,7 +175,7 @@ Upon final validation of these tightly integrated localized iterations, the high
 \subsection{Polynomial Staleness Dampening Factor}
 Unconstrained asynchronous merging introduces time-delayed gradients requiring precise stabilization. Consider an update from domain $C_i$ generated upon historical global state $w^{t_i}$. We define staleness as $\tau_i = t - t_i$.
 
-When aggregators reconnect following extended communication delays, injecting stale gradients without moderation forces global parameters toward abandoned local minima. Asynchronous participation in institutional environments is frequently unavoidable---maintenance outages, bandwidth contention, and compute heterogeneity produce delays spanning hours or days. The dampening strategy must therefore be topology-aware rather than merely mathematically convenient.
+When aggregators reconnect following extended communication delays, injecting stale gradients without moderation forces global parameters toward abandoned local minima. Asynchronous participation in institutional environment often cannot be avoided due to maintenance issues, bandwidth constraints, or heterogeneous computing power, introducing hours or even days of delay. The dampening process has to be topology aware, rather than simply mathematical.
 
 We scale integration momentum proportionally to staleness $\tau_i$ using a polynomial decay function:
 \begin{equation}
@@ -186,7 +186,7 @@ where $\gamma > 0$ controls penalty severity, enforcing:
 \lim_{\tau_i \to \infty} \alpha(\tau_i) = 0
 \end{equation}
 
-The polynomial form is deliberately chosen over exponential decay. Exponential decay aggressively discards rare but structurally valuable gradients from delayed edge nodes. Polynomial moderation preserves delayed institutional intelligence longer, recognizing that severely late updates from underrepresented domains may carry precisely the distributional knowledge the global model lacks. The global parameters incorporate the dampened update as:
+The polynomial form is deliberately chosen over exponential decay. Exponential decay would sharply reduce the contribution of very infrequent but structurally important gradients from distant and delayed edges. Polynomial moderation retains delayed institutional intelligence in the system because critically late updates from neglected corners of the data universe may contain precisely the distributional information the meta-model requires to update its global hypotheses. The global parameters incorporate the dampened update as:
 \begin{equation}
 w^{t+1} = w^t + \eta_{\text{global}} \cdot \alpha(\tau_i) \cdot \Delta w_i^t
 \end{equation}
@@ -255,6 +255,7 @@ Target emulation tracks independent metrics continuously spanning five completel
 \centering
 \caption{Federated Evaluation Divergence Topologies}
 \label{tab:campus_chars}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 \textbf{Isolated Domain} & \textbf{Structural Covariate Skew} & \textbf{Label Non-IID ($\beta$)} \\
@@ -265,7 +266,8 @@ Domain Partition C & Moderate Aggregation & Severe Specialization (0.1) \\
 Domain Partition D & Moderate Aggregation & Baseline Control (1.2) \\
 Domain Partition E & Excessive Distortion & Moderate Weighting (0.8) \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 Underlying operational vectors manifest probabilistically. Structural label skew relies strictly upon evaluating multiple distinct Dirichlet random initialization vectors parameter $\beta$, purposely locking Domain C into severe specialization representing profound dataset imbalance.
@@ -277,6 +279,7 @@ Table \ref{tab:cross_domain} explicitly measures localized analytical resilience
 \centering
 \caption{Domain Transfer Target F1-Score Performance}
 \label{tab:cross_domain}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 \textbf{Isolated Test Location} & \textbf{Static Control Baseline} & \textbf{H-FedAvg Target} & \textbf{Delta} \\
@@ -289,10 +292,11 @@ Partition Domain E & 92.2\% & 94.5\% & +2.3\% \\
 \midrule
 \textbf{Aggregate Net Tracking} & 88.5\% & 93.3\% & \textbf{+4.8\%} \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
-Under the evaluated asynchronous conditions, aggregate F1 improved from 88.5\% to 93.3\%. Domains subject to severe Dirichlet restrictions (Partitions B and C) exhibited the largest gains (+7.1\%), consistent with improved convergence stability through hierarchical variance smoothing. These results suggest that intermediate aggregation acts as a variance-smoothing mechanism: local synchronization reduces gradient volatility before global propagation, thereby reducing optimization shock amplification. The improvements are bounded to the modeled participation topology; institutional variability may alter outcomes.
+Under the examined asynchronous conditions, the aggregate F1 increased by 88.5\% to 93.3\%. The domains restricted by the most severe Dirichlet constraints (Partitions B and C) yielded the maximum gains (+7.1\%), suggesting that the convergence dynamics favored the stability of hierarchical variance smoothing. Overall, the results indicate that intermediate aggregation acts as variance-smoothing mechanism: local synchronization reduces gradient volatility prior to global updates, producing lower optimization losses. The gains are localized to the participation patterns captured in the model, and institutional heterogeneity would likely affect the outcomes.
 
 \subsection{Algorithmic Dampening Ablation Validation ($\gamma$)}
 To comprehensively test overarching resilience limits embedded inside target dampening metrics, systemic continuous latencies reaching extensively across simulated operational horizons were explicitly induced.
@@ -301,6 +305,7 @@ To comprehensively test overarching resilience limits embedded inside target dam
 \centering
 \caption{Decay Metric Stabilization Limits ($\gamma$ scaling)}
 \label{tab:dampening}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 \textbf{Dampening Profile ($\gamma$)} & \textbf{Algorithmic State Evaluation} & \textbf{Top Score} \\
@@ -310,7 +315,8 @@ Moderate Scale $\gamma = 0.2$ & Visible Oscillation Pull & 86.1\% \\
 \textbf{Tuned Optimal $\gamma = 0.5$} & \textbf{Clean Asynchronous Convergence} & \textbf{92.4\%} \\
 Heavy Stricture $\gamma = 2.0$ & Severe Structural Underfitting & 89.5\% \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \subsection{Robustness Under Terminal Node Disconnection}
@@ -320,11 +326,11 @@ We aggressively documented convergence reactions immediately following severe ma
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{paper14_dropout_resilience.png}
-\caption{Terminal Dropout Recovery Graph. Unlike strictly bounded synchronous architectures collapsing completely amidst localized dropouts, unconstrained H-FedAvg mathematical derivations persistently maintain internal parameters $>90\%$ reliably through severe geometric removal phases cresting 50\%.}
+\caption{Terminal Dropout Recovery Graph. In contrast to systems utilizing strictly bounded synchronized protocols which fail catastrophically during localized dropout events, our unconstrained H-FedAvg formulations retain core parameter integrity by $>90\%$ throughout severe geometric removal phases reaching up to 50\%.}
 \label{fig:dropout_resilience}
 \end{figure}
 
-Under the modeled participation topology, the asynchronous computation sustains adaptation metrics above 90\% accuracy even under 50\% node dropout. Structural failures above 60\% removal show smooth degradation trajectories rather than catastrophic collapse. This resilience is consistent with the polynomial dampening preserving structurally valuable delayed gradients that exponential decay would discard. We note that these results assume benign participation failures; deliberate Byzantine poisoning remains outside scope.
+Under the modeled participation topology, the asynchronous computation sustains adaptation metrics above 90\% accuracy even under 50\% node dropout. Structural failures above 60\% removal show smooth degradation trajectories rather than catastrophic collapse. This is compatible with the intuition that the polynomial dampening preserves structurally expressive delayed gradients that would have been otherwise discarded by exponential decay. We note that this result requires benign participation failure; Byzantine poisoning is outside the scope of this work.
 
 \subsection{Limitations}
 The proposed asynchronous convergence framework exhibits several boundary constraints within the modeled participation topology:
@@ -346,30 +352,44 @@ The proposed asynchronous convergence framework exhibits several boundary constr
 
 This paper evaluated Hierarchical Federated Averaging (H-FedAvg), a multi-tier asynchronous optimization formulation designed to stabilize convergence under dual-level Non-IID divergence and severe participation asynchrony.
 
-Under the evaluated asynchronous conditions, hierarchical aggregation provided bounded convergence stabilization: +4.8\% cross-domain F1 improvement over isolated baselines, with the largest gains in severely skewed domains. The polynomial staleness dampening preserved structurally valuable delayed gradients while maintaining stable optimization above 90\% accuracy under 50\% node dropout. The hierarchy functions as optimization stabilization---intermediate aggregation smooths gradient volatility before global propagation---rather than merely communication organization.
+Under the asynchronous setting, the hierarchical aggregation achieves bounded convergence stabilization: +4.8 F1 points on average across domains compared to isolated baselines with largest gains observed on the most skewed domains. The polynomial staleness dampening allows to retain the structurally valuable delayed gradients while ensuring optimization stability in the face of up to 50\% node dropouts, with the overall accuracy remaining above 90\%. The hierarchy is used as optimization stabilization mechanism, with intermediate aggregation steps needed to smooth out the noisy gradients before global averaging.
 
-Within the ScholarMaster architecture, this framework operates exclusively as the hierarchical federated optimization and asynchronous convergence subsystem---stabilizing distributed model adaptation without managing deployment architecture (Paper 20), runtime crash enforcement (Paper 18), institutional trust modeling (Paper 16), formal verification theorems (Paper 21), or irreversible privacy doctrine (Paper 17).
+Within the ScholarMaster architecture, this framework only participates in the hierarchical federated optimization and asynchronous convergence subsection, leaving the management of deployed optimization architecture (Paper 20), runtime crash enforcement (Paper 18), institutional trust modeling (Paper 16), formal verification theorems (Paper 21), or irreversible privacy doctrine (Paper 17) to other underlying mechanisms.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' \textit{AISTATS}, 2017.
-\bibitem{b4} C. Xie et al., ``Asynchronous Federated Optimization,'' \textit{OPT2019 Workshop}, 2019.
-\bibitem{b5} Y. Zhao et al., ``Federated Learning with Non-IID Data,'' \textit{arXiv:1806.00582}, 2018.
-\bibitem{b11} P. Voigt and A. Von dem Bussche, ``The EU GDPR,'' \textit{Springer}, 2017.
-\bibitem{b13} Y. Ganin et al., ``Domain-Adversarial Training,'' \textit{JMLR}, 2016.
-\bibitem{b15} T. Li et al., ``Federated Optimization in Heterogeneous Networks,'' \textit{MLSys}, 2020.
-\bibitem{b16} S. P. Karimireddy et al., ``SCAFFOLD: Stochastic Controlled Averaging,'' \textit{ICML}, 2020.
 \bibitem{b17} B. Recht et al., ``Hogwild!: A Lock-Free Approach to Parallelizing SGD,'' \textit{NIPS}, 2011.
+
+\bibitem{b13} Y. Ganin et al., ``Domain-Adversarial Training,'' \textit{JMLR}, 2016.
+
+\bibitem{b1} B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' \textit{AISTATS}, 2017.
+
+\bibitem{b11} P. Voigt and A. Von dem Bussche, ``The EU GDPR,'' \textit{Springer}, 2017.
+
 \bibitem{b26} X. Lian et al., ``Asynchronous Decentralized Parallel SGD,'' \textit{ICML}, 2018.
-\bibitem{b28} P. Kairouz et al., ``Advances and Open Problems in Federated Learning,'' \textit{Foundations and Trends}, 2021.
+
+\bibitem{b5} Y. Zhao et al., ``Federated Learning with Non-IID Data,'' \textit{arXiv:1806.00582}, 2018.
+
 \bibitem{b29} M. Yurochkin et al., ``Bayesian Nonparametric Federated Learning,'' \textit{ICML}, 2019.
-\bibitem{b30} L. Liu et al., ``Client-Edge-Cloud Hierarchical Federated Learning,'' \textit{Proc. IEEE ICC}, 2020, pp. 1-6.
-\bibitem{b31} M. S. H. Abad et al., ``Hierarchical Federated Learning Across Networks,'' \textit{Proc. IEEE ICASSP}, 2020.
-\bibitem{b32} C. Briggs et al., ``Federated learning with hierarchical clustering to improve non-IID data,'' \textit{IEEE Access}, 2020.
+
 \bibitem{b34} S. Truex et al., ``A hybrid approach to privacy-preserving federated learning,'' \textit{ACM AISec}, 2019.
+
+\bibitem{b4} C. Xie et al., ``Asynchronous Federated Optimization,'' \textit{OPT2019 Workshop}, 2019.
+
+\bibitem{b15} T. Li et al., ``Federated Optimization in Heterogeneous Networks,'' \textit{MLSys}, 2020.
+
+\bibitem{b16} S. P. Karimireddy et al., ``SCAFFOLD: Stochastic Controlled Averaging,'' \textit{ICML}, 2020.
+
+\bibitem{b30} L. Liu et al., ``Client-Edge-Cloud Hierarchical Federated Learning,'' \textit{Proc. IEEE ICC}, 2020, pp. 1-6.
+
+\bibitem{b31} M. S. H. Abad et al., ``Hierarchical Federated Learning Across Networks,'' \textit{Proc. IEEE ICASSP}, 2020.
+
+\bibitem{b32} C. Briggs et al., ``Federated learning with hierarchical clustering to improve non-IID data,'' \textit{IEEE Access}, 2020.
+
+\bibitem{b28} P. Kairouz et al., ``Advances and Open Problems in Federated Learning,'' \textit{Foundations and Trends}, 2021.
 
 \end{thebibliography}
 

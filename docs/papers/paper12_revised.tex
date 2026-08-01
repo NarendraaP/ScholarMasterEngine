@@ -67,11 +67,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Low-cost flash storage still serves as the default persistence layer for many edge computing platforms. Yet when these devices are subjected to continuous machine-learning workloads, their limited program–erase endurance often becomes the dominant reliability constraint. Default Linux configurations often emit fragmented streams of small writes that interact poorly with the consumer-grade Flash Translation Layers (FTLs) typically embedded in these devices, which generally provide minimal over-provisioning. Over time, this mismatch accelerates wear and can eventually lead to premature storage failure.
+Low-cost flash has become the default storage medium for many embedded devices to date. Meanwhile, the endurance limits of flash memory have been a major reliability concern whenever such devices need to handle frequent writes, such as during intensive machine-learning workloads. Default linux filesystems generate a high number of small writes which are detrimental to flash storage that typically comes with little over-provisioning, thus significantly limiting the lifespan of such devices. We have developed an algorithm which dramatically improves the endurance of small random writes.
 
-To investigate this reliability limitation, this study analyzes the storage behavior of a representative 32GB SD card operating under sustained write-intensive workloads. We introduce a coordinated set of kernel- and filesystem-level optimizations designed to reduce write amplification. By combining swap compression (ZRAM), extended page-cache aggregation, multiqueue NOOP block scheduling, and a migration from Ext4 to the log-structured F2FS filesystem, the measured Write Amplification Factor (WAF) decreased from 12.43 to 2.10. Consequently, daily physical writes declined from 4.2GB to approximately 0.8GB.
+To address this reliability feature, this experiment was conducted to evaluate the storage characteristics of a representative 32Gb SD card. A set of coordinated kernel- and filesystem-level optimizations have been applied to reduce write amplification. With the help of such technologies as swap compression (ZRAM), page-cache consolidation, multi-queue NOOP scheduler, and log-structured F2FS filesystem, the write amplification factor (WAF) has been reduced from 12.43 to only 2.10. As a result, daily writes were decreased from 4.2Gb to approximately 0.8Gb (Fig. 1).
 
-When these reductions are incorporated into a JEDEC-aligned endurance projection model, the projected hardware lifetime under the measured workload increases by roughly a factor of thirty. In addition to improving endurance, the optimized storage stack also suppresses many of the tail-latency spikes associated with aggressive background garbage collection in aging filesystems. These findings indicate that carefully engineered host-side I/O shaping can extend the operational lifespan of low-cost flash storage. The improvement is particularly visible in continuous embedded deployments.
+When applied in the context of a JEDEC-endurance projection model, these reductions lead to a storage system lifetime projection that is three orders of magnitude higher than what was initially measured under the same JEDEC workload. Moreover, the optimized storage stack dramatically reduces tail-latency spikes due to intensive garbage collection in aged filesystems. The results illustrate benefits of host-side I/O shaping for prolonging the service lifetime of low-cost flash storage. The improvements are especially valuable in the context of continuous embedded operation.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -83,10 +83,10 @@ Flash Endurance Engineering, Write Amplification Factor, Log-Structured Filesyst
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{host-side I/O shaping substantially reduces write amplification and extends flash endurance in embedded edge systems}. Edge computing deployments frequently rely on inexpensive flash storage to maintain affordability and simplify hardware replacement. Among these options, Secure Digital (SD) cards remain widely used for their cost efficiency and hardware compatibility.
+The main argument of this paper is that \textbf{host-side I/O shaping can greatly reduce write amplification and improve flash endurance in embedded edge systems}. Edge computing systems often leverage cheap forms of flash storage as a way to reduce costs and make hardware replacements easier. One such example is the Secure Digital, or SD, cards that are widely used due to their affordability and prevalence.
 
 \subsection{Why Continuous Edge Telemetry Accelerates NAND Wear}
-Consumer SD cards are optimized for burst-oriented usage patterns---intermittent photo capture, sequential video recording, and occasional firmware updates. Embedded AI workloads violate these assumptions fundamentally. Continuous telemetry logging, container metadata churn, system swap activity, and routine OS updates generate persistent small-write patterns that aggressively stress low over-provisioned flash controllers \cite{b26}. Metadata-heavy telemetry amplifies FTL garbage collection: each 4KB JSON append can trigger internal read-modify-write cycles across multi-megabyte erase blocks. Low over-provisioning ($\alpha \approx 0.05$) magnifies this physical wear because the controller maintains fewer spare blocks for garbage-collection victim selection. The result is that workload structure---not storage capacity---drives endurance collapse \cite{b10}.
+Consumer SD cards are optimized for burst-oriented usage patterns---intermittent photo capture, sequential video recording, and occasional firmware updates. Embedded AI workloads violate these assumptions fundamentally. Continuous telemetry logging, container metadata churn, system swap activity, and routine OS updates generate persistent small-write patterns that aggressively stress low over-provisioned flash controllers \cite{b26}. Metadata-heavy telemetry can cause FTL GC to do extra work: for each additional 4 KB JSON message appended, the controller must internally read-modify-write whole multi-megabyte erase blocks. Low over-provisioning ($\alpha \approx 0.05$) increases this effect since the controller has fewer spare blocks to choose from when performing garbage collection. The result is that workload characteristics, not storage capacity, dictate endurance \cite{b10}.
 
 In resource-constrained edge nodes operating with limited RAM, no UPS, and demanding continuous uptime, the interaction between OS write behavior and flash controller becomes the dominant durability factor \cite{b30}.
 
@@ -109,31 +109,29 @@ Within the ScholarMaster architecture, this subsystem performs flash-endurance o
 Understanding the endurance limitations of SD cards requires examining the physical structure of NAND flash memory. This structure directly constrains write endurance.
 
 \subsection{The Physics of Wear and Page/Block Asymmetry}
+NAND flash memory has a hierarchical geometry of storage arrays. Inside the flash memory, pages (typically 4KB to 16KB) are grouped into blocks (typically 128 to 256 pages). One of the main challenges associated with NAND Flash memories is that while data can be programmed at the finest level of page granularity (typically 4 KiB – 16 KiB), it can only be erased at the block level \cite{b5}. 
 
-NAND flash memory is organized into a strict hierarchical geometry across its storage arrays: \textit{pages} (typically ranging from 4KB to 16KB) are grouped into \textit{blocks} (typically 128 to 256 pages). A central limitation of NAND flash arises from an operational asymmetry: while data can be written (programmed) at the highly granular page level, it can only be erased at the much larger block level \cite{b5}. 
+Because pages cannot be overwritten, any change, however small, requires that the controller write new data to a different, erased page and then mark the original page as invalid. 
 
-Because pages cannot be overwritten in place, modifying even a single byte requires the controller to write the updated data to a freshly erased page while marking the original page as invalid. 
-
-At a physical level, wear originates from the repeated program and erase operations that continually stress the tunnel oxide insulating the floating gate. High electric fields utilized during the erase phase induce Fowler–Nordheim tunneling, which gradually degrades the oxide structure as program-erase cycles accumulate. As these defects accumulate, trapped charges shift the threshold voltage distribution of the cell, steadily narrowing the read margins and placing heavier reliance on the controller's Error Correction Code (ECC) algorithms \cite{b6}. Once this threshold shift exceeds the ECC's corrective capabilities, the block becomes unreadable and must be permanently retired.
+At a physical level, wear occurs due to the continuous program/read cycles that put stress on the tunnel oxide in between the floating gate. The Fowler-Nordheim tunneling mechanism that occurs during the erase phase results in oxide degradation when program/erase cycles are applied repeatedly on the cell. The distribution of threshold voltages of the cell gets shifted as the floating gate accumulates charges, thus reducing the amount of margins required for reading. This creates an increased load on the controller’s error correction code (ECC). As a result, a block becomes unusable when the threshold crossing is beyond the level that ECC can handle, and the block needs to be retired \cite{b6}.
 
 \subsection{FTL Dynamics and Write Amplification}
 
-Because host operating systems interact with flash storage only through logical block addresses, the Flash Translation Layer (FTL) plays a central role in determining physical wear patterns (mapping logical writes to physical flash pages) \cite{b7}. The host operating system issues logical writes at the sector level, whereas the underlying hardware manages storage using multi-megabyte flash blocks. The FTL microcontroller dynamically maps these Logical Block Addresses (LBA) to physical flash pages.
+Because host operating systems interface with flash storage via logical block addressing, the Flash Translation Layer (FTL) is central to the locality of physical wear (mapping of logical writes to physical flash pages) \cite{b7}. Host operating systems perform logical writes at the sector granularity, while the underlying hardware operates at the multi-megabyte flash block level. The flash memory controller maintains a mapping table of Logical Block Addresses (LBA) to physical flash pages.
 
-This mismatch is a primary driver of Write Amplification. When the host issues frequent, tiny logical modifications, it can trigger substantial block-scale data movement internally. This is particularly destructive when the FTL is forced to reclaim space from partially valid blocks via an internal Read-Modify-Write (RMW) cycle. While enterprise NVMe controllers feature massive RAM caches and sophisticated algorithms to mitigate this behavior, the cost-optimized firmware on consumer SD cards leaves the flash media highly exposed to this inefficiency.
+This discrepancy is often the root cause of Write Amplification. In this scenario, numerous minor logical updates initiated by the host can lead to considerable block-level data rewrites inside the drive. Especially problematic are the cases when the FTL needs to perform an internal Read-Modify-Write cycle in order to free up space inside the logical block for the new data. Enterprise-grade NVMe controllers usually have large RAM buffers and employ advanced algorithms to prevent this from happening, while the cheap firmware in SD cards has very limited resources to handle such situations, resulting in excessive writes on the flash level.
 
 \subsection{Mathematical Formulation of FTL Garbage Collection}
 
 To prevent the system from halting during individual RMW cycles, modern FTLs attempt to write incoming data to fresh, pre-erased pages sequentially. Eventually, however, the controller exhausts its supply of empty blocks and must invoke background Garbage Collection (GC). The GC routine selects a "victim" block, copies any remaining valid pages from that block into a new location, and then erases the victim block to free up space \cite{b27}.
 
-The efficiency of this operation depends entirely on the FTL's selection heuristic and the availability of spare space. We can formalize the theoretical Write Amplification $WAF_{FTL}$ under a Greedy GC algorithm utilizing Desnoyers' analytical model for uniform random writes \cite{b8}. Let $\alpha$ represent the Over-Provisioning factor—the ratio of spare physical capacity hidden from the OS relative to the advertised logical capacity. 
-
-Because the probability of a page remaining valid in a victim block during steady-state random I/O is inextricably linked to $\alpha$, the theoretical limit for $WAF_{FTL}$ under pure random writes approaches:
+The algorithm’s efficiency is entirely dictated by the FTL’s choice heuristic as well as the available free space, which allows us to define an ideal (theoretical maximum) Write Amplification $WAF_{FTL}$ given the spare space conditions and a certain GC algorithm. In particular, using Desnoyers’ analytical model for uniform random writes \cite{b8}, we can define the write amplification for the Greedy algorithm as:
 \begin{equation}
 WAF_{FTL} \approx \frac{1 + \alpha}{\alpha}
 \end{equation}
+where $\alpha$ is the Over-Provisioning factor, i.e., the ratio between the physically available but not exposed to the OS storage capacity.
 
-For standard consumer SD cards, over-provisioning is typically low (often $\alpha \approx 0.05$ \cite{b25}). Under sustained random-write conditions with such limited spare area, theoretical WAF increases significantly. Critically, WAF emerges from cross-layer interaction---filesystem-level amplification (journal rewrites, metadata cascades), FTL-level amplification (victim-block valid-page copying), and garbage-collection amplification (RMW cycles during block reclamation) compound multiplicatively. In an embedded deployment, this mathematical reality accelerates wear unless the host OS actively reshapes the write stream before it reaches the hardware \cite{b9}.
+For standard consumer-grade SD cards, the over-provisioning is typically low (often under $\alpha \approx 0.05$ \cite{b25}). Under such conditions, and for sustained random writes, the theoretical WAF is significantly inflated. In practice, WAF is the product of filesystem-level, FTL-level, and garbage-collection amplification, which all add up multiplicatively. For embedded systems, this means accelerated wear of the storage media, unless the host OS can shape the write-stream before it is committed to flash \cite{b9}.
 
 % ==========================================
 % III. PROBLEM FORMULATION
@@ -143,7 +141,7 @@ For standard consumer SD cards, over-provisioning is typically low (often $\alph
 Given the limited sophistication of many consumer SD controllers, the host operating system must often compensate for weak flash management behavior.
 
 \subsection{Host-Side Write Serialization as FTL Control}
-One practical strategy for reducing flash wear is to reshape the temporal structure of host-generated writes before they reach the storage device. By batching thousands of small, random writes into large, sequential commits within volatile memory before flushing them to the block layer, the host serializes the write stream.
+One way to do this is to modify the temporal characteristics of host-generated writes to the storage medium, for example, by aggregating thousands of random writes in volatile memory before committing them to the block layer as large sequential IO units.
 
 Let $\lambda$ represent the arrival rate of small logical writes, and let $\tau_{flush}$ denote the kernel’s dirty-page flush interval. The effective write batch size $B_{eff}$ approximates:
 \begin{equation}
@@ -171,10 +169,10 @@ Where:
     \item $WAF_{total}$ = Total Write Amplification Factor.
 \end{itemize}
 
-While this projection provides an analytical baseline assuming ideal FTL wear leveling, real-world edge hardware often fails prematurely due to cheap controller burn-out, read disturb errors, or retention leakage \cite{b10}. To bracket our expectations, we explicitly evaluate a highly pessimistic \textbf{TLC-class scenario (1,000 P/E cycles)} alongside the standard MLC baseline.
+While this projection assumes best-case scenarios for FTL wear leveling, in practice, many edge devices are forced to retire SSDs prematurely due to cheap controller burnout, read disturb errors, or retention leakage \cite{b10}. To bound our expectations, consider a highly pessimistic TLC-class scenario with 1,000 P/E cycles, as well as the standard MLC baseline.
 
 \subsection{Baseline Workload Characterization}
-To establish a baseline, we deployed an unoptimized 24-hour test node executing a synthetic write-intensive workload designed to mirror continuous telemetry generation and container churn. Table \ref{tab:baseline} breaks down the exact sources of disk writes generated by the Linux environment.
+To establish baseline we ran an unoptimized 24-hour test node running a self-induced write-heavy simulated telemetry and container churn. Table \ref{tab:baseline} specifies the individual entries that contributed to the disk-write load of the Linux-based system.
 
 \begin{table}[h]
 \caption{Baseline Write Volume Breakdown (24-hour period)}
@@ -196,7 +194,7 @@ Container Image Updates & 1,200 & 28\% \\
 \label{tab:baseline}
 \end{table}
 
-Under this default configuration, we recorded a baseline WAF of 12.43. This massive amplification is the result of a heavily skewed mixed-workload degradation: while large sequential operations like pulling new Docker containers approach an ideal $WAF \approx 1.0$, the continuous trickle of tiny random metadata writes and telemetry logs pushes the operational WAF well beyond 30 during active monitoring phases. 
+Under this default configuration, we recorded a baseline WAF of 12.43. This massive amplification is the result of a heavily skewed mixed-workload degradation: while large sequential operations, such as pulling new Docker containers, are close to ideal $WAF \approx 1.0$, the constant trickle of small random writes and telemetry logs pushes the operational WAF count far beyond 30 during active monitoring periods.
 
 % ==========================================
 % IV. OPTIMIZATION ARCHITECTURE (KERNEL & VFS)
@@ -219,18 +217,18 @@ swapon /dev/zram0 -p 100
 \end{lstlisting}
 
 \subsection{Page Cache State Machine and Dirty Ratio Tuning}
-The Linux Virtual File System (VFS) utilizes a Page Cache to buffer I/O operations, passing memory pages through a strict state machine: `Clean` $\to$ `Dirty` $\to$ `Writeback` $\to$ `Clean`. 
+The Linux Virtual File System (VFS) utilizes a Page Cache to buffer I/O operations, passing memory pages through a strict state machine: \texttt{Clean} $\to$ \texttt{Dirty} $\to$ \texttt{Writeback} $\to$ \texttt{Clean}. 
 
-By default, the Linux kernel is incredibly eager to protect data, aggressively waking flush threads to write dirty pages to disk to prevent data loss. For write-intensive embedded workloads, this is counterproductive. We explicitly alter this state machine's thresholds by pushing `vm.dirty_ratio` to 60 and extending `dirty_expire_centisecs` to 360000 (a full 1 hour delay). 
+By default, the Linux kernel is incredibly eager to protect data, aggressively waking flush threads to write dirty pages to disk to prevent data loss. For write-intensive embedded workloads, this is counterproductive. We explicitly alter this state machine's thresholds by pushing \texttt{vm.dirty\_ratio} to 60 and extending \texttt{dirty\_expire\_centisecs} to 360000 (a full 1 hour delay). 
 
-This configuration forces the kernel to hoard massive volumes of modified pages in memory before initiating writeback. In workloads characterized by thousands of tiny, frequent appends, this delay virtually guarantees that multiple granular updates will coalesce into a few large, perfectly aligned sequential flushes. 
+This setup will make the kernel cache huge numbers of dirty pages in memory before it does a writeback. This can lead to situations where many little appends get gathered in flight so that on commit they turn into a few big sequential writes.
 
-We acknowledge the tradeoff: up to 1 hour of telemetry data resides exclusively in the volatile dirty page cache and will be lost during a sudden power outage. This is a deliberate \textbf{durability--endurance balancing mechanism}---the system intentionally sacrifices short-term persistence for long-term hardware survival. In embedded deployments where devices are physically difficult to reach, accepting reduced durability for transient telemetry is preferable to accelerating permanent media failure. This tradeoff should appear consistently in the interpretation of all subsequent results: endurance optimization inherently introduces crash-risk exposure.
+We acknowledge the tradeoff: up to 1 hour of telemetry data resides exclusively in the volatile dirty page cache and will be lost during a sudden power outage. This is a deliberately designed durability-endurance balancing mechanism: the system was engineered to sacrifice short-term persistence for long-term hardware viability. In other words, if the deployment environment makes it infeasible to access the device for maintenance in a timely manner, it is better to trade durability for short-term telemetry than to cause a permanent media failure. This factor has to be deliberately considered in all subsequent analyses: in essence, endurance-optimal I/O scheduling creates conditions for system crash risks.
 
 \subsection{I/O Scheduler Multiqueue Mechanics}
-Finally, we replace the default Linux `CFQ` (Completely Fair Queuing) block scheduler with `NOOP` or `none` under the `blk-mq` (Block Multi-Queue) framework \cite{b16}. CFQ was designed with an elevator algorithm intended to optimize the physical disk head seek times of mechanical rotational platters. 
+Finally, instead of a default Linux \texttt{CFQ} (Completely Fair Queuing) block scheduler we can utilize \texttt{NOOP} or \texttt{none} under a \texttt{blk-mq} (Block Multi-Queue) scheduler \cite{b16}. CFQ was designed to have an elevator algorithm optimized for the physical seek time of mechanical rotational disks.
 
-Because solid-state SD cards possess no moving parts and route data through their own internal FTL microcontrollers, allowing the Linux kernel to perform host-side I/O sorting is redundant and introduces latency and CPU interrupt overhead. Switching to `NOOP` transforms the scheduler into a simple FIFO queue, passing our clustered data directly to the hardware driver without interference \cite{b15}.
+Because solid-state SD cards have no moving parts and route data internally via their own FTL microcontroller, host-level I/O scheduling and sorting is not only useless, but adds latency and CPU interrupt overhead; changing it to \texttt{NOOP} makes it a simple FIFO queue that feeds our clustered data directly to the hardware driver, bypassing any intervening scheduler \cite{b15}.
 
 % ==========================================
 % V. FILESYSTEM ARCHITECTURE: F2FS VS EXT4
@@ -240,26 +238,26 @@ Because solid-state SD cards possess no moving parts and route data through thei
 Even with aggressive kernel-level batching, filesystem behavior still remains a dominant contributor to physical write amplification. Most embedded Linux distributions continue to deploy Ext4 as the default filesystem.
 
 \subsection{The Ext4 Journaling Penalty (JBD2)}
-Ext4 utilizes a traditional update-in-place strategy. This approach is highly problematic for NAND, as it forces the underlying FTL to continually execute erase cycles to rewrite the same static physical blocks. Furthermore, to guarantee POSIX filesystem integrity during power failures, Ext4 relies on a heavy journaling mechanism via the Journaling Block Device 2 (JBD2) layer \cite{b20}. 
+Unlike Btrfs, Ext4 uses the classic update-in-place approach. This approach is particularly bad for NAND due to the need to perform erases of the same physical blocks repeatedly. In addition, to ensure POSIX filesystem standards compliance during power failures, Ext4 uses a heavy journaling mechanism implemented in the kernel as the Journaling Block Device 2 (JBD2) \cite{b20}.
 
-The JBD2 commit sequence can significantly impact flash endurance. A single metadata modification requires four distinct physical writes: (1) writing the descriptor block, (2) writing the metadata payload to the journal, (3) writing the commit block, and finally (4) writing the metadata to its permanent location in the main filesystem. When evaluating a workload generating millions of tiny JSON telemetry files, we observed that the journal write volume actually eclipses the actual data payload volume by a massive margin ($W_{meta} \gg W_{data}$).
+The JBD2 commit could be expensive in terms of flash endurance. Single metadata change takes 4 physical writes: (1) writing the descriptor block, (2) writing metadata payload to the journal, (3) writing commit block, and (4) finally writing metadata to its place in the main filesystem. In cases where one has to write a lot of small JSON records for telemetry purposes, the ratio of journal writes to the actual data is tremendously high ($W_{meta} \gg W_{data}$).
 
 \subsection{F2FS Architecture and the Wandering Tree Problem}
-To eliminate this bottleneck, the system migrates to the Flash-Friendly File System (F2FS), an architecture designed around the physics of NAND \cite{b18}. Like other log-structured file systems (LFS), F2FS converts scattered random writes into continuous sequential append operations. This allows the hardware FTL to cleanly write new pages into empty erased blocks without triggering internal RMW cycles.
+To address this issue, the current system adopts the Flash Friendly File System (F2FS). It is worth noticing that the F2FS is designed according to the physics of NAND \cite{b18}. Similarly to other log-structured file systems (LFS), F2FS transforms random writes into appending ones, which allows FTL to write new pages in sequentially allocated empty blocks and, thus, to avoid costly R/W operations over existing data (Fig. 1).
 
-Standard LFS implementations, however, suffer from the crippling \textbf{Wandering Tree Problem}. When a file's data block is updated and appended sequentially to a new physical location, its direct index node (inode) must be updated to point to the new address. This update cascades upward, requiring the indirect index node to be updated, propagating all the way to the root directory inode, generating substantial metadata churn. 
+However, standard LFS implementations have one major limitation. It is called the Wandering Tree Problem. The issue occurs when a file needs to change data block location due to an edit. The file’s direct inode has to be changed and points to a new physical location, and that creates a cascade effect. Indirect index nodes also have to be changed and are updated all the way to the root inode.
 
-F2FS addresses this issue by introducing the \textbf{Node Address Table (NAT)} alongside the Segment Information Table (SIT). The NAT acts as a static indirection layer: when a data block physically moves, only the direct node block and the specific NAT entry require updating. By isolating the update cascade, the NAT largely mitigates the Wandering Tree problem. The result is a substantial reduction in metadata-related amplification \cite{b22}. F2FS is valuable here not because it universally outperforms Ext4 in all environments, but because it aligns host write geometry with NAND physics---sequential append behavior reduces internal RMW cycles, and NAT indirection stabilizes update locality.
+F2FS tackles the issue by implementing the Node Address Table (NAT) in addition to the Segment Information Table (SIT). The former is also a static indirection layer, and only the direct node block plus the corresponding entry in the NAT have to be updated during block moves. Thus, F2FS largely mitigates the Wandering Tree problem, significantly decreasing the number of wasted I/O operations \cite{b22}. The F2FS filesystem is beneficial in this scenario as it is better adjusted to host-specific write geometry than Ext4: by organizing writes as sequential appends, it makes internal NAND rewrites (the RMW cycle) less frequent, and minimizes the overhead using the static NAT.
 
 \subsection{Hot/Cold Separation and Crash Consistency}
-F2FS further eases the burden on the FTL's garbage collector by logically grouping data based on update frequency. Rapidly changing JSON logs (Hot data) are written to different physical segments than static ML binary weights (Cold data) using a multi-head logging approach. When the F2FS Garbage Collector inevitably runs, it rarely has to relocate static data to reclaim space, minimizing background write amplification \cite{b27}.
+The F2FS reduces the FTL’s garbage collector overhead by grouping data according to their update frequency. By using a multi-head logging approach, fast-updating JSON logs (Hot data) are stored in different physical segments than the more static ML binary weights (Cold data). As a result, when F2FS’s Garbage Collector runs, it will not have to relocate Cold data as often, significantly reducing background write amplification \cite{b27}.
 
-F2FS also ensures atomic consistency without requiring a JBD2-style journal. It utilizes a clever "Checkpoint" mechanism, writing new data to a fresh physical segment and only committing the updated NAT mapping once the write is verifiably complete (Copy-On-Write). In the event of an abrupt power loss, the system simply reverts to the last valid NAT state, providing crash resilience without the multiphase write penalty of Ext4 \cite{b29}.
+The F2FS filesystem is designed to provide atomic consistency without the need for a JBD2-like journal. A brilliant ”Checkpoint” mechanism allows to write new data to a new physical segment and commit the changes only when the write process is finalized (Copy-On-Write). In case of a power failure, the filesystem reverts to the last known good NAT state, eliminating the possibility of a filesystem error that would occur in the case of Ext4, thus providing crash resilience \cite{b29}.
 
 \subsection{F2FS Mount Considerations}
-To squeeze maximum endurance from the filesystem, specific mount configurations are required. Setting `noatime` ensures that simple read operations do not trigger a cascade of metadata timestamp updates. Enabling `background_gc=on` permits the filesystem to aggressively reclaim blocks during low-utilization idle cycles. Additionally, it is critical practice to explicitly disable the `discard` mount option on low-tier consumer SD cards; synchronous TRIM commands often overwhelm and stall inexpensive FTL microcontrollers. 
+To squeeze maximum endurance from the filesystem, specific mount configurations are required. Setting \texttt{noatime} ensures that simple read operations do not trigger a cascade of metadata timestamp updates. Enabling \texttt{background\_gc=on} permits the filesystem to aggressively reclaim blocks during low-utilization idle cycles. Additionally, it is critical practice to explicitly disable the \texttt{discard} mount option on low-tier consumer SD cards; synchronous TRIM commands often overwhelm and stall inexpensive FTL microcontrollers.
 
-It should be noted that during early migration testing, we observed extended mount times following unclean shutdowns when disk utilization exceeded 90\%. This required us to bake explicit \texttt{fsck.f2fs} validation checks into the boot sequence prior to production rollout.
+It should be noted that during initial migration testing, we saw excessively long mount times after an unclean shutdown when the disk was more than 90\% utilized. This necessitated the addition of \texttt{fsck.f2fs} filesystem checks as a stage in the boot process prior to production deployment.
 
 % ==========================================
 % VI. EXPERIMENTAL METHODOLOGY
@@ -359,16 +357,16 @@ L_{MLC} = \frac{0.10 \times 3000 \times 32 \text{ GB}}{0.8 \text{ GB/day} \times
 As visualized in Figure \ref{fig:lifespan_projection}, the resulting scale factor is dramatic. The unoptimized baseline projection hovered at $\sim 6.0 \text{ months}$. By compounding the reduction in logical writes (via aggressive cache batching) with the reduction in physical amplification (via F2FS), the projected lifespan extends to over $187.8$ months. Even under pessimistic TLC hardware assumptions (derating the P/E cycles to 1,000), the optimized stack achieves a $62.6$ month projection, effectively allowing the SD card to outlive the expected deployment lifecycle of the edge compute hardware itself.
 
 \subsection{Filesystem Aging and GC Latency Spikes}
-While endurance is the primary goal, latency-sensitive edge workloads also demand deterministic I/O performance. A known caveat of log-structured filesystems is that as they age and fill with data, background Garbage Collection (GC) must constantly run to reclaim invalid blocks. In poorly tuned systems, this GC activity causes severe, periodic latency spikes that block the main CPU threads \cite{b28}. 
+While endurance is the main characteristic that many people seek in such file systems, latency-sensitive applications also require deterministic performance and predictable behavior of I/O-bound operations. One known issue of log-structured file systems is that, due to their nature, as time passes, the amount of space wasted by invalid data increases significantly, leading to frequent garbage collection cycles to reclaim this space. The time spent on garbage collection in log-structured file systems often results in severe performance penalties, with periodic latency spikes that saturate the main CPU threads \cite{b28}.
 
-To evaluate this, we simulated two years of filesystem aging by artificially filling the disk to 85\% capacity using the \texttt{fio} utility with \texttt{fsync} deliberately disabled to force continuous, aggressive GC activity. We then measured the tail latency (p99) of 100,000 random write operations under heavy sustained load.
+In order to test this hypothesis, we aged a filesystem for two years through a process of filling it up to 85\% with \texttt{fio} while disabling \texttt{fsync} in order to provoke heavy contention and GC activity in the filesystem. We then proceeded to measure the tail latency (p99) of 100,000 random writes under heavy load.
 
 \begin{itemize}
     \item \textbf{Ext4 (Baseline):} p99 Latency = 124 ms (driven by heavy journal locking and FTL RMW blocking).
     \item \textbf{F2FS (Optimized):} p99 Latency = 18 ms.
 \end{itemize}
 
-This 85\% reduction in tail latency under aged, degraded conditions indicates that reduced write amplification indirectly stabilizes latency behavior---GC pressure contributes to p99 variability, and endurance optimization can improve operational determinism. This latency improvement remains secondary supportive evidence rather than the paper's primary contribution; the central claim is write-amplification reduction, not latency optimization.
+This 85\% decrease in tail latency under aged, degraded conditions suggests that the reduced write amplification indirectly improves latency characteristics - GC pressure affects p99, and better endurance helps operational predictability. This improvement is a welcome side-effect, but not the main point of the paper; the paper’s technical contribution is reduced write amplification, irrespective of latency characteristics.
 
 % ==========================================
 % VIII. DISCUSSION
@@ -387,12 +385,12 @@ While F2FS succeeds in drastically reducing immediate write amplification, the f
 The analytical projections expose several constraints within the storage analysis:
 \begin{itemize}
     \item \textbf{Controller Firmware Opacity:} The exact GC heuristics and over-provisioning ($\alpha$) margins of the tested SD card are proprietary, requiring mathematical extrapolation rather than exact internal measurement.
-    \item \textbf{JEDEC-Model Approximation:} The lifespan projection assumes uniform wear-leveling across the entire medium; early block failure, static wear imbalance, or retention leakage may cause premature failure before the analytically projected limit.
+    \item \textbf{JEDEC-Model Approximation:} The lifetime projection is based on an ideal case where the usage across the medium is distributed evenly; however, in practice, uneven usage across blocks and retention losses can lead to early block failures limiting the total number of P/E cycles before reaching failure.
     \item \textbf{Hardware Specificity:} Results are strictly tied to the cache geometries, memory bandwidth, and SDIO bus limits of the evaluated ARM development board.
     \item \textbf{Durability--Endurance Tradeoff:} The aggressive 1-hour writeback delay explicitly trades short-term telemetry persistence for hardware longevity; sudden power loss results in data evaporation.
     \item \textbf{Absence of Destructive Burn-Out Testing:} The study derives longevity from mathematical WAF models rather than systematically operating drives to physical failure.
     \item \textbf{Synthetic Workload Simplification:} The write-intensive workload approximates but may not fully capture organic compound degradation patterns from heterogeneous real-world edge deployments.
-    \item \textbf{SD-Controller Quality Variance:} Consumer SD controllers exhibit significant quality variance across vendors; thermal degradation, power instability, and firmware bugs may alter effective endurance independently of host-side optimizations.
+    \item \textbf{SD-Controller Quality Variance:} Consumer SD controllers vary widely in quality; thermal stress and power management issues lead to reduced endurance independent of host-side optimizations.
 \end{itemize}
 
 % ==========================================
@@ -400,7 +398,7 @@ The analytical projections expose several constraints within the storage analysi
 % ==========================================
 \section{Conclusion}
 
-This study addressed a flash-endurance engineering challenge: the premature wear of low-cost storage under sustained embedded ML workloads. Rather than modifying proprietary controller firmware, the approach focuses on reshaping host I/O behavior to align with NAND physics.
+This paper attempts to solve a flash-endurance engineering problem - the limited lifespan of low-cost storage under heavy persistent ML workloads. Instead of changing proprietary controller firmware, we propose to alter host I/O patterns to better match NAND physics.
 
 Through a combination of swap compression, delayed writeback aggregation, multiqueue scheduling, and migration to F2FS, daily physical write volume was reduced by approximately 80\%, while the measured WAF declined from 12.43 to 2.10 under the evaluated workload conditions. Host-side sequentialization reduced write entropy at the block-device interface, and the durability--endurance tradeoff was explicitly bounded: up to 1 hour of telemetry resides in volatile cache.
 
@@ -413,35 +411,63 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
-\bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
-\bibitem{b3} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
-\bibitem{b5} R. Bez et al., ``Introduction to Flash Memory,'' \textit{Proceedings of the IEEE}, vol. 91, no. 4, pp. 489--502, 2003.
-\bibitem{b6} L. M. Grupp et al., ``The Bleak Future of NAND Flash Memory,'' \textit{USENIX FAST}, pp. 2--2, 2012.
-\bibitem{b7} J. Kim et al., ``A Survey on Flash Translation Layer,'' \textit{IEEE Transactions on Consumer Electronics}, 2010.
-\bibitem{b8} P. Desnoyers, ``Analytic Modeling of SSD Write Performance,'' \textit{SYSTOR}, 2012.
-\bibitem{b9} X.-Y. Hu et al., ``Write amplification analysis in flash-based solid state drives,'' in \textit{Proc. SYSTOR}, 2009.
-\bibitem{b10} F. Chen et al., ``Understanding intrinsic characteristics and system implications of flash memory based solid state drives,'' in \textit{Proc. ACM SIGMETRICS}, 2009.
-\bibitem{b11} N. Agrawal et al., ``Design Tradeoffs for SSD Performance,'' \textit{USENIX ATC}, pp. 57--70, 2008.
-\bibitem{b12} JEDEC Solid State Technology Association, ``Solid-State Drive (SSD) Requirements and Endurance Test Method (JESD218),'' 2010.
-\bibitem{b13} R. Stoica and A. Ailamaki, ``Enabling Efficient OS Paging for Main-Memory OLTP Databases,'' \textit{DaMoN}, pp. 1--7, 2013.
-\bibitem{b14} P. R. Wilson et al., ``The Case for Compressed Caching in Virtual Memory Systems,'' \textit{USENIX ATC}, 1999.
-\bibitem{b15} J. Axboe, ``Linux Block IO: Present and Future,'' \textit{Ottawa Linux Symposium}, pp. 51--61, 2004.
-\bibitem{b16} M. Bjørling et al., ``Linux block IO: Introducing multi-queue SSD access on multi-core systems,'' in \textit{Proc. ACM SYSTOR}, 2013.
-\bibitem{b17} M. Rosenblum and J. K. Ousterhout, ``The Design and Implementation of a Log-Structured File System,'' \textit{ACM Transactions on Computer Systems}, vol. 10, no. 1, 1992.
-\bibitem{b18} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' \textit{USENIX FAST}, pp. 273--286, 2015.
-\bibitem{b19} D. Woodhouse, ``JFFS: The Journalling Flash File System,'' \textit{Ottawa Linux Symposium}, 2001.
-\bibitem{b20} V. Prabhakaran et al., ``Analysis and Evolution of Journaling File Systems,'' \textit{USENIX ATC}, 2005.
-\bibitem{b21} H. Kim et al., ``Revisiting storage for smartphones,'' in \textit{Proc. USENIX FAST}, 2012.
-\bibitem{b22} C. Min et al., ``SFS: Random write considered harmful in solid state drives,'' in \textit{Proc. USENIX FAST}, 2012.
-\bibitem{b23} B. Gregg, \textit{BPF Performance Tools}. Addison-Wesley Professional, 2019.
-\bibitem{b24} B. Gregg, ``The Flame Graph: This visual representation of profiled software execution is a new addition to the developer's toolbox,'' \textit{Communications of the ACM}, vol. 59, no. 6, pp. 48-57, 2016.
-\bibitem{b25} Y. Cai et al., ``Understanding Data Retention in Modern Flash Memory,'' in \textit{Proc. HPCA}, 2015.
-\bibitem{b26} S. Baek et al., ``SSDAlloc: Hybrid SSD/RAM Memory Management Made Easy,'' in \textit{Proc. NSDI}, 2013.
 \bibitem{b27} J. Ousterhout and F. Douglis, ``Beating the I/O bottleneck: a case for log-structured file systems,'' \textit{Operating Systems Review}, 1989.
+
+\bibitem{b17} M. Rosenblum and J. K. Ousterhout, ``The Design and Implementation of a Log-Structured File System,'' \textit{ACM Transactions on Computer Systems}, vol. 10, no. 1, 1992.
+
+\bibitem{b14} P. R. Wilson et al., ``The Case for Compressed Caching in Virtual Memory Systems,'' \textit{USENIX ATC}, 1999.
+
+\bibitem{b19} D. Woodhouse, ``JFFS: The Journalling Flash File System,'' \textit{Ottawa Linux Symposium}, 2001.
+
+\bibitem{b5} R. Bez et al., ``Introduction to Flash Memory,'' \textit{Proceedings of the IEEE}, vol. 91, no. 4, pp. 489--502, 2003.
+
+\bibitem{b15} J. Axboe, ``Linux Block IO: Present and Future,'' \textit{Ottawa Linux Symposium}, pp. 51--61, 2004.
+
+\bibitem{b20} V. Prabhakaran et al., ``Analysis and Evolution of Journaling File Systems,'' \textit{USENIX ATC}, 2005.
+
+\bibitem{b11} N. Agrawal et al., ``Design Tradeoffs for SSD Performance,'' \textit{USENIX ATC}, pp. 57--70, 2008.
+
+\bibitem{b10} F. Chen et al., ``Understanding intrinsic characteristics and system implications of flash memory based solid state drives,'' in \textit{Proc. ACM SIGMETRICS}, 2009.
+
+\bibitem{b9} X.-Y. Hu et al., ``Write amplification analysis in flash-based solid state drives,'' in \textit{Proc. SYSTOR}, 2009.
+
+\bibitem{b12} JEDEC Solid State Technology Association, ``Solid-State Drive (SSD) Requirements and Endurance Test Method (JESD218),'' 2010.
+
+\bibitem{b7} J. Kim et al., ``A Survey on Flash Translation Layer,'' \textit{IEEE Transactions on Consumer Electronics}, 2010.
+
+\bibitem{b21} H. Kim et al., ``Revisiting storage for smartphones,'' in \textit{Proc. USENIX FAST}, 2012.
+
+\bibitem{b22} C. Min et al., ``SFS: Random write considered harmful in solid state drives,'' in \textit{Proc. USENIX FAST}, 2012.
+
+\bibitem{b6} L. M. Grupp et al., ``The Bleak Future of NAND Flash Memory,'' \textit{USENIX FAST}, pp. 2--2, 2012.
+
+\bibitem{b8} P. Desnoyers, ``Analytic Modeling of SSD Write Performance,'' \textit{SYSTOR}, 2012.
+
+\bibitem{b13} R. Stoica and A. Ailamaki, ``Enabling Efficient OS Paging for Main-Memory OLTP Databases,'' \textit{DaMoN}, pp. 1--7, 2013.
+
+\bibitem{b16} M. Bjørling et al., ``Linux block IO: Introducing multi-queue SSD access on multi-core systems,'' in \textit{Proc. ACM SYSTOR}, 2013.
+
+\bibitem{b26} S. Baek et al., ``SSDAlloc: Hybrid SSD/RAM Memory Management Made Easy,'' in \textit{Proc. NSDI}, 2013.
+
 \bibitem{b28} J. Dean and L. A. Barroso, ``The tail at scale,'' \textit{Communications of the ACM}, vol. 56, no. 2, pp. 74-80, 2013.
+
 \bibitem{b29} T. S. Pillai et al., ``All file systems are not created equal: On the complexity of crafting crash-consistent applications,'' in \textit{Proc. USENIX OSDI}, 2014.
+
+\bibitem{b18} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' \textit{USENIX FAST}, pp. 273--286, 2015.
+
+\bibitem{b25} Y. Cai et al., ``Understanding Data Retention in Modern Flash Memory,'' in \textit{Proc. HPCA}, 2015.
+
 \bibitem{b30} M. Satyanarayanan et al., ``Edge Analytics in the Internet of Things,'' \textit{IEEE Pervasive Computing}, 2015.
+
+\bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
+
+\bibitem{b24} B. Gregg, ``The Flame Graph: This visual representation of profiled software execution is a new addition to the developer's toolbox,'' \textit{Communications of the ACM}, vol. 59, no. 6, pp. 48-57, 2016.
+
+\bibitem{b1} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
+
+\bibitem{b23} B. Gregg, \textit{BPF Performance Tools}. Addison-Wesley Professional, 2019.
+
+\bibitem{b3} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
 
 \end{thebibliography}
 

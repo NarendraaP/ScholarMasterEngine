@@ -32,6 +32,9 @@
     frame=single,
     numbers=left, 
     numberstyle=\tiny,
+    numbersep=8pt,
+    xleftmargin=2.5em,
+    framexleftmargin=2.0em,
     keywordstyle=\color{blue},
     commentstyle=\color{green!60!black},
     stringstyle=\color{red}
@@ -53,7 +56,7 @@
 \author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
 \IEEEauthorblockA{\textit{Principal} \\
 \textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
-సీతారామపురం, Narsapur, Andhra Pradesh, India}
+Seetharampuram, Narsapur, Andhra Pradesh, India}
 }
 
 \maketitle
@@ -76,26 +79,26 @@ Constraint-First Architectural Synthesis, Cross-Layer Execution Contracts, Irrev
 The development of intelligent academic environments often encounters a significant integration barrier. The dominant architectural thesis of this work is \textbf{Constraint-First Architectural Synthesis (CFAS)}. We argue that operational trust emerges from layered constraint enforcement, not isolated subsystem optimization. Within the ScholarMaster architecture, this subsystem synthesizes architectural layers and cross-layer execution logic. It does not derive formal verification theorems (Paper 21), implement runtime watchdog semantics (Paper 18), optimize federated convergence (Paper 14), or conduct sociological longitudinal analysis (Paper 16).
 
 \subsection{Limitations of Isolated Optimization Paradigms}
-In traditional deployments, system properties are optimized in isolation. Computer vision pipelines maximize accuracy while ignoring the severe thermal constraints of edge deployment; stream processing engines optimize throughput while neglecting the sociotechnical requirements of user trust; and cryptographic privacy protocols propose abstractions that are computationally infeasible on constrained embedded hardware. Isolated optimization produces operational incoherence. Existing architectures rely excessively on cloud-centralized trust, lack explicit privacy-bound execution contracts, separate governance from computation, and rarely reconcile physical constraints with sociotechnical legitimacy. Privacy guarantees inevitably collapse without unified architectural enforcement.
+In traditional deployments, system properties are optimized in isolation. Computer vision pipelines maximize accuracy while ignoring the severe thermal constraints of edge deployment; stream processing engines optimize throughput while neglecting the sociotechnical requirements of user trust; and cryptographic privacy protocols propose abstractions that are computationally infeasible on constrained embedded hardware. Isolated optimization leads to operational incoherence. Current architectures are characterized by an overreliance on centralized cloud-based trust, a lack of explicit privacy-preserving execution contracts, the separation of governance and computation, and insufficient reconciliation of physical limitations with sociotechnical legitimacy. Most critically, privacy is inherently compromised when these approaches fail to enforce a unified architectural framework.
 
 \subsection{Constraint-First Architecture}
-The \textbf{ScholarMaster Architecture} resolves this fragmentation through cross-layer constraint reconciliation. It is not a generalized modular AI platform, but a vertically integrated, constraint-first cyber-physical ecosystem. It synthesizes competing constraints---real-time processing latency, strict privacy regulation, physical hardware endurance, and social legitimacy---into a single deployable architecture. By establishing the canonical invariants that govern bounded execution pathways and mapping theoretical proofs to their physical implementations, this framework enforces bounded operational integration.
+The \textbf{ScholarMaster Architecture} deals with the problem of fragmentation by reconciling the constraints at various layers. It is not a general-purpose modular AI design, but rather a constrained vertical solution, which binds the real-time requirements, privacy regulations, physical limitations of its supporting hardware, and the social costs of deployment into a unified whole. It is important to note that the constraints are prioritized during the reconciliation process. The architecture defines the invariants that must be satisfied by any implementation that uses its constrained execution model and establishes a correspondence between theoretical results and their practical manifestations.
 
 % ==========================================
 % II. CONSTRAINT-FIRST SYNTHESIS
 % ==========================================
 \section{Constraint-First Architectural Synthesis (CFAS)}
-To formalize the architectural constraints, CFAS defines a unified admissibility space. Let $\mathcal{C}$ be the set of admissible computational states. A computation is admissible if and only if it simultaneously satisfies a conjunction of cross-layer constraints:
+To characterize the architectural constraints, CFAS defines a unified admissibility space. Let $\mathcal{C}$ denotes the set of admissible computational states. A computation is admissible iff it satisfies a conjunction of cross-layer constraints:
 \begin{equation}
 \mathcal{C}_{admissible} = C_{phys} \land C_{therm} \land C_{priv} \land C_{gov} \land C_{time}
 \end{equation}
-Where $C_{phys}$ bounds execution to local hardware topologies, $C_{therm}$ prevents silicon degradation, $C_{priv}$ enforces irreversible dimensional reduction, $C_{gov}$ requires cryptographic authorization for egress, and $C_{time}$ bounds temporal exposure in volatile memory. Under CFAS, any computation violating a single constraint is immediately rendered architecturally inadmissible, triggering a fail-safe degradation rather than permissive fallback behavior. The novelty of this architecture lies in unifying these limits within one operationally bounded edge stack.
+Where $C_{phys}$ bounds execution to local hardware topologies, $C_{therm}$ prevents silicon degradation, $C_{priv}$ enforces irreversible dimensional reduction, $C_{gov}$ requires cryptographic authorization For egress, and $C_{time}$ bounds temporal exposure in volatile memory. Under CFAS, any computation which violates any constraint is deemed architecturally invalid, and is not tolerated by the system - it fails gracefully rather than being allowed to proceed to an erroneous state. The trick to CFAS is that these limits are combined together in a single edge-stack.
 
 % ==========================================
 % III. THE ADVERSARY MODEL
 % ==========================================
 \section{The Threat Landscape and Adversary Model}
-To contextualize the architectural constraints defined in later sections, we rely on the formal adversary model established in Paper 19. The ScholarMaster architecture operates under a tiered adversary framework designed to map directly to specific architectural countermeasures.
+To put forward the architectural requirements formulated in later sections, we use the formal adversary model from Paper 19. The ScholarMaster architecture is organized in such a way that each level corresponds to a particular type of adversary, which is formalized there.
 
 \subsection{Adversary Classes and Attack Vectors}
 \begin{itemize}
@@ -121,7 +124,7 @@ The architecture is organized into four distinct strata. While Layers 1-8 repres
 
 \begin{tikzpicture}[
     node distance=0.2cm,
-    layer/.style={rectangle, draw, minimum width=8.5cm, minimum height=1.2cm, align=center, rounded corners, drop shadow, fill=white},
+    layer/.style={rectangle, draw, minimum width=0.98\linewidth, text width=0.92\linewidth, minimum height=1.2cm, align=center, rounded corners, fill=white},
     label/.style={font=\bfseries\small}
 ]
 
@@ -166,15 +169,15 @@ The architecture is organized into four distinct strata. While Layers 1-8 repres
 \subsection{Stratum I: The Physics of Intelligence \& Operations}
 This layer concerns the physical, thermal, and operational reality of the edge node. It enforces "Privacy by Physics" and operational resilience against harsh deployment conditions.
 \begin{itemize}
-    \item \textbf{L1 Physical Substrate:} Defined by \textbf{Paper 11} (Production MLOps) and \textbf{Paper 12} (Flash Endurance). This layer establishes the operational runtime, enforcing memory volatility, execution supervision, and filesystem immutability. 
-    \item \textbf{L2 Sensor Acquisition:} Validated in \textbf{Paper 5} (Thermal/Memory) and \textbf{Paper 10} (System-Level Validation). Included here is \textbf{Paper 6} (Acoustic Anomaly), handling high-fidelity environmental capture strictly within bounded circular volatile buffers.
+    \item \textbf{L1 Physical Substrate:} Determined by \textbf{Paper 11} (Production MLOps) and \textbf{Paper 12} (Flash Endurance). It defines the operational time of the runtime: enforces memory volatility, execution supervision, and filesystem immutability. 
+    \item \textbf{L2 Sensor Acquisition:} Addressed in \textbf{Paper 5} (Thermal/Memory) and \textbf{Paper 10} (System level validation). Included in this category is \textbf{Paper 6} (Acoustic anomaly) which describes high fidelity environmental capture confined to a circular volatile buffer.
 \end{itemize}
 
 \subsection{Stratum II: The Logic of Stewardship}
 This layer converts raw signals into semantic meaning and governance compliance without reconstructing identity. 
 \begin{itemize}
-    \item \textbf{L3 Edge Abstraction:} Defined by \textbf{Paper 17} (Irreversibility Doctrine) and \textbf{Paper 3} (Pose Abstraction). This is the absolute "Irreversibility Boundary." High-entropy raw matrices are destructively compressed into low-dimensional metadata vectors.
-    \item \textbf{L4 Inference:} Validated in \textbf{Paper 1} (Biometric HNSW), \textbf{Paper 2} (Context), and \textbf{Paper 4} (Schedule Compliance). Execution here is identity-blind, context-aware, and strictly bound by the spatiotemporal continuous verification engine (Paper 7). 
+    \item \textbf{L3 Edge Abstraction:} Defined by \textbf{Paper 17} (Irreversibility Doctrine) and \textbf{Paper 3} (Pose Abstraction). This is the absolute ``Irreversibility Boundary.'' High-entropy raw matrices are destructively compressed into low-dimensional metadata vectors.
+    \item \textbf{L4 Inference:} Validated in \textbf{Paper 1} (Biometric HNSW), \textbf{Paper 2} (Context), and \textbf{Paper 4} (Schedule Compliance). Execution here is identity-blind, context-aware, and strictly bound by the spatiotemporal continuous verification engine (Paper 7).
 \end{itemize}
 
 \subsection{Stratum III: The Architecture of Verification}
@@ -198,7 +201,7 @@ This layer treats sociotechnical legitimacy as an operational systems constraint
 
 To ensure consistency across the 19-paper research program, we formalize the \textbf{ScholarMaster Invariant Namespace}. 
 
-\textit{Note: The invariant namespace does not introduce new enforcement mechanisms but consolidates constraints validated in component studies (P1, P3, P9, P17, P18).} These invariants act as formal contracts between the system layers; a failure in any invariant triggers an immediate L1 hardware halt.
+Contrastingly, the invariant namespace does not enforce any new constraints. Instead, it collects all the checked constraints from the component studies (P1, P3, P9, P17, P18). These invariants are formal contracts between the system layers: a violation of any invariant results in an immediate L1 hardware exception.
 
 \subsection{Ephemeral Data Constraints}
 \begin{itemize}
@@ -235,10 +238,10 @@ To ensure consistency across the 19-paper research program, we formalize the \te
 % V. INTER-STRATUM EXECUTION CONTRACTS
 % ==========================================
 \section{Inter-Stratum Execution Contracts}
-To satisfy architectural constraints, the system relies on schema-constrained semantic firewalls. Traditional architectures pass opaque pointers or dynamic JSON payloads between microservices, leading to unintended data propagation. This framework enforces layer isolation via strict, immutable Protocol Buffer (Protobuf) schemas. Here, schemas are architectural enforcement primitives, not merely serialization tools. They dictate admissible payload geometry, ensure cross-layer type safety, and physically prevent the propagation of out-of-bounds fields.
+To meet architectural requirements, the system uses schema-constrained semantic firewalls. In traditional applications, the architecture passes either opaque pointers or dynamically typed JSON objects between microservices, thereby facilitating unconstrained data propagation. The architecture below utilizes type-rich Protocol Buffer (ProtoBuf) schemas to enforce information discipline at the system's layer. Notably, schemas are used as implementation details rather than intermediate representations. The approach allows the system to maintain architectural isolation because Protobuf schemas dictate what data structures each layer is allowed to pass. Moreover, it becomes physically impossible to pass fields that were not anticipated in the destination structure.
 
 \subsection{Semantic Firewalls at the Execution Boundary}
-Communication between Stratum I (Acquisition) and Stratum II (Logic) operates across a strict semantic firewall. The execution contract guarantees that reasoning logic evaluates the abstraction without ever assuming ownership of the raw data memory space. Irreversible representation boundaries are compiled into the payload definitions.
+Communication between Stratum I (Acquisition) and Stratum II (Logic) occurs across a strict semantic firewall. The execution contract ensures that reasoning logic evaluates the abstraction without ever assuming ownership of the raw data memory space. Irreversible representation boundaries are compiled into the payload definitions.
 
 Listing 1 defines the Canonical Protobuf Schema utilized to bridge the Irreversibility Boundary. By definition, the schema lacks any fields capable of holding pixel bytes or string-based personal identifiers. 
 
@@ -274,7 +277,7 @@ message AbstractEvent {
 \end{figure}
 
 \subsection{The Temporal Budget Contract}
-Rather than simply defining data structures, the architecture imposes a strict, globally verifiable temporal contract on the execution pipeline. The runtime engine must complete the entire sequence—from sensor capture (L2), through abstraction (L3) and logic evaluation (L4), to final buffer destruction—within the strict temporal boundary ($\Delta \le 33$ms). If the execution engine fails to meet this contract due to computational saturation or logical errors, the Stratum I supervisory mechanisms forcefully interrupt execution, destroy the volatile state, and log a performance fault to the ledger. This guarantees that latency violations degrade into privacy-safe halts rather than unauthorized data exposure.
+Rather than simply defining data structures, the architecture further imposes a temporally-globally verifiable execution contract on the processing pipeline; the runtime engine must finish processing from the sensor capture (L2) through abstraction (L3), logical evaluation (L4) and buffer destruction within the temporal constraint ($\Delta \le 33$ms) of the contract. Should the execution engine fail to perform an atomic commit due to processing saturation or erroneous computation, the stratum I supervisory function will perform a forced kill of the volatile execution context, thereby preventing potential information disclosure, and recording the execution fault on the ledger.
 
 % ==========================================
 % VI. THE LIFE OF AN EVENT: END-TO-END TRACE
@@ -342,16 +345,16 @@ Designed for bandwidth-constrained campuses facing intermittent power stability.
 \subsection{Profile B: The Campus Macro-Edge Cluster}
 Designed for high-density environments navigating complex campus-network segmentation.
 \begin{itemize}
-    \item \textbf{Hardware:} Lightweight IP cameras streaming RTSP to a localized server rack (Macro-Edge) residing in the building's utility closet. Hardware replacement asymmetry means computational power must reside centrally rather than on diverse legacy camera nodes.
+    \item \textbf{Hardware:} Lightweight IP cameras, streaming RSTP to local server rack (Macro-Edge) located at the building’s utility closet. In the case of hardware replacement asymmetry, the computational power should be placed at the center (not in multiple camera nodes).
     \item \textbf{Layer Mapping:} L1/L2 reside on the legacy IP cameras. L3 through L7 execute on a high-throughput UMA compute cluster. Operational maintenance overhead is centralized.
-    \item \textbf{Security Boundary:} The RTSP stream is isolated on a non-routable VLAN. The Macro-Edge server acts as the absolute L3 semantic firewall, aggressively dropping packets that exceed thermal or temporal processing deadlines, ensuring raw footage never routes beyond the local closet.
+    \item \textbf{Security Boundary:} The RTSP stream is on a non-routable VLAN. The Macro-Edge server is the sole L3 semantic firewall, actively dropping packets that threaten to exceed thermal or temporal processing deadlines, thus keeping the raw footage securely contained within the local closet.
 \end{itemize}
 
 % ==========================================
 % VIII. THEOREM-IMPLEMENTATION MAPPING
 % ==========================================
 \section{The Theorem-Implementation Lattice}
-The formal algebra and theorems are extensively defined in the foundational papers (P17–P19); no new formal claims or proofs are introduced in this document. Table I maps these fundamental principles to the specific systems engineering implementations validated throughout Papers 1-18.
+The formal algebra and theorems are fully defined in the foundational papers (P17-P19). This document contains no new formal assertions or proofs. Table I provides a cross-section of the fundamental principles corresponding to the system engineering implementations validated in Papers 1-18.
 
 \begin{table}[htbp]
 \caption{Mapping Formal Principles to System Implementation}
@@ -388,20 +391,12 @@ The constraint-first synthesis of this reference architecture inherently bounds 
 \end{itemize}
 
 % ==========================================
-% X. CONCLUSION
+% IX. PAPER-TO-LAYER TRACEABILITY
 % ==========================================
-\section{Conclusion}
-This unified reference architecture demonstrates that privacy legitimacy and operational viability cannot be achieved through isolated subsystem optimization. They require Constraint-First Architectural Synthesis. Trust cannot be appended later via legal compliance documents or arbitrary cloud access controls; it must be structurally compiled into the runtime contracts of the edge silicon. By vertically integrating physical hardware constraints, strict semantic firewalls, and sociotechnical visibility design, this framework establishes a unified model for bounded operational integration. Within the ScholarMaster ecosystem, this framework operates exclusively as the unified reference architecture and systems synthesis subsystem---integrating constraint-first design without contributing new theorem-proving, runtime crash handlers, or standalone machine learning optimization.
-
-% ==========================================
-% APPENDICES
-% ==========================================
-\appendices
-
 \section{Paper-to-Layer Traceability}
 Table \ref{tab:trace} maps core papers from the ScholarMaster series to the architectural layers they enforce. Note: System-wide integration (P10), Deployment (P11/P12), and Verification (P18) papers span multiple boundaries.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{System Traceability Matrix}
 \centering
 \begin{tabular}{p{1.5cm} p{6.5cm}}
@@ -433,29 +428,55 @@ L8: Federation & P13: Intra-Campus Model Drift Compensation \\
 \end{table}
 
 % ==========================================
+% X. CONCLUSION
+% ==========================================
+\section{Conclusion}
+This unified reference architecture shows that achieving the combination of both privacy legitimacy and operational viability is not possible via ad-hoc subsystem optimization (e. g. , regulatory legal document alignment or even cloud-based access control). Instead, trust has to be composited into the silicon of the edge via Constraint-First Architectural Synthesis. Only by strict vertical integration of physical constraints, semantic firewalls, and sociotechnical visibility can we arrive at a coherent, unified modeling framework for the realisation of bounded operational integration. In the context of the ScholarMaster, this unified reference architecture is the only architecture that implements a constraint-first approach while also providing an integrated systems synthesis subsystem, without adding new theorem proving, runtime crash handling, or machine learning optimisation components.
+
+% ==========================================
 % REFERENCES (THE FULL CORPUS)
 % ==========================================
 \begin{thebibliography}{00}
 
 \bibitem{P1} N. Babu P., "Scalable High-Throughput Biometric Identification using HNSW," \textit{ScholarMaster Series}, 2025.
-\bibitem{P2} N. Babu P., "Context-Aware Multi-Modal Framework," \textit{ScholarMaster Series}, 2025.
-\bibitem{P3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics," \textit{ScholarMaster Series}, 2025.
-\bibitem{P4} N. Babu P., "Automated Schedule-Compliance Monitoring," \textit{ScholarMaster Series}, 2025.
-\bibitem{P5} N. Babu P., "Benchmarking Unified Memory Architectures," \textit{ScholarMaster Series}, 2025.
-\bibitem{P6} N. Babu P., "Privacy-Preserving Acoustic Anomaly Detection," \textit{ScholarMaster Series}, 2025.
-\bibitem{P7} N. Babu P., "Operationalizing Spatiotemporal Constraints," \textit{ScholarMaster Series}, 2025.
-\bibitem{P8} N. Babu P., "Trust-Aware Metadata Provenance," \textit{ScholarMaster Series}, 2025.
-\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
+
 \bibitem{P10} N. Babu P., "System-Level Validation of Smart Campus Intelligence," \textit{ScholarMaster Series}, 2025.
+
+% 2026 Series
+
+\bibitem{P2} N. Babu P., "Context-Aware Multi-Modal Framework," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P4} N. Babu P., "Automated Schedule-Compliance Monitoring," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P6} N. Babu P., "Privacy-Preserving Acoustic Anomaly Detection," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P7} N. Babu P., "Operationalizing Spatiotemporal Constraints," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P8} N. Babu P., "Trust-Aware Metadata Provenance," \textit{ScholarMaster Series}, 2025.
+
+\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
+
 \bibitem{P11} N. Babu P., "Production-Grade Edge MLOps Architecture," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P12} N. Babu P., "Flash Endurance Engineering for Edge AI," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P13} N. Babu P., "Intra-Campus Federated Learning," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P14} N. Babu P., "Cross-Campus Federated Intelligence," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P15} N. Babu P., "Augmented Situation Awareness (AR)," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P16} N. Babu P., "Beyond the Panopticon: Sociological Trust," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P17} N. Babu P., "Architectural Irreversibility (Capstone)," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P18} N. Babu P., "Runtime Enforcement of Irreversibility," \textit{ScholarMaster Series}, 2026.
+
 \bibitem{P19} N. Babu P., "Formal Threat Model and TCB Definition," \textit{ScholarMaster Series}, 2026.
+
+\bibitem{P5} N. Polisetti et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, 2026.
 
 \end{thebibliography}
 

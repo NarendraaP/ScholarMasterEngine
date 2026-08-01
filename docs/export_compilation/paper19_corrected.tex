@@ -333,13 +333,13 @@ To summarize the interaction between adversary capabilities and architectural de
 \midrule
 $A_0$ & Passive Observer & Sniffing network packets during class. & mTLS encryption layer; Network payload contains no raw PII. & Defended \\
 \midrule
-$A_1$ & Local User & SSH login, attempting to read `/tmp` or run `ps` to scrape RAM. & Application memory is mapped `private`. Disabling of IPC shared memory for raw arrays. & Defended \\
+$A_1$ & Local User & SSH login, attempting to read \texttt{/tmp} or run \texttt{ps} to scrape RAM. & Application memory is mapped \texttt{private}. Disabling of IPC shared memory for raw arrays. & Defended \\
 \midrule
 $A_2$ & Network Admin & Packet delay/drop to force buffer overflows in edge node. & Fixed-size queue limits; Network timeout triggers fail-closed state (MTL Property 3). & Defended \\
 \midrule
-$A_3$ & Root Admin & Analyzing historical disk data, reviewing crash core dumps, viewing swap. & `mlock` prevents swapping; `MADV_DONTDUMP` excludes from core dumps; Configured TTL bounds memory exposure. & Defended \\
+$A_3$ & Root Admin & Analyzing historical disk data, reviewing crash core dumps, viewing swap. & \texttt{mlock} prevents swapping; \texttt{MADV\_DONTDUMP} excludes from core dumps; Configured TTL bounds memory exposure. & Defended \\
 \midrule
-$A_4$ & Kernel Exploit & Exploiting zero-day to rewrite OS scheduler or bypass `mlock`. & N/A - The TCB relies completely on kernel isolation integrity. & \textbf{Vulnerable} \\
+$A_4$ & Kernel Exploit & Exploiting zero-day to rewrite OS scheduler or bypass \texttt{mlock}. & N/A - The TCB relies completely on kernel isolation integrity. & \textbf{Vulnerable} \\
 \midrule
 $A_5$ & Physical Actor & Cold Boot \cite{b4}, Side-channels (Spectre \cite{b18_spectre}, Rowhammer \cite{b19_row}). & Out of scope by Axioms $A_{PHYS}$ and $A_{SPEC}$. Requires hardware TME. & \textbf{Vulnerable} \\
 \bottomrule

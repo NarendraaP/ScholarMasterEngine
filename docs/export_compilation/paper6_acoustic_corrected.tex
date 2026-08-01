@@ -127,7 +127,7 @@ The primary contributions of this work are as follows:
 \section{Related Work}
 
 \subsection{Deep Learning vs. Privacy-Native Design}
-Modern acoustic event detection (AED) is dominated by Deep Learning approaches. Large-scale pre-trained networks (PANNs) \cite{b22} and Audio Spectrogram Transformers (AST) \cite{b23} achieve state-of-the-art accuracy on classification benchmarks like FSD50K. However, these models require substantial context windows (often $>$10 seconds) and high-memory buffering, making them architecturally incompatible with strict "volatile-only" privacy constraints. Furthermore, their computational weight renders them unsuitable for low-cost ($<\$50$) edge nodes required for widespread blind-spot coverage.
+Modern acoustic event detection (AED) is dominated by Deep Learning approaches. Large-scale pre-trained networks (PANNs) \cite{b22} and Audio Spectrogram Transformers (AST) \cite{b23} achieve state-of-the-art accuracy on classification benchmarks like FSD50K. However, these models require substantial context windows (often $>$10 seconds) and high-memory buffering, making them architecturally incompatible with strict "volatile-only" privacy constraints. Furthermore, their computational weight renders them unsuitable for low-cost ($<\$50$) edge nodes required for widespread blind-spot coverage. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \cite{b38}, while the present work focuses on reverberant acoustic sensing.
 
 Furthermore, training such models requires large annotated datasets of human vocalizations, introducing privacy risks during the model development phase that our physics-based approach avoids entirely.
 
@@ -592,6 +592,8 @@ We acknowledge the technical staff who assisted with controlled acoustic data ge
 \bibitem{b35} S. J. Pan and Q. Yang, "A Survey on Transfer Learning," IEEE TKDE, 2010.
 \bibitem{b36} I. Goodfellow et al., "Generative Adversarial Nets," NeurIPS, 2014.
 \bibitem{b37} D. Amodei et al., "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin," ICML, 2016.
+
+\bibitem{b38} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.
 
 % --- SCHOLARMASTER SERIES ---
 \bibitem{scholarmaster_repo}

@@ -63,11 +63,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Edge-based academic deployments often operate as unattended embedded appliances installed in infrastructure-constrained environments. In such deployments, long-term reliability depends less on application accuracy and more on the stability of the underlying operating system and update lifecycle. In many institutional environments, these devices must tolerate unstable power conditions, intermittent connectivity, and limited opportunities for physical maintenance. Under such constraints, operating system configuration and lifecycle management frequently determine real-world viability more than application performance alone.
+Edge-based academic installations are typically unmonitored embedded appliances that are placed in an environment where infrastructure resources are limited. The ability to operate in these conditions is mainly related to the degree of reliability of the operating system and updates rather than the accuracy of the applications. Mostly because the devices need to function reliably under varying loads, which is a limiting factor in their adoption for institutional academic settings. Therefore, in such cases, the OS configuration and updates are becoming more critical to ensuring the overall performance and functionality rather than the underlying application.
 
-This study analyzes an immutable edge deployment architecture designed to improve corruption resistance and autonomous recovery under unstable power and connectivity conditions. We formalize an Appliance Invariance Model implemented through a read-only OverlayFS root structure that confines runtime mutations to volatile memory or versioned container layers. Additional safeguards include hardware watchdog integration tied to inference queue liveness and a Blue/Green Over-the-Air (OTA) update strategy with automated rollback logic.
+This study presents an invariable edge deployment architecture targeting the enhanced resilience to corruption and self-healing capabilities in the presence of power and network supply fluctuations. We propose an Appliance Invariance Model that utilizes a read-only OverlayFS rootfs, thus isolating all writes in the system to either volatile memory or persistent storage in the form of versioned containers. An extended safety is achieved through watchdog-based hardware monitoring of inference queue liveliness, as well as a Blue/Green OTA update procedure with an automated rollback mechanism.
 
-Empirical validation on a controlled testbed subjected to repeated hard power interruptions and simulated update failures demonstrates stable reboot behavior and reliable automated recovery. The resulting system illustrates how disciplined operating-system immutability can improve reliability in distributed academic embedded appliances. Automated lifecycle control further strengthens system stability.
+A controlled testbed subject to frequent hard power cycles and update failures shows reliable reboots and automated recovery. The resulting system shows the potential improvements in the reliability of distributed academic embedded appliances to be gained by disciplined operating-system immutability and automated lifecycle control.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -79,10 +79,10 @@ Immutable Appliance Architecture, Lifecycle Hardening, OverlayFS Invariance, Bou
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{immutable appliance design substantially improves operational recoverability under unstable power and connectivity conditions}. Once installed in unattended environments, reliability becomes dominated by operating-system resilience, update safety, and autonomous recovery mechanisms rather than raw application performance \cite{b1, b2, b3}.
+The author submits that the primary thesis is that the development of non-modifiable appliances significantly contributes to optimal functioning under unstable supply voltages. Upon the initial deployment in abandoned environments, such devices’ functioning is predominantly determined by the underlying operating system’s update security and reliability rather than the inherent application stability \cite{b1, b2, b3}.
 
 \subsection{Operational Fragility of Mutable Edge Hosts}
-Conventional Linux deployments relying on writable root filesystems accumulate configuration drift through mutable package-level updates, uncontrolled writes, and incremental state mutations. Over time, this drift amplifies corruption exposure: each power interruption risks filesystem inconsistency, and each uncoordinated update risks dependency breakage \cite{b4, b12, b17}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
+A conventional Linux system with a writtable root filesystem will develop configuration drift due to mutable updates at the level of individual packages. This is caused by arbitrary writes and subsequent state mutations. The result of such instability is that the system becomes more susceptible to filesystem inconsistencies on every reboot following a sudden power loss and every update which introduces new dependencies \cite{b4, b12, b17}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
 
 \subsection{Contributions and Subsystem Scope}
 This paper details an immutable, containerized OS architecture designed for Zero-Touch administration. By enforcing strict separation between a read-only host OS and containerized inference logic, we ensure that the edge node can survive power loss, recover from software hangs, and securely update its models without human intervention. Specifically:
@@ -110,10 +110,10 @@ To analyze deployment reliability systematically, we categorize the primary fail
 \end{itemize}
 
 \subsection{MLOps for Edge Devices}
-Although MLOps practices are well established in cloud infrastructure, their adaptation to distributed edge deployments remains comparatively underdeveloped. Sculley et al. \cite{b5} highlighted the ``hidden technical debt'' in ML systems, a problem that becomes significantly more challenging on distributed, constrained devices lacking standard data-center redundancies. Traditional edge deployment frameworks often lack the resilience required for environments with dirty power. Our work adapts cloud-native container orchestration concepts \cite{b8, b9, b10} to the embedded Linux context, relying heavily on kernel-level isolation and robust daemon supervision.
+Although MLOps is well-established for cloud infrastructure, the same practices have been less explored for distributed edge deployments. Specifically, we note that Sculley et al. \cite{b5} identified ``hidden technical debt'' in ML systems which proves particularly challenging in the context of distributed and constrained hardware lacking the reliability of data-center grade power supplies. Edge deployment pipelines are typically not battle-tested in the same way as their cloud counterparts and have to tolerate ``dirty'' power. We adopt concepts from cloud-native container orchestration \cite{b8, b9, b10} and apply them within the embedded Linux environment using kernel isolation and daemons supervision as a foundation.
 
 \subsection{Embedded Reliability and Filesystems}
-Flash-based storage systems introduce additional reliability considerations when devices operate under unstable power conditions (particularly in embedded edge hardware) \cite{b12}. Journaling filesystems (like Ext4) provide metadata protection but cannot prevent corruption if the underlying flash translation layer is interrupted during an active block write \cite{b14}. The use of structural immutability to create read-only root structures has been explored to extend flash lifespans \cite{b13}, but its application to high-throughput, log-heavy edge appliances requires careful volatile memory management to prevent out-of-memory (OOM) cascading failures caused by RAM-disk exhaustion.
+Flash-based storage systems pose new reliability challenges for devices which are subject to power instability (as is the case for many embedded systems) \cite{b12}. Journaling filesystems (e.g., Ext4) protect against some sources of metadata corruption, but are not immune to failures in the underlying flash translation layer during an active block write \cite{b14}. The use of structural immutability for the purpose of defining read-only root structures is promising in terms of extending the lifespan of flash storage \cite{b13}, but carries implications for volatile memory management in high-throughput, log-intensive edge appliances, which could cause memory-swap thrashing and OOM (out-of-memory) cascades if not properly handled.
 
 % ==========================================
 % III. APPLIANCE INVARIANCE MODEL
@@ -128,7 +128,7 @@ The architectural principle underlying this deployment strategy is formalized as
 \forall t,\; H_{persistent}(t) = H_0
 \end{equation}
 
-This invariant expresses the design principle that the persistent host OS state remains unchanged during routine operation. Invariance is enforced through \textbf{mutation confinement}: runtime mutations are restricted either to volatile memory ($V$)---which is destroyed on power loss---or to versioned container layers ($C$) managed through controlled OTA transitions. The distinction is structurally important: persistent immutable state ($H_0$) is never written during normal operation; volatile operational state ($V$) absorbs all runtime churn; containerized application state ($C$) changes only through validated OTA transitions; and transient runtime mutation exists exclusively in RAM. This confinement ensures that corruption domains are spatially bounded---repeated power interruptions cannot accumulate filesystem inconsistencies in the persistent layer.
+This invariant expresses the design principle that the persistent host OS state remains unchanged during routine operation. Invariance is enforced through \textbf{mutation confinement}: runtime mutations are restricted either to volatile memory ($V$)---which is destroyed on power loss---or to versioned container layers ($C$) managed through controlled OTA transitions. The difference is crucial: The persistent immutable state ($H_0$) - this is such state which is never, ever written during normal operations. The volatile operational state ($V$), into which all the writes go, serves as the working area, the place where all the computation happens. The state of the containerized application ($C$) can be changed only through authorized OTA upgrades which implies that the state transitions are controlled and verifiable. Finally, the runtime state changes only inside memory (RAM). This way, any corruption is confined within its space and the power cycle resets it to a clean state. This prevents accumulation of filesystem changes on every reboot.
 
 \subsection{Immutability Layer Diagram}
 
@@ -148,7 +148,7 @@ This invariant expresses the design principle that the persistent host OS state 
     \draw [<->, ultra thick] (container.south) -- node[right] {Runtime} (merged.north);
 \end{tikzpicture}
 }
-\caption{Appliance Invariance Architecture. The persistent lower layer ($H_0$) is never written to during normal operation. All runtime mutations are confined to the volatile UpperDir (RAM) or versioned container layers. Upon power loss, only the volatile layer is destroyed.}
+\caption{Appliance Invariance Architecture. The persistent lower layer ($H_0$) is never written to during normal operation. All runtime modifications are made either in the volatile UpperDir (RAM) or within versioned container layers. Upon power-down, only the volatile layers are lost.}
 \label{fig:overlay}
 \end{figure}
 
@@ -214,7 +214,7 @@ Maintaining a distributed fleet of edge appliances requires deterministic and fa
 \subsection{Deterministic Cutover Formalization}
 We define the update timing constraints as follows. Let $T_{pre}$ be the validation time, $T_{cutover}$ be the container swap execution, and $T_{rollback}$ be the revert time. 
 
-In practice, the cutover process is designed to avoid user-visible downtime. The currently active container (Blue) continues serving until the incoming container (Green) completes health validation. Only after successful checks is hardware access rebound to the new instance. Although minimal internal handoff latency occurs during the swap, service interruption was not observed in the evaluated update trials.
+In practice, the cutover process is designed to avoid user-visible downtime. The currently active container (Blue) continues serving until the incoming container (Green) passes health checks. Once it does, hardware access is redirected back to the new instance. As can be seen, there were only a few seconds of downtime as the switch from one instance occurred, but no interruptions to the service were reported during the test runs.
 
 The state machine operates as follows:
 \begin{enumerate}
@@ -232,7 +232,7 @@ The state machine operates as follows:
 The appliance configuration translates systemic design constraints into OS-level strictures. We enforce compliance via an automated deployment checklist applied to the base image:
 
 \begin{itemize}
-    \item \textbf{Volatile Mount Enforcement:} \texttt{/var/log}, container volumes, and local telemetry buffers are explicitly mapped to \texttt{tmpfs}. This guarantees that transient data cannot persist on physical media. This is verified via explicit \texttt{mount} assertions during the boot sequence.
+    \item \textbf{Volatile Mount Enforcement:} \texttt{/var/log}, container volumes, and local telemetry buffers are all mounted to \texttt{tmpfs}, which ensures that they can't be persisted to physical media. This is enforced by checking their mounts during the boot process.
     \item \textbf{Swap Disablement:} \texttt{swapoff -a} is enforced. This guarantees that application memory buffers are never inadvertently paged to physical disk by the OS memory manager under load.
     \item \textbf{Encrypted Keystore:} Any persistent identity configuration keys or certificates required for network provisioning are stored on encrypted partitions and managed strictly through secured key services.
 \end{itemize}
@@ -242,7 +242,7 @@ The appliance configuration translates systemic design constraints into OS-level
 % ==========================================
 \section{Network \& Data Resilience}
 
-Edge appliances operating in campus environments must also tolerate extended network partitions. Telemetry generated during offline periods is buffered locally in volatile memory and transmitted when connectivity is restored. The buffering implementation uses a local SQLite instance operating in RAM.
+Edge appliances are often expected to operate in campus networks where they can be subject to long network partitions. During such periods of downtime, telemetry data is gathered in volatile memory on the edge appliance and later sent once connectivity is re-established. The buffering mechanism stores the telemetry data in an SQLite instance that is resident in memory.
 
 % ==========================================
 % VIII. DEFENSE-IN-DEPTH SECURITY
@@ -253,14 +253,14 @@ Devices operating on open campus networks require robust physical and transport-
 
 \subsection{Zero-Touch Provisioning (ZTP) Sequence}
 
-To fulfill the Zero-Touch administration objective, device onboarding and cryptographic lifecycle management are automated. We utilize the hardware Trusted Platform Module (TPM 2.0) present on the edge board \cite{b19}.
+In order to achieve the Zero-Touch administration, devices are onboarded automatically. Additionally, cryptographic lifecycle management is automated as well using Trusted Platform Module (TPM 2.0) \cite{b19} hardware security module available in edge board.
 
-Upon first boot, the device connects to the provisioning server. It utilizes the factory-fused TPM Endorsement Key (EK) to authenticate its hardware identity via the PKCS\#11 interface. Upon successful verification, the server issues a unique, short-lived X.509 certificate to the device. The private key associated with this certificate is generated inside the TPM and cannot be exported. The device then retrieves its operational configuration profile.
+On first boot, the device contacts the provisioning server. The device uses the factory fused TPM endorsement key (EK) to assert its hardware identity to the provisioning server over PKCS\#11 interface. On successful authentication, the server issues a unique short lived X.509 certificate to the device. The private key of this certificate is generated inside the TPM and not accessible. The device retrieves its operational configuration.
 
 \subsection{Mutual TLS (mTLS) \& Secure Boot}
-Following ZTP, all communication with the central fleet manager is secured via Mutual TLS (mTLS) using TLS 1.2 or later \cite{b23}. The edge node authenticates the server, and the server cryptographically authenticates the edge node using the TPM-backed certificate. 
+After Zero-touch provisioning (ZTP), all communication with the central fleet manager is secured by Mutual TLS (mTLS) using TLS 1.2 or higher \cite{b23}. During this step, the edge node is authenticated, and the server is authenticated with the edge node using a TPM-backed certificate.
 
-The TPM-backed certificate lifecycle limits key extraction risk by generating private keys within protected hardware. Secure Boot enforcement further reduces the likelihood that unsigned kernels or modified bootloaders can be executed on the device. These security mechanisms exist primarily to protect lifecycle integrity---provisioning trust anchors stabilize deployment authenticity, and TPM-backed identity reduces unauthorized update risk. Detailed adversarial formalization and threat-model analysis are addressed in the formal threat-modeling layer of the broader series.
+The TPM-backed certificate lifecycle reduces the risks of extraction of a private key by relying on a secure hardware module to store it. Similarly, Secure Boot decreases the probability that an arbitrary kernel or bootloader will be run on the device. These measures are all about lifecycle integrity: trusting that the deployment to be operated on is authentic reduces the risks of exfiltration, tampering, or unauthorized updates. In more detail, the threat modeling process is covered in later sections of this series, so we have left out some specifics that would make this post even longer than it already is.
 
 % ==========================================
 % IX. FULL-STACK OBSERVABILITY
@@ -312,7 +312,7 @@ This confirms that corrupted model updates cannot permanently disable the applia
 
 \subsection{Hardware Watchdog (WDT) Recovery}
 
-The hardware watchdog successfully triggered a cold reboot following simulated scheduler exhaustion. During early threshold tuning, overly aggressive inactivity detection caused two unintended reboots during low-activity periods, leading to recalibration of $\Delta t$. Total recovery---from freeze to active monitoring---remained under one minute in the evaluated configuration. Actual recovery time may vary depending on hardware and bootloader characteristics.
+The hardware watchdog was able to reboot the system after a fake scheduler exhaustion. The initial test involved too aggressive inactivity watchdog which resulted in two false reboots during the initial phase of the test. This is why the $\Delta t$ had to be re-adjusted. The total reboot time, from the moment the system freezes to the point where the system is ready to accept commands was less than 1 minute in the given test environment. Note that this time can vary depending on the hardware and a particular bootloader implementation.
 
 \subsection{Zero-Touch Provisioning Speed}
 From the moment a factory-reset device is connected to power and the network, the automated certificate exchange, image pulling, and initialization sequence required an average of 3 minutes and 15 seconds to reach an active monitoring state.
@@ -378,27 +378,47 @@ A reference prototype was implemented for evaluation purposes. Implementation de
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
-\bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-\bibitem{b3} G. Ananthanarayanan et al., ``Real-Time Video Analytics: The Killer App for Edge Computing,'' \textit{IEEE Computer}, vol. 50, no. 10, pp. 58-67, 2017.
-\bibitem{b4} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proc. of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
-\bibitem{b5} D. Sculley et al., ``Hidden Technical Debt in Machine Learning Systems,'' in \textit{Proc. NeurIPS}, 2015, pp. 2503-2511.
-\bibitem{b6} D. Crankshaw et al., ``Clipper: A Low-Latency Online Prediction Serving System,'' in \textit{Proc. USENIX NSDI}, 2017, pp. 613-627.
-\bibitem{b7} M. Zaharia et al., ``Accelerating the Machine Learning Lifecycle with MLflow,'' \textit{IEEE Data Eng. Bull.}, vol. 41, no. 4, pp. 39-45, 2018.
-\bibitem{b8} D. Merkel, ``Docker: Lightweight Linux Containers for Consistent Development and Deployment,'' \textit{Linux Journal}, 2014.
-\bibitem{b9} B. Burns et al., ``Borg, Omega, and Kubernetes,'' \textit{Communications of the ACM}, vol. 59, no. 5, pp. 50-57, 2016.
-\bibitem{b10} C. Boettiger, ``An introduction to Docker for reproducible research,'' \textit{ACM SIGOPS Operating Systems Review}, vol. 49, no. 1, pp. 71-79, 2015.
-\bibitem{b12} H. Zheng et al., ``Understanding the Robustness of SSDs under Power Fault,'' in \textit{Proc. USENIX FAST}, 2013, pp. 271-284.
-\bibitem{b13} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' in \textit{Proc. USENIX FAST}, 2015, pp. 273-286.
-\bibitem{b14} A. Mathur et al., ``The new ext4 filesystem: current status and future plans,'' in \textit{Proc. Ottawa Linux Symposium}, 2007, pp. 21-33.
-\bibitem{b15} J. Koopman, \textit{Better Embedded System Software}, Drumnadrochit Education, 2010.
-\bibitem{b16} A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
-\bibitem{b17} OASIS, ``MQTT Version 3.1.1 Specification,'' \textit{OASIS Standard}, 2014.
-\bibitem{b18} S. Kuppusamy et al., ``Diplomat: Using Delegations to Protect Community Repositories,'' in \textit{Proc. USENIX NSDI}, 2016, pp. 567-581.
-\bibitem{b19} P. England et al., ``A Trusted Open Platform,'' \textit{IEEE Computer}, vol. 36, no. 7, pp. 55-62, 2003.
 \bibitem{b21} C. Mohan et al., ``ARIES: a transaction recovery method supporting fine-granularity locking and partial rollbacks using write-ahead logging,'' \textit{ACM TODS}, vol. 17, no. 1, pp. 94-162, 1992.
-\bibitem{b22} J. Turnbull, \textit{Monitoring with Prometheus}, Turnbull Press, 2018.
+
+\bibitem{b19} P. England et al., ``A Trusted Open Platform,'' \textit{IEEE Computer}, vol. 36, no. 7, pp. 55-62, 2003.
+
+\bibitem{b16} A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
+
+\bibitem{b14} A. Mathur et al., ``The new ext4 filesystem: current status and future plans,'' in \textit{Proc. Ottawa Linux Symposium}, 2007, pp. 21-33.
+
 \bibitem{b23} T. Dierks and E. Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.2,'' \textit{RFC 5246}, 2008.
+
+\bibitem{b15} J. Koopman, \textit{Better Embedded System Software}, Drumnadrochit Education, 2010.
+
+\bibitem{b12} H. Zheng et al., ``Understanding the Robustness of SSDs under Power Fault,'' in \textit{Proc. USENIX FAST}, 2013, pp. 271-284.
+
+\bibitem{b17} OASIS, ``MQTT Version 3.1.1 Specification,'' \textit{OASIS Standard}, 2014.
+
+\bibitem{b8} D. Merkel, ``Docker: Lightweight Linux Containers for Consistent Development and Deployment,'' \textit{Linux Journal}, 2014.
+
+\bibitem{b10} C. Boettiger, ``An introduction to Docker for reproducible research,'' \textit{ACM SIGOPS Operating Systems Review}, vol. 49, no. 1, pp. 71-79, 2015.
+
+\bibitem{b13} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' in \textit{Proc. USENIX FAST}, 2015, pp. 273-286.
+
+\bibitem{b5} D. Sculley et al., ``Hidden Technical Debt in Machine Learning Systems,'' in \textit{Proc. NeurIPS}, 2015, pp. 2503-2511.
+
+\bibitem{b18} S. Kuppusamy et al., ``Diplomat: Using Delegations to Protect Community Repositories,'' in \textit{Proc. USENIX NSDI}, 2016, pp. 567-581.
+
+\bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
+\bibitem{b9} B. Burns et al., ``Borg, Omega, and Kubernetes,'' \textit{Communications of the ACM}, vol. 59, no. 5, pp. 50-57, 2016.
+
+\bibitem{b1} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
+
+\bibitem{b3} G. Ananthanarayanan et al., ``Real-Time Video Analytics: The Killer App for Edge Computing,'' \textit{IEEE Computer}, vol. 50, no. 10, pp. 58-67, 2017.
+
+\bibitem{b6} D. Crankshaw et al., ``Clipper: A Low-Latency Online Prediction Serving System,'' in \textit{Proc. USENIX NSDI}, 2017, pp. 613-627.
+
+\bibitem{b22} J. Turnbull, \textit{Monitoring with Prometheus}, Turnbull Press, 2018.
+
+\bibitem{b7} M. Zaharia et al., ``Accelerating the Machine Learning Lifecycle with MLflow,'' \textit{IEEE Data Eng. Bull.}, vol. 41, no. 4, pp. 39-45, 2018.
+
+\bibitem{b4} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proc. of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
 
 \end{thebibliography}
 

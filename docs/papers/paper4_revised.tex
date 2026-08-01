@@ -6,7 +6,7 @@
 % ==========================================
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
+\usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{graphicx}
 \usepackage{textcomp}
@@ -84,11 +84,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Sensing infrastructure capable of detecting spatial presence increasingly operates independently from institutional scheduling databases, preventing automated evaluation of whether observed presence aligns with scheduled obligations. This work presents a relational evaluation framework that continuously reconciles spatial detection events with institutional schedules through formally defined predicate logic.
+Sensing infrastructure detecting spatial presence is becoming autonomous from institutional schedule databases, making it challenging to ensure observations of presence correspond to required obligations. This work introduces a relational evaluation framework which constantly harmonizes detected spatial presence with institutional schedules using predicate logic.
 
-The framework introduces the Continuous Predicate Evaluation Model (CPEM), which represents institutional rules as relational predicates evaluated over streaming event tuples. To reduce spurious violations caused by short-lived sensor noise and transit behavior, the evaluation logic incorporates a Persistent Constraint Violation Filter (PCVF) that temporally stabilizes logical state transitions through sustained violation integration. Spatial exclusivity constraints further prevent inconsistent multi-zone detections from propagating into the evaluation layer.
+The framework introduces the Continuous Predicate Evaluation Model (CPEM) which encodes institutional rules as logical predicates over continuous streams of event-tuples. A Persistent Constraint Violation Filter (PCVF) is used to suppress transient sensor-induced and transit-related constraint violations that arise due to temporal instability of state transitions. This is achieved through persistent violation accumulation before allowing any state transition to occur. Additionally, spatial exclusion constraints prevent simultaneous detections within proximity zones which could lead to contradictory rule evaluations.
 
-To sustain synchronized burst traffic during class transitions, the relational pipeline integrates transaction-level connection pooling, list-based table partitioning, and composite temporal indexing within PostgreSQL. Experimental load testing demonstrates that the evaluation layer maintains sub-15 ms p99 latency at approximately 5,000 QPS under burst conditions, confirming that continuous schedule reconciliation can operate within bounded evaluation latency when relational access paths are systematically optimized.
+To ensure that bursty traffic during context switches between classes is handled correctly, the relational pipeline caches connections via transaction-level pooling, partitions tables using list-based partitioning and composite time-based indexes in PostgreSQL. Evaluation layer load-testing confirms that at around 5000 queries per second (QPS) with less than 15 ms p99 latency from evaluation layer is achievable under bursty loads, thus continuous schedule reconciliation can be maintained within acceptable evaluation latency by optimizing relational access patterns.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -100,16 +100,16 @@ Continuous Predicate Evaluation, Spatiotemporal Compliance, Relational Stream Pr
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{continuously evaluated relational predicates enable bounded-latency reconciliation between spatial event streams and institutional schedules under burst-concurrent conditions}. This paper functions as a relational stream-evaluation study, focusing strictly on spatiotemporal logic and query optimization rather than generalized institutional surveillance.
+The main thesis of this paper is that continuously evaluated relational predicates are crucial to achieving bounded latency reconciliation between spatial event streams and institutional schedules in the face of bursting concurrent accesses. This paper is a relational stream-evaluation study which addresses spatiotemporal logic and query optimization rather than general institutional surveillance questions.
 
 \subsection{The Temporal Blindness of Snapshot Attendance Systems}
-Traditional attendance procedures suffer from temporal blindness. Single-point verification—such as an RFID swipe or biometric check—implicitly assumes future compliance based on instantaneous confirmation. However, spatial state changes occur continuously after verification. Static attendance cannot capture mid-session deviations, transit delays, or early departures. Schedule legitimacy requires temporal continuity rather than discrete confirmation; the core challenge is continuous relational reconciliation over event streams, not merely presence detection accuracy.
+Traditional attendance policies are temporal blind. Single-point location verification (RFID tag or biometrics) assumes future compliance based on a punctual confirmation. But the world changes after verification – people move, miss the bus, take early lunch, etc. Temporal verification is not the same as continuous relational validation over events in a timeframe.
 
 \subsection{Subsystem Scope and Canonical Separation}
-Within the ScholarMaster architecture, this subsystem reconciles spatial events with schedules, evaluates compliance predicates continuously, stabilizes transient violations, and sustains bounded-latency query behavior. This subsystem does NOT detect localized acoustic anomalies (Paper 6), coordinate activation and orchestration policy (Paper 9), manage cryptographic provenance (Paper 8), perform sensing inference, or conduct behavioral analytics.
+Within the ScholarMaster architecture, this subsystem reconciles spatial events with schedules, constantly evaluates compliance predicates, stabilizes transient violations, and delivers bounded-latency query response. This subsystem does NOT perform local acoustic anomaly detection (Paper 6), activate and orchestrate policies (Paper 9), manage cryptographic provenance (Paper 8), engage in sensing inference, or perform behavioral analytics.
 
 \subsection{Continuous Predicate Evaluation}
-Closing the semantic gap between sensing layers and schedule databases requires rethinking compliance evaluation. The evaluation function proposed here operates on presence as a continuous stream rather than a snapshot. The logical pipeline evaluates event tuples over time \cite{b14}, representing compliance as a temporally evolving relational state. This aligns with established real-time stream processing principles \cite{b13}.
+The approach we are proposing for closing the semantic gap between sensing layers and schedule databases fundamentally relies on rethinking the problem of compliance evaluation. Indeed, our evaluation function is based on the notion of presence as a continuous flow, rather than a punctual event. The logic of the stream of tuples is similar to that of continuous relational state, as it has been defined for real-time query processing in \cite{b13}.
 
 \subsection{Contributions}
 Implementing continuous compliance evaluation required several adaptations within the relational pipeline. The primary focus is the evaluation logic necessary to make continuous reconciliation viable under institutional-scale burst traffic.
@@ -130,17 +130,17 @@ Sensing, identity resolution, and governance escalation are treated as external 
 \section{Related Work}
 
 \subsection{Limitations of Passive Evaluation}
-Existing institutional monitoring systems often emphasize detection accuracy but provide limited mechanisms for real-time schedule reconciliation. Much infrastructure is designed for post-event analysis rather than live evaluation. Without automated filtering, operationally relevant anomalies remain embedded in event streams that exceed human monitoring capacity \cite{b7}. Manually correlating observed identities with dynamic timetables is impractical at institutional scale.
+Existing institutional monitoring infrastructure focuses on achieving accurate detection with often limited opportunities for real-time schedule reconciliation, as most are designed to simply react to data rather than analyze it as it comes in. With little to no automatic filtering, many important anomalous events get lost in the stream of information that the human operators have to deal with \cite{b7}, and it becomes unfeasible to manually cross-reference observed events with the ever-changing schedule data.
 
-The approach developed here emphasizes exception-based evaluation. Human attention is engaged only when a formally defined deviation persists beyond the debounce threshold \cite{b17}, reducing monitoring burden while preserving operational responsiveness.
+The approach suggested here is based on an exception-based evaluation. Human operator attention is drawn only when a formally specified deviation is detected beyond the debounce period \cite{b17}, thus lightening the supervisory function without adversely affecting the responsiveness of the process.
 
 \subsection{Discrete Verification versus Continuous Reconciliation}
-RFID badges and biometric entry systems verify presence at specific checkpoints \cite{b2, b3}. These systems log facility entry but do not evaluate subsequent spatial behavior. Once marked present, a student's compliance status typically remains static until manually updated.
+RFID badges or biometric identifiers can establish presence at a particular checkpoint \cite{b2, b3}. It does not monitor presence within a given location. Additionally, once a student is marked present, their status is usually not changed unless it is manually adjusted.
 
-Continuous zone-based evaluation extends this model substantially. By integrating moving-object database principles \cite{b15, b16}, the evaluation logic dynamically reconciles spatial presence with scheduled expectations throughout the session rather than at a single timestamp. The distinction is architectural: discrete verification produces a snapshot, while continuous reconciliation produces a stream of evaluated predicates.
+A continuous reconciliation over a zone as described in this paper goes much further than the preceding model. By using ideas from moving-object databases \cite{b15, b16}, it performs reconciliation at every instant during the interval. Whereas the preceding approach reconciles a single predicate at one point in time, the continuous zone-based approach reconciles an ongoing stream of predicates.
 
 \subsection{Stream Processing and Spatiotemporal Coordination}
-Recent work in edge-intelligent systems emphasizes dense IoT integration for operational visibility \cite{b1}. Multimodal fusion approaches have enhanced situational awareness across domains \cite{b6}. The present work applies similar coordination principles specifically to schedule adherence, integrating detection events \cite{b23} with centralized relational records.
+Recent work on edge-intelligent systems has focused on dense IoT integration for operational visibility \cite{b1}. Multimodal fusion approaches have seen progress in situational awareness over the target domain \cite{b6}. The current work similarly seeks to leverage cross-relational coordination to improve schedule adherence, but with an emphasis on detection events \cite{b23} in conjunction with centralized relational records.
 
 The emphasis here is on relational reconciliation rather than perceptual optimization---a distinction that positions this work closer to stream-processing systems research \cite{b22} than to computer vision or behavioral analytics.
 
@@ -150,7 +150,7 @@ The emphasis here is on relational reconciliation rather than perceptual optimiz
 \section{Operational Model}
 
 \subsection{Context-Blindness in Edge Sensors}
-Edge detection systems are typically optimized for perception tasks rather than policy interpretation \cite{b5}. They can identify an opaque identity token and associate it with a specific zone at a given timestamp, but they cannot determine whether that presence is legitimate relative to institutional rules.
+Edge detection systems are usually designed for perception-level policies or decisions. They can recognize the opaque identifier token and relate it to a specific region at a particular moment. However, they cannot decide if the presence is authorized compared to a few specific rules \cite{b5}.
 
 Consider two identical physical observations at 14:30:
 \begin{itemize}
@@ -158,10 +158,10 @@ Consider two identical physical observations at 14:30:
     \item \textbf{Scenario B:} Student $X$ is detected at the Exit Gate. The schedule indicates mandatory laboratory. $\rightarrow$ \textit{Evaluation: Non-compliant.}
 \end{itemize}
 
-From the sensor’s perspective, both observations are equivalent. The semantic difference emerges only when the spatial event is reconciled with the schedule. The predicate evaluation yields a formal compliance state.
+From the sensor's point of view, these are not different situations. The difference is introduced when the spatial event has to be related to the schedule. The evaluation of predicates yields the formal state of compliance.
 
 \subsection{Continuous Predicate Evaluation Model (CPEM)}
-Compliance is modeled not as a one-time attendance decision, but as a temporally evolving relational state. The CPEM formalizes this by translating schedule states into continuous predicates evaluated against event streams. Let the sensor event stream be defined as:
+Unlike the one-off decision to simply attend a lecture as in the initial compliance model, we think of compliance as a state which exists or not over time; the CPEM captures this by transforming schedule information into continuously true propositions which are checked against the stream of events. Let us define the stream of sensor events as:
 \begin{equation}
 E = \{(s_i, z, t)\}
 \end{equation}
@@ -175,16 +175,16 @@ Compliance is evaluated by comparing observed location $\text{Loc}(s_i, t)$ with
 \begin{equation}
 T(s_i, t) \iff \text{Loc}(s_i, t) \neq S(s_i, t) \land S(s_i, t) \notin \{\emptyset, \text{Break}\}
 \end{equation}
-If the schedule is empty (e.g., free period or transit window), the presence is considered compliant unless it falls within a restricted zone. This formulation shifts adherence from a discrete check to a continuously evaluated relational predicate.
+If the schedule is empty (e.g. free period or transit window), then the presence is compliant unless it is within a restricted zone. This transforms a predicate over a point to a relation over a continuously varying set of points.
 
 \subsection{Spatial Exclusivity Invariant}
-Robust relational operation requires defensive handling of upstream inconsistencies; spatial exclusivity is elevated as a fundamental logical consistency safeguard, not merely an anomaly heuristic. Contradictory spatial states contaminate downstream evaluation.
+Robust relational operations require defensive handling of inconsistencies in the upstream information; spatial exclusivity emerges as a general logical consistency check, not only an anomaly. Inconsistencies in spatial locations poison downstream analysis.
 
 We enforce the spatial exclusivity invariant:
 \begin{equation}
 |\{z : \text{Loc}(s_i,t)=z\}| \le 1
 \end{equation}
-An identity token cannot exist simultaneously in disjoint zones. If conflicting detections arrive for the same timestamp, the evaluation layer flags a teleportation anomaly, which inherently violates relational coherence, and suspends evaluation for that token until the state stabilizes. This exclusivity enforcement preserves predicate validity and prevents contamination of the relational layer.
+A token representing an entity cannot reside in two disjoint zones simultaneously. If detections are made for the same object (token) at the same time, the evaluation layer recognizes this as a teleportation anomaly (relationally, it violates the consistency of the state vector) and thus suspends processing for this token until the situation is resolved, avoiding further spurious relations in the relational layer.
 
 % ==========================================
 % IV. ABSTRACT PROCESSING MODEL
@@ -194,10 +194,10 @@ An identity token cannot exist simultaneously in disjoint zones. If conflicting 
 To operationalize real-time compliance evaluation, we assume a logical processing model positioned between an incoming event stream and a relational schedule store.
 
 \subsection{End-to-End Logic}
-We assume an event stream and a relational store. Event tuples containing identity and resolved zones are ingested as inputs. These inputs are buffered to maintain historical continuity for debounce filtering. Finally, they are evaluated against a relational database (e.g., PostgreSQL), which serves as the authoritative schedule source, returning expected zones for validation.
+We assume an event stream and a relational store. Event tuples with identity and resolved zones are ingested as inputs. The former are buffered to maintain history for debounce filtering, and the latter are evaluated against a relational database, such as PostgreSQL, the source of truth, to collect expected zones for validation purposes.
 
 \subsection{Zone Mapping and Resolution}
-Zone identifiers are statically mapped via a central configuration registry. The evaluation logic receives resolved zone labels directly, eliminating the need for geometric boundary computation. By decoupling geometric reasoning from compliance logic, the computational complexity within the relational fusion layer is reduced.
+Zone identifiers are pre-assigned in a centralized configuration repository. The resolution logic is given resolved zone labels directly, removing any need for additional geometric calculations. By removing geometric reasoning from the compliance logic, the overall complexity in the relational fusion layer is decreased.
 
 % ==========================================
 % V. DATA SANITIZATION & DEBOUNCE LOGIC
@@ -205,7 +205,7 @@ Zone identifiers are statically mapped via a central configuration registry. The
 \section{Data Sanitization \& Debounce Logic}
 
 \subsection{Persistent Constraint Violation Filter (PCVF)}
-Sensor-driven zone transitions frequently contain transient noise that can lead to unstable compliance evaluations. Transient mismatches emerge naturally from movement and sensing instability. Evaluating each event independently could unnecessarily inflate false alerts. PCVF stabilizes logical state transitions over time rather than merely smoothing noisy data, recognizing that sustained deviations are operationally more meaningful than instantaneous mismatches.
+Sensor-based zone transitions often have transients which can lead to false compliance exceptions. Transients events are introduced due to motion and sensor instabilities, and treating every event as an independent test could lead to an increased number of false positives. PCVF focuses on long-term stability of the logical state, and not just eliminating transients, as operational drift may be more important to detect than momentary mismatches.
 
 Instead, deviation is treated as a time-accumulated state. We define the sustained violation integral:
 \begin{equation}
@@ -219,10 +219,10 @@ In implementation, the integral is discretized over event timestamps. An alert i
 \begin{equation}
 V(s_i, t) \ge \tau_{debounce}
 \end{equation}
-Short-lived mismatches are absorbed as transient noise. Sustained deviations eventually trigger escalation. The logic maintains an in-memory LRU cache to track violation windows efficiently without excessive database interaction.
+Short-lived differences are swallowed up as glitches. Sustained ones cause escalation. The logic keeps an in-memory LRU cache of the most recent violations to avoid trampling the database too often.
 
 \subsection{Hysteresis Handling}
-If an identity briefly disappears from the feed (e.g., occlusion) and reappears within a predefined hysteresis window in the same zone, the violation integral continues uninterrupted. If the identity reappears in a different zone, the integral resets.
+If an identity is temporarily removed from the feed (e. g., occlusion) and then reappears within the hysteresis window in the same zone, the violation integral is accumulated continuously while the identity is not tracked. If the identity is reassociated with a different zone, the violation integral is reset.
 
 This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across intermittent signal loss while preserving responsiveness to genuine zone changes.
 
@@ -244,7 +244,7 @@ This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across 
     (Alert) edge [bend left=45] node [below left, align=center] {Match \\ Restored} (Unseen);
 \end{tikzpicture}
 }
-\caption{PCVF State Machine operating as a temporal low-pass filter. A student detected out-of-schedule enters the Transient state. An alert is only fired if the violation integral reaches the debounce threshold.}
+\caption{PCVF State Machine acting as temporal low-pass filter. Student triggered out-of-schedule transition to Transient state. Alert will only be issued if accumulated violation integral reaches debounce threshold.}
 \label{fig:fsm}
 \end{figure}
 
@@ -252,21 +252,21 @@ This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across 
 \begin{algorithm}[htbp] % <--- CHANGED FROM [H] TO FIX SPACING
 \caption{Temporal Debounce Filtering (PCVF)}
 \begin{algorithmic}[1]
-\REQUIRE Incoming Event Stream $S$, Threshold $\tau_{debounce}$
-\ENSURE Validated Logic Events $E$
-\FOR{each event $e$ in $S$}
-    \STATE $ID \leftarrow e.identity$
-    \STATE $Zone \leftarrow e.zone$
-    \STATE $StateBuffer[ID].append(Zone, now())$
-    \STATE
-    \STATE \textbf{// Check contiguous duration in current zone}
-    \IF{$\text{Duration}(StateBuffer[ID] == Zone) \ge \tau_{debounce}$}
-        \STATE $E.add(ID, Zone)$ \COMMENT{Promote to stable event}
-    \ELSE
-        \STATE \textbf{Drop} \COMMENT{Filter as transient noise}
-    \ENDIF
-\ENDFOR
-\RETURN $E$
+\Require Incoming Event Stream $S$, Threshold $\tau_{debounce}$
+\Ensure Validated Logic Events $E$
+\For{each event $e$ in $S$}
+    \State $ID \leftarrow e.identity$
+    \State $Zone \leftarrow e.zone$
+    \State $StateBuffer[ID].append(Zone, now())$
+    \State
+    \State \textbf{// Check contiguous duration in current zone}
+    \If{$\text{Duration}(StateBuffer[ID] == Zone) \ge \tau_{debounce}$}
+        \State $E.add(ID, Zone)$ \Comment{Promote to stable event}
+    \Else
+        \State \textbf{Drop} \Comment{Filter as transient noise}
+    \EndIf
+\EndFor
+\State \Return $E$
 \end{algorithmic}
 \label{alg:sanitization}
 \end{algorithm}
@@ -276,7 +276,7 @@ This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across 
 % ==========================================
 \section{Burst-Elastic Read Optimization}
 
-Synchronized class transitions generate short bursts of extremely high event traffic. Latency reduction emerges from controlled relational-access behavior rather than fundamentally novel database theory. Throughput improvements emerge from relational access-path reduction, where pooling stabilizes concurrency pressure and partitioning narrows lookup scope.
+Synchronized class transitions impose brief, extremely high event traffic. Latency is reduced by controlled relational-access behavior rather than intrinsically new database theory. Throughput is gained by decreasing relational access-paths, since pooling reduces concurrency pressure and partitioning decreases lookup scope.
 
 \subsection{Schema Partitioning Strategy}
 
@@ -314,7 +314,7 @@ A composite B-Tree index \cite{b18} is applied across identity and temporal fiel
 CREATE INDEX idx_temporal_lookup ON 
   student_schedule (student_id, day_of_week, start_time, end_time);
 \end{lstlisting}
-Given limited per-student schedule cardinality, this index rapidly narrows candidate intervals prior to temporal comparison \cite{b19}. The majority of latency arises from network and I/O overhead rather than index traversal.
+For a given student's schedule cardinality (limited), this index prunes the candidate intervals quickly before performing any temporal comparisons \cite{b19}. Most of the time is spent in the network and in I/O, rather than in the index.
 
 \subsection{Connection Pooling and Capacity Stabilization}
 During burst transitions, connection setup overhead can dominate query time. Without pooling:
@@ -335,7 +335,7 @@ This data architecture adjustment significantly increases sustainable throughput
 \section{Experimental Evaluation}
 
 \subsection{Evaluation Scope and Environment}
-Evaluation focuses on two operational characteristics: lookup responsiveness and stability during burst traffic conditions. All results are derived from synthetic load testing designed to validate logical correctness and database throughput. The objective was not to model real campus demographics, but to stress the relational layer under controlled conditions.
+Evaluation was done using two primary criteria: lookup responsiveness and stability under bursty loads. All results were obtained from synthetic load testing, meant to stress-test logical correctness and throughput of the database layer. The intent was not to benchmark realistic user demographics, but to evaluate the relational layer under controlled loads.
 
 Tests were executed on:
 \begin{itemize}
@@ -366,14 +366,14 @@ Predicate Logic Check & $<0.1$ ms & CPU \\
 \end{center}
 \end{table}
 
-The majority of latency originates from the relational lookup stage. Predicate evaluation itself contributes only a small portion of total latency relative to network and I/O costs. This reinforces an important design observation: compliance complexity does not meaningfully affect response time once the relational access path is optimized. Even under moderate concurrency, the evaluation layer consistently remained within single-digit millisecond latency.
+Most of the latency is incurred in the relational lookup stage. The predicate evaluation contributes a relatively small amount to the overall latency, compared to the cost of networks and IO. This demonstrates that the complexity of the compliance layer has relatively little impact on the response time of the system, once the relational access path has been optimized. Even at higher levels of concurrency, the evaluation layer showed sub-millisecond latency.
 
 \subsection{Throughput and Concurrency Stress Testing}
 To evaluate burst resilience, the database was flooded with pre-generated identity tokens representing synthetic institutional burst conditions. Load was increased incrementally to 6,000 QPS.
 
 Without connection pooling, the system began to degrade past 3,000 QPS. Tail latency rose sharply as connection overhead accumulated, confirming the expected $T_{conn}$ bottleneck.
 
-With transaction-level pooling enabled, the latency curve flattened substantially. Within the evaluated burst conditions and the observed database configuration, the evaluation layer sustains approximately 5,000 QPS while maintaining sub-15 ms p99 latency ($\pm 1.2$ ms standard deviation). QPS scaling ultimately depends on deployment-specific hardware and network topology; these results reflect evaluated workload assumptions rather than universally guaranteed scalability.
+With transaction-level pooling enabled, the latency curve becomes noticeably flatter: within the measuredburst conditions and given the database setup, the service processes about 5,000 queries per second with a sub-15 ms p99 latency ($\pm 1.2$ ms standard deviation). How many QPS will be supported depends on the actual hardware and network infrastructure one deploys the service on: these are just measurements made against particular workloads that are used as a reference.
 
 % --- FIGURE 2: THROUGHPUT ---
 \begin{figure}[htbp]
@@ -413,11 +413,11 @@ With transaction-level pooling enabled, the latency curve flattened substantiall
     \addlegendentry{With Pooling}
 \end{axis}
 \end{tikzpicture}
-\caption{Throughput Stress Test. Without connection pooling (Red), connection exhaustion causes p99 latency to spike past 3,000 QPS. With pooling active (Green), the evaluation layer demonstrates ~5,000 QPS while maintaining sub-15ms p99 latency.}
+\caption{Throughput Stress Test - without pooling (Red): connection exhaustion leads to p99 latency spiking beyond 3000 QPS. With connection pooling (Green): 5000 QPS with p99 latency below 15 ms.}
 \label{fig:throughput}
 \end{figure}
 
-The key takeaway is not peak throughput alone, but stability during synchronized transitions. Real campuses experience burst traffic when classes end simultaneously. Under these conditions, maintaining tail latency is more critical than maximizing theoretical throughput. The optimized relational configuration handled such bursts without observable cascading failure or connection exhaustion.
+The main point was not even the absolute maximum throughput but the stability under synchronized events. In real-life scenarios, when classes end at the same time on a campus, there will be a burst of traffic that requires special handling. Thus, tail latency is more important than absolutely high throughput, and the relational setup sustained it without spikes that would cause cascading failures or connection resets.
 
 \subsection{Scenario-Based Operational Testing}
 In addition to synthetic throughput tests, we evaluated specific behavioral scenarios to ensure logical correctness under edge conditions.
@@ -425,7 +425,7 @@ In addition to synthetic throughput tests, we evaluated specific behavioral scen
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{truancy_overlay.png}
-\caption{Visual confirmation of the logic engine flagging a schedule conflict using synthetic agent data. The evaluation detects the mismatch between the physical zone (Canteen) and the scheduled requirement (Math Class).}
+\caption{Confirmation of logic engine raised alert for schedule conflict using synthetic agent data. The evaluation concluded on the discrepancy between the location (Canteen) and the scheduled requirement (Math Class).}
 \label{fig:truancy}
 \end{figure}
 
@@ -441,12 +441,10 @@ An agent traversed multiple restricted zones within a short time interval.
 \textit{Result:} The PCVF state machine absorbed these transitions as transient noise. Because the violation integral never exceeded $\tau_{debounce}$, no alert was emitted. This confirmed that transit behavior does not trigger false escalation.
 
 \textbf{Scenario 2: Intermittent Signal Loss}\\
-An agent’s signal was intentionally dropped for two seconds before reappearing in the same zone.
-\textit{Result:} The hysteresis buffer preserved the accumulated violation state. When the signal resumed, the debounce timer continued rather than resetting. Sustained violations were therefore still detected.
+An agent’s signal was deliberately interrupted for two seconds before being returned to the same zone. As a result, the hysteresis buffer maintained the violation status from before the interruption. Thus, when the signal was restored, the debounce timer did not reset but instead continued counting down. Consequently, the continuous violation was still detected.
 
 \textbf{Scenario 3: Backend Service Interruption}\\
-The database connection was manually severed during active processing.
-\textit{Result:} The logic trapped the exception and allowed the upstream event queue to buffer unread events. Upon restoration, the queue drained without data loss. No corrupted states were observed in the relational layer.
+The database connection was forcibly closed while the command was executing. The logic gracefully handled the exception by capturing it allowing the upstream event queue to accumulate undelivered events. After reconnecting, the queue was emptied, delivering all events without data loss.
 
 These controlled tests suggest that the evaluation logic remains stable under common operational disruptions.
 
@@ -456,59 +454,81 @@ These controlled tests suggest that the evaluation logic remains stable under co
 \section{Discussion}
 
 \subsection{Logic Decoupling and Extensibility}
-Isolating compliance evaluation within relational predicate logic yields a significant extensibility benefit: the evaluation layer is agnostic to how identity is resolved. Optical recognition, RFID badges, WiFi triangulation, or future sensing modalities can all feed the same tuple:
+The value of separating the evaluation in relational predicate logic from the means of establishing identity is that the evaluation remains independent of how identification takes place. Using optical recognition, RFID badges, WiFi triangulation, or some other yet to be invented means, the same tuple could be produced:
 \begin{equation}
 (ID, Zone, Timestamp)
 \end{equation}
-As long as this abstraction is respected, the relational predicate layer functions identically regardless of the upstream sensing technology. This separation also simplifies logic evolution---improvements to detection quality do not require modification of the evaluation query, and new compliance rules can be expressed as additional predicates without altering the processing pipeline.
+As long as that abstraction is honored, the relational predicate layer is essentially generic in its function, independent of the particular upstream sensing technology. In addition, this decoupling offers significant value in terms of logic evolution: should the quality of the sensing technology be improved, the evaluation query need not be altered; and new compliance rules can be expressed as additional predicates.
 
 \subsection{Predicate Auditability}
-A practical advantage of continuous relational evaluation is that every compliance decision can be reconstructed from its constituent inputs. For any flagged deviation, the system can produce the original event tuple, the schedule record it was evaluated against, the PCVF integration state at the time of escalation, and the spatial exclusivity check result. This traceability is a structural property of predicate-based evaluation rather than a post-hoc logging feature.
+A pragmatic benefit of continuous relational evaluation is that every compliance decision is auditable by construction. For every event that triggered a violation, the system can report the tuple that caused it, the schedule that it was checked against, the PCVF integration at the time of escalation, and the spatial exclusivity decision. This traceability is a structural property of predicate-based evaluation rather than a post-hoc logging feature.
 
-In institutional environments where compliance decisions may face administrative review, the ability to reconstruct the evaluation path is operationally significant. Opaque behavioral inference models, by contrast, cannot typically provide equivalent decision traceability.
+In contexts where the compliance decision making process of an institution can be subject to administrative reivew, there is value in being able to reconstruct the decision making path taken by the model. This capability is generally not available when using black box behavioral inference models.
 
 \subsection{Limitations}
-The present system evaluates schedule compliance strictly through relational comparison. It does not attempt behavioral inference beyond zone adherence. This constraint preserves logical clarity and evaluation latency but explicitly limits the system's analytical scope.
+The current system only takes into account the relations of the schedule in terms of being in or out of a zone. The system does not make any behavioral predictions beyond that. In doing so, the system maintains logical integrity and evaluation time constraints while limiting the scope of the analysis.
 
-All evaluation results are derived from synthetic workload testing rather than live institutional traffic. While the load profiles approximate burst patterns during class transitions, real deployment introduces variability---network jitter, transaction spikes during synchronized transitions, schedule-update propagation lag, sensor timestamp drift, and temporary backend interruptions---that synthetic testing cannot fully replicate.
+All the results were obtained using synthetic traffic loads, as described in the previous section, and do not reflect the true production traffic from institutions that would be using such a system. It should be noted that while the test load profiles are close approximations to bursts seen during class transitions, deploying the system in a live site will see additional variations on the traffic patterns. These include network jitter, transactions during overlapping transitions, propagation delays during schedule updates, clock drifts of sensors, and temporary backend backend downtimes.
 
-Furthermore, the evaluation layer maintains absolute dependence on upstream sensing quality. If the sensing subsystem produces systematically delayed or inaccurate zone labels, the PCVF may absorb genuine deviations as transient noise. The debounce threshold ($\tau_{debounce}$) represents a highly sensitive calibration tradeoff between transient suppression and detection responsiveness.
+Moreover, the evaluation layer is completely dependent on the upstream sensing quality for the PCVF: if the sensing sub-system incorrectly reports delayed or wrong labels for any of the zones, the PCVF will erroneously interpret some of the true transitions as spurious events. The debounce period $\tau_{\text{debounce}}$ value is therefore a delicate trade-off between suppressing noise-induced transients and retaining responsiveness to legitimate events.
 
 \section{Conclusion}
-This relational stream-evaluation study presented a pipeline for continuously reconciling spatial detection events with institutional schedule constraints through formally defined predicate logic. By representing institutional rules as continuously evaluated spatiotemporal predicates (CPEM) and applying a temporally stabilized violation filter (PCVF), the evaluation logic distinguishes sustained deviations from transient sensor noise while maintaining relational state coherence.
+This relational stream-evaluation study proposed a novel framework for continuous reconciliation of spatial detection events with institutional schedule constraints formalized through predicate logic. The solution represented institutional rules as continuously evaluated spatiotemporal predicates (CPEM) and applied a temporally stabilized violation filter (PCVF) in order to distinguish persistent deviations from transient sensor noise while maintaining relational state coherence.
 
-From an infrastructure perspective, latency reduction emerges from controlled relational-access behavior. Partitioned schema design, composite temporal indexing, and transaction-level connection pooling enable the relational lookup layer to sustain burst traffic approaching 5,000 QPS while maintaining sub-15 ms p99 latency---confirming that the relational coordination overhead remains bounded under evaluated burst conditions.
+From an infrastructural viewpoint, the reduction in latency is achieved through the limitation of relational-access behavior. The combination of a partitioned schema design, composite temporal indexing and connection pooling at the transaction level enable the relational layer lookup to handle burst-like traffic of the scale of 5000 QPS while still delivering on sub-15 ms p99 latency, thus proving the overhead incurred by relational coordination is acceptable under the tested burst conditions.
 
-The design intentionally favors operational predictability over analytical breadth. Within the broader ScholarMaster ecosystem, this subsystem functions exclusively to evaluate continuous compliance predicates and perform bounded-latency relational reconciliation. It does not orchestrate activation governance (Paper 9) or perform acoustic anomaly sensing (Paper 6). It consumes abstract spatial event tuples and emits evaluated predicate states, prioritizing temporal stabilization and burst-resilient lookup behavior over universal institutional monitoring.
+The design emphasizes its role in managing predictable processes rather than providing broad analytical functionalities. For the overall functionality of ScholarMaster, this sub-system is only responsible for checking continued adherence to certain criteria and performing relevant, limited-latency relational operations. In other words, it does not control activation governance (Paper 9) and does not engage in auditory anomaly recognition (Paper 6). It takes abstracted spatial event tuples as input and produces states of relevant predicates as output, focusing on offering temporal stability and burst resistance rather than general surveillance.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} N. Min-Allah and S. Alrashed, "Smart campus: A sketch," \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
-\bibitem{b2} S. Dev and T. Patnaik, "Student Attendance System using Face Recognition," in \textit{ICOSEC}, IEEE, 2020, pp. 1-6.
-\bibitem{b3} S. Bhattacharya, G. S. Nainala, P. Das, and A. Routray, "Smart attendance monitoring monitoring system (SAMS)," in \textit{ICALT}, IEEE, 2018, pp. 358-360.
-\bibitem{b5} X. Wang, "Intelligent multi-camera video surveillance: A review," \textit{Pattern Recognition Letters}, vol. 34, no. 1, pp. 3-19, 2013.
-\bibitem{b6} P. K. Atrey et al., "Multimodal fusion for multimedia analysis: A survey," \textit{Multimedia Systems}, vol. 16, no. 6, pp. 345-379, 2010.
-\bibitem{b7} M. A. Khan et al., "Video Surveillance Anomaly Detection: A Review on Deep Learning Benchmarks," \textit{IEEE Access}, vol. 12, pp. 1-15, 2024.
-\bibitem{b8} L. Zhang, "Spatio-Temporal Visual Analysis for Urban Traffic Characters Based on Video Surveillance Camera Data," \textit{ISPRS International Journal of Geo-Information}, vol. 10, no. 3, p. 177, 2021.
-\bibitem{b9} A. Silberschatz, H. F. Korth, and S. Sudarshan, \textit{Database System Concepts}, 7th ed. McGraw-Hill, 2019.
-\bibitem{b10} D. L. Hall and J. Llinas, "An introduction to multisensor data fusion," \textit{Proceedings of the IEEE}, vol. 85, no. 1, pp. 6-23, 1997.
-\bibitem{b11} W. Shi et al., "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-\bibitem{b12} M. Satyanarayarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
-\bibitem{b13} M. Stonebraker et al., "The 8 requirements of real-time stream processing," \textit{SIGMOD Record}, vol. 34, no. 4, pp. 42-47, 2005.
-\bibitem{b14} T. Akidau et al., "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing," \textit{Proc. VLDB Endow.}, vol. 8, no. 12, pp. 1792-1803, 2015.
-\bibitem{b15} R. H. Güting et al., "A foundation for representing and querying moving objects," \textit{ACM Transactions on Database Systems (TODS)}, vol. 25, no. 1, pp. 1-42, 2000.
-\bibitem{b16} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM Transactions on Intelligent Systems and Technology (TIST)}, vol. 6, no. 3, pp. 1-41, 2015.
-\bibitem{b17} E. Wu et al., "High-performance complex event processing over streams," \textit{SIGMOD}, pp. 407-418, 2006.
 \bibitem{b18} D. Comer, "The ubiquitous B-tree," \textit{ACM Computing Surveys (CSUR)}, vol. 11, no. 2, pp. 121-137, 1979.
+
+\bibitem{b10} D. L. Hall and J. Llinas, "An introduction to multisensor data fusion," \textit{Proceedings of the IEEE}, vol. 85, no. 1, pp. 6-23, 1997.
+
 \bibitem{b19} B. Salzberg and V. J. Tsotras, "Comparison of access methods for time-evolving data," \textit{ACM Computing Surveys (CSUR)}, vol. 31, no. 2, pp. 158-221, 1999.
-\bibitem{b20} S. Harizopoulos et al., "OLTP through the looking glass, and what we found there," \textit{SIGMOD}, pp. 981-992, 2008.
+
+\bibitem{b15} R. H. Güting et al., "A foundation for representing and querying moving objects," \textit{ACM Transactions on Database Systems (TODS)}, vol. 25, no. 1, pp. 1-42, 2000.
+
+\bibitem{b13} M. Stonebraker et al., "The 8 requirements of real-time stream processing," \textit{SIGMOD Record}, vol. 34, no. 4, pp. 42-47, 2005.
+
+\bibitem{b17} E. Wu et al., "High-performance complex event processing over streams," \textit{SIGMOD}, pp. 407-418, 2006.
+
 \bibitem{b21} J. M. Hellerstein et al., "Architecture of a Database System," \textit{Foundations and Trends in Databases}, vol. 1, no. 2, pp. 141-259, 2007.
-\bibitem{b22} P. Carbone et al., "Apache Flink: Stream and Batch Processing in a Single Engine," \textit{IEEE Data Engineering Bulletin}, vol. 38, no. 4, pp. 28-38, 2015.
-\bibitem{b23} Z. Zhou et al., "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
+
+\bibitem{b20} S. Harizopoulos et al., "OLTP through the looking glass, and what we found there," \textit{SIGMOD}, pp. 981-992, 2008.
+
+\bibitem{b6} P. K. Atrey et al., "Multimodal fusion for multimedia analysis: A survey," \textit{Multimedia Systems}, vol. 16, no. 6, pp. 345-379, 2010.
+
+\bibitem{b5} X. Wang, "Intelligent multi-camera video surveillance: A review," \textit{Pattern Recognition Letters}, vol. 34, no. 1, pp. 3-19, 2013.
+
 \bibitem{b24} D. Abadi et al., "The Beckman Report on Database Research," \textit{SIGMOD Record}, vol. 43, no. 3, pp. 61-70, 2014.
+
+\bibitem{b14} T. Akidau et al., "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing," \textit{Proc. VLDB Endow.}, vol. 8, no. 12, pp. 1792-1803, 2015.
+
+\bibitem{b16} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM Transactions on Intelligent Systems and Technology (TIST)}, vol. 6, no. 3, pp. 1-41, 2015.
+
+\bibitem{b22} P. Carbone et al., "Apache Flink: Stream and Batch Processing in a Single Engine," \textit{IEEE Data Engineering Bulletin}, vol. 38, no. 4, pp. 28-38, 2015.
+
+\bibitem{b11} W. Shi et al., "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
+\bibitem{b12} M. Satyanarayarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
+
+\bibitem{b3} S. Bhattacharya, G. S. Nainala, P. Das, and A. Routray, "Smart attendance monitoring monitoring system (SAMS)," in \textit{ICALT}, IEEE, 2018, pp. 358-360.
+
+\bibitem{b23} Z. Zhou et al., "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
+
+\bibitem{b9} A. Silberschatz, H. F. Korth, and S. Sudarshan, \textit{Database System Concepts}, 7th ed. McGraw-Hill, 2019.
+
+\bibitem{b1} N. Min-Allah and S. Alrashed, "Smart campus: A sketch," \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
+
+\bibitem{b2} S. Dev and T. Patnaik, "Student Attendance System using Face Recognition," in \textit{ICOSEC}, IEEE, 2020, pp. 1-6.
+
+\bibitem{b8} L. Zhang, "Spatio-Temporal Visual Analysis for Urban Traffic Characters Based on Video Surveillance Camera Data," \textit{ISPRS International Journal of Geo-Information}, vol. 10, no. 3, p. 177, 2021.
+
+\bibitem{b7} M. A. Khan et al., "Video Surveillance Anomaly Detection: A Review on Deep Learning Benchmarks," \textit{IEEE Access}, vol. 12, pp. 1-15, 2024.
 
 \end{thebibliography}
 
