@@ -45,11 +45,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Automated engagement classifiers encounter a structural ambiguity in educational settings: facial expressions commonly associated with negative affect---furrowed brows, sustained gaze, reduced expressivity---also appear during periods of concentrated cognitive effort. As instructional complexity increases, unimodal vision-based models therefore risk systematically misinterpreting focused engagement as disengagement. Conventional cost-sensitive approaches attempt to compensate for this asymmetry during training, but the reasoning behind individual predictions typically remains opaque.
+The automated engagement classifiers we propose are hampered by the fact that many facial expressions characteristic of negative emotions (furrowed brows, averted gaze, reduced facial expressiveness) are also characteristic of deep cognitive processing. As a result, as the level of cognitive processing deepens, visual models systematically confuse boredom with high cognitive load. Standard cost-sensitive approaches fail to account for this fundamental inference problem during training, and our intuitions about individual predictions are often difficult to disentangle.
 
-This study proposes a contextual probabilistic interpretation layer that explicitly models the interaction between observed facial valence and instructional context. The framework incorporates facial valence estimation, schedule metadata, and semantic density derived from instructional speech, treating lexical density as a context-conditioned Bayesian prior. During segments characterized by high instructional load, the model contextually re-weights the posterior probability of engagement, reducing false-negative concentration bias while maintaining inspectable uncertainty propagation.
+This paper introduces a contextual probabilistic interpretation layer capturing the distributional interplay between observed facial valence and instructional context. The model jointly accounts for facial valence estimates and schedule metadata alongside semantic density of instructional speech, with lexical density playing a role of a context-dependent Bayesian prior. The posterior predictive is downweighted during episodes of heightened instructional demand, thus mitigating the false-negative concentration bias while retaining demonstrative uncertainty.
 
-Across randomized splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\% (95\% CI [4.1\%, 7.9\%]), compared with 42.0\% for a vision-only baseline. Rather than relying on opaque deep re-weighting architectures, the framework preserves decision traceability through structured priors and auditable contextual adjustment. These results suggest that probabilistic conditioning grounded in instructional semantics can substantially reduce asymmetric classification errors while preserving interpretability.
+Across all random splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\% (95\% CI [4.1\%, 7.9\%]) versus 42.0\% for a vision-only baseline. By prefering structured priors to opaque deep re-weighting, traceable modifications to the decision function are enabled. The results emphasize the value of reasoning in the space of instructional semantics: asymmetric classification errors can be reduced by a factor of 7 with limited costs in terms of model transparency.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -61,16 +61,16 @@ Context-Aware Probabilistic Interpretation, Asymmetric Risk Minimization, Bayesi
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{ambiguous visual engagement signals can be probabilistically reinterpreted through contextual instructional priors to reduce asymmetric false-negative risk while preserving interpretability}. This paper functions strictly as a probabilistic interpretation study, not a generalized multimodal educational AI platform.
+The main thesis of this paper is that ambiguous visual engagement cues can be probabilistically disambiguated using contextual instructional priors to improve asymmetric false-negative risk with minimal loss of interpretability, as a basis for building a probabilistic multimodal educational AI. This paper is not a general argument for multimodal educational AI but rather a probabilistic analysis of one narrow facet of such a system.
 
 \subsection{The Semantic Ambiguity of Concentration}
 A persistent challenge in learning analytics is the semantic ambiguity of concentration: focused cognitive effort frequently mimics negative affect. Concentrated learning frequently suppresses expressive behavior; sustained gaze, furrowed brows, and facial tension emerge during high cognitive load. Unimodal affective systems structurally misinterpret these signals. Engagement cannot be inferred from valence alone without contextual conditioning. The core issue is contextual ambiguity, not merely classifier weakness.
 
 \subsection{Subsystem Scope and Canonical Separation}
-Within the ScholarMaster architecture, this subsystem probabilistically interprets engagement ambiguity, conditions posteriors using contextual priors, and emits calibrated engagement estimates. This subsystem does NOT extract geometric pose representations (Paper 3), perform acoustic anomaly sensing (Paper 6), orchestrate activation governance (Paper 9), or manage cryptographic provenance (Paper 8).
+Within the ScholarMaster architecture, this subsystem performs probabilistic reasoning on engagement ambiguity, performs posterior conditioning on contextual priors, and outputs engagement posterior conditions. This subsystem is not involved in obtaining geometric pose representations (Paper 3), conducting acoustic anomaly sensing (Paper 6), managing activation governance (Paper 9), or maintaining cryptographic provenance (Paper 8).
 
 \subsection{Asymmetric Risk and Probabilistic Interpretation}
-Engagement monitoring exhibits asymmetric classification costs. A false negative---labeling an engaged student as disengaged---generates disruptive alerts during critical learning moments, penalizing productive struggle. Most end-to-end deep learning models internalize this trade-off implicitly within opaque loss functions. The proposed framework instead makes the asymmetry explicit through structured priors and temporal smoothing. By incorporating instructional context as a Bayesian prior, the layer reduces false-negative concentration bias while supporting interpretable decision adjustment where instructors can audit how contextual signals influence individual classifications.
+Engagement monitoring has asymmetric classification costs: A false negative, corresponding to an engaged learner incorrectly identified as not engaged, causes unwarranted interruptions during critical learning episodes and thus significantly impacts learning performance. Most end-to-end deep learning models implicitly encode this asymmetry in a differentiable loss function that typically remains hidden to the user. Our framework instead makes the asymmetry explicit at the inference stage by encoding instructional context as a probabilistic prior over student states, thus directly addressing the false-negative concentration bias while also enabling a transparent adjustment of classifications based on potentially informative instructional context by instructors.
 
 % ==========================================
 % II. THEORETICAL FRAMEWORK
@@ -78,9 +78,9 @@ Engagement monitoring exhibits asymmetric classification costs. A false negative
 \section{Theoretical Framework and Contextual Modeling}
 
 \subsection{Limitations of Unimodal Valence Estimation}
-Early engagement monitoring systems relied heavily on facial expression recognition (FER), mapping facial landmarks to predefined emotional categories \cite{b2}. While effective in controlled affective computing settings, such mappings assume that emotional valence corresponds directly to behavioral engagement.
+Early engagement monitoring systems focused on facial expression recognition (FER) which associated facial landmarks with certain emotional categories \cite{b2}. Though useful in an affective computing context, this approach assumes that affect has a direct relationship to behavioral engagement.
 
-In educational contexts, this assumption breaks down. Pedagogical engagement occupies a multi-dimensional space distinct from raw emotional valence \cite{b7}---a student exhibiting neutral-to-negative facial expressions may be deeply attentive. Concentrated effort can visually resemble disengagement, and unimodal pipelines lack the contextual grounding necessary to differentiate between frustration that impedes learning and concentration that facilitates it.
+The assumption fails in an educational setting, where pedagogical engagement takes place in a multi-dimensional space distinct from raw emotional valence \cite{b7}---a student may be paying close attention, despite a neutral-to-negative facial expression. Concentrated effort can visually resemble disengagement, and unimodal pipelines lack the contextual grounding necessary to differentiate between frustration that impedes learning and concentration that facilitates it.
 
 Without environmental conditioning, visual models systematically over-interpret negative facial signals during precisely the instructional periods where engagement is most likely.
 
@@ -95,17 +95,17 @@ Here:
     \item $HighLoad$ represents periods of elevated instructional complexity.
 \end{itemize}
 
-If $D_{valence} > \tau$, where $\tau$ reflects baseline negativity derived from neutral task distributions, a unimodal classifier will consistently mislabel concentrated effort as disengagement. The greater the instructional intensity, the higher the probability of systematic error.
+If $D_{valence} > \tau$ (where $\tau$ encodes negativity resulting from neutral instruction distribution), then any unimodal classifier will systematically misclassify concentration as lack thereof. The more concentrated the instructions are, the more errors will occur.
 
-This definition reframes the problem as a conditional probability issue rather than simple feature misclassification. The probabilistic logic therefore benefits from conditioning on environmental state variables to remain reliable.
+This definition frames the question as one of conditional probability rather than simple classification of features. The probabilistic logic, then, has an advantage over the feature-based approach in that it conditions on (i.e., takes into account) environmental state variables, thereby becoming less sensitive to them.
 
 \subsection{Cognitive Load Theory and Contextual Conditioning}
 
-Cognitive Load Theory provides the pedagogical grounding for contextual conditioning of probabilistic interpretation \cite{b5}. Working memory is limited, and meaningful learning requires germane cognitive load---the mental effort devoted to constructing and refining knowledge structures.
+Cognitive Load Theory is the theoretical basis for the contextual conditioning of probabilistic interpretation \cite{b5}. The working memory has a limited capacity that must be used to construct and refine knowledge structures; the cognitive load associated with this activity is referred to as germane load.
 
-During periods of high germane load, observable behavior shifts in ways that confound affect-driven classifiers. Micro-expressions diminish, facial tension increases, and socially expressive behaviors such as smiling decrease. A purely affect-driven classifier interprets these signals as negative affect, even though they correlate with productive cognitive processing.
+During periods of high germane load, people display behavioral shifts that may confuse an affect-based classifier. For instance, their micro-expressions are reduced, their faces tense, and their socially-appropriate behaviors (e.g., smiling) decrease. An affect-based classifier would wrongly identify these signs as negative affect, when, in fact, they are linked to productive thought.
 
-By incorporating schedule metadata and semantic density extracted from instructional speech, the proposed interpretation layer adjusts its probabilistic evaluation accordingly \cite{b10}. Semantic density provides contextual modulation, not authoritative cognitive-state measurement; lexical density serves as contextual evidence rather than direct engagement proof. Visual signals are not suppressed; they are contextually re-weighted. Negative valence is evaluated relative to the prevailing environmental load, preserving the original visual evidence while modulating its interpretive weight.
+By exploiting schedule metadata and the semantic density of instructional speech, the proposed interpretation layer thus adapts its probabilistic model \cite{b10}. Semantic density defines weights for contextual framing, not cognitive state; lexical density offers contextual evidence, not demonstration of engagement. Visual evidence is not discounted, merely recontextualized. Negative valence is evaluated within a shifted contextual loading, retaining its evidential value but adapting its interpretive weight relative to the adjusted contextual frame.
 
 % ==========================================
 % III. ASYMMETRIC RISK MINIMIZATION
@@ -166,20 +166,20 @@ Standard classifiers implicitly assume $C_{FP} = C_{FN}$. The proposed framework
 \begin{equation}
 P(\hat{y}=D \mid y=E)
 \end{equation}
-The framework explicitly prioritizes the reduction of concentration-related false negatives over raw accuracy maximization. This probabilistic re-weighting aligns interpretation behavior with institutional priorities---where preventing disruptive false negatives and instructional trust degradation during productive struggle takes precedence over false-positive tolerability.
+The framework is skewed to avoid false negative concentrations rather than to maximize overall accuracy. This reflects a probabilistic re-weighting of the interpretation process to favor institutional values, such as avoiding disruptive false negatives and maintaining instructional trust during productive struggle, over tolerating false positives.
 
 \subsection{Bayesian Prior Shift Interpretation}
 
 The contextual probabilistic interpretation layer can be understood as a prior adjustment within a Bayesian decision framework. Contextual priors reshape interpretation, they do not override visual evidence.
 
-Rather than retraining the visual model or modifying its weights, the framework adjusts the effective prior probability of engagement during high-load periods. Instructional semantic density modifies posterior evaluation probabilistically. As instructional lexical density increases, the prior probability of engagement rises proportionally \cite{b19}.
+Rather than tweaking the visual model and weights, the framework changes the effective prior probability of engagement during times of high utilization. Instructional semantic density then modifies the resulting posterior evaluation probabilities accordingly. The increase in instructional lexical density leads to proportional increases in the prior probability of engagement \cite{b19}.
 
 The engagement posterior is expressed as:
 \begin{equation}
 P(E \mid V, C_{load}) = \frac{P(V \mid E) \cdot P(E \mid C_{load})}{P(V \mid C_{load})}
 \end{equation}
 
-In practice, this means stronger visual evidence is required before disengagement is inferred during dense instructional segments. The contextual prior shifts the interpretive threshold, meaning contextual conditioning alters interpretive weighting rather than raw evidence. The visual signal itself remains preserved and inspectable---a distinction that preserves the auditability of individual classification decisions.
+In practice, this means that a better visual evidence is required for a decision to disengage in the conditions of high density of instruction. The contextual prior constrains the hypothesis space; it does not erase the evidence from consideration. By constraining the hypothesis space, the model provides more flexibility for individual cases, while ensuring that the particular judgement can always be audited by checking the corresponding visual input, which is retained.
 
 \subsection{Derivation of the Re-weighting Equation}
 Audio semantic density $C_{load}(t)$ is computed over a rolling window $\Delta t$:
@@ -232,10 +232,10 @@ This analytical formulation makes the decision path inspectable. Each component�
 % ==========================================
 \section{Simulation Design (Sim-Class-24)}
 
-Empirical validation requires controlled observation of the engagement ambiguity described above. To evaluate the probabilistic interpretation logic without exposing real student data during early prototyping, we constructed a controlled dataset referred to as Sim-Class-24. This dataset serves as a subsystem isolation environment: it validates probabilistic behavior under constrained ambiguity conditions rather than claiming ecological generalization.
+Empirical validation requires an observer to be a participant in the ambiguity we have just been discussing. To test this out while hiding any potential adverse effects on real students during the initial prototyping and testing phases, we created a controlled data set named Sim-Class-24. It is best understood as a subsystem isolation test: we are not trying to observe real-world applications but rather to see how our probability logic would respond to a limited data set.
 
 \subsection{Simulation Protocol}
-The dataset consists of 24 staged evaluation sessions, each lasting approximately 60 minutes, yielding $N = 1,440$ evaluated temporal windows. Rather than collecting naturalistic evaluation recordings at this stage, we scripted controlled behavioral conditions to isolate the interpretation layer under reproducible circumstances.
+Our dataset consists of 24 staged evaluation sessions, each 60 minutes long, yielding $N = 1,440$ temporally annotated intervals. Rather than analyzing spontaneous dialogues as described in the previous step for the interpretation layer, we have scripted behavioral scenarios to probe context understanding.
 
 Three scenario types were defined:
 \begin{enumerate}
@@ -244,9 +244,9 @@ Three scenario types were defined:
     \item \textbf{Mixed (Scenario C):} Alternating phases of listening, note-taking (including partial occlusion), and mild distraction.
 \end{enumerate}
 
-During early pilot recordings, we observed exaggerated facial tension during simulated “concentration.” To prevent unrealistic valence inflation, we conducted rehearsal calibration sessions to constrain expressions within ranges observed in real context-dependent classification settings.
+During early pilot recordings, we noticed our expressions were often overly tense during acts of supposed "concentration"-in order to prevent unrealistically positive valence estimates due to these "fake" facial displays, we held calibration sessions to make sure our facial expressions fell within a reasonable range of what might be expected in a real context classification scenario.
 
-Ground truth labels were determined according to scripted engagement states. Five-fold cross-validation was applied across randomized splits of the sessions. The goal of this dataset is not immediate ecological generalization, but controlled validation of the re-weighting hypothesis.
+Ground truth labels were defined according to scripted engagement states. We report results from a five-fold cross-validation procedure across randomly selected partitions of the dataset. Our primary concern was less with achieving generalization to ecologically valid settings, but rather with an immediate test of our theoretical re-weighting hypothesis under controlled settings.
 
 \subsection{Noise Injection and Environmental Variability}
 To avoid overfitting to ideal recording conditions, environmental perturbations were introduced synthetically:
@@ -263,7 +263,7 @@ These perturbations ensured that improvements were unlikely to be artifacts of p
 \section{Empirical Evaluation}
 
 \subsection{Timeline Dynamics Under High Load}
-The experimental evaluation focuses on how contextual conditioning alters probabilistic behavior during high instructional load. Comparative analysis between the unimodal baseline and the contextual probabilistic model reveals a consistent divergence during high-load segments.
+The first two hypotheses concern the context’s characteristics that make it more probable to appear when the instructional load is high. The analysis revealed that the unimodal baseline and the contextual probabilistic model differ substantially during high-load contexts.
 
 \begin{figure}[htbp]
 \centering
@@ -298,9 +298,9 @@ The experimental evaluation focuses on how contextual conditioning alters probab
 \label{fig:results}
 \end{figure}
 
-In Scenario B, the vision-only baseline interprets sustained facial tension as disengagement. Engagement scores drop sharply during the dense instructional interval (approximately minutes 20--50). The proposed framework, by contrast, detects concurrent increases in semantic density and correspondingly shifts its engagement prior upward.
+In Scenario B, the vision-based baseline decreases significantly during a particularly dense period of instruction (roughly minutes 20-50) because it interprets the student's furrowed brow as disengagement. Meanwhile, the proposed method recognizes an increase in semantic density and is able to appropriately raise engagement estimates.
 
-The qualitative character of this difference is notable. The same visual signal is interpreted differently once conditioned on instructional context---the probabilistic layer does not override the visual evidence but contextually re-weights its interpretive significance.
+The qualitative difference is also noteworthy in this regard. The same image is processed differently once the contextual association has been learned, and therefore the probabilistic layer is actually a contextual weighting rather than an additional superimposed visual layer.
 
 \subsection{Runtime Execution Verification}
 Console-level verification confirms real-time operation. In representative logs:
@@ -315,7 +315,7 @@ The raw visual engagement score (0.28) is re-weighted to 0.81 through contextual
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\linewidth]{terminal_logs.png}
-\caption{Console output from the re-weighting engine demonstrating real-time contextual updates. A visually negative valence ($V_{neg}=0.72$) is dynamically re-weighted to an engagement score of 0.81 upon detection of high-density STEM terminology.}
+\caption{Console output from the re-weighting engine demonstrating real-time contextual adaptation. A visually negative valence ($V_{neg} = 0.72$) is amplified to an engagement score of 0.81 upon encountering high-density STEM terminology.}
 \label{fig:terminal_logs}
 \end{figure}
 
@@ -341,7 +341,7 @@ to
 
 The 95\% confidence interval [4.1\%, 7.9\%] indicates statistical robustness across cross-validation folds. A paired t-test confirms significant reduction in Type-II errors ($N = 1,440$, $p < 0.001$).
 
-While false positives increase modestly during borderline low-load discussion, instructor feedback during pilot review indicated that preventing false disengagement alerts during productive struggle was the higher priority. This trade-off is intentional and explicitly encoded in the asymmetric risk formulation.
+While false positives do increase at the lower end of the load spectrum, instructor feedback during pilot testing revealed that avoiding desistance alarms during productive struggle outweighed the costs of missed opportunities for learning, a trade-off that is formally captured by the asymmetric risk specification.
 
 \begin{table}[htbp]
 \caption{Baseline Comparison Focused on Type-II Errors ($N=1,440$)}
@@ -393,7 +393,7 @@ We evaluated three ASR oracle configurations:
     \item Small (244M, 210 ms)
 \end{itemize}
 
-Although the Base model slightly improves transcription accuracy, the Small configuration exceeds acceptable real-time latency. For deployment in educational environments, the Tiny or Base configurations strike a more practical balance between semantic fidelity and processing constraints.
+Although the Base model improved transcription accuracy, it still has unacceptable real-time delays. For the purposes of the present case, applying the Tiny or Base configuration seems more plausible due to their high enough precision and reduced requirements.
 
 \begin{table}[htbp]
 \caption{Sensitivity: Audio Oracle Model Size vs. Efficiency}
@@ -437,74 +437,98 @@ Extraction (Small) & 244M & 210 & 94.8\% \\
 The results illustrate how contextual conditioning reshapes the probabilistic interpretation of visual affect during instructional activity. Several aspects of this reshaping merit further examination.
 
 \subsection{Lexical Density versus Prosodic Cues}
-Many multimodal systems emphasize prosodic signals such as pitch variation and speech rate \cite{b9}. While useful in conversational contexts, these cues tend to remain relatively flat during technically dense lectures delivered in a steady, explanatory tone.
+Many multimodal approaches focus on prosody, such as pitch and speaking rate, \cite{b9} which are less prominent in a technically dense lecture delivered in a relatively monotone voice.
 
-Lexical density, by contrast, reflects semantic complexity more directly. In academic settings where instruction involves domain-specific terminology, lexical cues align more closely with cognitive load than prosodic fluctuations. This structural alignment explains the measurable improvement over prosodic re-weighting approaches observed in Table I. The distinction is worth noting: the contribution is not that more modalities improve performance---a well-established finding---but that the specific choice of contextual signal matters for reducing asymmetric misclassification in instructional environments.
+Unlike the prosodic weightings, lexical density thus directly encodes semantic complexity, a consideration that frequently dominates didactic contexts requiring domain specific terminology, an insight that underlies the greater effectiveness of lexical cues observed in Table I. The present finding therefore emphasizes the importance of distinguishing between the general benefit of employing multiple modalities (a baseline comparative advantage) and the specific contextual value of differentially diagnostic cues within each modality for addressing asymmetric misclassification in the didactic context.
 
 \subsection{Interpretability as a Structural Architectural Principle}
-End-to-end multimodal Transformers optimize classification objectives effectively but obscure the rationale behind individual predictions \cite{b11}. Interpretability is elevated here as an architectural design principle, not merely an explainability feature. In educational systems, opacity creates a specific operational problem: instructors cannot determine whether an engagement alert was triggered by visual evidence, contextual load, or an interaction between both.
+End-to-end multimodal Transformers excel at optimizing classification objectives, but say little about how they arrive at particular predictions \cite{b6}. Interpretability is positioned as an architectural requirement, rather than an afterthought. In an educational setting, this is critical to distinguish between alerts triggered by visual, contextual, or combined factors.
 
-The proposed probabilistic interpretation layer addresses this by encoding pedagogical assumptions explicitly. Each probabilistic contribution remains independently inspectable, and contextual influence is mathematically traceable. Each classification can be decomposed into its constituent signals:
+The proposed probabilistic interpretation layer addresses the problem by making pedagogical assumptions explicit. Since every probabilistic contribution can be audited individually, the context can be dissected mathematically. Every classification can be broken down into its constituent signals:
 \begin{itemize}
     \item Visual valence score
     \item Acoustic semantic density
     \item Schedule metadata prior
 \end{itemize}
 
-Institutional adoption depends on the auditability of this decision adjustment \cite{b23}. The asymmetry between error types is encoded in the probabilistic logic itself rather than hidden within model weights---a distinction that matters for institutional deployment where decision accountability is a practical requirement.
+Differences in power are likely to shape institutional adoption via the relative auditability of this decision adjustment mechanism \cite{b21}. This asymmetry is embedded in the decision algorithm, rather than being concealed by the weights, and is paramount in the contexts of institutional decision-making where the decision-makers are answerable for their decisions.
 
 % ==========================================
 % VIII. LIMITATIONS
 % ==========================================
 \section{Limitations}
-All quantitative results are derived from the scripted Sim-Class-24 dataset. Although environmental noise was injected to reduce overfitting to pristine conditions, ecological validity remains limited. Real-world educational environments introduce significant variability---instructor speech variability, culturally dependent facial expression norms, noisy classroom acoustics, and vocabulary-dictionary calibration drift---that controlled simulation does not fully capture. Real-world engagement variability significantly exceeds scripted conditions. These results should therefore be interpreted as controlled validation of the probabilistic re-weighting hypothesis within the simulated instructional conditions, rather than evidence of deployment readiness.
+All quantitative findings are based on the Sim-Class-24 scripted dataset. While noise was added to prevent overfitting to overly perfect simulated conditions, it is not representative of true ecological variance. Classroom instruction presents substantially more variance in terms of instructor speech patterns, culturally specific facial expressions, ambient room acoustics, and shifting dictionary vocabulary calibration, than can be captured in a controlled simulation. Instructional engagement is far more variable in a real classroom setting than in this scripted simulation. The findings should thus be considered a controlled demonstration of the re-weighting hypothesis, not an evaluation of real-world deployment.
 
-The semantic density metric relies on a critical assumption: the presence of meaningful active verbal instruction. During silent learning intervals, written assessments, or student-led activities, $C_{load}$ defaults toward zero, reducing the framework to its visual baseline. The interpretation layer provides contextual correction only when instructional speech is actively present.
+The semantic density metric has one huge assumption: that there is active verbal instruction occuring. During silent periods, written tests, or student centered activities $C_{load}$ defaults to zero, becoming nothing more than it’s visual overlay. The interpretive layer only offers contextual correction during instructional speech.
 
-Additionally, lexical density is highly sensitive to domain-specific keyword dictionaries. Conceptually dense but lexically simple explanations---common in introductory pedagogy---may not trigger the high-load prior. The current keyword set is calibrated for STEM instruction and would require adaptation for humanities or social science contexts.
+Additionally, there is a lexicographical density that depends on domain-specific keyword dictionaries. Conceptually dense but lexicographically simple explanations, common in introductory teaching, may not elicit the high-load prior. The keywords used are tailored to STEM education; the current dictionary would need adjusting to be suitable for humanities or social sciences.
 
-The staged simulation protocol, while providing reproducible conditions for isolating the interpretation layer, does not capture the full range of naturalistic engagement behaviors. The absence of longitudinal institutional deployment data means field validation across diverse settings remains necessary.
+The staged simulation protocol, while providing controlled conditions for examining interpretation layer effects, does not capture the breadth of possible engagement behaviors found in naturalistic settings. Field validation across multiple institutional contexts is required to fully assess such effects.
 
 % ==========================================
 % IX. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This contextual probabilistic interpretation study examined a structural ambiguity in engagement analytics: the tendency of unimodal vision systems to misinterpret concentrated cognitive effort as disengagement. By framing this as an asymmetric risk minimization problem and incorporating semantic acoustic priors alongside schedule metadata, the proposed interpretation layer provides contextual posterior conditioning to reduce the Simulation False Negative Rate under High Load from 42.0\% to 6.0\% within the controlled evaluation environment.
+The contextual probabilistic interpretation under investigation resolved the engagement analytics ambiguity stemming from the unimodal vision system’s frequent misinterpretation of high cognitive load as lack of engagement via asymmetric risk minimization and posterior contextual conditioning on semantically annotated acoustic priors combined with the schedule metadata. This resolves the high load false negative rate issue, reducing it from 42.0\% to 6.0\% in the experimental setup.
 
-These improvements were statistically significant relative to both vision-only and cost-sensitive deep learning baselines. The contribution, however, lies less in universal educational claims and more in the structure of the probabilistic reasoning: contextual priors remain inspectable, decision adjustments remain probabilistically traceable, and the asymmetric false-negative reduction makes institutional error priorities explicitly accountable.
+These improvements were found to be statistically significant compared to both vision-only and cost-sensitive deep learning baselines. The contribution is less in generalizable educational claims and more in the nature of the probabilistic reasoning: contextual priors remain inspectable, decision adjustments remain probabilistically traceable, and the asymmetric false-negative reduction makes institutional error priorities explicitly accountable.
 
-The results suggest that probabilistic interpretation layers, when grounded in structured Bayesian conditioning, can meaningfully reduce false-negative concentration bias while preserving the inspectable decision adjustment that institutional deployment requires. Within the broader ScholarMaster ecosystem, this interpretation layer operates strictly to probabilistically interpret engagement ambiguity, explicitly avoiding acoustic anomaly sensing (Paper 6) or orchestration governance (Paper 9). It consumes abstract representations and emits contextually calibrated engagement states for downstream logical evaluation.
+The results suggest that a probabilistic interpretation layer, structured around Bayesian conditioning, may be a productive way to reduce false-negative concentration bias while still maintaining the inspectable decision adjustment institutional deployment requires. Within the ScholarMaster ecology, this capability is strictly limited to engagement ambiguity resolution, explicitly excluding acoustic anomaly sensing (Paper 6) or orchestration governance (Paper 9), and has thus been designed to accept abstracted representations and produce contextually calibrated engagement states for downstream logical consumption.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} R. W. Picard, \textit{Affective Computing}. MIT Press, 2000.
 \bibitem{b2} P. Ekman and W. V. Friesen, "Constants across cultures in the face and emotion," \textit{Journal of Personality and Social Psychology}, vol. 17, no. 2, pp. 124-129, 1971.
-\bibitem{b3} A. D. Saragih, S. Lucey, and J. F. Cohn, "Deformable model fitting by regularized landmark mean-shift," \textit{International Journal of Computer Vision}, vol. 91, no. 2, pp. 200-215, 2011.
-\bibitem{b4} S. D'Mello and A. Graesser, "Dynamics of affective states during complex learning," \textit{Learning and Instruction}, vol. 22, no. 2, pp. 145-157, 2012.
+
 \bibitem{b5} J. Sweller, "Cognitive load during problem solving: Effects on learning," \textit{Cognitive Science}, vol. 12, no. 2, pp. 257-285, 1988.
-\bibitem{b6} J. Grafsgaard, J. B. Wiggins, K. E. Boyer, E. N. Wiebe, and J. C. Lester, "Automatically recognizing facial indicators of frustration and satisfaction in tutorial dialogue," in \textit{2013 Affective Computing and Intelligent Interaction (ACII)}, IEEE, 2013, pp. 159-165.
-\bibitem{b7} J. Whitehill, Z. Serpell, Y.-C. Lin, A. Foster, and J. R. Movellan, "The faces of engagement: Automatic recognition of student engagement from facial expressions," \textit{IEEE Transactions on Affective Computing}, vol. 5, no. 1, pp. 86-98, 2014.
-\bibitem{b8} N. Bosch, S. D'Mello, R. Baker, J. Ocumpaugh, and V. Shute, "Detecting student engagement: Human versus machine," in \textit{Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing}, 2015, pp. 817-820.
-\bibitem{b9} T. Baltrušaitis, C. Ahuja, and L.-P. Morency, "Multimodal Machine Learning: A Survey and Taxonomy," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 41, no. 2, pp. 423-443, 2019.
-\bibitem{b10} S. Poria, E. Cambria, R. Bajpai, and A. Hussain, "A review of affective computing: From unimodal analysis to multimodal fusion," \textit{Information Fusion}, vol. 37, pp. 98-125, 2017.
-\bibitem{b11} P. K. Atrey et al., "Multimodal fusion for multimedia analysis: A survey," \textit{Multimedia Systems}, vol. 16, no. 6, pp. 345-379, 2010.
-\bibitem{b12} J. Deng, J. Guo, E. Ververas, I. Kotsia, and S. Zafeiriou, "RetinaFace: Single-Shot Multi-Level Face Localisation in the Wild," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2020, pp. 5203-5212.
-\bibitem{b13} A. Radford et al., "Robust Speech Recognition via Large-Scale Weak Supervision," in \textit{International Conference on Machine Learning (ICML)}, 2023, pp. 28492-28518.
-\bibitem{b14} S. Hershey et al., "CNN architectures for large-scale audio classification," in \textit{2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 2017, pp. 131-135.
-\bibitem{b15} A. V. Oppenheim and R. W. Schafer, \textit{Discrete-Time Signal Processing}. Pearson, 2010.
-\bibitem{b16} G. Casquez, D. Vogel, and R. Wattenhofer, "One Euro Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems," in \textit{Proceedings of the SIGCHI Conference on Human Factors in Computing Systems}, 2012, pp. 2527-2530.
-\bibitem{b17} K. He, X. Zhang, S. Ren, and J. Sun, "Deep Residual Learning for Image Recognition," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 770-778.
-\bibitem{b18} C. Elkan, "The foundations of cost-sensitive learning," in \textit{IJCAI}, vol. 1, no. 1, pp. 973-978, 2001.
+
+\bibitem{b1} R. W. Picard, \textit{Affective Computing}. MIT Press, 2000.
+
 \bibitem{b19} R. O. Duda, P. E. Hart, and D. G. Stork, \textit{Pattern Classification}, 2nd ed. Wiley, 2000.
+
+\bibitem{b18} C. Elkan, "The foundations of cost-sensitive learning," in \textit{IJCAI}, vol. 1, no. 1, pp. 973-978, 2001.
+
+\bibitem{b11} P. K. Atrey et al., "Multimodal fusion for multimedia analysis: A survey," \textit{Multimedia Systems}, vol. 16, no. 6, pp. 345-379, 2010.
+
+\bibitem{b15} A. V. Oppenheim and R. W. Schafer, \textit{Discrete-Time Signal Processing}. Pearson, 2010.
+
 \bibitem{b20} R. S. Baker et al., "Better to be frustrated than bored: The incidence, persistence, and impact of learners’ cognitive–affective states," \textit{International Journal of Human-Computer Studies}, vol. 68, no. 4, pp. 223-241, 2010.
-\bibitem{b21} Yao-Hung Hubert Tsai et al., "Multimodal Transformer for Unaligned Multimodal Language Sequences," in \textit{Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics (ACL)}, 2019, pp. 6558-6569.
-\bibitem{b22} A. Baevski et al., "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations," in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 33, 2020, pp. 12449-12460.
-\bibitem{b23} D. Gunning et al., "XAI—Explainable artificial intelligence," \textit{Science Robotics}, vol. 4, no. 37, eaay7120, 2019.
+
+\bibitem{b3} A. D. Saragih, S. Lucey, and J. F. Cohn, "Deformable model fitting by regularized landmark mean-shift," \textit{International Journal of Computer Vision}, vol. 91, no. 2, pp. 200-215, 2011.
+
+\bibitem{b16} G. Casquez, D. Vogel, and R. Wattenhofer, "One Euro Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems," in \textit{Proceedings of the SIGCHI Conference on Human Factors in Computing Systems}, 2012, pp. 2527-2530.
+
+\bibitem{b4} S. D'Mello and A. Graesser, "Dynamics of affective states during complex learning," \textit{Learning and Instruction}, vol. 22, no. 2, pp. 145-157, 2012.
+
 \bibitem{b24} G. Siemens, "Learning analytics: The emergence of a discipline," \textit{American Behavioral Scientist}, vol. 57, no. 10, pp. 1380-1400, 2013.
+
+\bibitem{b6} J. Grafsgaard, J. B. Wiggins, K. E. Boyer, E. N. Wiebe, and J. C. Lester, "Automatically recognizing facial indicators of frustration and satisfaction in tutorial dialogue," in \textit{2013 Affective Computing and Intelligent Interaction (ACII)}, IEEE, 2013, pp. 159-165.
+
+\bibitem{b7} J. Whitehill, Z. Serpell, Y.-C. Lin, A. Foster, and J. R. Movellan, "The faces of engagement: Automatic recognition of student engagement from facial expressions," \textit{IEEE Transactions on Affective Computing}, vol. 5, no. 1, pp. 86-98, 2014.
+
+\bibitem{b8} N. Bosch, S. D'Mello, R. Baker, J. Ocumpaugh, and V. Shute, "Detecting student engagement: Human versus machine," in \textit{Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing}, 2015, pp. 817-820.
+
+\bibitem{b17} K. He, X. Zhang, S. Ren, and J. Sun, "Deep Residual Learning for Image Recognition," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 770-778.
+
+\bibitem{b10} S. Poria, E. Cambria, R. Bajpai, and A. Hussain, "A review of affective computing: From unimodal analysis to multimodal fusion," \textit{Information Fusion}, vol. 37, pp. 98-125, 2017.
+
+\bibitem{b14} S. Hershey et al., "CNN architectures for large-scale audio classification," in \textit{2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 2017, pp. 131-135.
+
 \bibitem{b26} T.-Y. Lin et al., "Focal loss for dense object detection," in \textit{Proceedings of the IEEE International Conference on Computer Vision (ICCV)}, 2017, pp. 2980-2988.
+
+\bibitem{b21} Yao-Hung Hubert Tsai et al., "Multimodal Transformer for Unaligned Multimodal Language Sequences," in \textit{Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics (ACL)}, 2019, pp. 6558-6569.
+
+\bibitem{b23} D. Gunning et al., "XAI—Explainable artificial intelligence," \textit{Science Robotics}, vol. 4, no. 37, eaay7120, 2019.
+
+\bibitem{b9} T. Baltrušaitis, C. Ahuja, and L.-P. Morency, "Multimodal Machine Learning: A Survey and Taxonomy," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 41, no. 2, pp. 423-443, 2019.
+
+\bibitem{b12} J. Deng, J. Guo, E. Ververas, I. Kotsia, and S. Zafeiriou, "RetinaFace: Single-Shot Multi-Level Face Localisation in the Wild," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2020, pp. 5203-5212.
+
+\bibitem{b22} A. Baevski et al., "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations," in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 33, 2020, pp. 12449-12460.
+
+\bibitem{b13} A. Radford et al., "Robust Speech Recognition via Large-Scale Weak Supervision," in \textit{International Conference on Machine Learning (ICML)}, 2023, pp. 28492-28518.
 
 \end{thebibliography}
 

@@ -117,11 +117,11 @@ Narsapur, Andhra Pradesh, India \\
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Modern intelligent systems increasingly operate under strict real-time, privacy, and resource constraints, particularly in edge-native environments. While individual advances in perception, inference, and control have improved component-level performance, the absence of a unified architectural framework frequently yields tightly coupled monoliths that defy independent validation. 
+Modern intelligent systems are increasingly required to operate under stringent real-time, privacy, and resource constraints, particularly at the edge. While recent advances in individual subsystems such as perception, inference, and control have contributed to improved performance at the component level, the lack of architectural principles has typically resulted in tightly coupled monolithic systems that are challenging to evaluate in isolation. 
 
-ScholarMaster treats architectural decomposition itself as a verifiable systems property rather than a software engineering convenience. This paper consolidates findings from a multi-paper research program into a coherent edge-native framework, decomposing the context-aware pipeline into isolated domains: sensing, geometric abstraction, probabilistic interpretation, logical evaluation, and control. 
+A system’s degree of decomposition is a fundamental property in architectural synthesis - ScholarMaster takes this to be a given. By synthesizing results of a multi-paper research agenda, this paper proposes an edge-native framework that isolates the context-aware pipeline into focused domains: sensing, geometric abstraction, probabilistic interpretation, logical evaluation, and control. 
 
-By enforcing strict abstraction admissibility between these stages, the architecture substantially constrains cross-layer leakage. Modularity emerges as a direct consequence of these boundary invariants. Drawing on experience from independently validated subsystem studies, we demonstrate how deterministic composition offers significant advantages over monolithic fusion when interpretability, fault isolation, and deployment auditability are the primary operational metrics.
+By ensuring strict abstraction admissibility between these stages, the architecture greatly limits cross-layer leakage. This, in turn, allows for an overall design that is modular by construction. By building on previous results in independently verifiable sub-systems, we proceed to demonstrate the benefits of this deterministic composition over more monolithic approaches, particularly in the face of interpretability, fault confinement, and auditability concerns.
 \end{abstract}
 
 % ==========================================
@@ -136,10 +136,10 @@ System Architecture, Edge-Native, Boundary Invariants, Deterministic Composition
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{architectural boundary invariants can transform decomposition itself into a verifiable systems property for edge-native intelligent systems.} This manuscript functions strictly as a systems-architecture paper analyzing edge-native structural composition, not a generalized intelligent-campus framework or a policy manifesto.
+The central thesis of this paper is that architectural boundary invariants can enable decomposition to be a verifiable systems property for edge-native intelligent systems. This manuscript is exclusively a systems-architecture paper, focusing on investigating edge-native structural composition, and not a general-purpose statement about intelligent-campus design or policy.
 
 \subsection{Operational Fragility in End-to-End Intelligent Systems}
-Deploying intelligent systems within institutional cyber-physical environments \cite{b1, b5, b15} involves managing tightly coupled operational constraints \cite{b6}. Monolithic edge pipelines frequently fail under incremental evolution. Tightly coupled representations accumulate hidden dependencies; subsystem upgrades destabilize unrelated logic; audit reconstruction becomes operationally infeasible; and implicit cross-layer assumptions grow over time. The core issue is architectural entanglement, not merely implementation complexity.
+Deploying intelligent systems in institutional cyber-physical environments \cite{b1, b5, b14} presents a broad range of interlocking operational constraints \cite{b6}. Monolithic edge pipelines are often insufficient, as tightly coupled representations hide interlocking dependencies, upgrades destabilize unrelated subsystems, audits fail to reconstruct lineage, and implicit assumptions dominate interactions across layers. There are no clean solutions because the challenges are deeply entangled with the architecture.
 
 Over the course of developing the ScholarMaster subsystem ecosystem, these architectural failure patterns became apparent \cite{b2, b13, b16}:
 \begin{enumerate}
@@ -149,23 +149,23 @@ Over the course of developing the ScholarMaster subsystem ecosystem, these archi
 \end{enumerate}
 
 \subsection{Subsystem Scope and Canonical Separation}
-Within the ScholarMaster architecture, this specific subsystem explicitly defines architectural strata, formalizes abstraction admissibility, and constrains cross-layer interaction. This subsystem does NOT implement probabilistic engagement interpretation (Paper 2), perform geometric sensing (Paper 3), execute runtime verification proofs (Paper 18), coordinate orchestration policy (Paper 9), or manage cryptographic provenance (Paper 8).
+Within the ScholarMaster architecture, this particular subsystem is responsible for specifying architectural strata, for establishing abstraction admissibility criteria, and for restricting inter-layer interactions. This subsystem does NOT realize probabilistic engagement interpretation (Paper 2), perform geometric sensing (Paper 3), execute runtime verification proofs (Paper 18), coordinate orchestration policy (Paper 9), or manage cryptographic provenance (Paper 8).
 
-The ScholarMaster architecture emerged from the recognition that decomposition must function as an enforceable operational constraint. This work consolidates the architectural understanding that evolved across the research program, synthesizing independently developed subsystem formalizations into a coherent reference framework.
+The ScholarMaster architecture has been defined through the insight that decomposition must be made obligatory. The present paper attempts to capture the architectural knowledge generated within the research program by synthesizing separately established approaches and formalisms into a reference architecture.
 
 % ==========================================
 % II. RELATED ARCHITECTURAL PARADIGMS
 % ==========================================
 \section{Related Architectural Paradigms}
-The architectural decisions underlying ScholarMaster are best understood against the structural limitations of existing intelligent system paradigms. Three dominant models have shaped edge-intelligent system design, and each reveals a distinct category of decomposition failure relevant to institutional cyber-physical environments.
+The architectural decisions made behind the design of ScholarMaster are best explained through the shortcomings of other existing intelligent system frameworks. There are three main approaches that have informed the building principles of present-day edge-intelligent systems, and each highlights a unique type of decomposition inadequacy in institutional cyber-physical frameworks.
 
-End-to-end monolithic pipelines \cite{b7} remain prevalent due to their implementation simplicity and throughput efficiency. Their central weakness is representational entanglement: perception, reasoning, and execution share opaque intermediate representations, making it difficult to attribute a behavioral anomaly to a specific functional origin. When such a system produces an incorrect decision, isolating whether the fault lies in sensory interpretation, logical evaluation, or control dispatch typically requires global pipeline introspection---a cost that scales poorly under institutional audit requirements.
+End-to-end monolithic pipelines \cite{b7} are widespread because of their Simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is responsible for what. Thus, if such a system makes a wrong decision, a researcher may have to examine all stages to identify the faulty one.
 
 Cloud-native microservice architectures \cite{b4, b14} address this coupling through network-level decomposition, but introduce a different failure mode. In edge environments, serialization and network transit overhead produces temporal jitter that undermines the determinism required for cyber-physical synchronization \cite{b19}. More subtly, loosely constrained service interfaces allow hidden semantic dependencies to emerge across layers, recreating at the API level the same entanglement that monoliths exhibit at the memory level.
 
-Event-driven distributed pipelines \cite{b9} partially address both scalability and modularity, yet they introduce synchronization drift: components operating on conflicting temporal snapshots of the environment accumulate inconsistent logical states. Without explicit temporal contracts, these inconsistencies remain latent until they surface as coordination failures during high-load or degraded operating conditions.
+Event driven distributed pipelines \cite{b8} address both scalability and modularity concerns to some extent, but introduce the notion of synchronization drift: different elements operating on inconsistent temporal snapshots of the system state diverge in their logical state; unless explicitly mediated, this leads to violations of synchronization contracts under load or degraded operating conditions.
 
-A common thread across these paradigms is that none treat decomposition boundaries as architecturally enforceable invariants. Boundaries exist as development conventions rather than structural constraints, and they erode under optimization pressure. Across the subsystem studies comprising the ScholarMaster program, this erosion was observed repeatedly during independent module validation. The architecture responds by elevating boundary enforcement to a first-class systems property (Table~\ref{tab:related_work}), prioritizing deterministic composition, abstraction admissibility, and long-term auditability over raw computational throughput.
+A commonality of these approaches in this regard is that in none of them is considered a decomposition boundary as an architecturally mandated invariant. Rather, boundaries are viewed as implementation conveniences that can be violated with little or no penalty. In practice, this perspective has proven to have significant negative consequences for large-scale software systems, which is discussed in detail in the next subsection. In particular, during independent module verification for our subsystem studies within the ScholarMaster program, such violations have been consistently found to occur under optimization pressure. By contrast, the architecture described emphasizes on the importance of boundaries as a first-class concern (Table~\ref{tab:related_work}), and places greater emphasis on ensuring deterministic composition of subsystems, their orthogonal abstraction, and auditability of such composition.
 
 \begin{table}[htbp]
 \caption{Architectural Paradigm Comparison}
@@ -188,7 +188,7 @@ Event-Driven & Synchronization drift & Strict upward abstraction admissibility \
 % III. DESIGN PRINCIPLES AND FORMALISMS
 % ==========================================
 \section{Boundary Invariants and Formalisms}
-Several operational tensions emerged during layered decomposition of the ScholarMaster subsystems. Resolving these tensions led to a set of boundary invariants that enforce abstraction admissibility across the stack. Decomposition is treated as an enforceable operational constraint, not merely a development preference. Boundaries are enforced structurally rather than organizationally, explicitly distinguishing interface contracts, abstraction admissibility, ownership isolation, and semantic leakage prevention.
+Several operational constraints were identified while performing layered decomposition of the ScholarMaster subsystems. Resolving these constraints resulted in specification of a set of boundary invariants that impose abstraction admissibility requirements on the decomposed subsystems. Decomposition is imposed as an operational constraint, not a design preference. The boundaries are enforced structurally, not just by organization, since it is important to distinguish interface contracts, abstraction admissibility, ownership isolation, and prevention of semantic leakage.
 
 \subsection{Abstraction Admissibility}
 Modularity is maintained by constraining each layer $L_i$ to a bounded transformation:
@@ -198,16 +198,16 @@ L_i : X_i \to X_{i+1}
 where $X_i$ represents the \textit{minimal abstraction admissible} for upward propagation. Higher layers consume strictly immutable abstractions. A sensing layer may output geometric coordinates, but it is structurally incapable of emitting a logical predicate. This constraint prevents higher-level logic from becoming implicitly dependent on lower-level implementation details \cite{b12, b20}.
 
 \subsection{Edge-Native Memory Confinement}
-Computation resolves entirely on localized, volatile hardware. By severing cloud dependencies, the architecture eliminates network jitter and natively enforces data sovereignty. Earlier subsystem formalizations revealed that treating all external network paths as hostile or unavailable was essential for ensuring critical path logic operates in functional isolation.
+Computation takes place in local, volatile, hardware. By removing the dependency on the cloud, it removes network latency, and ensures that data is stored wherever it is needed. Previous systems established that treating all external links as either compromised or down is necessary to ensure that logic on critical paths remains isolated.
 
 \subsection{Deterministic Composition}
-Determinism emerges from constrained architectural interaction, not merely synchronous execution. Predictability is achieved by treating lower-layer outputs as immutable, deterministic inputs. Skip-layer access introduces semantic instability and is explicitly prohibited. Traceability emerges from constrained upward propagation. The system's emergent behavior consequently becomes formally traceable within the defined bounds, eliminating the opacity associated with end-to-end deep learning pipelines where intermediate representations lack defined semantics.
+Determinism emerges from constrained architectural interaction. Synchronous execution achieves predictability by considering outputs from lower layers in their computation as deterministic inputs. Skipping layers creates ambiguity and is explicitly disallowed. Traceability comes from restricted uplinking. The resulting behavior is thus formally traceable within the constraints, and any emergent properties are predictable and not subject to the ambiguity of end-to-end deep learning architectures where representations are not formally defined.
 
 % ==========================================
 % IV. THE SCHOLARMASTER REFERENCE MODEL
 % ==========================================
 \section{The ScholarMaster Reference Model: A 4-Stratum Architecture}
-The architecture is structured into four distinct strata, each representing a discrete domain of operational responsibility and data sensitivity. This stratification ensures that raw physical observations never mix with institutional governance logic.
+The architecture is organized into four levels in which the system is separated into different areas of functionality and access. This division makes sure that the raw physical observations are not intertwined with the decision-making processes.
 
 \begin{itemize}
     \item \textbf{Physics Stratum (L1-L2):} Manages raw sensing and geometric abstraction. Subsystems in this stratum extract objective coordinates while remaining agnostic to institutional identity.
@@ -248,10 +248,10 @@ Figure \ref{fig:layers} visualizes the required abstraction contracts and illust
 \end{figure}
 
 \subsection{Constraint-First Architectural Synthesis (CFAS)}
-The ScholarMaster architecture evolved through a Constraint-First Architectural Synthesis (CFAS) methodology. CFAS operates as an inversion of conventional AI-system construction. Boundary constraints precede feature synthesis, subsystem admissibility is evaluated before integration, and architectural survivability outweighs short-term throughput optimization. Rather than beginning with a feature set and attempting to bolt on privacy and real-time guarantees, the process first established the boundary invariants ($B_i$) and then synthesized the functional features that could exist within those constraints. This inversion of the typical design sequence emerged from early prototyping experience, where feature-first approaches repeatedly produced architectures that required expensive post-hoc privacy remediation.
+The ScholarMaster architecture was created using the innovative method called Constraint-First Architectural Synthesis (CFAS). This method focuses on the reverse engineering of AI-system building principles. The boundaries are defined before features are created and installed within the system. The subsystem’s acceptability is prioritized with regard to the overall design’s survivability as opposed to its immediate throughput. In other words, instead of defining the set of features that the system will be designed around, and later installing the privacy and real-time guarantees, the features were defined according to the constraints. The reason for this approach was determined during the prototyping phase, as most of the feature-first designs resulted in the necessity to implement costly privacy retrofits.
 
 \subsection{Schema-Constrained Semantic Firewalls}
-Schema constraints enforce abstraction admissibility, not absolute security guarantees. The architecture enforces an "Irreversibility Boundary" through schema-constrained semantic firewalls. By utilizing strictly typed serialization (e.g., Protobuf), the system restrains representational leakage and abstraction narrowing reduces downstream semantic dependency, making it structurally impossible to pass a raw image tensor or an absolute coordinate across a layer boundary. For example, the interface between the Sensing and Reasoning layers is constrained to categorical IDs and logical spatial zones, precluding the possibility of identity leakage through high-dimensional raw features.
+Schema constraints dictate what abstractions are permissible, but provide no security guarantees. The architecture creates an ''Irreversibility Boundary'' between layers via schema-constrained semantic firewalls. By enforcing strict typing via serialization (e.g. Protobuf), representation leakage is mechanically inhibited while abstraction narrowing reduces downstream semantic dependencies, thus making it impossible to pass a raw image tensor or absolute coordinate system across layer boundaries. For instance, the interface between the Sensing and Reasoning layer only permits categorical IDs and logical spatial regions, preventing identity leakage at the feature level.
 
 % ==========================================
 % V. CROSS-LAYER CONSISTENCY
@@ -341,20 +341,20 @@ State Management & SM-P11 \\
   \draw[->, thick, gray, dashed] (P1) -- (G_governance);
 
 \end{tikzpicture}
-\caption{The ScholarMaster Research Ecosystem Map. The architecture decomposes architectural responsibility into four independently verifiable strata (Physics, Logic, Verification, Governance). This structural decomposition illustrates how functional boundaries may be enforced without introducing uncontrolled cross-layer leakage.}
+\caption{The ScholarMaster Research Ecosystem Map. The architecture decouples system responsibility into four independently verifiable layers (Physics, Logic, Verification, Governance). Here, we see how the system enforces a set of boundaries that allows the absence of uncontrolled cross-layer interactions.}
 \label{fig:ecosystem}
 \end{figure*}
 
 \section{Example Operational Trace: Attendance Validation}
 To ground the preceding formalism in operational reality, consider a concrete institutional attendance validation event. This trace illustrates the layered traceability that the architecture enforces across a single decision lifecycle.
 
-The journey begins at the \textbf{Sensing Layer}, which extracts raw geometric occupancy abstractions (bounding boxes, skeletal points) from visual and acoustic streams. Crucially, this layer does not know "who" is present or "why"; it merely produces stateless physical coordinates.
+The process starts with the Sensing Layer that extracts the raw geometric occupancy abstractions (bounding boxes, skeletal points) from the visual and acoustic streams. Note that the Sensing Layer has no awareness of ''who'' is present or ''why'' - it provides stateless physical coordinates.
 
-These abstractions propagate to the \textbf{Probabilistic Interpretation Layer}, where they are anchored against temporal priors to produce bounded confidence states. This layer determines the likelihood of sustained presence while smoothing out sensory jitter.
+These abstractions are funneled into the Probabilistic Interpretation Layer, where they are anchored to temporal priors in order to define bounded confidence states. This layer defines the probability of existence and defines away noise in favor of persistence.
 
-The resulting probability state is consumed by the \textbf{Logical Evaluation Layer}, which tests institution-specific predicates—such as duration thresholds or authorized schedule compliance. Only after deterministic predicate satisfaction does the \textbf{Control Layer} emit an operational action, such as updating a ledger or granting access.
+The resulting probability state is then fed into the next component, the Logical Evaluation Layer, which evaluates institution-specific predicates (e.g., time thresholds or allowed schedules). The Control Layer only proceeds to perform an operation (e.g., update a ledger or allow access) if the predicate is satisfied deterministically.
 
-At no point does the control layer access raw sensor tensors, nor does the sensing layer interpret institutional policy semantics. If a decision is later questioned, an auditor can reconstruct the exact logical predicate and the specific probabilistic state that triggered it, without needing to re-watch hours of raw video.
+At no point do we ever allow the control layer to observe raw sensor tensors, or the sensing layer to understand institutional policy semantics. If an action is challenged, an auditor can reconstitute the precise logical predicate and associated probability that led to it, without having to watch a single frame of video.
 
 % ==========================================
 % VI. WHY LAYER VIOLATIONS ARE DANGEROUS
@@ -363,7 +363,7 @@ At no point does the control layer access raw sensor tensors, nor does the sensi
 
 Across the subsystem studies, a consistent pattern emerged: the most operationally significant failures in edge-intelligent systems rarely originated from algorithmic weakness within a single layer. Rather, they traced back to uncontrolled information flow across layer boundaries \cite{b10}.
 
-When a vision layer accumulates temporal tracking state that belongs to the interpretation layer, or when a control loop reads raw sensor confidence scores without predicate mediation, the resulting system loses functional traceability. The architecture categorizes and explicitly prohibits these cross-boundary behaviors (Table \ref{tab:forbidden}).
+When a vision layer accumulates temporal tracking state that belongs to the interpretation layer or when control loops read raw sensor confidence scores, without predicate-based mediation, the resulting system is no longer accountable; Table~\ref{tab:forbidden} specifies the architecture’s formal prohibitions.
 
 \begin{table}[htbp]
 \caption{Examples of Forbidden Cross-Layer Behaviors}
@@ -382,7 +382,7 @@ Logic layer caching raw camera/audio sensor streams & Violates \textit{data mini
 \end{tabular}
 \end{table}
 
-Enforcing this functional ownership allows an auditing body to inspect the Logical Evaluation Layer in isolation, verifying compliance without needing to account for implicit state injections from perception or runtime modules.
+By enforcing this functional ownership, an auditing body can inspect the Logical Evaluation Layer in isolation, thus ensuring that it does not rely on any implicit state injection from perception or runtime modules.
 
 % ==========================================
 % VII. OPERATIONAL AND SYSTEM-LEVEL PROPERTIES
@@ -391,14 +391,14 @@ Enforcing this functional ownership allows an auditing body to inspect the Logic
 
 The operational properties described in this section were not designed prescriptively. They emerged as consistent observations during independent subsystem validation and integration testing across the research program.
 
-In institutional deployments, cross-layer leakage rarely manifests as immediate system failure. More commonly, it accumulates as \textit{operational ambiguity}---organizations gradually lose the ability to determine whether a behavioral anomaly originated from sensing, probabilistic interpretation, logical policy drift, or runtime scheduling instability. ScholarMaster treats this ambiguity itself as a systems failure mode: by enforcing explicit ownership boundaries, the architecture constrains each anomaly to a single, verifiable functional origin.
+In institutional settings, cross-layer leakage rarely causes outright system failures. Instead, it leads to operational ambiguities, as organizations grapple with the realization that a behavioral anomaly might have emerged from sensing or probabilistic inference, logical policy inconsistency, or runtime scheduling imprecision. ScholarMaster addresses such ambiguities by design - by creating an architecture that makes it impossible for such anomalies to manifest without a clear owner function, thereby constraining their source to a single, verifiable cause.
 
-This concern extends to architectural debt, which in intelligent systems behaves differently from traditional software technical debt. In tightly coupled AI pipelines, hidden dependencies accumulate inside intermediate representations, temporal assumptions, and shared memory layouts. These dependencies remain invisible until a subsystem upgrade forces them into the open, at which point the pipeline may require expensive global revalidation. The boundary invariants in ScholarMaster constrain this accumulation structurally: because layers interact only through admissible abstractions, local model optimizations remain contained within their stratum rather than propagating as hidden coupling across the system.
+This concern carries over to architectural debt, which in intelligent systems takes a different form compared to traditional software. In tightly coupled AI pipelines, implicit couplings between various stages can appear in the form of hidden dependencies between intermediate representations, temporal assumptions, memory layouts, and more. These can be discovered too late, when an upgraded sub-system touches upon these points, potentially requiring a significant validation effort of the entire pipeline. The boundaries imposed by the invariants of ScholarMaster on the interactions between its layers, however, prevent such architectural debt from appearing: if the coupling between two sub-systems is performed via admissible abstractions, any local changes to one of them can only affect its own layer, not the other.
 
 \subsection{Failure Containment and Propagation}
-In monolithic systems, local perception failures frequently cascade globally because downstream logic directly consumes unstable intermediate representations. A flickering detection confidence under low light, for instance, can induce rapid oscillations in control actuators that have no independent stability mechanism.
+In monolithic systems, local perception failures often propagate catastrophically to higher levels since further processing steps operate directly on unstable representations. For example, an intermittent drop in confidence during low-light tracking could lead to thruster control loops executing unsafe, rapidly alternating control decisions with no inherent failsafes.
 
-ScholarMaster constrains this propagation through layered failure containment (Figure \ref{fig:propagation}). If a sensing layer becomes degraded, higher layers observe only bounded abstraction degradation rather than raw instability. The probability layer smooths the uncertainty mathematically, and the logic layer defaults to a safe Boolean fallback state, limiting the operational impact of localized sensory degradation \cite{b21}.
+ScholarMaster constrains this propagation through layered failure containment (Figure \ref{fig:propagation}). If a sensing layer is degraded, higher layers see only a bounded abstraction degradation instead of outright instability. The probability layer adds an additional constraint smoothing out the mathematical space, while the logic layer can revert to a simple Boolean default to bound the operational impact of localized sensing failures \cite{b20}.
 
 \begin{figure}[htbp]
 \centering
@@ -437,7 +437,7 @@ ScholarMaster constrains this propagation through layered failure containment (F
 \end{figure}
 
 \subsection{Operational Auditability}
-Auditability within ScholarMaster emerges structurally from deterministic composition rather than from retrospective logging mechanisms applied after pipeline construction. Because each layer consumes and emits strictly bounded abstractions, a system decision can be reconstructed chronologically without requiring access to raw sensor streams or opaque internal memory states. An auditor can trace the exact geometric abstraction that triggered a specific probability, and the exact probability that satisfied a specific logic predicate.
+Auditability in ScholarMaster is done by construction and not by logging after the fact since each stage produces/consumes only bounded abstract representations. This allows for reconstructing the decision making process of the system at any point in time with full knowledge of the relevant constraints without having to reason about lower level sensor details or higher level memory structures. The auditor can reason about the exact geometric abstraction that produced a particular probability and the exact probability threshold that triggered a logical predicate.
 
 Table \ref{tab:comparison} summarizes how these emergent properties compare against traditional monolithic designs across key operational dimensions.
 
@@ -464,32 +464,32 @@ State ownership clarity & Ambiguous & Explicit \\
 \section{Lifecycle Stability and Upgrade Semantics}
 A persistent operational problem observed during longitudinal subsystem development is upgrade fragility. In tightly coupled architectures, updating a perception model frequently invalidates downstream logic assumptions, forcing expensive end-to-end revalidation. Hardware ages, models decay, and systems without isolation eventually become entangled with their oldest component.
 
-ScholarMaster addresses this through admissible-state contracts, an approach that crystallized through iterative subsystem evolution. Internal implementation changes are permitted provided that exported abstraction boundaries remain contract-compliant. This allows individual layers to evolve independently without destabilizing the global system.
+ScholarMaster addresses this problem in the form of admissible-state contracts. It was worked out during the evolution of subsystems, which allows for some internal implementation changes so long as the exported abstraction boundaries are maintained. Individual layers can be modified independently of one another, thus leaving the overall system intact.
 
-For example, during the research program, the geometric sensing subsystem transitioned from a CNN-based detector to a transformer-based representation model without requiring modifications to probabilistic interpretation or logical evaluation layers. As long as the exported geometric abstraction remained compliant with the interface contract, the higher-level reasoning modules were operationally unaware of the implementation shift. This architectural isolation substantially reduces long-term maintenance complexity and helps prevent silent behavioral drift during incremental upgrades.
+For example, during the research program, the geometric sensing sub-system was replaced by an entirely different architecture (CNN-based detector replaced with transformer-based representation model) while keeping the same probabilistic interpretation and logical evaluation layers intact. As long as the exported geometric abstraction adhered to the interface contract, the higher level reasoning modules were essentially oblivious to the lower level changes. Such properties are particularly valuable in practice as they significantly reduce the long-term maintenance overhead and mitigate risks of silent behavioral regressions during iterative improvements.
 
 \section{Institutional Deployment and Multi-Tenant Realities}
-Institutional intelligent systems rarely operate in isolation. Universities, hospitals, and industrial facilities frequently require multiple independent operational policies to coexist on shared hardware infrastructure. Experience from deployment-oriented subsystem studies confirmed that functional ownership boundaries are essential for managing this complexity. 
+Institutional intelligent systems rarely operate in isolation. Universities, hospitals, and industrial facilities often have multiple operational policies that must be enforced concurrently on shared hardware. Experience with the implementation of individual subsystems has shown that clear ownership of policy fragments is critical for manageability. 
 
-Because operational logic remains isolated from sensing infrastructure, institutions may independently update policy layers without requiring recertification of lower-level perception modules. This separation is especially valuable in regulated environments where governance logic evolves more rapidly than physical sensing hardware. Furthermore, multi-tenant operation becomes feasible because logical evaluation remains isolated from sensing and runtime execution, allowing independent policy domains to operate concurrently without exposing raw sensor streams across organizational boundaries.
+Because the operational logic is decoupled from the sensing infrastructure, policy layers can be upgraded independently of each other, without requiring re-certification of lower levels. This is particularly important in a regulated environment, where the evolution of the governance logic may be faster than the approval cycles for the underlying sensing hardware. Moreover, multi-tenancy is possible, because the logical evaluation layer is separated from sensing and execution, and different policy domains can be executed concurrently, without exposing lower-level sensor data to other organizations.
 
-This decomposition also permits selective recertification. A modification to institutional logic (e.g., changing attendance compliance rules) does not require re-validation of sensing hardware or probabilistic interpretation models. This substantially reduces operational governance complexity, allowing business logic to iterate faster than physical hardware.
+This decomposition also allows selective recertification. For instance, a change in institutional logic (e. g., attendance policy) does not require re-certifying sensing hardware or re-evaluating probabilistic interpretations. This dramatically lowers the governance overhead, enabling business logic to evolve faster than the supporting hardware.
 
 % ==========================================
 % IX. CERTIFICATION AND ARCHITECTURAL ECONOMICS
 % ==========================================
 \section{Certification and Regulatory Implications}
-Edge-intelligent deployments increasingly operate under regulatory constraints requiring explainability, auditability, and bounded operational behavior. Certification becomes structurally difficult when perception weights directly influence business logic through entangled intermediate representations---a condition common in monolithic deep-learning systems where functional responsibility cannot be attributed to individual components.
+Edge intelligent systems tend to function in environments where regulations require explanations, audit trails, and a limited behavior set. Certification is often challenging for such systems if perception weights cause direct business logic effects, as is the case with many monolithic deep learning systems, since they are typically not directly tied to business logic.
 
-ScholarMaster addresses this by decomposing operational responsibility into independently auditable layers, enabling partial certification of logical or control behavior without requiring full introspection into lower-level sensing internals. The architecture aligns with institutional governance frameworks such as GDPR \cite{b11}, where data minimization and deterministic operational reconstruction are structural requirements rather than optional compliance features.
+ScholarMaster tackles this by slicing up the responsibility surface into independently verifiable layers so that any given component can be certified for logical or control behavior without diving into implementation details below. The design reflects institutional governance frameworks like GDPR \cite{b10}, where data minimization and deterministic reconstruction of operational logic are mandated features, not optional extensions.
 
 \section{Architectural Scope, Tradeoffs, and Operational Economics}
 
-ScholarMaster does not attempt to maximize benchmark-specific accuracy metrics or replace tightly coupled inference systems in all deployment contexts. The framework targets environments where auditability, lifecycle maintainability, deterministic composition, and bounded operational behavior take precedence over unconstrained throughput optimization. This scope distinction matters: the architecture intentionally accepts a higher latency floor than fused pipelines in exchange for operational transparency and independent verifiability.
+ScholarMaster makes no claims of outperforming existing work on specific benchmarks or maximizing accuracy gains via monolithic, non-auditable inference pipelines. It focuses on application domains where interpretability, lifecycle auditing, predictable composition, and bounded execution profiles matter more than throughput optimization. Thus, it has a higher latency floor than specialized fused pipelines that prioritize performance isolation.
 
-A practical intelligent system is rarely static over its operational lifespan. Heterogeneous hardware drift, version skew between subsystem generations, runtime degradation under aging hardware, serialization overhead accumulation, and institutional deployment heterogeneity present real operational challenges. Cameras fail, microphones degrade, institutional policies evolve, and hardware procurement cycles produce heterogeneous deployments spanning multiple device generations. This reality became increasingly apparent as successive subsystem studies encountered hardware diversity in practice. The architecture is therefore designed under the assumption that evolution is inevitable, prioritizing subsystem survivability under incremental replacement rather than requiring synchronized full-stack upgrades.
+A practical intelligent system rarely stays the same throughout its lifespan. Hardware diverges, versions skew between generations of a subsystem, performance degrades on older hardware, serialized processing introduces overhead, and institutional deployment diversity leads to heterogeneity. Cameras stop working, microphones wear out, policies change, and hardware acquisition practices lead to widely varying subsystem generations being deployed at the same time. In practice, this has proven to be a significant challenge to later subsystems by the time they were developed. The architecture given is designed around an expectation of ongoing evolution rather than uniform upgrades of an entire stack at once, and thus emphasizes subsystem survivability in the face of iterative replacement.
 
-Every abstraction boundary in ScholarMaster imposes cost: serialization overhead, interface validation, and stricter ownership constraints. The architecture treats this friction as a stabilizing mechanism---making components harder to connect arbitrarily reduces the surface area for unpredictable coupling failures. Tightly coupled systems frequently appear cheaper during early development because direct memory access minimizes immediate engineering overhead \cite{b17}. However, these short-term economies create maintenance liabilities that compound as the system ages. ScholarMaster externalizes this complexity through explicit interfaces, accepting higher initial discipline requirements in exchange for substantially lower long-term operational cost across upgrades, debugging, auditing, and subsystem replacement within the evaluated architectural constraints.
+Each abstraction boundary in ScholarMaster incurs costs such as serialization overhead, interface verification, and reduced ownership. The architecture reflects this by making it more difficult to connect components loosely coupled and therefore less likely to have ad hoc couplings that are hard to manage. Systems with tighter coupling often seem more cost-effective during implementation, as the benefits of direct memory access can reduce immediate engineering costs \cite{b17}. However, these costs are often deferred to later stages in the development cycle.
 
 \subsection{Failed Design Alternatives}
 Early architectural prototypes explored shared-memory fusion between the sensing and logic layers, on the premise that raw memory pointers would eliminate serialization copy overhead. The approach reduced end-to-end latency by several milliseconds, but produced hidden coupling: the logic layer became implicitly dependent on the memory layout of the vision pipeline. When the vision model was quantized for deployment, downstream logic failed without any interface contract violation being reported. This experience---among several similar integration episodes---led the architecture to reject shared-memory fusion, accepting serialization overhead as the structural cost of independent verifiability.
@@ -505,33 +505,52 @@ This layered edge-native architecture study demonstrates that scaling intelligen
 
 This comes at a cost. Constraining perception, interpretation, logic, and control to interact exclusively through narrow, typed interfaces introduces serialization overhead and engineering friction that fused pipelines avoid. Across the independently validated subsystem studies comprising this research program, however, that friction consistently contributed to failure containment, audit reconstructibility, and independent subsystem evolution---properties that proved more operationally valuable than the marginal latency savings of tighter coupling.
 
-This paper consolidates the systems-engineering understanding that emerged from a multi-paper research trajectory. The resulting framework does not claim universality; it is scoped to edge-native institutional environments where interpretability, deterministic composition, abstraction admissibility, and subsystem survivability under evolution are primary operational requirements. Within that scope, the evidence from independent subsystem validation supports treating enforceable decomposition as a verifiable systems property---one whose enforcement costs are outweighed by the operational transparency and structural resilience it provides.
+This paper collates systems-engineering understanding distilled from a larger body of work represented in the papers that follow. The resulting design philosophy cannot be considered universal; rather, it is appropriate to the class of systems comprised of edge-native institutions for which interpretability, deterministic composition, abstraction admission, and evolution resistance are primary concerns. To the extent that these criteria are relevant to the systems under consideration, the evidence presented supports the validity of their decomposition as a system property that can be enforced with reasonable cost and risk.
 
 % ==========================================
 % REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b1} Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
-\bibitem{b2} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
-\bibitem{b3} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-\bibitem{b4} P. Jamshidi et al., "Microservices: The Journey So Far and Challenges Ahead," \textit{IEEE Software}, vol. 35, no. 3, pp. 24-35, 2018.
-\bibitem{b5} E. A. Lee, "The Past, Present and Future of Cyber-Physical Systems: A Focus on Models," \textit{Sensors}, vol. 15, no. 3, pp. 4837-4869, 2015.
-\bibitem{b6} H. Kopetz, \textit{Real-Time Systems: Design Principles for Distributed Embedded Applications}. Springer Science \& Business Media, 2011.
-\bibitem{b7} M. Bojarski et al., "End to end learning for self-driving cars," \textit{arXiv preprint arXiv:1604.07316}, 2016.
-\bibitem{b9} M. Quigley et al., "ROS: an open-source Robot Operating System," in \textit{ICRA workshop on open source software}, 2009.
-\bibitem{b10} A. Avizienis, J. Laprie, B. Randell, and C. Landwehr, "Basic concepts and taxonomy of dependable and secure computing," \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
-\bibitem{b11} P. Voigt and A. von dem Bussche, \textit{The EU General Data Protection Regulation (GDPR): A Practical Guide}. Springer International Publishing, 2017.
 \bibitem{b12} D. L. Parnas, "On the criteria to be used in decomposing systems into modules," \textit{Communications of the ACM}, vol. 15, no. 12, pp. 1053-1058, 1972.
-\bibitem{b13} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
-\bibitem{b14} S. Newman, \textit{Building Microservices: Designing Fine-Grained Systems}. O'Reilly Media, Inc., 2015.
-\bibitem{b15} J. A. Stankovic, "Research directions for the internet of things," \textit{IEEE Internet of Things Journal}, vol. 1, no. 1, pp. 3-9, 2014.
-\bibitem{b16} F. Bonomi, R. Milito, J. Zhu, and S. Addepalli, "Fog computing and its role in the internet of things," in \textit{Proceedings of the first edition of the MCC workshop on Mobile cloud computing}, 2012, pp. 13-16.
-\bibitem{b17} D. Sculley et al., "Hidden technical debt in machine learning systems," in \textit{Advances in neural information processing systems}, vol. 28, 2015.
-\bibitem{b18} R. Roman, J. Lopez, and M. Mambo, "Mobile edge computing, fog et al.: A survey and analysis of security threats and challenges," \textit{Future Generation Computer Systems}, vol. 78, pp. 680-698, 2018.
-\bibitem{b19} Y. Gan et al., "An open-source benchmark suite for microservices and their hardware-software implications for cloud \& edge systems," in \textit{Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)}, 2019, pp. 3-18.
-\bibitem{b20} L. Bass, P. Clements, and R. Kazman, \textit{Software Architecture in Practice}, 3rd ed. Addison-Wesley Professional, 2012.
+
+\bibitem{b10} A. Avizienis, J. Laprie, B. Randell, and C. Landwehr, "Basic concepts and taxonomy of dependable and secure computing," \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
+
+\bibitem{b9} M. Quigley et al., "ROS: an open-source Robot Operating System," in \textit{ICRA workshop on open source software}, 2009.
+
 \bibitem{b21} N. G. Leveson, \textit{Engineering a Safer World: Systems Thinking Applied to Safety}. MIT Press, 2011.
+
+\bibitem{b6} H. Kopetz, \textit{Real-Time Systems: Design Principles for Distributed Embedded Applications}. Springer Science \& Business Media, 2011.
+
+\bibitem{b16} F. Bonomi, R. Milito, J. Zhu, and S. Addepalli, "Fog computing and its role in the internet of things," in \textit{Proceedings of the first edition of the MCC workshop on Mobile cloud computing}, 2012, pp. 13-16.
+
+\bibitem{b20} L. Bass, P. Clements, and R. Kazman, \textit{Software Architecture in Practice}, 3rd ed. Addison-Wesley Professional, 2012.
+
+\bibitem{b15} J. A. Stankovic, "Research directions for the internet of things," \textit{IEEE Internet of Things Journal}, vol. 1, no. 1, pp. 3-9, 2014.
+
+\bibitem{b14} S. Newman, \textit{Building Microservices: Designing Fine-Grained Systems}. O'Reilly Media, Inc., 2015.
+
+\bibitem{b17} D. Sculley et al., "Hidden technical debt in machine learning systems," in \textit{Advances in neural information processing systems}, vol. 28, 2015.
+
+\bibitem{b5} E. A. Lee, "The Past, Present and Future of Cyber-Physical Systems: A Focus on Models," \textit{Sensors}, vol. 15, no. 3, pp. 4837-4869, 2015.
+
+\bibitem{b3} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
+\bibitem{b7} M. Bojarski et al., "End to end learning for self-driving cars," \textit{arXiv preprint arXiv:1604.07316}, 2016.
+
+\bibitem{b11} P. Voigt and A. von dem Bussche, \textit{The EU General Data Protection Regulation (GDPR): A Practical Guide}. Springer International Publishing, 2017.
+
+\bibitem{b13} M. Satyanarayanan, "The Emergence of Edge Computing," \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
+
+\bibitem{b18} R. Roman, J. Lopez, and M. Mambo, "Mobile edge computing, fog et al.: A survey and analysis of security threats and challenges," \textit{Future Generation Computer Systems}, vol. 78, pp. 680-698, 2018.
+
+\bibitem{b4} P. Jamshidi et al., "Microservices: The Journey So Far and Challenges Ahead," \textit{IEEE Software}, vol. 35, no. 3, pp. 24-35, 2018.
+
+\bibitem{b1} Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
+
+\bibitem{b19} Y. Gan et al., "An open-source benchmark suite for microservices and their hardware-software implications for cloud \& edge systems," in \textit{Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)}, 2019, pp. 3-18.
+
+\bibitem{b2} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
 
 \end{thebibliography}
 
