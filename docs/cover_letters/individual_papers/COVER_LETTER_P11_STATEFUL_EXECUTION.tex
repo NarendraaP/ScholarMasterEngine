@@ -1,0 +1,33 @@
+August 3, 2026
+
+Program Committee Chairs
+ACM/IFIP International Middleware Conference
+ACM / IFIP
+
+SUBJECT: Submission of Manuscript P11 — Stateful Execution and Cold-Boot Recovery in Edge Daemons
+
+Dear Program Committee Chairs and Reviewers,
+
+We are pleased to submit our original research manuscript titled "Stateful Execution and Cold-Boot Recovery in Edge Daemons" for consideration as a research paper at the ACM/IFIP International Middleware Conference.
+
+1. SUBSYSTEM BACKGROUND AND MOTIVATION
+Edge computing daemons deployed in remote physical environments face sudden power disruptions and hard reboots. Recovering operational state without persisting un-anonymized sensitive telemetry or corrupting local databases requires resilient middleware daemon design. This paper presents a fault-tolerant stateful execution container for edge nodes.
+
+2. CORE TECHNICAL CONTRIBUTIONS AND NOVELTY
+  - Systemd Service Isolation & Recovery: Configures automated systemd service daemons paired with atomic `os.replace()` state file swaps to guarantee crash-safe state updates.
+  - Sub-3 Second Cold-Boot Recovery: Achieves full system cold-boot startup and model reloading within 2.8 seconds following forced power failure events.
+  - Crash-Resilient Volatile RAM Sanitization: Proves that forced power terminations leave zero un-anonymized residual frame data in non-volatile storage media.
+
+3. SUITABILITY FOR MIDDLEWARE CONFERENCE
+This paper directly aligns with Middleware's core focus on edge daemon architectures, fault tolerance, system recovery, state management middleware, and operational resilience.
+
+4. ETHICS AND ORIGINALITY DECLARATIONS
+This manuscript is an original submission, has not been published before, and is not under review elsewhere.
+
+Sincerely,
+
+Polisetti Narendra (Corresponding Author)
+Department of Computer Science & Engineering
+Swarnandhra College of Engineering and Technology (Autonomous)
+Seetharampuram, Narasapur-534280, Andhra Pradesh, India
+Email: narendraa1996@gmail.com

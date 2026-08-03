@@ -1,0 +1,33 @@
+August 3, 2026
+
+Editor-in-Chief
+IEEE Internet of Things Journal
+IEEE
+
+SUBJECT: Submission of Manuscript P10 — Multi-Threaded Validation Framework for Real-Time Edge Processing
+
+Dear Editor-in-Chief and Associate Editors,
+
+We are pleased to submit our original research manuscript titled "Multi-Threaded Validation Framework for Real-Time Edge Processing" for publication consideration in the IEEE Internet of Things Journal.
+
+1. SUBSYSTEM BACKGROUND AND MOTIVATION
+Real-time multi-modal edge platforms require concurrent processing across video ingestion, acoustic feature extraction, compliance evaluation, and thermal sampling. Un-orchestrated multi-threaded designs lead to lock contention, frame queue overflows, and high latency jitter. This paper presents a synchronized 5-daemon thread orchestration architecture for real-time edge nodes.
+
+2. CORE TECHNICAL CONTRIBUTIONS AND NOVELTY
+  - 5-Daemon Thread Synchronization: Orchestrates Video (33ms), Audio (100ms), Compliance (5s), Power (10s), and Dashboard (1s) threads using explicit `threading.Lock` guards and state caching.
+  - Sub-33ms Execution Pipeline: Sustains a 32.4ms total frame processing latency (14.5ms inference backend), meeting the 30 FPS real-time processing floor without queue buffer overflow.
+  - Stress Testing & Jitter Profiling: Benchmarks pipeline performance over 1,000-frame continuous runs, demonstrating latency jitter of less than 1.2ms under full multi-camera load.
+
+3. SUITABILITY FOR IEEE INTERNET OF THINGS JOURNAL
+This paper fits the IEEE Internet of Things Journal's scope in multi-threaded IoT architectures, edge processing performance validation, latency-jitter profiling, and concurrent sensor stream management.
+
+4. ETHICS AND ORIGINALITY DECLARATIONS
+This work represents original research, is not published elsewhere, and is not under consideration by another venue.
+
+Sincerely,
+
+Polisetti Narendra (Corresponding Author)
+Department of Computer Science & Engineering
+Swarnandhra College of Engineering and Technology (Autonomous)
+Seetharampuram, Narasapur-534280, Andhra Pradesh, India
+Email: narendraa1996@gmail.com
