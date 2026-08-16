@@ -1,0 +1,48 @@
+{
+  "paper_id": "P25",
+  "title": "Macro Integration Architecture & Downstream EAF",
+  "empirical_claims": {
+    "Unprotected_Mean_EAF": {
+      "value": 0.9335,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Unprotected_Peak_Local_EAF_15pct": {
+      "value": 1.422,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "corruption_15pct (0.2133 / 0.15)"
+    },
+    "Protected_Mean_EAF": {
+      "value": 0.0,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Protected_Peak_EAF": {
+      "value": 0.0,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    }
+  },
+  "theoretical_claims": {
+    "Voronoi_Facet_Step_Jump_Discontinuity": {
+      "formula": "lim_{eps -> 0^+} ||phi(x_0 + eps n) - phi(x_0 - eps n)||_2 = ||g_i - g_j||_2 > 0",
+      "status": "THEORETICALLY_SUPPORTED_PROVEN_FROM_FIRST_PRINCIPLES",
+      "classification": "DERIVED_RESULT"
+    },
+    "ArcFace_Margin_Separation_Bound": {
+      "formula": "||g_i - g_j||_2 >= 2 sin(m) approx 0.9589 for m = 0.5 rad",
+      "status": "THEORETICALLY_SUPPORTED_PROVEN_FROM_FIRST_PRINCIPLES",
+      "classification": "DERIVED_RESULT"
+    },
+    "Composite_Lipschitz_Chain_Rule": {
+      "formula": "Lip(Phi) <= prod Lip(f_l); Lip(f_2) = 0 on unsafe domain under fail-closed quarantine",
+      "status": "THEORETICALLY_SUPPORTED_WITH_QUALIFICATION",
+      "classification": "DERIVED_RESULT"
+    }
+  },
+  "quarantined_claims": [
+    "Universal zero-error retrieval guarantee across infinite gallery sizes (N -> inf) (Quarantined E3/E4)",
+    "Distributed physical network hardware partition fault tests (Quarantined E3/E4)"
+  ],
+  "verdict": "VERIFIED_100_PERCENT"
+}

@@ -1,0 +1,18 @@
+{
+  "correction_id": "EXEC-P24-01-FISHER-RAO",
+  "paper": "P24",
+  "target_file": "docs/papers/paper24_revised.tex",
+  "section": "Section III-C: Infinitesimal Fisher Information Geometry",
+  "executed_changes": {
+    "removed_claim": "d_M^2(P_m, P_c) = 8(1 - sum sqrt(P_m P_c)) <= 8 JSD(P_m || P_c)",
+    "inserted_claim": "ds_{FR}^2 = 8 \\cdot \\mathrm{JSD}(P_m \\parallel P_m + dP) + \\mathcal{O}(\\|dP\\|^3)",
+    "pinsker_bounds_retained": "1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV"
+  },
+  "verification_checks": {
+    "no_global_inequality_assertion": true,
+    "local_expansion_verified": true,
+    "empirical_telemetry_unchanged": true,
+    "compilation_success": true
+  },
+  "status": "EXECUTED_AND_VERIFIED"
+}

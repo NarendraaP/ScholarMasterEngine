@@ -1,0 +1,17 @@
+{
+  "correction_id": "EXEC-P25-02-QUARANTINE-LIPSCHITZ",
+  "paper": "P25",
+  "target_file": "docs/papers/paper25_revised.tex",
+  "section": "Section IV-B: Composite Lipschitz Chain Rule Analysis",
+  "executed_changes": {
+    "previous_prose": "In contrast, under Layer 1 fail-closed gating, the domain of f_2 is restricted to certified low-risk sub-manifolds X_cert = {x | R_p(x) <= 0.70}, strictly bounding Lip(f_2) and guaranteeing EAF = 0.0.",
+    "corrected_prose": "In contrast, under Layer 1 fail-closed gating, uncertified sensory inputs (X_quar) are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, while certified inputs are restricted to sub-manifolds X_cert = {x | R_p(x) <= 0.70} within Voronoi cell interiors, guaranteeing EAF = 0.0000 on quarantined perturbations."
+  },
+  "verification_checks": {
+    "domain_restricted_quarantine_qualified": true,
+    "unconstrained_discontinuity_distinguished": true,
+    "eaf_empirical_telemetry_unchanged": true,
+    "compilation_success": true
+  },
+  "status": "EXECUTED_AND_VERIFIED"
+}

@@ -1,0 +1,20 @@
+{
+  "paper_id": "P10",
+  "title": "Formal Reliability Modeling & Fault Verification",
+  "original_contract": "Modeled system reliability over software process crashes, hardware faults, and network timeouts.",
+  "proposed_contract": "Explicitly include sensory corruption as a modeled fault class mitigated by Layer 1 fail-closed gating.",
+  "actual_dependency": true,
+  "necessity": "RECOMMENDED (with narrowing)",
+  "scientific_ownership": "PRESERVED (P10 owns reliability state modeling; P22 owns perception uncertainty)",
+  "claim_transfer": "NONE (P10 references perception gating as an external precondition)",
+  "mathematical_impact": "NONE (Markov state reliability equations remain 100% valid)",
+  "empirical_impact": "NONE (Fault injection benchmarks hold; zero reruns required)",
+  "figure_impact": "NONE",
+  "citation_impact": "REQUIRED (Cite P22 and P25 for perceptual fault containment)",
+  "salami_slicing_impact": "ZERO_RISK (Distinct domains: Markov reliability modeling vs evidential uncertainty)",
+  "decision": "APPROVE_WITH_NARROWING",
+  "minimal_patch": {
+    "section": "Section III (System Fault Model)",
+    "action": "Add 2 sentences clarifying that sensory corruption faults are intercepted at Layer 1 and treated as fail-closed quarantine states in the macro reliability model."
+  }
+}

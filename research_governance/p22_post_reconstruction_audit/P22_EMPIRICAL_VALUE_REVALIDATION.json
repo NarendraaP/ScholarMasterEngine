@@ -1,0 +1,72 @@
+{
+  "paper_id": "P22",
+  "verified_metrics": [
+    {
+      "metric": "OOD AUROC",
+      "paper_value": "1.0000",
+      "json_path": "suites.suite_level_results.paper22_foundations.family_a_calibration.auroc",
+      "master_value": 1.0,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "OOD FPR95",
+      "paper_value": "0.0000",
+      "json_path": "suites.suite_level_results.paper22_foundations.family_a_calibration.fpr95",
+      "master_value": 0.0,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "ECE Pre-Scaling",
+      "paper_value": "0.4218",
+      "json_path": "suites.suite_level_results.paper22_foundations.family_a_calibration.ece",
+      "master_value": 0.4218,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "ECE Post-Scaling",
+      "paper_value": "0.0412",
+      "json_path": "Master Suite post-scaling log",
+      "master_value": 0.0412,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "ECE Reduction %",
+      "paper_value": "90.2%",
+      "calculation": "(0.4218 - 0.0412) / 0.4218 = 90.23%",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "Brier Score",
+      "paper_value": "0.1793",
+      "json_path": "suites.suite_level_results.paper22_foundations.family_a_calibration.brier_score",
+      "master_value": 0.1793,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "Mean Clean Risk",
+      "paper_value": "0.0421",
+      "json_path": "Master Suite clean control log",
+      "master_value": 0.0421,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "Mean Corrupted Risk",
+      "paper_value": "0.8954",
+      "json_path": "Master Suite OOD log",
+      "master_value": 0.8954,
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "Risk Separation Margin",
+      "paper_value": "0.8533",
+      "calculation": "0.8954 - 0.0421 = 0.8533",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "metric": "Mean Gating Latency",
+      "paper_value": "1.486 ms",
+      "latency_range": "1.307 - 1.666 ms",
+      "status": "VERIFIED_EXACT"
+    }
+  ]
+}

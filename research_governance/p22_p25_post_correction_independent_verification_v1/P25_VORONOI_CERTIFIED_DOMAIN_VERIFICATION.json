@@ -1,0 +1,16 @@
+{
+  "claim_under_review": "Section IV-B: '...while certified inputs are restricted to sub-manifolds X_cert = {x | R_p(x) <= 0.70} within Voronoi cell interiors, guaranteeing EAF = 0.0000 on quarantined perturbations.'",
+  "investigation_questions": {
+    "1_implementation_guarantee": "Does the ScholarMaster code/implementation prove that every x with R_p(x) <= 0.70 lies strictly inside a single Voronoi cell with positive margin?",
+    "1_finding": "NO. In implementation (core/canonical_layers.py and benchmarks/benchmark_perception_integrity.py), R_p(x) measures input corruption (epistemic vacuity, blur, spatial landmark disagreement). It does not compute distance to the nearest ArcFace Voronoi decision boundary in biometric embedding space.",
+    "2_mathematical_implication": "Does R_p(x) <= 0.70 mathematically imply positive distance from every Voronoi facet?",
+    "2_finding": "NO. A clean input (e.g. an uncorrupted image of a twin or closely-spaced face) has low perception risk (R_p <= 0.70) but its embedding may lie arbitrarily close to a Voronoi facet boundary between adjacent identities.",
+    "3_empirical_dataset_property": "Is Voronoi-interior membership true for the benchmark dataset?",
+    "3_finding": "YES. In the evaluated 5-regime benchmark across distinct enrolled gallery identities, certified clean inputs do map into the interior of their respective Voronoi cells without false cross-boundary retrieval flips.",
+    "4_epistemic_classification": "Is 'within Voronoi cell interiors' a derived theorem or an empirical/operational property?",
+    "4_finding": "It is an OPERATIONAL PROPERTY OF THE EVALUATED BENCHMARK GALLERY, not an unconditional mathematical consequence of R_p <= 0.70."
+  },
+  "verdict": "VERIFICATION_REQUIRED",
+  "reason": "The phrase 'within Voronoi cell interiors' should be explicitly stated as an operational property of the evaluated gallery under certified perception, rather than an automatic mathematical consequence of the perception risk threshold.",
+  "recommended_surgical_wording": "In contrast, under Layer 1 fail-closed gating, uncertified sensory inputs (X_quar) are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, preventing evaluation of corrupted vectors across Voronoi boundaries and achieving EAF = 0.0000 on quarantined perturbations across the evaluated regimes."
+}

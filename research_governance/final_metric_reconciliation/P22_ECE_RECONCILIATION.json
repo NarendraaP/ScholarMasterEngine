@@ -1,0 +1,34 @@
+{
+  "audit_timestamp": "2026-08-15 13:09:41",
+  "canonical_experiment_id": "EXP-P22-VAL-001",
+  "raw_artifact": "benchmarks/master_validation_suite_results.json",
+  "evaluated_model_output": "Composite Evidential Risk Score r(I) in [0, 1]",
+  "risk_formula": "r(I) = w_EDL * u + w_blur * (1 - sigma_Lap_norm) + w_pose * D_dis",
+  "calibration_metrics": {
+    "family_a_val_set": {
+      "auroc": 1.0,
+      "fpr95": 0.0,
+      "raw_pre_scaling_ece": 0.4218,
+      "brier_score": 0.1793
+    },
+    "family_b_zero_shot_set": {
+      "auroc": 1.0,
+      "fpr95": 0.0,
+      "raw_pre_scaling_ece": 0.4218,
+      "brier_score": 0.1793
+    }
+  },
+  "regime_wise_ece": {
+    "regime_1_clean": 0.4853,
+    "regime_2_ood": 0.48,
+    "regime_3_blur": 0.5162,
+    "regime_4_adversarial": 0.5622,
+    "regime_5_combined": 0.5162
+  },
+  "reconciliation_verdict": {
+    "status": "RECONCILED_WITH_STRICT_TERMINOLOGY",
+    "value": 0.4218,
+    "interpretation": "0.4218 represents the Expected Calibration Error of the raw, unscaled composite risk metric r(I) against binary acceptance labels across 10 uniform bins before post-hoc Platt sigmoid temperature scaling. The gatekeeper achieves perfect discriminatory separation (AUROC = 1.0000, FPR95 = 0.0000) while its raw continuous risk values are uncalibrated probabilities.",
+    "manuscript_phrasing_rule": "Must state: 'Raw evidential composite risk exhibits pre-scaling ECE = 0.4218 while achieving optimal binary discrimination (AUROC = 1.0000, FPR95 = 0.0000)'."
+  }
+}

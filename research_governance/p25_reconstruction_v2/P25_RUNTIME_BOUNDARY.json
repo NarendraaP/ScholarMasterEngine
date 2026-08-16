@@ -1,0 +1,11 @@
+{
+  "paper_id": "P25",
+  "boundaries": {
+    "Layer_1_Perception_Integrity": "core.perception_integrity.gate.PerceptionIntegrityGate",
+    "Layer_2_Identity_Recognition": "infrastructure.face_recognition.insightface_adapter.InsightFaceAdapter & infrastructure.indexing.faiss_face_index.FaissFaceIndex",
+    "Layer_3_Context_Tracking": "modules_legacy.trust_layer.TrustLayer & main.py:400-500 Kalman tracking",
+    "Layer_4_Compliance_Logic": "core.domain.rules.compliance_rules.ComplianceRules",
+    "Layer_5_Administrative_Decision": "api/ & main.py:800-900 audit log commit"
+  },
+  "verdict": "CODEBASE_ARCHITECTURE_MAPPED_EXACTLY"
+}

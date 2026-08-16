@@ -1,0 +1,56 @@
+{
+  "A_JSD_Calculation": {
+    "source_file": "docs/papers/paper24_revised.tex",
+    "function_or_class": "Theorem 1 / Information-Theoretic Derivation",
+    "import_relationship": "None (Mathematical model in manuscript)",
+    "production_call_site": "None (Production uses ConsistencyChecker heuristics in core/perception_integrity/consistency.py)",
+    "benchmark_call_site": "None (Benchmark uses gate.process() which routes via CalibratedRisk)",
+    "shared_code": false,
+    "classification": "NOT_IMPLEMENTED_IN_PRODUCTION"
+  },
+  "B_Dynamic_Trust_Weighting": {
+    "source_file": "core/perception_integrity/adaptive_cascade.py",
+    "function_or_class": "AdaptiveCascade.route()",
+    "import_relationship": "from core.perception_integrity import PerceptionIntegrityGate, CascadeDecision",
+    "production_call_site": "main.py:677-686, 860 (discrete 4-way authority routing: ACCEPT/DEGRADE/DELEGATE/HALT)",
+    "benchmark_call_site": "benchmarks/paper3_cross_modal_recovery.py:62 (res = self.gate.process(packet))",
+    "shared_code": true,
+    "classification": "SHARED_CORE_WITH_BENCHMARK_WRAPPER"
+  },
+  "C_3_Stream_Fusion": {
+    "source_file": "core/perception_integrity/contracts.py",
+    "function_or_class": "SensorInputPacket (frame, keypoints, audio_db)",
+    "import_relationship": "from core.perception_integrity import SensorInputPacket",
+    "production_call_site": "main.py:671 (pi_packet = self.perception_gate.process_frame(frame, audio_db, ...))",
+    "benchmark_call_site": "benchmarks/paper3_cross_modal_recovery.py:57 (packet = SensorInputPacket(...))",
+    "shared_code": true,
+    "classification": "SHARED_CORE_WITH_BENCHMARK_WRAPPER"
+  },
+  "D_Ring_Buffer_Synchronization": {
+    "source_file": "core/perception_integrity/consistency.py & docs/papers/paper24_revised.tex",
+    "function_or_class": "ConsistencyChecker.check() (skew check) & Algorithm 1 (software PLL)",
+    "import_relationship": "Internal to core.perception_integrity",
+    "production_call_site": "core/perception_integrity/consistency.py:30-37 (timestamp skew window < 1.0s)",
+    "benchmark_call_site": "None (Algorithm 1 is formal mathematical/hardware specification in paper)",
+    "shared_code": false,
+    "classification": "NOT_IMPLEMENTED_IN_PRODUCTION"
+  },
+  "E_Consensus_Recovery_Decision": {
+    "source_file": "core/perception_integrity/adaptive_cascade.py",
+    "function_or_class": "AdaptiveCascade.route()",
+    "import_relationship": "from core.perception_integrity import PerceptionIntegrityGate",
+    "production_call_site": "main.py:685, 860 (when visual degraded, switches to pose-only kinematics)",
+    "benchmark_call_site": "benchmarks/paper3_cross_modal_recovery.py:65 (res.decision in ('ACCEPT', 'DEGRADE'))",
+    "shared_code": true,
+    "classification": "SHARED_PRODUCTION_IMPLEMENTATION"
+  },
+  "F_Synthetic_Degradation_Mechanism": {
+    "source_file": "benchmarks/paper3_cross_modal_recovery.py",
+    "function_or_class": "Paper3CrossModalBenchmark.run_cross_modal_evaluation()",
+    "import_relationship": "Benchmark test driver",
+    "production_call_site": "None (Production operates on real physical sensors)",
+    "benchmark_call_site": "benchmarks/paper3_cross_modal_recovery.py:39-44 (is_visual_corrupted = np.random.rand() < deg)",
+    "shared_code": false,
+    "classification": "SEPARATE_BENCHMARK_IMPLEMENTATION"
+  }
+}

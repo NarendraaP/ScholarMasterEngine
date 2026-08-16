@@ -1,0 +1,47 @@
+{
+  "content_analysis": {
+    "paper_id": "P25",
+    "filepath": "docs/papers/paper25_revised.tex",
+    "total_source_words": 1365,
+    "compiled_body_words": 863,
+    "approx_body_pages": 0.96,
+    "approx_ref_pages": 1.17,
+    "approx_total_pages": 2.13,
+    "word_breakdown": {
+      "abstract": 123,
+      "introduction": 77,
+      "related_work": 234,
+      "problem_formulation": 0,
+      "methodology": 83,
+      "experimental_methodology_and_results": 245,
+      "discussion": 0,
+      "limitations": 0,
+      "conclusion": 26
+    },
+    "element_counts": {
+      "equations": 2,
+      "tables": 2,
+      "figures_and_tikz": 2,
+      "references": 30,
+      "algorithms": 0
+    }
+  },
+  "section_depth_classification": {
+    "abstract": "SUBSTANTIVE (Clear 5-layer macro pipeline, continuous EAF analysis, protected EAF 0.0000 vs unprotected 0.9330)",
+    "introduction": "THIN (2 short paragraphs; lacks detailed exposition of institutional multi-layer failure cascades and cascading false alarm costs)",
+    "related_work": "THIN (Brief summaries of ML technical debt, data cascades, trustworthy AI; lacks end-to-end multi-layer pipeline comparison table)",
+    "problem_formulation": "ADEQUATE (EAF_k definition, pre-registered Hypotheses H1 and H2)",
+    "methodology": "THIN (Contains TikZ pipeline, but lacks formal mathematical propagation model through Identity, Context, and Compliance layers, and formal verification safety contracts)",
+    "experimental_evaluation": "THIN (Reports EAF table and layer breakdown under 15% noise, but lacks layer-by-layer error progression curves, confusion matrices, and formal compliance solver logs)",
+    "discussion": "THIN (Brief discussion of error suppression)",
+    "limitations": "THIN (Brief paragraph on single-node evaluation)",
+    "conclusion": "ADEQUATE"
+  },
+  "critical_missing_components": [
+    "1. Formal Mathematical Formulation of Layer-Wise Error Transfer Functions: T_1(Perception) -> T_2(Identity) -> T_3(Context) -> T_4(Compliance)",
+    "2. Formal Verification Theorem: Bounded Downstream Error Guarantee under Perception Integrity Enforcement",
+    "3. End-to-End Execution Trace & Sequence Diagram of Protected vs Unprotected Pipeline under 20% Noise",
+    "4. Granular Layer-by-Layer Error Propagation Breakdown across all 5 Noise Severity Levels (0%, 5%, 10%, 15%, 20%)",
+    "5. Detailed Computational & Latency Overhead Accounting across all 5 System Layers"
+  ]
+}

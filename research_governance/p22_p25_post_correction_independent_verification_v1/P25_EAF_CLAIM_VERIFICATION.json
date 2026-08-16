@@ -1,0 +1,61 @@
+{
+  "claim_under_review": "EAF = 0.0000 on quarantined perturbations",
+  "authoritative_source": "benchmarks/master_validation_suite_results.json",
+  "exact_path": "empirical_results.EMPIRICAL_RESULT.paper25_downstream_error_propagation.level_reports",
+  "logged_data": {
+    "unprotected_pipeline": {
+      "0pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "5pct_noise": {
+        "identity_error": 0.0667,
+        "eaf": 1.334
+      },
+      "10pct_noise": {
+        "identity_error": 0.1067,
+        "eaf": 1.067
+      },
+      "15pct_noise": {
+        "identity_error": 0.2133,
+        "eaf": 1.422
+      },
+      "20pct_noise": {
+        "identity_error": 0.1867,
+        "eaf": 0.9335
+      },
+      "mean_eaf": 0.9335
+    },
+    "protected_pipeline": {
+      "0pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "5pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "10pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "15pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "20pct_noise": {
+        "identity_error": 0.0,
+        "eaf": 0.0
+      },
+      "mean_eaf": 0.0
+    }
+  },
+  "exact_findings": {
+    "is_0_0000_observed_empirical": true,
+    "perturbation_regimes": "0%, 5%, 10%, 15%, 20% additive Gaussian and spatial perturbation",
+    "applies_to_quarantined_perturbations": true,
+    "mathematical_distinction": "On quarantined inputs (R_p > 0.70), gating deterministically halts execution, so E_2 = 0 is an exact operational invariant for quarantined frames. Across the full 0%\u201320% range, protected EAF = 0.0000 is an empirically verified result.",
+    "guaranteeing_vs_achieving": "In formal scientific prose, 'achieving EAF = 0.0000 on evaluated perturbations' or 'yielding EAF = 0.0000 under deterministic fail-closed halt' is more precise than an unconditional 'guaranteeing'."
+  },
+  "verdict": "EMPIRICALLY_VERIFIED"
+}

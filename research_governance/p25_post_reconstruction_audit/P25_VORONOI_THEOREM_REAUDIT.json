@@ -1,0 +1,32 @@
+{
+  "paper_id": "P25",
+  "theorem": "Voronoi Step Discontinuity Theorem",
+  "derivation_steps": [
+    {
+      "step": "1. Voronoi cell definition",
+      "equation": "V_i = {z in S^(D-1) | <z, g_i> > <z, g_j>, forall j != i}",
+      "verdict": "VERIFIED"
+    },
+    {
+      "step": "2. Facet boundary definition",
+      "equation": "F_ij = closure(V_i) cap closure(V_j)",
+      "verdict": "VERIFIED"
+    },
+    {
+      "step": "3. Normal perturbation vector",
+      "equation": "n = (g_i - g_j) / ||g_i - g_j||",
+      "verdict": "VERIFIED"
+    },
+    {
+      "step": "4. One-sided limits",
+      "equation": "phi(x0 + eps n) = g_i, phi(x0 - eps n) = g_j for eps > 0",
+      "verdict": "VERIFIED"
+    },
+    {
+      "step": "5. Jump magnitude",
+      "equation": "lim_{eps -> 0+} ||phi(x0 + eps n) - phi(x0 - eps n)|| = ||g_i - g_j||_2 = sqrt(2 - 2<g_i, g_j>) > 0",
+      "verdict": "VERIFIED"
+    }
+  ],
+  "classification": "LOCAL_STEP_JUMP_DISCONTINUITY"
+}

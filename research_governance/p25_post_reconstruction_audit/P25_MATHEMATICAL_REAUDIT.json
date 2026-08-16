@@ -1,0 +1,23 @@
+{
+  "paper_id": "P25",
+  "theorems_audited": [
+    {
+      "item": "Theorem 1: Voronoi Facet Boundary Step Discontinuity",
+      "statement": "lim_{eps -> 0+} ||phi(x0 + eps n) - phi(x0 - eps n)||_2 = ||g_i - g_j||_2 > 0",
+      "status": "MATHEMATICALLY_RIGOROUS_LOCAL_DISCONTINUITY",
+      "notes": "Verified from first principles. Proves non-existence of a global continuous derivative across Voronoi facets on S^(D-1)."
+    },
+    {
+      "item": "Proposition 1: ArcFace Target Angular Separation Margin",
+      "statement": "Under target class separation theta_ij >= 2m with margin m = 0.5 rad, ||g_i - g_j||_2 >= 2 sin(m) approx 0.9589",
+      "status": "QUALIFIED_MATHEMATICAL_SPECIFICATION",
+      "notes": "Must be framed as the target design separation invariant enforced by ArcFace loss, rather than an unconstrained universal neural network guarantee."
+    },
+    {
+      "item": "Proposition 2: Composite Lipschitz Chain Rule & Domain Restriction",
+      "statement": "Lip(Phi|_{X_cert}) <= prod_{l=1}^5 Lip(f_l|_{X_cert}); Lip(f_gate|_{X_quar}) = 0",
+      "status": "MATHEMATICALLY_RIGOROUS_DOMAIN_PARTITIONING",
+      "notes": "Domain restriction to certified manifold X_cert avoids Voronoi facet singularities; fail-closed quarantine on X_quar maps corrupted inputs to constant null state bot."
+    }
+  ]
+}

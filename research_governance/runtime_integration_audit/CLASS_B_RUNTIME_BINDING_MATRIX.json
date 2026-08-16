@@ -1,0 +1,90 @@
+[
+  {
+    "paper": "P1",
+    "runtime_component": "main.py / FaceRegistry",
+    "input_contract": "PerceptionPacket / ValidatedFeaturePayload",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "INDIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P2",
+    "runtime_component": "modules_legacy/face_registry.py (HNSW)",
+    "input_contract": "512-dim ArcFace embedding from Validated payload",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "NONE",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P3",
+    "runtime_component": "modules_legacy/privacy_analytics.py (Pose)",
+    "input_contract": "17-keypoint skeleton array",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "DIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P4",
+    "runtime_component": "modules_legacy/scheduler.py (AutoScheduler)",
+    "input_contract": "Time, day, zone metadata",
+    "p22_dep": "INDIRECT",
+    "p23_dep": "INDIRECT",
+    "p24_dep": "NONE",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P7",
+    "runtime_component": "modules_legacy/st_csf.py (SpatiotemporalCSF)",
+    "input_contract": "Validated event stream from Layer 3/2",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "INDIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P10",
+    "runtime_component": "modules_legacy/audit_trail.py (Merkle Audit)",
+    "input_contract": "Approved event payload from L5 GovernanceFilter",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "INDIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P18",
+    "runtime_component": "core/canonical_layers.py (GovernanceFilter)",
+    "input_contract": "Inference complete event payload",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "INDIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  },
+  {
+    "paper": "P19",
+    "runtime_component": "core/canonical_layers.py (EdgeAbstraction)",
+    "input_contract": "Raw frame buffer + TTL capture timestamp",
+    "p22_dep": "DIRECT",
+    "p23_dep": "DIRECT",
+    "p24_dep": "DIRECT",
+    "p25_dep": "DIRECT",
+    "runtime_enforced": true,
+    "status": "DIRECT_RUNTIME_BINDING"
+  }
+]

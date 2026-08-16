@@ -1,0 +1,22 @@
+{
+  "paper_id": "P4",
+  "title": "ST-CSF: Spatio-Temporal Compliance Stream Formulation",
+  "original_contract": "Formulated interval temporal logic over detection event streams sigma = (e_1, e_2, ...).",
+  "proposed_contract_v1": "Modify event stream alphabet to Sigma_valid = Sigma \\setminus {bot}.",
+  "firewall_evaluation": "UNNECESSARY_EQUATION_MUTATION: P4's formal temporal logic semantics are self-contained. Altering the formal alphabet definition in theorems risks breaking original proof domains unnecessarily.",
+  "actual_dependency": true,
+  "necessity": "REQUIRED (with replacement)",
+  "scientific_ownership": "PRESERVED (P4 owns ST-CSF temporal logic; P25 owns EAF propagation)",
+  "claim_transfer": "NONE",
+  "mathematical_impact": "NONE (All temporal logic semantics, sliding stream evaluators, and interval equations PRESERVED 100%)",
+  "empirical_impact": "NONE (Compliance verification throughput benchmarks hold; zero reruns required)",
+  "figure_impact": "NONE",
+  "citation_impact": "REQUIRED (Cite P25 for macro error propagation context)",
+  "salami_slicing_impact": "ZERO_RISK (Distinct domains: formal logic verification vs error amplification)",
+  "decision": "REPLACE",
+  "replacement_rationale": "Preserve all formal equations. Add a prose qualification stating that ST-CSF monitors event streams emitted from validated upstream perception payloads, while quarantined inputs do not emit falsifying compliance events.",
+  "minimal_patch": {
+    "section": "Section III (Event Stream Formulation)",
+    "action": "Add 2-sentence prose qualification without changing mathematical alphabet definitions."
+  }
+}

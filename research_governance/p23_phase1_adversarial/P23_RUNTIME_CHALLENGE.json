@@ -1,0 +1,15 @@
+{
+  "production_call_sites": [
+    "main.py:677 (HALT circuit breaker drop)",
+    "main.py:685 (ACCEPT fast-path / DELEGATE probe)",
+    "main.py:860, 874 (DEGRADE pose-only privacy mode)"
+  ],
+  "production_classes": "core.perception_integrity.adaptive_cascade.AdaptiveCascade",
+  "separation_of_domains": {
+    "production": "4-State thresholded cascade dispatch (ACCEPT/DEGRADE/DELEGATE/HALT)",
+    "shared_core": "PerceptionIntegrityGate.process() and SensorInputPacket contracts",
+    "benchmark": "benchmarks/paper2_adaptive_edge.py execution harness",
+    "theoretical_model": "Fenchel-Rockafellar convex optimization and M/G/1 queueing delay"
+  },
+  "verdict": "CHALLENGE_PASSED (Runtime boundaries strictly documented and authentic)"
+}

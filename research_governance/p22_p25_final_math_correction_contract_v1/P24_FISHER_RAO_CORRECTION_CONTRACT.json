@@ -1,0 +1,28 @@
+{
+  "contract_id": "MCC-P24-01-FISHER-RAO",
+  "paper_id": "P24",
+  "title": "Generalized Cross-Modal Recovery under Compromised Primary Sensing",
+  "original_manuscript_claim": "Section III-C, Equation (14) / line 117: d_M^2(P_m, P_c) = 8(1 - sum sqrt(P_m P_c)) <= 8 JSD(P_m || P_c) claimed as a global inequality bounding Riemannian geodesic distance.",
+  "why_accepted_previously": "Endres & Schindelin (2003) and Nielsen (2020) established relationships between JSD and Hellinger distance, and infinitesimal equivalence with the Fisher metric tensor. Preliminary audits accepted the factor 8 without testing boundary distributions on the simplex.",
+  "exact_mathematical_discrepancy": "The global inequality fails for orthogonal/disjoint distributions. For P=(1,0), Q=(0,1): d_FR^2 = pi^2 approx 9.8696, whereas 8 JSD = 8 ln 2 approx 5.5452. Thus 9.8696 <= 5.5452 is false (fails by factor 1.7798).",
+  "independent_verification_performed": "Evaluated analytical and numerical counterexample on Delta^1. Derived exact Taylor expansion for dP -> 0 proving infinitesimal equivalence ds_FR^2 = 8 JSD(P || P + dP) + O(||dP||^3).",
+  "corrected_mathematical_statement": "Infinitesimally on the statistical manifold, ds_{FR}^2 = 8 \\mathrm{JSD}(P_m \\parallel P_m + dP) + \\mathcal{O}(\\|dP\\|^3). Globally, the Jensen-Shannon Divergence is bounded in [0, ln 2] and bounds total variation distance via Pinsker's inequality: 1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV.",
+  "required_assumptions": [
+    "Discrete probability distributions P_m, P_c in Delta^K.",
+    "Fisher-Rao metric tensor g_ij(P) defined on the interior of the simplex.",
+    "Infinitesimal displacement dP with sum dP_k = 0."
+  ],
+  "exact_manuscript_location": "docs/papers/paper24_revised.tex: Section III-C (lines 114\u2013120, Eq. 14)",
+  "changes_classification": {
+    "equation_changed": true,
+    "theorem_changed": false,
+    "proof_changed": false,
+    "prose_changed": true,
+    "figure_changed": false,
+    "experiment_changed": false
+  },
+  "empirical_results_affected": false,
+  "citation_impact": "None (Endres & Schindelin 2003 and Lin 1991 remain valid citations for metric properties and bounds).",
+  "single_owner_impact": "None (P24 retains exclusive ownership of multimodal JSD consensus and dynamic trust weighting).",
+  "originality_cross_paper_impact": "None (No overlap with P22, P23, or P25)."
+}

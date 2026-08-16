@@ -1,0 +1,22 @@
+{
+  "paper_id": "P2",
+  "title": "Probabilistic Multi-Rate Context Fusion",
+  "original_contract": "Assumed sensory observations entering Kalman tracking have fixed or heuristically estimated covariance R_k.",
+  "proposed_contract_v1": "Dynamic Covariance Scaled by JSD Trust Weights w_m from P24.",
+  "firewall_evaluation": "CLAIM_TRANSFER_RISK: P2 did not originally formulate or own JSD consensus (owned by P24). Inserting JSD equations into P2 would violate single-owner boundaries.",
+  "actual_dependency": true,
+  "necessity": "REQUIRED (with replacement)",
+  "scientific_ownership": "PRESERVED via Replacement (P2 retains Bayesian state fusion; P24 retains JSD consensus mathematics)",
+  "claim_transfer": "PREVENTED (Replaced proposed JSD derivation with narrow input validity qualification)",
+  "mathematical_impact": "NONE (Bayesian Kalman covariance equations remain untouched)",
+  "empirical_impact": "NONE (Tracking experiments remain 100% valid; zero reruns required)",
+  "figure_impact": "NONE",
+  "citation_impact": "REQUIRED (Cite P24 as external provider of cross-modal trust estimation)",
+  "salami_slicing_impact": "ZERO_RISK (Clear separation: P2 = context fusion, P24 = cross-modal recovery)",
+  "decision": "REPLACE",
+  "replacement_rationale": "Do not import P24 JSD weighting equations into P2. Qualify that P2 operates on perception observations satisfying the upstream validity contract.",
+  "minimal_patch": {
+    "section": "Section III (Observation Model)",
+    "action": "Add 2 sentences qualifying that sensory inputs are pre-validated by the upstream perception integrity layer and that observation noise covariance R_k reflects validated sensory health."
+  }
+}

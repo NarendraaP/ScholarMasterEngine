@@ -1,0 +1,36 @@
+{
+  "paper_id": "P25",
+  "architectural_mapping": {
+    "Layer_1_Perception_Integrity": {
+      "file": "core/perception_integrity/gate.py",
+      "class": "PerceptionIntegrityGate",
+      "call_site": "main.py:650-700",
+      "status": "PRODUCTION_IMPLEMENTED"
+    },
+    "Layer_2_Identity_Recognition": {
+      "file": "infrastructure/face_recognition/insightface_adapter.py and infrastructure/indexing/faiss_face_index.py",
+      "classes": "InsightFaceAdapter, FaissFaceIndex",
+      "call_site": "main.py:720-760",
+      "status": "PRODUCTION_IMPLEMENTED"
+    },
+    "Layer_3_Context_Tracking": {
+      "file": "modules_legacy/trust_layer.py and main.py",
+      "functions": "Kalman tracking, spatial engagement",
+      "call_site": "main.py:770-810",
+      "status": "PRODUCTION_IMPLEMENTED"
+    },
+    "Layer_4_Compliance_Logic": {
+      "file": "core/domain/rules/compliance_rules.py",
+      "class": "ComplianceRules",
+      "call_site": "main.py:820-850",
+      "status": "PRODUCTION_IMPLEMENTED"
+    },
+    "Layer_5_Administrative_Decision": {
+      "file": "api/ and core/failure_semantics.py",
+      "functions": "Audit logging, incident dispatch",
+      "call_site": "main.py:860-900",
+      "status": "PRODUCTION_IMPLEMENTED"
+    }
+  },
+  "verdict": "REAL_PRODUCTION_ARCHITECTURE_GROUNDED_IN_CODEBASE"
+}

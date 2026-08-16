@@ -1,0 +1,23 @@
+{
+  "paper_id": "P25",
+  "title": "ScholarMaster Integration Architecture & Downstream Error Propagation Analysis",
+  "claims": [
+    {
+      "claim_id": "P25-C1",
+      "manuscript_location": "Section III Table 1",
+      "claim_text": "Unprotected pipeline suffers error amplification (Unprotected Mean EAF = 0.933), while protected pipeline suppresses downstream error to Protected Mean EAF = 0.000.",
+      "metric": "Error Amplification Factor (EAF)",
+      "reported_value": "Protected EAF = 0.000, Unprotected EAF = 0.933",
+      "experiment_id": "PAPER25_ERROR_PROPAGATION",
+      "raw_artifact": "benchmarks/master_validation_suite_results.json",
+      "configuration": "End-to-End Pipeline (Perception -> Identity -> Context -> Compliance)",
+      "dataset": "0% to 20% Visual Noise Injection Split",
+      "split": "5 Corruption Severity Levels",
+      "seed": 42,
+      "statistical_support": "Protected Layer Error = 0.000 across all 5 levels; H2 (EAF < 0.30) passed",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility_status": "REPRODUCIBLE",
+      "verification_status": "VERIFIED"
+    }
+  ]
+}

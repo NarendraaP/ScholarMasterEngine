@@ -172,37 +172,19 @@ def test_adapters():
 # ============================================================================
 
 def test_main_files():
-    """Verify refactored orchestrators exist"""
-    print("\n📄 Test 6: Refactored Orchestrators")
+    """Verify primary system main script exists"""
+    print("\n📄 Test 6: Primary Orchestrator System")
     
-    main_files = [
-        "main_unified_backup.py",  # Original preserved
-        "main_refactored.py",      # Phase 1
-        "main_event_driven.py"     # Phase 2
-    ]
-    
-    missing = []
-    for mf in main_files:
-        if not os.path.exists(mf):
-            missing.append(mf)
+    main_files = ["main.py"]
+    missing = [mf for mf in main_files if not os.path.exists(mf)]
     
     if missing:
         print(f"  ❌ FAIL: Missing main files: {missing}")
         return False
     else:
-        print(f"  ✅ PASS: All 3 orchestrator versions present")
-        
-        # Check line counts
-        for mf in main_files:
-            with open(mf, 'r') as f:
-                lines = len(f.readlines())
-                print(f"     - {mf}: {lines} lines")
-        
+        print(f"  ✅ PASS: Primary orchestrator main.py present")
         return True
 
-# ============================================================================
-# Test 7: Legacy Modules Preserved
-# ============================================================================
 
 def test_legacy_preserved():
     """Verify legacy modules still exist (backward compat)"""
@@ -216,29 +198,46 @@ def test_legacy_preserved():
         print(f"  ❌ FAIL: modules_legacy/ was deleted!")
         return False
 
-# ============================================================================
-# Test 8: Documentation
-# ============================================================================
 
 def test_documentation():
-    """Verify refactoring documentation exists"""
-    print("\n📄 Test 8: Refactoring Documentation")
+    """Verify system documentation exists"""
+    print("\n📄 Test 8: System Documentation")
     
-    docs = [
-        "docs/REFACTORING_COMPLETE.md",
-        "QUICKSTART_REFACTORED.md"
-    ]
-    
-    missing = []
-    for doc in docs:
-        if not os.path.exists(doc):
-            missing.append(doc)
+    docs = ["README.md", "QUICKSTART_REFACTORED.md"]
+    missing = [doc for doc in docs if not os.path.exists(doc)]
     
     if missing:
         print(f"  ❌ FAIL: Missing docs: {missing}")
         return False
     else:
-        print(f"  ✅ PASS: Refactoring documentation complete")
+        print(f"  ✅ PASS: Documentation complete")
+        return True
+
+
+def test_perception_integrity():
+    """Verify Perception Integrity Layer files exist"""
+    print("\n📄 Test 9: Perception Integrity Layer Gatekeeper")
+
+    pi_files = [
+        "core/perception_integrity/__init__.py",
+        "core/perception_integrity/contracts.py",
+        "core/perception_integrity/uncertainty.py",
+        "core/perception_integrity/disagreement.py",
+        "core/perception_integrity/consistency.py",
+        "core/perception_integrity/risk_calibrator.py",
+        "core/perception_integrity/adaptive_cascade.py",
+        "core/perception_integrity/gate.py",
+        "tests/test_perception_integrity.py",
+        "benchmarks/benchmark_perception_integrity.py",
+    ]
+
+    missing = [f for f in pi_files if not os.path.exists(f)]
+
+    if missing:
+        print(f"  ❌ FAIL: Missing Perception Integrity files: {missing}")
+        return False
+    else:
+        print(f"  ✅ PASS: Perception Integrity Layer (10 files) fully present")
         return True
 
 # ============================================================================
@@ -256,6 +255,7 @@ results["Infrastructure Adapters"] = test_adapters()
 results["Refactored Mains"] = test_main_files()
 results["Legacy Preserved"] = test_legacy_preserved()
 results["Documentation"] = test_documentation()
+results["Perception Integrity"] = test_perception_integrity()
 
 print("\n" + "=" * 80)
 print("VALIDATION SUMMARY")

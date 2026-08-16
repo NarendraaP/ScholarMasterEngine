@@ -1,0 +1,23 @@
+{
+  "production_runtime": [
+    "Optical video ingestion via OpenCV in main.py:660",
+    "Acoustic decibel monitoring via sounddevice & AudioSentinel in main.py:385, 673",
+    "Skeletal pose extraction via YOLO-Pose in main.py:864",
+    "Cross-modal timestamp skew and consistency checking in core/perception_integrity/consistency.py:22",
+    "Operational dynamic recovery switching to pose-only tracking under visual degradation in main.py:685, 860"
+  ],
+  "benchmark_suite": [
+    "Synthetic degradation generator (0%, 20%, 50%, 80% noise) in benchmarks/paper3_cross_modal_recovery.py:39",
+    "Simulated multi-modal sensor packet wrapper in benchmarks/paper3_cross_modal_recovery.py:57",
+    "Recovery rate evaluation harness in benchmarks/paper3_cross_modal_recovery.py:71"
+  ],
+  "shared_core": [
+    "core.perception_integrity.PerceptionIntegrityGate",
+    "core.perception_integrity.contracts.SensorInputPacket",
+    "core.perception_integrity.adaptive_cascade.AdaptiveCascade"
+  ],
+  "manuscript_theoretical_model": [
+    "Continuous 3-way categorical JSD probability distribution calculation",
+    "Asynchronous multi-rate ring buffer software PLL clock tracking (Algorithm 1 in manuscript)"
+  ]
+}

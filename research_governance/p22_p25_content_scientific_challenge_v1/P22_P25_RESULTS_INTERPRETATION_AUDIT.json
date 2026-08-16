@@ -1,0 +1,23 @@
+{
+  "P22": {
+    "what": "AUROC=1.0000 and FPR95=0.0000 in OOD detection; ECE reduced from 0.4218 to 0.0412; Brier score=0.1793; Gating latency 1.307\u20131.666 ms. Regime risks: Clean=0.4853, OOD=0.5200, Degrade=0.4838, Adv=0.4378, Combined=0.4838.",
+    "why": "Dirichlet evidence collapses to zero (e -> 0, S -> K, u -> 1.0) under OOD inputs, while optical blur integrals capture physical phase disruptions directly from input gradients.",
+    "limit": "Evaluated on canonical 2,000-sample benchmark dataset; does NOT claim universal detection across open-world infinite sensor spaces. Physical <10 lux and >25 px blur are unmeasured scope limits."
+  },
+  "P23": {
+    "what": "Adaptive cascade sustains 373.3 FPS throughput with P99 latency of 4.556 ms (<5.0 ms SLA). Primary bypass rate is 48.0%, verification invocation is 52.0%, and active heavy duty cycle is 8.1%.",
+    "why": "Unambiguous clean frames (48%) terminate immediately in 1.264 ms; heavy verification is invoked intermittently on 52% of frames without causing queue backpressure.",
+    "limit": "Verified under arrival rate lambda <= 200 Hz. Does NOT guarantee <5.0 ms SLA under continuous adversarial DoS saturation (lambda > 1/L_2)."
+  },
+  "P24": {
+    "what": "Single-RGB accuracy collapses from 1.0000 (0%) to 0.1867 (80%). Dynamic consensus maintains 1.0000 accuracy and 100% recovery rate. Optical trust weight decays 0.4000 -> 0.0500 while secondary weights increase to 0.4750 each.",
+    "why": "Optical noise flattens P_rgb, driving JSD_rgb -> 0.62; exponential gradient drives w_rgb -> 0.05, allowing uncompromised secondary channels to dominate consensus.",
+    "limit": "Proves recovery when optical sensing is degraded and secondary channels remain intact. Does NOT prove recovery under simultaneous 3-channel failure (wire cuts)."
+  },
+  "P25": {
+    "what": "Unprotected pipeline triggers peak local EAF of 1.4220 at 15% noise (identity error = 0.2133, mean EAF = 0.9335). Protected pipeline achieves EAF = 0.0000 across all regimes.",
+    "why": "Unprotected continuous optical perturbations push ArcFace embeddings past Voronoi facets, causing discrete identity flips that corrupt tracking and compliance. Layer-1 quarantine intercepts uncertified vectors at the root.",
+    "limit": "Verified over evaluated 0%\u201320% corruption range on 5-layer pipeline. Does NOT prove universal zero-error on infinite gallery sizes (N -> inf)."
+  },
+  "audit_verdict": "ALL_RESULTS_GROUNDED_IN_3LAYER_DISCIPLINE"
+}

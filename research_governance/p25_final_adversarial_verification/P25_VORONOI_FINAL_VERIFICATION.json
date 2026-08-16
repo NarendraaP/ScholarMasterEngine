@@ -1,0 +1,33 @@
+{
+  "paper_id": "P25",
+  "theorem_statement": "Theorem 1 (Voronoi Facet Step Jump Discontinuity): lim_{eps -> 0+} ||phi(x0 + eps n) - phi(x0 - eps n)||_2 = ||g_i - g_j||_2 = sqrt(2 - 2<g_i, g_j>) > 0",
+  "geometric_proof_steps": [
+    {
+      "step": 1,
+      "description": "Unit hypersphere gallery prototypes g_i in S^(D-1)",
+      "valid": true
+    },
+    {
+      "step": 2,
+      "description": "Voronoi cell partitioning V_i = {z | <z, g_i> > <z, g_j>}",
+      "valid": true
+    },
+    {
+      "step": 3,
+      "description": "Facet boundary F_ij = closure(V_i) cap closure(V_j)",
+      "valid": true
+    },
+    {
+      "step": 4,
+      "description": "Normal vector n = (g_i - g_j)/||g_i - g_j|| perpendicular to F_ij",
+      "valid": true
+    },
+    {
+      "step": 5,
+      "description": "One-sided limit jump norm ||g_i - g_j||_2 > 0 for distinct enrolled identities",
+      "valid": true
+    }
+  ],
+  "classification": "LOCAL_STEP_JUMP_DISCONTINUITY",
+  "verdict": "MATHEMATICALLY_RIGOROUS_FIRST_PRINCIPLES_PROOF"
+}

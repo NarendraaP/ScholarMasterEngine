@@ -1,0 +1,35 @@
+{
+  "supported_experiments": [
+    {
+      "name": "5 Operational Regimes",
+      "samples": 750,
+      "source": "benchmarks/regime_evaluator.py",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Ablation Study (Config A through E)",
+      "samples": 300,
+      "source": "benchmarks/paper1_foundations.py",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Zero-Shot Detector Transfer (Family A -> Family B)",
+      "samples": 200,
+      "source": "benchmarks/paper1_foundations.py",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Temperature Scaling Calibration",
+      "parameter": "T=0.5",
+      "source": "benchmarks/parameter_lock.py",
+      "status": "VERIFIED"
+    }
+  ],
+  "quarantined_unsupported_experiments": [
+    "Physical environmental chamber stress testing",
+    "Physical lux illumination sweeps (< 10 lux hardware measurements)",
+    "Physical optical hardware sensor replacement tests",
+    "Acoustic frequency chamber decibel isolation sweeps"
+  ],
+  "status": "EXPERIMENT_DESIGN_STRICTLY_EVIDENCE_BOUND"
+}

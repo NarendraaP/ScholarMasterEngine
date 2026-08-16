@@ -1,0 +1,12 @@
+{
+  "verified_operational_boundaries": [
+    "Single optical channel corruption (0% to 80% noise): 100% recovered by secondary acoustic and pose streams",
+    "Timestamp skew < 1.0s: Handled by ConsistencyChecker timestamp synchronization window",
+    "Optical blur / defocus: Detected by modified Laplacian and quarantined via cascade"
+  ],
+  "unrecoverable_failure_limits": [
+    "Simultaneous Multi-Sensor Degradation: If all 3 channels degrade simultaneously (JSD_m -> ln 2 for all m), consensus collapses to quarantine (HALT / bot)",
+    "Correlated Sensor Attack: Adversarial spoofing targeting both RGB and pose features simultaneously requires physical multi-factor challenge",
+    "Extreme Acoustic Distortion: High ambient noise (> 85 dB) suppresses acoustic trust weight"
+  ]
+}

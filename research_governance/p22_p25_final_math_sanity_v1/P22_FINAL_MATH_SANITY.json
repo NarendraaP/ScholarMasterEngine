@@ -1,0 +1,26 @@
+{
+  "paper": "P22",
+  "checks": [
+    {
+      "claim_id": "MATH-CHK-08-P22-VARIANCE-BOUND",
+      "claim": "Theorem 1: Var(p_k) = alpha_k(S - alpha_k) / [S^2(S + 1)] <= 1 / [4(S + 1)] < 1 / (4K)",
+      "source": "docs/papers/paper22_revised.tex (Theorem 1)",
+      "mathematical_derivation": {
+        "step_1_marginal": "For p ~ Dir(alpha), the marginal distribution of p_k is Beta(alpha_k, S - alpha_k) where S = sum_{j=1}^K alpha_j.",
+        "step_2_exact_variance": "Analytic variance of Beta(a, b) with a = alpha_k, b = S - alpha_k: Var(p_k) = a b / [(a + b)^2 (a + b + 1)] = alpha_k(S - alpha_k) / [S^2(S + 1)].",
+        "step_3_quadratic_bound": "Let z = alpha_k / S in (0, 1). Then alpha_k(S - alpha_k) = S^2 z(1 - z). The quadratic z(1 - z) has unique global maximum at z = 1/2 where z(1 - z) <= 1/4.",
+        "step_4_first_inequality": "Substituting z(1 - z) <= 1/4 gives: Var(p_k) <= S^2(1/4) / [S^2(S + 1)] = 1 / [4(S + 1)].",
+        "step_5_second_inequality": "In evidential deep learning, alpha_k = e_k + 1 >= 1 because evidence e_k >= 0. Therefore, S = sum_{j=1}^K alpha_j >= K * 1 = K. Since K >= 2, S + 1 >= K + 1 > K.",
+        "step_6_conclusion": "Since S + 1 > K, we have 1 / [4(S + 1)] < 1 / (4K). Taking limit S -> infinity yields Var(p_k) = O(1/S) -> 0."
+      },
+      "assumptions": [
+        "1. Dirichlet concentration parameters satisfy alpha_k = e_k + 1 >= 1 (evidential mapping from non-negative evidence e_k >= 0).",
+        "2. Number of classes K >= 2.",
+        "3. Total Dirichlet strength S = sum alpha_k >= K."
+      ],
+      "verdict": "VALID_AS_WRITTEN",
+      "safe_manuscript_wording": "For a K-class Dirichlet distribution with concentration parameters alpha_k >= 1 and Dirichlet strength S = sum alpha_k, the variance of class probability p_k is strictly bounded: Var(p_k) = alpha_k(S - alpha_k) / [S^2(S + 1)] <= 1 / [4(S + 1)] < 1 / (4K), decaying monotonically to zero as evidence S -> infinity."
+    }
+  ],
+  "status": "FINAL_MATH_VERIFIED"
+}

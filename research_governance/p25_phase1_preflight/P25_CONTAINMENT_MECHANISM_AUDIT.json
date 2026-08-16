@@ -1,0 +1,7 @@
+{
+  "mechanism": "Layer-1 Perception Integrity Root Gating & Fail-Closed Quarantine",
+  "implementation": "PerceptionIntegrityGate.process() returns None / CascadeDecision.HALT when R_p(x) > tau_switch",
+  "mathematical_effect": "Sets Lip(f_gate |_{X_quar}) = 0, preventing evaluation of uncertified feature vectors across Voronoi boundaries.",
+  "downstream_effect": "Downstream Layers 2-5 never receive corrupted payloads; pipeline halts cleanly without spurious infractions.",
+  "status": "VERIFIED_EXECUTABLE_IN_CODEBASE"
+}

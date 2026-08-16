@@ -1,0 +1,14 @@
+{
+  "paper": "P23",
+  "title": "Adaptive Trustworthy Edge Systems",
+  "runtime_integration_status": "DIRECT_DISPATCH_WITH_OFFLINE_DUALITY_MODEL",
+  "dispatcher_class": "core.perception_integrity.adaptive_cascade.AdaptiveCascade",
+  "invocation_location": "core/perception_integrity/gate.py:76 (self.adaptive_cascade.route(metrics, input_packet))",
+  "runtime_routing_decisions": {
+    "ACCEPT": "Fast-path -> Full face recognition & context tracking (main.py:685)",
+    "DEGRADE": "Privacy mode -> Bypasses face recognition, runs pose-only engagement (main.py:860)",
+    "DELEGATE": "Secondary verification -> Logs low-confidence probe (main.py:685)",
+    "HALT": "Fail-closed circuit breaker -> Drops frame immediately (main.py:677)"
+  },
+  "findings": "The 4-state adaptive cascade dispatcher operates directly in the live runtime. The continuum Fenchel-Rockafellar convex optimization and Kingman heavy-traffic queueing models provide the offline parameter locking framework verified in benchmarks."
+}

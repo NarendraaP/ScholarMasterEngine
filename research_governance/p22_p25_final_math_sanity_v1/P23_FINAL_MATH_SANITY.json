@@ -1,0 +1,46 @@
+{
+  "paper": "P23",
+  "checks": [
+    {
+      "claim_id": "MATH-CHK-04-P23-ZERO-DUALITY-GAP",
+      "claim": "Theorem 1: Zero duality gap in continuum edge cascades under convex risk functionals",
+      "source": "docs/papers/paper23_revised.tex (Theorem 1)",
+      "mathematical_derivation": {
+        "step_1_primal_formulation": "min_{pi in Pi} E[(1 - pi(x)) E_1 + pi(x) (E_1 + E_2)] s.t. E[(1 - pi(x)) L_1 + pi(x) (L_1 + L_2)] <= L_SLA, E[R_task(x; pi(x))] <= epsilon_risk.",
+        "step_2_convexity": "Objective functional is affine in pi(x). Latency SLA constraint functional is affine in pi(x). Risk functional is assumed convex in pi(x). Policy set Pi = {pi: X -> [0, 1] measurable} is convex.",
+        "step_3_slater_condition": "Slater condition requires existence of strictly feasible interior point pi_0 in Pi such that SLA and risk constraints hold with strict inequality.",
+        "step_4_duality_framework": "By Fenchel-Rockafellar duality for infinite-dimensional convex programming, primal optimum equals dual optimum: min max L = max min L.",
+        "step_5_zero_duality_gap": "Strong duality holds, establishing identically zero duality gap."
+      },
+      "assumptions": [
+        "1. Policy space Pi is the convex set of measurable routing functions pi: X -> [0, 1].",
+        "2. Expected task risk functional E[R_task] is convex and monotonically non-increasing in heavy model invocation probability.",
+        "3. Strict feasibility (Slater condition): There exists a baseline policy satisfying average latency < L_SLA and average risk < epsilon_risk."
+      ],
+      "verdict": "VALID_WITH_EXPLICIT_ASSUMPTION",
+      "safe_manuscript_wording": "For randomized continuum routing policies over the measurable policy space Pi, if the expected task risk functional is convex with respect to heavy invocation probability and a strictly feasible interior policy exists (Slater's condition), the Lagrangian dual formulation exhibits a zero duality gap via Fenchel-Rockafellar duality."
+    },
+    {
+      "claim_id": "MATH-CHK-07-P23-QUEUEING-THEORY",
+      "claim": "Pollaczek-Khinchine mean waiting time and Kingman heavy-traffic exponential tail bound",
+      "source": "docs/papers/paper23_revised.tex (Section III-C)",
+      "mathematical_derivation": {
+        "step_1_arrival_service": "Poisson arrival process with rate lambda. Two-state service time distribution S: S = L_1 with prob (1 - bar{r}), S = L_1 + L_2 with prob bar{r}. Moments E[S] and E[S^2] are exact.",
+        "step_2_pollaczek_khinchine": "Pollaczek-Khinchine formula gives EXACT mean queue waiting time: W_q = lambda E[S^2] / [2(1 - rho)] for rho = lambda E[S] < 1.",
+        "step_3_kingman_bound": "Kingman (1961) heavy-traffic theorem establishes the ASYMPTOTIC EXPONENTIAL TAIL BOUND as rho -> 1: P(W_q > t) approx exp(-2(1 - rho)t / [lambda Var(S)/E[S] + E[S]])."
+      },
+      "classification_precision": {
+        "Pollaczek_Khinchine": "EXACT_FORMULA (Exact mean queue delay under M/G/1 queueing assumptions)",
+        "Kingman_Approximation": "ASYMPTOTIC_HEAVY_TRAFFIC_APPROXIMATION_BOUND (Valid as utilization rho -> 1)"
+      },
+      "assumptions": [
+        "1. Poisson arrival process with mean arrival rate lambda.",
+        "2. Independent general service time distribution S with finite second moment.",
+        "3. Queue stability condition: rho = lambda E[S] < 1."
+      ],
+      "verdict": "STANDARD_RESULT",
+      "safe_manuscript_wording": "Under M/G/1 queuing assumptions, the mean queue ingestion delay is exactly given by the Pollaczek-Khinchine formula W_q = lambda E[S^2] / [2(1 - rho)], while in heavy traffic (rho -> 1), Kingman's approximation guarantees an exponential tail bound on latency SLA exceedance."
+    }
+  ],
+  "status": "FINAL_MATH_VERIFIED"
+}

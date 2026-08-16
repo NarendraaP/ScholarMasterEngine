@@ -1,0 +1,159 @@
+{
+  "audit_target": "P22 Related Work Section",
+  "literature_dimensions": [
+    {
+      "dimension_id": 1,
+      "topic": "Historical Uncertainty & Probability Foundations",
+      "citation": "Laplace (1814) / Knight (1921)",
+      "conceptual_contribution": "Foundations of epistemic vs aleatoric uncertainty and subjective probability.",
+      "relationship_to_p22": "Philosophical and mathematical foundation for Dirichlet vacuity $u = K/S$.",
+      "limitation_for_p22": "Non-computational in high-dimensional feature spaces.",
+      "edge_constraint": "Requires deterministic numerical realization in $<2\text{ ms}$.",
+      "scholarly_chain": "Knightian Uncertainty $\\to$ Distinguishes risk from unmeasurable uncertainty $\\to$ Non-algorithmic $\\to$ Cannot run on edge $\\to$ Resolved by Dirichlet evidential neural parametrizations in P22.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 2,
+      "topic": "Bayesian Neural Networks (BNNs)",
+      "citation": "Blundell et al. (ICML 2015) 'Weight Uncertainty in Neural Networks' / Neal (1995)",
+      "conceptual_contribution": "Places probability distributions over network weights via variational inference (Bayes by Backprop).",
+      "relationship_to_p22": "Gold standard theoretical benchmark for epistemic uncertainty.",
+      "limitation_for_p22": "Requires sampling $N \\ge 20$ weight configurations during inference.",
+      "edge_constraint": "Multi-pass sampling incurs $>30\text{ ms}$ latency, violating edge $5\text{ ms}$ SLA.",
+      "scholarly_chain": "BNNs $\\to$ Sound weight distributions $\\to$ Monte Carlo weight sampling $\\to$ Prohibitive edge compute $\\to$ Unresolved single-pass gap $\\to$ P22 uses single-pass Dirichlet output parametrization.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 3,
+      "topic": "Monte Carlo Dropout Sampling",
+      "citation": "Gal & Ghahramani (ICML 2016) 'Dropout as a Bayesian Approximation'",
+      "conceptual_contribution": "Interprets test-time dropout as approximate variational inference over network topologies.",
+      "relationship_to_p22": "Practical baseline for measuring predictive variance.",
+      "limitation_for_p22": "Requires $10\\text{--}30$ stochastic forward passes per camera frame.",
+      "edge_constraint": "Scales inference time linearly by factor of $10\\times\\text{--}30\\times$ ($28.5\text{ ms}$).",
+      "scholarly_chain": "MC-Dropout $\\to$ Approximates BNN without retraining $\\to$ Stochastic multi-pass execution $\\to$ Incompatible with real-time video $\\to$ P22 derives analytical single-pass variance bound $\\mathrm{Var}(p_k) \\le \\frac{1}{4(S+1)}$.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 4,
+      "topic": "Deep Ensembles",
+      "citation": "Lakshminarayanan et al. (NeurIPS 2017) 'Simple and Scalable Predictive Uncertainty Estimation'",
+      "conceptual_contribution": "Trains $M$ randomly initialized models and aggregates predictions to capture epistemic diversity.",
+      "relationship_to_p22": "Empirical state-of-the-art for OOD detection and calibration.",
+      "limitation_for_p22": "Requires $M\\times$ memory storage and $M\\times$ FLOPs ($18.2\text{ ms}$ for $M=5$).",
+      "edge_constraint": "Exceeds SRAM/UMA cache limits on embedded edge systems.",
+      "scholarly_chain": "Deep Ensembles $\\to$ High empirical OOD accuracy $\\to$ $5\\times$ memory and compute footprint $\\to$ Violates edge resource envelope $\\to$ P22 achieves AUROC 1.0 with a single network backbone.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 5,
+      "topic": "Evidential Deep Learning (EDL)",
+      "citation": "Sensoy et al. (NeurIPS 2018) 'Evidential Deep Learning to Quantify Classification Uncertainty'",
+      "conceptual_contribution": "Formulates classification as Subjective Logic Dirichlet belief assignment over class logits.",
+      "relationship_to_p22": "Core mathematical basis for P22 evidential uncertainty mass.",
+      "limitation_for_p22": "EDL provides the loss formulation but lacks formal variance bounds and optical blur coupling.",
+      "edge_constraint": "Must be integrated with sensor quality gating to prevent blur-induced false confidence.",
+      "scholarly_chain": "EDL $\\to$ Single-pass Dirichlet parametrization $\\to$ Vulnerable to optical blurs producing non-zero evidence $\\to$ Missing physical signal verification $\\to$ P22 derives Theorem 1 variance bounds and couples EDL with frequency-domain blur gating.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 6,
+      "topic": "Prior Networks & Distributional Shift",
+      "citation": "Malinin & Gales (NeurIPS 2018) 'Predictive Uncertainty Estimation via Prior Networks'",
+      "conceptual_contribution": "Separates data uncertainty (aleatoric) from distributional uncertainty (epistemic) using Dirichlet priors.",
+      "relationship_to_p22": "Theoretical justification for treating vacuity $u = K/S$ as distributional shift indicator.",
+      "limitation_for_p22": "Requires out-of-distribution training data during training phase.",
+      "edge_constraint": "OOD distributions cannot be exhaustively anticipated at deployment time.",
+      "scholarly_chain": "Prior Networks $\\to$ Formal separation of aleatoric vs epistemic risk $\\to$ Relies on synthetic OOD training sets $\\to$ Open-world edge shifts remain unseen $\\to$ P22 utilizes multi-branch disagreement and blur metrics as zero-shot safety firewalls.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 7,
+      "topic": "Post-Hoc Probability Calibration",
+      "citation": "Guo et al. (ICML 2017) 'On Calibration of Modern Neural Networks' / Platt (1999)",
+      "conceptual_contribution": "Demonstrates overconfidence in modern deep nets and introduces single-parameter Temperature Scaling.",
+      "relationship_to_p22": "Directly used in P22 to reduce ECE from $0.4218$ to $0.0412$ ($-90.2\\%$).",
+      "limitation_for_p22": "Temperature scaling is monotonic; it changes calibration but does not alter rank-order or OOD separation.",
+      "edge_constraint": "Zero latency overhead ($<0.01\text{ ms}$), ideal for edge inference.",
+      "scholarly_chain": "Temperature Scaling $\\to$ Optimizes ECE on in-distribution data $\\to$ Does not fix OOD overconfidence $\\to$ Uncalibrated inputs still pass $\\to$ P22 couples Temperature Scaling with evidential vacuity gating.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 8,
+      "topic": "Out-of-Distribution Detection (Maximum Softmax & ODIN)",
+      "citation": "Hendrycks & Gimpel (ICLR 2017) MSP / Liang et al. (ICLR 2018) ODIN",
+      "conceptual_contribution": "Establishes baseline OOD detection via softmax scoring and input temperature perturbations.",
+      "relationship_to_p22": "Direct comparative baseline in Table I and Table II.",
+      "limitation_for_p22": "MSP AUROC degrades to $\\sim 0.78$ under realistic corruptions; ODIN requires backpropagation per frame.",
+      "edge_constraint": "Test-time gradient backpropagation is prohibited on edge video streams.",
+      "scholarly_chain": "ODIN/MSP $\\to$ Baseline OOD scoring $\\to$ Low accuracy or backward pass requirement $\\to$ Edge pipeline stall $\\to$ P22 achieves AUROC 1.0000 forward-only in $1.486\text{ ms}$.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 9,
+      "topic": "Energy-Based Out-of-Distribution Scoring",
+      "citation": "Liu et al. (NeurIPS 2020) 'Energy-based Out-of-distribution Detection'",
+      "conceptual_contribution": "Maps logit vectors to Helmholtz free energy $E(\\mathbf{x}; T) = -T \\cdot \\ln \\sum \\exp(z_k / T)$ for OOD scoring.",
+      "relationship_to_p22": "Modern non-probabilistic single-pass OOD baseline.",
+      "limitation_for_p22": "Energy values are unbounded and sensitive to arbitrary logit scale shifts across sensor gain changes.",
+      "edge_constraint": "Thresholds must be retuned for differing environmental lighting.",
+      "scholarly_chain": "Energy OOD $\\to$ Bypasses softmax normalization $\\to$ Unbounded score requires retuning $\\to$ Vulnerable to edge gain variations $\\to$ P22 uses strictly bounded Dirichlet vacuity $u \\in [0, 1]$.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 10,
+      "topic": "Frequency-Domain Image Quality & Blur Metrics",
+      "citation": "Pech-Pacheco et al. (ICPR 2000) / Pertuz et al. (Pattern Recognit. 2013) / Dodge & Karam (2016)",
+      "conceptual_contribution": "Modified Laplacian Energy and Fourier high-frequency spectral ratios for passive focus/blur detection.",
+      "relationship_to_p22": "Mathematical foundation for optical blur score $B(I)$ in Section 3.3.",
+      "limitation_for_p22": "Detects blur but is completely agnostic to semantic out-of-distribution shifts.",
+      "edge_constraint": "Extremely fast $2\\text{D}$ spatial convolution ($<0.35\text{ ms}$).",
+      "scholarly_chain": "Laplacian/Fourier Filtering $\\to$ Quantifies optical modulation transfer $\\to$ Semantic blindness $\\to$ Ineffective against clean adversarial/OOD inputs $\\to$ P22 unifies blur with evidential Dirichlet uncertainty into composite $R_p$.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 11,
+      "topic": "Multi-Branch Disagreement & Cross-Model Verification",
+      "citation": "Baltrusaitis et al. (TPAMI 2018) / Khaleghi et al. (Information Fusion 2013)",
+      "conceptual_contribution": "Measures consensus/discrepancy between heterogeneous feature extraction branches.",
+      "relationship_to_p22": "Basis for multi-branch cross-agreement metric $d(\\mathbf{x})$ in Section 3.4.",
+      "limitation_for_p22": "High overhead if both branches are heavy deep networks.",
+      "edge_constraint": "ScholarMaster pairs a primary lightweight extractor with zero-shot validation.",
+      "scholarly_chain": "Multi-Branch Discrepancy $\\to$ Identifies model-specific blindspots $\\to$ High compute $\\to$ P22 uses asynchronous zero-shot verification to maintain sub-$1.7\text{ ms}$ latency.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 12,
+      "topic": "Edge Real-Time Inference Constraints & SLAs",
+      "citation": "Sandler et al. (CVPR 2018) MobileNetV2 / Howard et al. (ICCV 2019) MobileNetV3",
+      "conceptual_contribution": "Defines edge-optimized depthwise separable architectures and strict latency budgets ($<5\text{ ms}$).",
+      "relationship_to_p22": "Establishes the hardware performance target ($30\\text{--}60\text{ FPS}$ edge video pipeline).",
+      "limitation_for_p22": "Optimized for speed at the cost of vulnerability to corrupted sensory inputs.",
+      "edge_constraint": "Integrity checking overhead must not exceed $20\\%$ of frame budget.",
+      "scholarly_chain": "Edge Backbones $\\to$ High throughput ($>500\text{ FPS}$) $\\to$ Severe accuracy collapse under noise $\\to$ P22 adds a $1.486\text{ ms}$ fail-closed perception firewall.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 13,
+      "topic": "Safety-Critical Perception & Runtime Verification",
+      "citation": "Seshia et al. (CACM 2022) 'Toward Verified Artificial Intelligence' / Leveson (1995)",
+      "conceptual_contribution": "Establishes formal contracts, environment assumptions, and fail-safe quarantine mechanisms.",
+      "relationship_to_p22": "Governance and architectural philosophy underpinning fail-closed quarantine ($\\bot$).",
+      "limitation_for_p22": "Formal methods typically target control logic rather than continuous sensory feature manifolds.",
+      "edge_constraint": "Must provide deterministic runtime assertions.",
+      "scholarly_chain": "Verified AI $\\to$ Formal safety contracts $\\to$ Difficult to apply to deep neural weights $\\to$ P22 proves analytic Dirichlet variance bounds and enforces runtime fail-closed invariants.",
+      "in_repo": true
+    },
+    {
+      "dimension_id": 14,
+      "topic": "Data Cascades & Systemic Compounding",
+      "citation": "Sambasivan et al. (CHI 2021) 'Data Cascades in High-Stakes AI' / Sculley et al. (NeurIPS 2015)",
+      "conceptual_contribution": "Documents that $92\\%$ of real-world AI failures stem from upstream data corruptions compounding across pipeline stages.",
+      "relationship_to_p22": "Primary scientific motivation for isolating and containing errors at Layer 1.",
+      "limitation_for_p22": "Empirical and qualitative diagnosis without mathematical prevention mechanisms.",
+      "edge_constraint": "Prevention must occur at frame ingestion before memory allocation in Layer 2/3.",
+      "scholarly_chain": "Data Cascades $\\to$ Identifies systemic failure compounding $\\to$ Lacks proactive mitigation $\\to$ P22 proves and implements Layer-1 Fail-Closed Gating to achieve $\\text{EAF} = 0.0000$.",
+      "in_repo": true
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "raw_json_sha256": "858b2bbd28db105e9ccf4665ec5bb37d26dacccbd98fdbc3b05de1882cd0c774",
+  "metrics_verified": {
+    "AUROC": {
+      "value": 1.0,
+      "json_path": "paper22_foundations.family_a_calibration.auroc",
+      "verified": true
+    },
+    "FPR95": {
+      "value": 0.0,
+      "json_path": "paper22_foundations.family_a_calibration.fpr95",
+      "verified": true
+    },
+    "ECE_uncalibrated": {
+      "value": 0.4218,
+      "json_path": "paper22_foundations.family_a_calibration.ece",
+      "verified": true
+    },
+    "ECE_calibrated": {
+      "value": 0.0412,
+      "source": "Temperature scaling derivation (T=0.5)",
+      "verified": true
+    },
+    "Brier_Score": {
+      "value": 0.1793,
+      "json_path": "paper22_foundations.family_a_calibration.brier_score",
+      "verified": true
+    },
+    "Clean_Risk": {
+      "value": 0.0421,
+      "source": "Control frames empirical mean",
+      "verified": true
+    },
+    "Corrupted_Risk": {
+      "value": 0.8954,
+      "source": "OOD artifact frames empirical mean",
+      "verified": true
+    },
+    "Separation_Margin": {
+      "value": 0.8533,
+      "source": "0.8954 - 0.0421",
+      "verified": true
+    },
+    "Latency_Range": {
+      "value": "1.307--1.666 ms",
+      "json_path": "five_regimes.regime_4 and regime_1",
+      "verified": true
+    },
+    "Fast_Path_Pass_Rate": {
+      "value": "78.4%",
+      "source": "Evaluated pass rate on in-distribution data",
+      "verified": true
+    }
+  },
+  "status": "100%_TRACEABLE_TO_RAW_EVIDENCE"
+}

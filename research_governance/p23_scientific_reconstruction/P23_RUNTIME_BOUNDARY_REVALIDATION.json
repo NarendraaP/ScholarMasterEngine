@@ -1,0 +1,11 @@
+{
+  "paper_id": "P23",
+  "runtime_boundaries": {
+    "production_class": "core.perception_integrity.adaptive_cascade.AdaptiveCascade",
+    "production_policy": "4-state dispatch: ACCEPT (<=0.45), DEGRADE (0.45-0.70), DELEGATE (0.70-0.85), HALT (>0.85)",
+    "algorithmic_routing_loop": "Algorithm 1 binary cascade dispatcher (tau_switch = 0.50)",
+    "queue_admission_control": "Graceful Degradation Protocol (Q > Q_max => Fast-Path + Low-Confidence Alarm)",
+    "fail_closed_guarantee": "Catastrophic corruption (Rp > 0.85) triggers immediate halt without downstream memory allocation."
+  },
+  "verdict": "RUNTIME_BOUNDARIES_EXACTLY_QUALIFIED"
+}

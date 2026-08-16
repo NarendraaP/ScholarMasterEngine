@@ -1,0 +1,47 @@
+{
+  "supported_experiments": [
+    {
+      "name": "2,000 Continuous Video Inferences",
+      "hardware": "ARM64 Edge Compute Node",
+      "source": "benchmarks/master_validation_suite_results.json",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Static Primary Baseline",
+      "mean_ms": 1.264,
+      "fps": 791.2,
+      "source": "master_validation_suite_results.json",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Static Heavy Ensemble Baseline",
+      "mean_ms": 14.501,
+      "fps": 69.0,
+      "source": "master_validation_suite_results.json",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Adaptive Cascade Evaluation",
+      "mean_ms": 2.679,
+      "fps": 373.3,
+      "source": "master_validation_suite_results.json",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Latency Percentile Breakdown (P50, P95, P99)",
+      "values": [
+        3.786,
+        4.075,
+        4.556
+      ],
+      "source": "master_validation_suite_results.json",
+      "status": "VERIFIED"
+    }
+  ],
+  "quarantined_unsupported_experiments": [
+    "24-hour continuous thermal chamber stress runs",
+    "Physical shunt power-meter battery dissipation measurements",
+    "Unmeasured multi-tenant GPU memory fragmentation logs"
+  ],
+  "status": "EXPERIMENT_DESIGN_STRICTLY_EVIDENCE_BOUND"
+}

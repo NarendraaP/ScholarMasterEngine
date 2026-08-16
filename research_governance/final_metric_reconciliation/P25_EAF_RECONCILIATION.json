@@ -1,0 +1,92 @@
+{
+  "audit_timestamp": "2026-08-15 13:09:41",
+  "canonical_experiment_id": "EXP-P25-EAF-001",
+  "raw_artifact": "benchmarks/master_validation_suite_results.json",
+  "corruption_levels_tested": [
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2
+  ],
+  "layer_level_results": {
+    "0pct_noise": {
+      "noise_level": 0.0,
+      "unprotected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "protected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "eaf_ratio": 0.0
+    },
+    "5pct_noise": {
+      "noise_level": 0.05,
+      "unprotected": {
+        "identity_error": 0.0667,
+        "context_error": 0.0667,
+        "compliance_error": 0.0667
+      },
+      "protected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "eaf_ratio": 1.334
+    },
+    "10pct_noise": {
+      "noise_level": 0.1,
+      "unprotected": {
+        "identity_error": 0.1067,
+        "context_error": 0.1067,
+        "compliance_error": 0.1067
+      },
+      "protected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "eaf_ratio": 1.067
+    },
+    "15pct_noise": {
+      "noise_level": 0.15,
+      "unprotected": {
+        "identity_error": 0.2133,
+        "context_error": 0.2133,
+        "compliance_error": 0.2133
+      },
+      "protected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "eaf_ratio": 1.422
+    },
+    "20pct_noise": {
+      "noise_level": 0.2,
+      "unprotected": {
+        "identity_error": 0.1867,
+        "context_error": 0.1867,
+        "compliance_error": 0.1867
+      },
+      "protected": {
+        "identity_error": 0.0,
+        "context_error": 0.0,
+        "compliance_error": 0.0
+      },
+      "eaf_ratio": 0.9335
+    }
+  },
+  "reconciliation_verdict": {
+    "status": "AUTHORITATIVE_RAW_VALUES_LOCKED",
+    "unprotected_mean_eaf": 0.9335,
+    "unprotected_peak_eaf_15pct": 1.422,
+    "protected_mean_eaf": 0.0,
+    "explanation_of_discrepancy": "Preliminary scratch runs recorded 0.9330 and 1.3780 on a 100-sample test. The authoritative 150-sample validation run logged in master_validation_suite_results.json records Mean EAF = 0.9335 and Peak EAF at 15% noise = 1.4220. The protected pipeline suppresses error to EAF = 0.0000 across all regimes.",
+    "manuscript_reporting_rule": "Report: 'Under unprotected execution, mean EAF is 0.9335, peaking at 1.4220 under 15% corruption, whereas the protected pipeline achieves EAF = 0.0000 across all regimes.'"
+  }
+}

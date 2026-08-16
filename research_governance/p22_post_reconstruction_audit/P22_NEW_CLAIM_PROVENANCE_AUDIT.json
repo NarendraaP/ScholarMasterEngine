@@ -1,0 +1,35 @@
+{
+  "paper_id": "P22",
+  "claims_audited": [
+    {
+      "claim": "Dirichlet variance bound Var(p_k) <= 1/[4(S+1)] < 1/4K",
+      "classification": "E2_MATHEMATICAL_DERIVATION",
+      "provenance": "Derived from Beta(alpha_k, S-alpha_k) marginal variance and quadratic concavity z(1-z) <= 1/4.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "Uniform evidence scaling monotonicity d/dc Var(p_k; c) < 0",
+      "classification": "E2_MATHEMATICAL_DERIVATION",
+      "provenance": "Proved via derivative with respect to scale factor c >= 1 under fixed base vector alpha_0.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "Composite risk R_p in [0, 1] and Lipschitz continuous",
+      "classification": "E2_MATHEMATICAL_DERIVATION",
+      "provenance": "Convex combination of normalized metrics in [0, 1] with normalized weights summing to 1.0.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "ECE reduction 0.4218 -> 0.0412 (-90.2%) under Temperature Scaling",
+      "classification": "E0_EMPIRICAL_TELEMETRY",
+      "provenance": "Measured in Master Validation Suite across 2,000 edge inference samples.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "Risk separation margin Delta R_p = 0.8533 (0.0421 clean vs 0.8954 OOD)",
+      "classification": "E0_EMPIRICAL_TELEMETRY",
+      "provenance": "Measured in Master Validation Suite across 5 corruption regimes.",
+      "verification_status": "VERIFIED_ACCURATE"
+    }
+  ]
+}

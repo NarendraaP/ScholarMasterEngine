@@ -1,0 +1,40 @@
+{
+  "paper_id": "P10",
+  "title": "Integrated Stress Validation of an Edge-Native Academic Analytics Architecture",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper10_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes system reliability model encompasses hardware faults and network jitter.",
+    "perception_input_assumption": "Extends fault model to include upstream sensory degradation handled at Layer 1.",
+    "architecture_boundary": "Reliability invariants cover Layer 1 fail-closed state transitions.",
+    "mathematical_assumptions": "Markov reliability models and MTTF formulations remain sound.",
+    "experimental_assumptions": "Fault injection benchmarks hold.",
+    "claims": "Incorporate Layer 1 fail-closed perception quarantine into macro reliability invariants.",
+    "figures": "Annotate reliability state machine with Layer 1 quarantine state.",
+    "tables": "Preserve MTTF / MTTR reliability tables.",
+    "references": "Add citation to P22 and P25.",
+    "downstream_dependencies": "Whole-system availability metrics."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P10",
+      "location": "Section III / Section V",
+      "change_type": "CLAIM_QUALIFICATION",
+      "current_state": "Formal reliability model addresses process crashes and communication drops.",
+      "new_state": "Explicitly include sensory corruption as a modeled fault class mitigated by Layer 1 fail-closed gating.",
+      "reason": "Ensure end-to-end formal verification bounds include perceptual integrity faults.",
+      "affected_by": [
+        "P22",
+        "P25"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P10 owns formal reliability verification; P22 owns perception gate)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

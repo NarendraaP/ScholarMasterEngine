@@ -135,6 +135,9 @@ from core.canonical_layers import (
     GovernanceFilter,      # L5: Governance & Compliance Gate
 )
 
+# Perception Integrity Layer (Upstream Integrity Gate)
+from core.perception_integrity import PerceptionIntegrityGate, CascadeDecision
+
 
 # ============================================================================
 # DATA STRUCTURES
@@ -468,6 +471,9 @@ class ScholarMasterUnified:
         
         print("[INIT] Starting power monitor...")
         self.power_monitor = PowerMonitor()
+
+        print("[INIT] Initializing perception integrity gate...")
+        self.perception_gate = PerceptionIntegrityGate()
         
         # -------------------------------------------------------------------------
         # ARCHITECTURE_CANONICAL.md 6.1: Privacy LED at Boot
@@ -661,12 +667,24 @@ class ScholarMasterUnified:
             if self._L2_sensor is not None:
                 frame_id = self._L2_sensor.capture_frame(frame)
             
+            # PERCEPTION INTEGRITY GATEWAY (Upstream Integrity Assessment)
+            pi_packet = self.perception_gate.process_frame(
+                frame=frame,
+                audio_db=self.current_audio_db,
+                zone_id="Main Hall"
+            )
+
+            if pi_packet.decision == CascadeDecision.HALT:
+                # Critical sensor anomaly/corruption -> drop frame safely
+                continue
+
             # FACE RECOGNITION (Papers 1-3) - Using real InsightFace
             student_id = "UNKNOWN"
             confidence = 0.0
             
-            try:
-                # Detect faces using InsightFace
+            if pi_packet.decision in (CascadeDecision.ACCEPT, CascadeDecision.DELEGATE):
+                try:
+                    # Detect faces using InsightFace
                 faces = self.face_registry.app.get(frame)
                 
                 if len(faces) > 0:

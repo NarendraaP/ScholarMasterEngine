@@ -1,0 +1,38 @@
+{
+  "visual_acquisition": {
+    "source_file": "main.py:660",
+    "mechanism": "cv2.VideoCapture.read()",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "acoustic_acquisition": {
+    "source_file": "main.py:385, 673",
+    "mechanism": "sounddevice.InputStream & AudioSentinel (audio_db logging)",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "pose_acquisition": {
+    "source_file": "main.py:864",
+    "mechanism": "YOLO-Pose inference on video frame",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "cross_modal_consistency": {
+    "source_file": "core/perception_integrity/consistency.py:22",
+    "mechanism": "ConsistencyChecker.check(input_packet) in PerceptionIntegrityGate",
+    "call_site": "main.py:671 -> gate.py:64",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "multimodal_synchronization": {
+    "source_file": "core/perception_integrity/consistency.py:30",
+    "mechanism": "Timestamp skew verification (< 1.0s window)",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "jsd_continuous_reweighting": {
+    "source_file": "benchmarks/paper3_cross_modal_recovery.py",
+    "mechanism": "Information-theoretic JSD evaluation across 3 active modalities",
+    "status": "BENCHMARK_ONLY"
+  },
+  "operational_recovery_fallback": {
+    "source_file": "main.py:685, 860",
+    "mechanism": "Under visual degradation (CascadeDecision.DEGRADE), bypasses face recognition and shifts authority to anonymous pose-only kinematics",
+    "status": "FULLY_RUNTIME_INTEGRATED"
+  }
+}

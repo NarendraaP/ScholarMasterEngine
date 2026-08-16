@@ -1,0 +1,251 @@
+{
+  "EMPIRICAL_RESULT": {
+    "parameter_lock": {
+      "tau_accept": 0.45,
+      "tau_degrade": 0.7,
+      "tau_delegate": 0.85,
+      "w_epistemic": 0.35,
+      "w_aleatoric": 0.2,
+      "w_disagreement": 0.25,
+      "w_inconsistency": 0.2,
+      "temperature": 0.5,
+      "bias_offset": 0.3,
+      "blur_threshold": 50.0,
+      "model_family_a": "YOLO-Pose + InsightFace + SpectralAudio",
+      "model_family_b_zero_shot": "MediaPipe-Pose + FAISS-HNSW"
+    },
+    "five_regimes": {
+      "regime_1": {
+        "regime_id": 1,
+        "regime_name": "Regime 1: Clean ID Control",
+        "num_samples": 150,
+        "mean_latency_ms": 1.666,
+        "p95_latency_ms": 1.517,
+        "p99_latency_ms": 1.558,
+        "accept_rate": 0.0,
+        "degrade_rate": 1.0,
+        "halt_rate": 0.0,
+        "mean_risk": 0.4853,
+        "ece": 0.4853,
+        "brier_score": 0.2355
+      },
+      "regime_2": {
+        "regime_id": 2,
+        "regime_name": "Regime 2: Benign OOD / Environmental Shift",
+        "num_samples": 150,
+        "mean_latency_ms": 1.34,
+        "p95_latency_ms": 1.459,
+        "p99_latency_ms": 1.574,
+        "accept_rate": 0.0,
+        "degrade_rate": 1.0,
+        "halt_rate": 0.0,
+        "mean_risk": 0.52,
+        "ece": 0.48,
+        "brier_score": 0.2304
+      },
+      "regime_3": {
+        "regime_id": 3,
+        "regime_name": "Regime 3: Physical Sensor Degradation",
+        "num_samples": 150,
+        "mean_latency_ms": 1.427,
+        "p95_latency_ms": 1.537,
+        "p99_latency_ms": 1.657,
+        "accept_rate": 0.0,
+        "degrade_rate": 1.0,
+        "halt_rate": 0.0,
+        "mean_risk": 0.4838,
+        "ece": 0.5162,
+        "brier_score": 0.2665
+      },
+      "regime_4": {
+        "regime_id": 4,
+        "regime_name": "Regime 4: Targeted Adversarial Perturbation",
+        "num_samples": 150,
+        "mean_latency_ms": 1.307,
+        "p95_latency_ms": 1.381,
+        "p99_latency_ms": 1.433,
+        "accept_rate": 1.0,
+        "degrade_rate": 0.0,
+        "halt_rate": 0.0,
+        "mean_risk": 0.4378,
+        "ece": 0.5622,
+        "brier_score": 0.316
+      },
+      "regime_5": {
+        "regime_id": 5,
+        "regime_name": "Regime 5: Combined Adversarial + Environmental",
+        "num_samples": 150,
+        "mean_latency_ms": 1.472,
+        "p95_latency_ms": 1.621,
+        "p99_latency_ms": 1.989,
+        "accept_rate": 0.0,
+        "degrade_rate": 1.0,
+        "halt_rate": 0.0,
+        "mean_risk": 0.4838,
+        "ece": 0.5162,
+        "brier_score": 0.2665
+      }
+    },
+    "paper22_foundations": {
+      "family_a_calibration": {
+        "config_name": "E_FullPerceptionIntegrity",
+        "auroc": 1.0,
+        "fpr95": 0.0,
+        "ece": 0.4218,
+        "brier_score": 0.1793
+      },
+      "family_b_zero_shot": {
+        "config_name": "E_FullPerceptionIntegrity",
+        "auroc": 1.0,
+        "fpr95": 0.0,
+        "ece": 0.4218,
+        "brier_score": 0.1793
+      },
+      "zero_shot_transfer_status": "PASSED_WITHOUT_RETUNING"
+    },
+    "paper23_adaptive_edge": {
+      "static_primary": {
+        "mean_ms": 1.264,
+        "p50_ms": 1.266,
+        "p95_ms": 1.277,
+        "p99_ms": 1.309,
+        "fps": 791.2
+      },
+      "static_heavy_ensemble": {
+        "mean_ms": 14.501,
+        "p50_ms": 15.014,
+        "p95_ms": 15.059,
+        "p99_ms": 15.478,
+        "fps": 69.0
+      },
+      "adaptive_cascade": {
+        "mean_ms": 2.679,
+        "p50_ms": 3.786,
+        "p95_ms": 4.075,
+        "p99_ms": 4.556,
+        "fps": 373.3,
+        "primary_path_pct": 48.0,
+        "verification_activation_pct": 52.0
+      }
+    },
+    "paper24_cross_modal": {
+      "degradation_0pct": {
+        "degradation_level": 0.0,
+        "single_rgb_accuracy": 1.0,
+        "unweighted_fusion_accuracy": 1.0,
+        "dynamic_consensus_accuracy": 1.0,
+        "recovery_rate": 0.0
+      },
+      "degradation_20pct": {
+        "degradation_level": 0.2,
+        "single_rgb_accuracy": 0.8,
+        "unweighted_fusion_accuracy": 0.8,
+        "dynamic_consensus_accuracy": 1.0,
+        "recovery_rate": 1.0
+      },
+      "degradation_50pct": {
+        "degradation_level": 0.5,
+        "single_rgb_accuracy": 0.5,
+        "unweighted_fusion_accuracy": 0.5,
+        "dynamic_consensus_accuracy": 1.0,
+        "recovery_rate": 1.0
+      },
+      "degradation_80pct": {
+        "degradation_level": 0.8,
+        "single_rgb_accuracy": 0.1867,
+        "unweighted_fusion_accuracy": 0.1867,
+        "dynamic_consensus_accuracy": 1.0,
+        "recovery_rate": 1.0
+      }
+    },
+    "paper25_downstream_error_propagation": {
+      "level_reports": {
+        "corruption_0pct": {
+          "corruption_level": 0.0,
+          "unprotected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          },
+          "protected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          }
+        },
+        "corruption_5pct": {
+          "corruption_level": 0.05,
+          "unprotected": {
+            "identity_error": 0.0667,
+            "context_error": 0.0667,
+            "compliance_error": 0.0667
+          },
+          "protected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          }
+        },
+        "corruption_10pct": {
+          "corruption_level": 0.1,
+          "unprotected": {
+            "identity_error": 0.1067,
+            "context_error": 0.1067,
+            "compliance_error": 0.1067
+          },
+          "protected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          }
+        },
+        "corruption_15pct": {
+          "corruption_level": 0.15,
+          "unprotected": {
+            "identity_error": 0.2133,
+            "context_error": 0.2133,
+            "compliance_error": 0.2133
+          },
+          "protected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          }
+        },
+        "corruption_20pct": {
+          "corruption_level": 0.2,
+          "unprotected": {
+            "identity_error": 0.1867,
+            "context_error": 0.1867,
+            "compliance_error": 0.1867
+          },
+          "protected": {
+            "identity_error": 0.0,
+            "context_error": 0.0,
+            "compliance_error": 0.0
+          }
+        }
+      },
+      "eaf_unprotected": {
+        "identity_eaf": 0.9335,
+        "context_eaf": 0.9335,
+        "compliance_eaf": 0.9335
+      },
+      "eaf_protected": {
+        "identity_eaf": 0.0,
+        "context_eaf": 0.0,
+        "compliance_eaf": 0.0
+      },
+      "hypotheses": {
+        "h1_unprotected_eaf_greater_1": {
+          "empirical_value": 0.9335,
+          "passed": false
+        },
+        "h2_protected_eaf_less_0_3": {
+          "empirical_value": 0.0,
+          "passed": true
+        }
+      }
+    }
+  }
+}

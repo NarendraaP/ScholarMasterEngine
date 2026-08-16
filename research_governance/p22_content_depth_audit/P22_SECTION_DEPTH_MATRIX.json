@@ -1,0 +1,96 @@
+{
+  "audit_target": "docs/papers/paper22_revised.tex",
+  "tex_sha256": "6e8adb2cab9b07e5c17394330785c6dbe83131dac5a8a2e8f30c94d37f2b567c",
+  "sections": [
+    {
+      "section_name": "Abstract",
+      "current_substantive_content": "Summarizes cyber-physical vision risks, Dirichlet EDL variance bounds, 2000 inferences, AUROC 1.0, ECE reduction to 0.0412, risk margin 0.8533, and sub-1.7ms latency.",
+      "scientific_purpose": "Executive synthesis of problem, mathematical theorem, empirical results, and latency SLA compliance.",
+      "is_fully_developed": true,
+      "missing_scientific_reasoning": "None. Highly concentrated and quantitative.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": false,
+      "estimated_legitimate_additional_effective_pages": 0.0
+    },
+    {
+      "section_name": "Section 1: Introduction",
+      "current_substantive_content": "Contrasts softmax normalization flaws against aleatoric/epistemic uncertainty and introduces the Layer-1 Perception Integrity Gate.",
+      "scientific_purpose": "Establish the foundational failure mode of uncalibrated deep vision in multi-tier edge cyber-physical pipelines.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "Mathematical formulation of softmax logit scale invariance ($e^{z_k + c} / \\sum e^{z_j + c}$) and formalization of the 5-layer cascading failure propagation.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.25
+    },
+    {
+      "section_name": "Section 2: Related Work & 6-Paradigm Taxonomy",
+      "current_substantive_content": "Brief overview of BNNs, MC-Dropout, Deep Ensembles, EDL, Calibration, and Table I taxonomy.",
+      "scientific_purpose": "Position P22 in the scientific literature and establish why existing methods fail under edge SLA constraints.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "In-depth scholarly chains across 14 literature dimensions (MC-Dropout sampling latency, Prior Networks distributional loss, Energy-based scoring temperature sensitivity, spatial blur metrics, and safety-critical runtime verification).",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.5
+    },
+    {
+      "section_name": "Section 3.1 & 3.2: Dirichlet Evidential Formulation & Theorem 1 Proof",
+      "current_substantive_content": "Subjective logic belief masses, Dirichlet PDF, Theorem 1 variance bound (Var(p_k) <= 1/(4(S+1))), and Corollary 1 covariance.",
+      "scientific_purpose": "Provide first-principles mathematical guarantee of evidence concentration and variance bounding.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "Explicit derivation of Dirichlet marginal Beta distribution, distinction between uniform evidence scaling monotonicity vs single-class accumulation, and Dirichlet entropy bounds.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.3
+    },
+    {
+      "section_name": "Section 3.3 & 3.4: Optical Blur, Kinematic Dispersion & Composite Risk",
+      "current_substantive_content": "Modified Laplacian energy, Fourier high-frequency ratio, keypoint jitter, and composite risk Rp = w_u u + w_d d + w_b B + w_k D.",
+      "scientific_purpose": "Define multi-orthogonal sensory degradation metrics and composite risk integration.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "Lipschitz continuity proof of the composite risk function with respect to input perturbation, and formal normalization of keypoint dispersion D.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.2
+    },
+    {
+      "section_name": "Algorithm 1: Layer-1 Perception Gating",
+      "current_substantive_content": "Pseudocode detailing evidential calculation, temperature scaling, blur evaluation, risk composition, and fail-closed interception.",
+      "scientific_purpose": "Specify exact algorithmic execution flow for reproducible edge deployment.",
+      "is_fully_developed": true,
+      "missing_scientific_reasoning": "None. Algorithmic steps are deterministic and complete.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": false,
+      "estimated_legitimate_additional_effective_pages": 0.0
+    },
+    {
+      "section_name": "Section 4: Empirical Evaluation, Telemetry & Results Interpretation",
+      "current_substantive_content": "Table II validation metrics (AUROC 1.0, FPR95 0.0, ECE 0.0412, Brier 0.1793, Latency 1.486ms), Table III regime risks, and WHAT/WHY/LIMIT analysis.",
+      "scientific_purpose": "Provide empirical validation of OOD discrimination, calibration, risk separation, and real-time execution.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "Deep analysis of why temperature scaling preserves OOD AUROC while reducing ECE by 90.2%, trade-off dynamics between False Acceptance Rate and False Rejection Rate, and regime-by-regime uncertainty attribution.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.3
+    },
+    {
+      "section_name": "Section 5 & 6: Failure Boundaries & Conclusion",
+      "current_substantive_content": "Characterization of extreme underexposure and high-velocity kinematic smear as physical failure boundaries, followed by concluding remarks.",
+      "scientific_purpose": "Bound the operating envelope and formalize cyber-physical safety invariants.",
+      "is_fully_developed": false,
+      "missing_scientific_reasoning": "Mathematical formalization of sensor SNR collapse threshold and fail-closed deterministic state machine invariants.",
+      "derivable_from_existing_evidence": true,
+      "new_evidence_required": false,
+      "expansion_necessary": true,
+      "estimated_legitimate_additional_effective_pages": 0.1
+    }
+  ],
+  "total_legitimate_expansion_pages": 1.65,
+  "projected_body_effective_pages": 5.07
+}

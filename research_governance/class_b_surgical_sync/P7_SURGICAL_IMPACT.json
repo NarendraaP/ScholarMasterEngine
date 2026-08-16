@@ -1,0 +1,40 @@
+{
+  "paper_id": "P7",
+  "title": "Sub-Millisecond Identity Retrieval via HNSW + LDCC",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper7_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes query embeddings q in R^512 are clean unit-norm ArcFace vectors.",
+    "perception_input_assumption": "Query vectors are extracted only from frames passing Layer 1 evidential gate.",
+    "architecture_boundary": "FAISS-HNSW vector index operates behind Layer 1 quarantine boundary.",
+    "mathematical_assumptions": "L2/L3 cache line alignment and graph ANN complexity remain 100% valid.",
+    "experimental_assumptions": "Recall-latency Pareto curves are preserved.",
+    "claims": "Qualify that sub-millisecond retrieval accuracy is protected from Voronoi boundary jump flips by upstream Layer 1 gating.",
+    "figures": "Preserve HNSW index layout figure; annotate input query interface.",
+    "tables": "Preserve retrieval benchmark tables.",
+    "references": "Add citation to P25 (Voronoi discontinuity proof) and P22 (Perception Gate).",
+    "downstream_dependencies": "Identity IDs feeding Layer 3/4."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P7",
+      "location": "Section I / Section IV",
+      "change_type": "CLAIM_QUALIFICATION",
+      "current_state": "Presents HNSW retrieval performance without discussing input embedding corruption risks.",
+      "new_state": "Qualify that high-recall nearest-neighbor traversal is safeguarded against Voronoi boundary perturbations by Layer-1 evidential gating.",
+      "reason": "Explain architectural context of sub-millisecond vector retrieval in safety-critical deployments.",
+      "affected_by": [
+        "P22",
+        "P25"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P7 owns HNSW cache optimization; P25 owns Voronoi geometry proof)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

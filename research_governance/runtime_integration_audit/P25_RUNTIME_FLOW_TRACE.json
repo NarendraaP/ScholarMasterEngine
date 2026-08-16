@@ -1,0 +1,39 @@
+{
+  "transitions": [
+    {
+      "from_stage": "Layer 1 (Perception)",
+      "to_stage": "Layer 2 (Identity)",
+      "trigger": "CascadeDecision.ACCEPT or DELEGATE",
+      "condition": "calibrated_risk < 0.85",
+      "quarantine_branch": "CascadeDecision.HALT -> drop frame"
+    },
+    {
+      "from_stage": "Layer 1 (Perception)",
+      "to_stage": "Layer 3 (Context)",
+      "trigger": "CascadeDecision.DEGRADE",
+      "condition": "calibrated_risk in [0.45, 0.70)",
+      "quarantine_branch": "Anonymous pose tracking without facial biometrics"
+    },
+    {
+      "from_stage": "Layer 2 (Identity)",
+      "to_stage": "Layer 3/4 (Context & Compliance)",
+      "trigger": "search_face() found match",
+      "condition": "confidence > adaptive_tau",
+      "quarantine_branch": "unknown probe logged without compliance violation"
+    },
+    {
+      "from_stage": "Layer 4 (Compliance)",
+      "to_stage": "Layer 5 (Governance & Decision)",
+      "trigger": "st_csf.validate_event() returns True",
+      "condition": "Spatio-temporal velocity and schedule invariants satisfied",
+      "quarantine_branch": "ST-CSF rejection suppresses Merkle ledger commit"
+    },
+    {
+      "from_stage": "Layer 5 (Governance)",
+      "to_stage": "Layer 5 (Audit Ledger)",
+      "trigger": "GovernanceFilter.compliance_check() returns True",
+      "condition": "All payload fields belong to ALLOWED_FIELDS",
+      "quarantine_branch": "Governance rejection blocks audit logging"
+    }
+  ]
+}

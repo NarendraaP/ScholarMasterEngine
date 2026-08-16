@@ -133,3 +133,7 @@ Forbidden: Formal proofs/theorems, cryptographic mechanism design, runtime solve
   implementation, OS-level kernel APIs, hardware benchmark numbers, neural
   architecture specifications, and FL algorithm details.
 ```
+
+
+## RBAC Scope Mapping Extension
+7-Role RBAC authorization middleware governs read/write access to `PerceptionIntegrityGate` policy thresholds (`tau_accept`, `tau_degrade`, `tau_delegate`, `tau_halt`).

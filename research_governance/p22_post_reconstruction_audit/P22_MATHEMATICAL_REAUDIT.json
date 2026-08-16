@@ -1,0 +1,27 @@
+{
+  "paper_id": "P22",
+  "theorems_audited": [
+    {
+      "theorem": "Theorem 1: Dirichlet Evidence Variance Upper Bound",
+      "formulation": "Var(p_k) = alpha_k(S - alpha_k) / [S^2(S + 1)] <= 1/[4(S + 1)] < 1/4K",
+      "proof_status": "VERIFIED_RIGOROUS",
+      "asymptotic_behavior": "lim_{S->inf} Var(p_k) = 0 via Squeeze Theorem."
+    },
+    {
+      "theorem": "Proposition 1: Uniform Evidence Scaling Monotonicity",
+      "formulation": "d/dc Var(p_k; c) = -S_0 z_k (1 - z_k) / (c S_0 + 1)^2 < 0",
+      "proof_status": "VERIFIED_RIGOROUS",
+      "qualification": "Explicitly qualified that non-uniform single-class accumulation does not guarantee point variance contraction for all classes."
+    },
+    {
+      "theorem": "Corollary 1: Pairwise Negative Covariance",
+      "formulation": "Cov(p_i, p_j) = -alpha_i alpha_j / [S^2(S + 1)] < 0",
+      "proof_status": "VERIFIED_RIGOROUS"
+    },
+    {
+      "theorem": "Proposition 2: Lipschitz Continuity of Perception Risk",
+      "formulation": "|R_p(x1) - R_p(x2)| <= (w_u L_u + w_d L_d + w_b L_b + w_k L_k) ||x1 - x2||",
+      "proof_status": "VERIFIED_RIGOROUS"
+    }
+  ]
+}

@@ -82,3 +82,7 @@ Paper 10 serves as the operational validation capstone. It contributes no new al
 | **Adversarial Harness** | `benchmarks/adversarial_stress_test.py` | ✅ Verified (Protocol 1 Implementation) |
 | **Jitter Simulation** | `benchmarks/adversarial_stress_test.py` | ✅ Verified (Network Fault Injection) |
 | **Survival Check** | `benchmarks/adversarial_stress_test.py` | ✅ Verified (>25 FPS Criterion) |
+
+
+## Invariant Extension: INV-16
+`INV-16`: Perception Integrity Gate MUST evaluate sensor inputs before Layer 2 biometric processing, maintaining fail-closed system safety.

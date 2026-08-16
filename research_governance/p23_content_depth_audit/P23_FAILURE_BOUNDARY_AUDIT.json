@@ -1,0 +1,24 @@
+{
+  "paper_id": "P23",
+  "current_coverage": "COMPRESSED (40 words)",
+  "analyzed_failure_modes": [
+    {
+      "failure_mode": "Queue Saturation (rho >= 1.0)",
+      "mechanism": "Arrival rate lambda exceeds cascade processing rate 1 / E[S].",
+      "mitigation": "Graceful Degradation Protocol forces primary fast-path execution when Q > Q_max, clamping latency to L_1 = 1.264ms.",
+      "status": "VALID_ANALYSIS_EXPANSION_REQUIRED"
+    },
+    {
+      "failure_mode": "Adversarial Heavy DoS Burst",
+      "mechanism": "Attacker injects continuous high-risk frames to force 100% heavy execution (L_2 = 14.5ms), causing queue explosion.",
+      "mitigation": "Circuit breaker trips when moving average verification rate exceeds SLA capacity budget, shedding heavy verification and generating a security audit event.",
+      "status": "VALID_ANALYSIS_EXPANSION_REQUIRED"
+    },
+    {
+      "failure_mode": "Thermal Throttling & DVFS Hysteresis",
+      "mechanism": "Sustained heavy model execution raises junction temperature above SoC throttle limit, reducing clock frequencies by 30-50%.",
+      "mitigation": "Dynamic 8.1% active duty cycle bounds thermal dissipation well within 5-15W edge power envelopes.",
+      "status": "VALID_ANALYSIS_EXPANSION_REQUIRED"
+    }
+  ]
+}

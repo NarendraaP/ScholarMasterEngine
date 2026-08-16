@@ -1,0 +1,242 @@
+[
+  {
+    "paper": "P22",
+    "section": "Section I",
+    "planned_content": "Motivation for evidential deep learning vs softmax overconfidence",
+    "evidence_class": "L0",
+    "source_artifact": "Sensoy 2018, Guo 2017",
+    "actual_value_used": "Softmax uncalibrated overconfidence",
+    "empirical_or_theoretical": "Theoretical Motivation",
+    "allowed": true
+  },
+  {
+    "paper": "P22",
+    "section": "Section II",
+    "planned_content": "6-paradigm literature taxonomy table",
+    "evidence_class": "L0",
+    "source_artifact": "Amini 2020, Hendrycks 2017, Pech-Pacheco 2000",
+    "actual_value_used": "Comparative qualitative taxonomy",
+    "empirical_or_theoretical": "Literature Synthesis",
+    "allowed": true
+  },
+  {
+    "paper": "P22",
+    "section": "Section III",
+    "planned_content": "Dirichlet variance derivation and epistemic uncertainty formula",
+    "evidence_class": "E2",
+    "source_artifact": "First-principles Dirichlet subjective logic",
+    "actual_value_used": "Var(p_k) = alpha_k(S-alpha_k)/(S^2(S+1)), u=K/S",
+    "empirical_or_theoretical": "Mathematical Derivation",
+    "allowed": true
+  },
+  {
+    "paper": "P22",
+    "section": "Section IV",
+    "planned_content": "Laplacian blur energy ratio and keypoint dispersion definitions",
+    "evidence_class": "E1 / E2",
+    "source_artifact": "core/canonical_layers.py",
+    "actual_value_used": "Q_blur = ln(1 + sigma_L^2 / mu_I), D_dis",
+    "empirical_or_theoretical": "Implementation & Formulation",
+    "allowed": true
+  },
+  {
+    "paper": "P22",
+    "section": "Section VI",
+    "planned_content": "Analysis of AUROC=1.0000 and pre-scaling ECE=0.4218 -> post-scaling ECE=0.0412",
+    "evidence_class": "E0",
+    "source_artifact": "benchmarks/master_validation_suite_results.json",
+    "actual_value_used": "AUROC=1.0000, FPR95=0.0000, ECE=0.4218->0.0412",
+    "empirical_or_theoretical": "Empirical Telemetry",
+    "allowed": true
+  },
+  {
+    "paper": "P22",
+    "section": "Section VII",
+    "planned_content": "Failure boundary analysis for severe blur and illumination limits",
+    "evidence_class": "E0 / E3",
+    "source_artifact": "Regimes 1-5 benchmarks (limits framed as future work)",
+    "actual_value_used": "Clean vs Corrupted separation margin 0.8533",
+    "empirical_or_theoretical": "Empirical & Scoped Limitations",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section I",
+    "planned_content": "Motivation for dynamic risk-driven edge cascade routing",
+    "evidence_class": "L0",
+    "source_artifact": "Satyanarayanan 2017, Bolukbasi 2017",
+    "actual_value_used": "Edge latency constraints vs heavy model compute",
+    "empirical_or_theoretical": "Theoretical Motivation",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section II",
+    "planned_content": "Literature synthesis on early-exit and cascaded neural architectures",
+    "evidence_class": "L0",
+    "source_artifact": "Viola-Jones 2001, Teerapittayanon 2016, Huang 2017",
+    "actual_value_used": "Multi-tier dynamic routing taxonomy",
+    "empirical_or_theoretical": "Literature Synthesis",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section III",
+    "planned_content": "Constrained Pareto Lagrangian optimization formulation",
+    "evidence_class": "E2",
+    "source_artifact": "First-principles constrained optimization",
+    "actual_value_used": "min E[L] s.t. E[R] <= R_max, P(L > T_SLA) <= epsilon",
+    "empirical_or_theoretical": "Mathematical Derivation",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section IV",
+    "planned_content": "M/G/1 queue response time distribution bound derivation",
+    "evidence_class": "E2",
+    "source_artifact": "Kleinrock queueing theory",
+    "actual_value_used": "P(W > t) <= C * exp(-theta t) (Theoretical)",
+    "empirical_or_theoretical": "Mathematical Derivation",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section V",
+    "planned_content": "Interpretation of 373.3 FPS throughput, 2.679 ms latency, P99=4.556 ms",
+    "evidence_class": "E0",
+    "source_artifact": "benchmarks/master_validation_suite_results.json",
+    "actual_value_used": "FPS=373.3, Latency=2.679ms, P99=4.556ms, Bypass=48%, Heavy=52%",
+    "empirical_or_theoretical": "Empirical Telemetry",
+    "allowed": true
+  },
+  {
+    "paper": "P23",
+    "section": "Section VI",
+    "planned_content": "Failure modes under high-risk saturation and thermal limits",
+    "evidence_class": "E1 / E3",
+    "source_artifact": "core/canonical_layers.py (continuous load thermal framed as future work)",
+    "actual_value_used": "8.1% heavy path active utilization",
+    "empirical_or_theoretical": "Implementation & Scoped Limitations",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section I",
+    "planned_content": "Motivation for cross-modal consensus under single-sensor degradation",
+    "evidence_class": "L0",
+    "source_artifact": "Baltru\u0161aitis 2018, Khaleghi 2013",
+    "actual_value_used": "Vulnerability of unimodal edge perception",
+    "empirical_or_theoretical": "Theoretical Motivation",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section II",
+    "planned_content": "Literature synthesis on multimodal fusion and missing modality handling",
+    "evidence_class": "L0",
+    "source_artifact": "Tsai 2019, Dodge 2016, Lin 1991",
+    "actual_value_used": "Reliability-aware multimodal fusion taxonomy",
+    "empirical_or_theoretical": "Literature Synthesis",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section III",
+    "planned_content": "Symmetric JSD information-theoretic boundedness proof",
+    "evidence_class": "E2",
+    "source_artifact": "Lin 1991, Endres 2003",
+    "actual_value_used": "0 <= JSD(P_m || P_c) <= ln(2)",
+    "empirical_or_theoretical": "Mathematical Proof",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section IV",
+    "planned_content": "Asynchronous multi-rate queue ring buffer synchronization",
+    "evidence_class": "E1",
+    "source_artifact": "core/canonical_layers.py",
+    "actual_value_used": "30 FPS RGB, 100 Hz IMU, 15 FPS Thermal",
+    "empirical_or_theoretical": "Implementation Behavior",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section V",
+    "planned_content": "Results interpretation of 100% recovery across 0%, 20%, 50%, 80% degradation",
+    "evidence_class": "E0",
+    "source_artifact": "benchmarks/master_validation_suite_results.json",
+    "actual_value_used": "RGB single drops to 0.4210 while consensus stays 1.0000; RGB weight 0.40->0.05",
+    "empirical_or_theoretical": "Empirical Telemetry",
+    "allowed": true
+  },
+  {
+    "paper": "P24",
+    "section": "Section VI",
+    "planned_content": "Analysis of multi-channel simultaneous failure boundaries",
+    "evidence_class": "E2 / E3",
+    "source_artifact": "Information geometry trust equation (simultaneous failure framed as theoretical limitation)",
+    "actual_value_used": "Weight decay gradient dw_m/d(JSD_m) = -beta*w_m(1-w_m)",
+    "empirical_or_theoretical": "Mathematical & Scoped Limitations",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section I",
+    "planned_content": "Motivation for studying cascading error compounding across multi-layer vision pipelines",
+    "evidence_class": "L0",
+    "source_artifact": "Sambasivan 2021, Sculley 2015",
+    "actual_value_used": "Data cascades and compounding upstream errors",
+    "empirical_or_theoretical": "Theoretical Motivation",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section II",
+    "planned_content": "Literature synthesis on ML technical debt, fault containment, and pipeline safety",
+    "evidence_class": "L0",
+    "source_artifact": "Leveson 1995, Avizienis 2004, Deng 2019",
+    "actual_value_used": "System safety and fault tolerance taxonomy",
+    "empirical_or_theoretical": "Literature Synthesis",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section III",
+    "planned_content": "5-layer state composition and Voronoi facet step jump discontinuity proof",
+    "evidence_class": "E2",
+    "source_artifact": "Aurenhammer 1991, metric geometry",
+    "actual_value_used": "Step jump > 0 across decision boundary under ArcFace angular margin",
+    "empirical_or_theoretical": "Mathematical Proof",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section IV",
+    "planned_content": "Error Amplification Factor (EAF) transfer function derivation",
+    "evidence_class": "E2",
+    "source_artifact": "First-principles error propagation",
+    "actual_value_used": "EAF = E_downstream / E_upstream",
+    "empirical_or_theoretical": "Mathematical Derivation",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section V",
+    "planned_content": "Interpretation of unprotected peak EAF=1.4220 at 15% noise vs protected EAF=0.0000",
+    "evidence_class": "E0",
+    "source_artifact": "benchmarks/master_validation_suite_results.json",
+    "actual_value_used": "Unprotected mean EAF=0.9335, peak=1.4220 at 15% noise; protected mean EAF=0.0000",
+    "empirical_or_theoretical": "Empirical Telemetry",
+    "allowed": true
+  },
+  {
+    "paper": "P25",
+    "section": "Section VI",
+    "planned_content": "Systemic limitations regarding UMA hardware and supervisor fidelity",
+    "evidence_class": "E1 / E3",
+    "source_artifact": "core/orchestration/control_plane/failure_containment.py",
+    "actual_value_used": "Zero-copy UMA bus dependency",
+    "empirical_or_theoretical": "Implementation & Scoped Limitations",
+    "allowed": true
+  }
+]

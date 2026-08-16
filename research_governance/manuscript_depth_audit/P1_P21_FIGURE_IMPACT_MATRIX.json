@@ -1,0 +1,205 @@
+{
+  "P1": {
+    "figure_count": 7,
+    "captions": [
+      "Architectural Paradigm Comparison",
+      "The ScholarMaster Layered Architecture. Allowed interfaces mandate progressive abstraction (left). Lateral or skip-level communication is explicitly forbidden to prevent cross-layer leakage (right).",
+      "Subsystem Ownership Mapping"
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P2": {
+    "figure_count": 7,
+    "captions": [
+      "Conceptual Signal Inputs to Contextual Model.",
+      "During the high-load segment (20-50m), the baseline model falsely reports low engagement. The probabilistic model classifies this as active concentration.",
+      "Console output from the re-weighting engine demonstrating real-time contextual adaptation. A visually negative valence ($V_{neg"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P3": {
+    "figure_count": 5,
+    "captions": [
+      "The Sensing Pipeline. Data flows horizontally through the volatile layer where it is vectorized and explicitly wiped. Only abstract coordinate data descends to the persistent evaluation layer.",
+      "The skeletal overlay in Figure 2 shows what level of abstraction is retained by the perception logic. Of importance is that the secure deletion routine is executed right after vectorization. In this way, if the following logic freezes, the raw frames will not be stored in memory.",
+      "Geometric Detection Performance Metrics ($N=1,200$)"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P4": {
+    "figure_count": 6,
+    "captions": [
+      "PCVF State Machine acting as temporal low-pass filter. Student triggered out-of-schedule transition to Transient state. Alert will only be issued if accumulated violation integral reaches debounce threshold.",
+      "Temporal Debounce Filtering (PCVF)",
+      "Latency Decomposition per Event (Single Query)"
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P5": {
+    "figure_count": 4,
+    "captions": [
+      "The Memory-Bound Edge Efficiency Envelope (MBEEE). The shaded region represents theoretical edge constraints ($<30$W, $<33$ms). Discrete architectures rapidly break the envelope due to bus power and contention, stalling throughput. UMA platforms scale throughput while remaining inside the envelope.",
+      "Latency Decomposition (Architectural Bounds)",
+      "Illustrative latency sequences generated from the analytical queueing variance model. Discrete architectures exhibit higher $\\sigma_{lat"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P6": {
+    "figure_count": 7,
+    "captions": [
+      "Applicability Analysis: Benchmark AED vs. Proposed System",
+      "Anomaly Verification Routine",
+      "Evaluation Dataset Composition"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P7": {
+    "figure_count": 12,
+    "captions": [
+      "State-of-the-Art Under Institutional Constraints",
+      "Retrieval-Focused Execution Segment: The layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating.",
+      "High-Throughput Retrieval Logic"
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P8": {
+    "figure_count": 4,
+    "captions": [
+      "Batched Merkle Tree Construction. Individual encrypted events are hashed with nonces and timestamps into leaf nodes ($L_0 \\dots L_3$). The tree recursively hashes upward to generate a single 32-byte Merkle Root ($M_{root",
+      "PISK Lifecycle and Cryptographic Shredding. Encrypted payloads are stored in the Off-chain DB, whereas only the Merkle Root is anchored to the Ledger. In addition, deletion only involves the KMS Key to be erased, satisfying cryptographic erasure.",
+      "Indicative performance curve: Batched Merkle model was able to sustain under one second latency up to 1,200 TPS in the experimental setup, after which the increased queueing latency caused a steep rise in overall latency."
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P9": {
+    "figure_count": 3,
+    "captions": [
+      "Failure Mode Analysis and Mitigation",
+      "Inference Suppression Ratio (ISR) by module. Heavy Vision suppressed 72\\% of scheduled cycles; ASR 85\\%; Pose only 12\\%.",
+      "Module activation timeline: All modules active (0-10 min), lightweight mode (10-40 min), interactive mode (40-55 min), no modules during dismissal (55-60 min)."
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P10": {
+    "figure_count": 6,
+    "captions": [
+      "Integrated Stress Matrix Configuration",
+      "System Failure Points Under Integrated Stress",
+      "CPU Time Allocation per Frame. The auxiliary modules are highly optimized, ensuring the pipeline clears the 33ms real-time destruction deadline even under stress overhead."
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P11": {
+    "figure_count": 3,
+    "captions": [
+      "Appliance Invariance Architecture. The persistent lower layer ($H_0$) is never written to during normal operation. All runtime modifications are made either in the volatile UpperDir (RAM) or within versioned container layers. Upon power-down, only the volatile layers are lost.",
+      "Power Failure Resilience Test Results ($n=50$ cycles)",
+      "Per-Node Hardware Bill of Materials (CapEx Snapshot)"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P12": {
+    "figure_count": 4,
+    "captions": [
+      "Baseline Write Volume Breakdown (24-hour period)",
+      "Daily Write Volume Reduction",
+      "Write Amplification Factor (WAF)"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P13": {
+    "figure_count": 4,
+    "captions": [
+      "Information-Theoretic Sample Acquisition (Edge)",
+      "Cross-node Temporal Recovery Curve. The unadapted model drops decisively to an 85.2\\% operational plateau. Assisted significantly by localized active pseudo-labeling boundaries, performance aggressively rebounds toward 93.0\\%.",
+      "Drift Mitigation Comparative Matrix"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P14": {
+    "figure_count": 4,
+    "captions": [
+      "Federated Evaluation Divergence Topologies",
+      "Domain Transfer Target F1-Score Performance",
+      "Decay Metric Stabilization Limits ($\\gamma$ scaling)"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P15": {
+    "figure_count": 5,
+    "captions": [
+      "AR Client Internal Structure. The upstream event source is treated as an opaque provider. The client resolves semantic identifiers to world coordinates, fuses them with the device's SLAM-derived pose, and renders spatially-anchored overlays.",
+      "Conceptual viewport mockup of the AR Interface. The red beacon acts as a spatially-anchored overlay, guiding the user's focal attention directly to the physical source of the event. The blue arrow provides intuitive path-finding cues.",
+      "User Study Participant Demographics"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P16": {
+    "figure_count": 7,
+    "captions": [
+      "Participant Demographics Detail",
+      "System Trust Scale (STS) Instrument Items",
+      "Mean Student Sentiment Scores (1=Negative, 5=Positive)"
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P17": {
+    "figure_count": 1,
+    "captions": [
+      "The Irreversible Pipeline. Raw data exists exclusively in volatile memory buffers that are never committed to persistent storage. The data is destructively transformed at the abstraction boundary, mathematically preventing reconstruction before higher-order inference occurs."
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P18": {
+    "figure_count": 9,
+    "captions": [
+      "Failure Taxonomy",
+      "Watchdog Architecture. The Watchdog operates with process-level isolation within the same OS instance, monitoring the Shared Fence. If the Main Process hangs or violates TTL, the Watchdog issues a SIGKILL.",
+      "Fault Injection Scenarios"
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P19": {
+    "figure_count": 2,
+    "captions": [
+      "Demarcation of the Trusted Computing Base. The security of the privacy invariants depends strictly on the components within the TCB. Neural network weights and UI elements are explicitly untrusted.",
+      "Formal Threat Mitigation Matrix mapping Adversary capabilities to specific Architectural Countermeasures."
+    ],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P20": {
+    "figure_count": 5,
+    "captions": [
+      "The ScholarMaster Unified Reference Stack. The system is built upwards from physical constraints (I) to logical reasoning (II), verified trust (III), and finally social acceptance (IV).",
+      "The formal payload schema. The compiler guarantees that no `bytes raw\\_image` field can be passed to the L4 Inference layer, physically enforcing INV-02 and INV-10.",
+      "End-to-End Event Sequence. Note that the Raw RGB Frame is explicitly destroyed (Step 3) before the `AbstractEvent` protobuf payload is transmitted to the Logic Layer (Step 4)."
+    ],
+    "classification": "MINOR_UPDATE (Document upstream PerceptionIntegrityGate block)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  },
+  "P21": {
+    "figure_count": 0,
+    "captions": [],
+    "classification": "UNCHANGED (100% Preserved baseline)",
+    "impact_reason": "Upstream Perception Integrity layer operates ahead of Layer 2 biometric ingestion"
+  }
+}

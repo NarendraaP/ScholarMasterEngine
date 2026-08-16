@@ -1,0 +1,18 @@
+{
+  "claim_id": "P25-QUARANTINE-LIPSCHITZ-VERIFICATION",
+  "paper": "P25",
+  "claimed_formula": "Lip(f_2) = 0 on unsafe inputs under fail-closed quarantine",
+  "source": "docs/papers/paper25_revised.tex (Section IV-B)",
+  "mathematical_audit": {
+    "constant_quarantine_map": "When R_p(x) > tau_risk, the gate halts downstream execution and emits constant symbol bot. The restricted map f_gate|_{X_quar}: X_quar -> {bot} is constant, hence its Lipschitz constant on X_quar is exactly 0.",
+    "unconstrained_classifier_distinction": "The unconstrained nearest-neighbor classifier phi(z) = g_{N(z)} is discontinuous across Voronoi facet boundaries, with unbounded local sensitivity (Lip -> infinity across boundaries).",
+    "domain_restricted_pipeline": "Gating intercepts uncertified inputs before Layer 2 execution, restricting the active input domain to certified sub-manifold X_cert (contained within Voronoi cell interiors) and mapping X_quar to constant null state bot.",
+    "global_pipeline_claim_guard": "The property Lip = 0 applies strictly to the domain-restricted quarantine map, and must NOT be misconstrued as asserting that the unconstrained baseline classifier is globally Lipschitz."
+  },
+  "verdict": "VALID_WITH_EXPLICIT_ASSUMPTION",
+  "assumptions": [
+    "Deterministic binary gating: R_p(x) > tau_risk halts downstream execution and maps to constant null state bot.",
+    "Domain is partitioned into certified sub-manifold X_cert and quarantine region X_quar."
+  ],
+  "safe_manuscript_wording": "Under Layer-1 fail-closed gating, uncertified inputs are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, preventing evaluation on discontinuous Voronoi boundaries and guaranteeing EAF = 0.0000 on quarantined perturbations."
+}

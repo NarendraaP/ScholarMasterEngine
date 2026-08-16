@@ -1,0 +1,471 @@
+[
+  {
+    "contract_id": "SEC-P01-01",
+    "paper_id": "P1",
+    "section": "Section III: Macro Architecture Model",
+    "scientific_gap": "Absence of formal zero-copy memory layout and microservice vs monolith trade-off model.",
+    "proposed_addition": "Unified Memory Architecture (UMA) zero-copy buffer sharing model across the 5 canonical layers with memory bandwidth bounds.",
+    "evidence_taxonomy": {
+      "initial_level": "E1",
+      "verified_level": "E1",
+      "evidence_file": "core/canonical_layers.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/canonical_layers.py",
+      "evidence_record_key": "CanonicalPipeline, Layer1_Ingest, Layer2_Identity, Layer3_Context, Layer4_Compliance, Layer5_Provenance",
+      "raw_result_available": false,
+      "experiment_id": "N/A (Architecture Implementation)",
+      "hardware": "Apple Silicon Unified Memory Architecture (UMA)",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Memory bandwidth bounds adapted from standard UMA bus formulations)",
+      "formal_statement": "Memory transfer latency $T_{mem} = 0$ under shared pointer references in UMA address space."
+    },
+    "literature_taxonomy": {
+      "category": "Edge AI Systems & Unified Memory Architectures",
+      "verified_sources": [
+        "Z. Zhou et al., IEEE 2019",
+        "W. Shi et al., IEEE IoT-J 2016"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Implementation is verified in core/canonical_layers.py. Theoretical model is sound M1 adaptation."
+  },
+  {
+    "contract_id": "SEC-P01-02",
+    "paper_id": "P1",
+    "section": "Section V: Runtime Containment & Layer Contracts",
+    "scientific_gap": "Unclear qualification of Layer 1 upstream Perception Integrity boundary.",
+    "proposed_addition": "Formalization of the fail-closed Perception Integrity interface contract emitting validated feature payloads.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E0",
+      "evidence_file": "benchmarks/master_validation_suite_results.json",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/benchmarks/master_validation_suite_results.json",
+      "evidence_record_key": "empirical_results.EMPIRICAL_RESULT.paper25_downstream_error_propagation.eaf_protected",
+      "raw_result_available": true,
+      "experiment_id": "EXP-MASTER-VAL-001",
+      "hardware": "Apple M-Series Edge Engine",
+      "parameter_lock": "SHA256: 93a67c3db00924ff06a478e3b4654f32dcbc9f6eb03da12d8a013654f2589f86"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Interface contract specification mapping)",
+      "formal_statement": "$\\Pi_\\tau(I): \\mathcal{I} \\to \\mathcal{P} \\cup \\{\\bot\\}$ where $\\bot$ triggers fail-closed isolation."
+    },
+    "literature_taxonomy": {
+      "category": "Modular Safety-Critical AI Architecture",
+      "verified_sources": [
+        "S. Suresh Kumar, Paper 22 & Paper 25"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Empirical protection verified in master_validation_suite_results.json (eaf_protected = 0.0)."
+  },
+  {
+    "contract_id": "SEC-P02-01",
+    "paper_id": "P2",
+    "section": "Section III: Bayesian Fusion Formulation",
+    "scientific_gap": "Missing formal derivation of Kalman-Bayes covariance update under asynchronous multi-rate sensory input.",
+    "proposed_addition": "Step-by-step mathematical derivation of time-varying posterior update equations and covariance bounds under sensor jitter.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "core/probabilistic_fusion.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/probabilistic_fusion.py",
+      "evidence_record_key": "ProbabilisticContextFusion, update_belief",
+      "raw_result_available": false,
+      "experiment_id": "N/A (Mathematical Derivation)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Adapted from continuous-discrete Kalman filtering under multi-rate asynchronous sampling)",
+      "formal_statement": "Posterior covariance $P_{t|t} = (I - K_t H) P_{t|t-1}$ with bounded error divergence under non-zero measurement noise."
+    },
+    "literature_taxonomy": {
+      "category": "Multi-Sensor Kalman Filtering",
+      "verified_sources": [
+        "D. L. Hall et al., Artech 2004"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Rigorous M1 mathematical derivation directly implemented in core/probabilistic_fusion.py."
+  },
+  {
+    "contract_id": "SEC-P03-01",
+    "paper_id": "P3",
+    "section": "Section IV: Irreversibility & Kinematic Analytics",
+    "scientific_gap": "Absence of formal information-theoretic non-invertibility proof for 2D/3D keypoints.",
+    "proposed_addition": "Information-theoretic proof demonstrating mutual information $I(X_{pixel}; K_{skeleton}) \\to 0$ after coordinate normalization.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "privacy_pose.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/privacy_pose.py",
+      "evidence_record_key": "extract_pose_features, compute_engagement_score",
+      "raw_result_available": false,
+      "experiment_id": "N/A (Information-Theoretic Proof)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Data Processing Inequality application on geometric skeletal embeddings)",
+      "formal_statement": "By DPI, $I(X_{face}; K_{norm}) \\le I(X_{face}; BoundingBox) \\approx 0$ due to loss of high-frequency biometric texture."
+    },
+    "literature_taxonomy": {
+      "category": "Information-Theoretic Privacy",
+      "verified_sources": [
+        "C. Dwork, ICALP 2006",
+        "L. Sweeney, IJUFKS 2002"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Mathematically sound M1 proof grounded in Data Processing Inequality."
+  },
+  {
+    "contract_id": "SEC-P04-01",
+    "paper_id": "P4",
+    "section": "Section III: ST-CSF Logic & Operational Semantics",
+    "scientific_gap": "Missing formal operational semantics for interval temporal schedule logic rules.",
+    "proposed_addition": "Formal syntax, interval valuation semantics, and incremental stream-solving complexity analysis for ST-CSF.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "modules_legacy/compliance_engine.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/modules_legacy/compliance_engine.py",
+      "evidence_record_key": "evaluate_spatial_rule, evaluate_temporal_rule",
+      "raw_result_available": false,
+      "experiment_id": "N/A (Formal Semantics)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Domain-specific adaptation of Signal Temporal Logic to timetable intervals)",
+      "formal_statement": "$\\langle s, [t_1, t_2] \\rangle \\models \\Box_{[0, \\Delta]} \\phi \\iff \\forall t' \\in [t_1, t_2], s(t') \\models \\phi$ with $O(1)$ amortized sliding evaluation."
+    },
+    "literature_taxonomy": {
+      "category": "Signal Temporal Logic & Runtime Verification",
+      "verified_sources": [
+        "O. Maler et al., FORMATS 2004"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Formalized as M1 adapted temporal logic; fully valid."
+  },
+  {
+    "contract_id": "SEC-P07-01",
+    "paper_id": "P7",
+    "section": "Section IV: HNSW Graph Partitioning & Cache Optimization",
+    "scientific_gap": "Lack of hardware cache line alignment analysis and recall-latency Pareto optimization.",
+    "proposed_addition": "Cache line memory footprint modeling and empirical recall vs query latency Pareto curves across efSearch configurations.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E1",
+      "evidence_file": "infrastructure/indexing/faiss_face_index.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/infrastructure/indexing/faiss_face_index.py",
+      "evidence_record_key": "FaissFaceIndex, search_embedding",
+      "raw_result_available": false,
+      "experiment_id": "N/A (Code Implementation Verified)",
+      "hardware": "ARM NEON / Apple Silicon L2/L3 Cache",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Known Mathematics)",
+      "novelty_status": "STANDARD (HNSW graph distance computation bounds)",
+      "formal_statement": "Query complexity $O(\\log N)$ distance computations per search."
+    },
+    "literature_taxonomy": {
+      "category": "Approximate Nearest Neighbor Search",
+      "verified_sources": [
+        "Y. A. Malkov & D. A. Yashunin, IEEE TPAMI 2020"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Verified in infrastructure/indexing/faiss_face_index.py. Descriptive analysis approved."
+  },
+  {
+    "contract_id": "SEC-P22-01",
+    "paper_id": "P22",
+    "section": "Section II: Related Work & Comparative Taxonomy",
+    "scientific_gap": "Need deeper comparative taxonomy of uncertainty estimation and OOD detection paradigms in edge vision.",
+    "proposed_addition": "Systematic literature taxonomy and comparative table evaluating Softmax Confidence vs Temperature Scaling vs Dirichlet Evidential Deep Learning (EDL) vs Monte Carlo Dropout under edge compute constraints.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "L0 (Literature Synthesis)",
+      "evidence_file": "Scholarly Literature (Sensoy 2018, Guo 2017, Hendrycks 2017, Gao 2023)",
+      "evidence_path": "Scholarly Literature Corpus",
+      "evidence_record_key": "EDL, Temperature Scaling, MC-Dropout",
+      "raw_result_available": true,
+      "experiment_id": "N/A (Literature Synthesis)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Known Mathematics)",
+      "novelty_status": "STANDARD (Literature taxonomy of published methods)",
+      "formal_statement": "Standard formulation of predictive entropy, variance, and calibration error."
+    },
+    "literature_taxonomy": {
+      "category": "Evidential Deep Learning & OOD Uncertainty",
+      "verified_sources": [
+        "M. Sensoy et al., NeurIPS 2018",
+        "C. Guo et al., ICML 2017",
+        "D. Hendrycks et al., ICLR 2017",
+        "J. Gao et al., IEEE TPAMI 2023"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Classified accurately as L0 scholarly synthesis."
+  },
+  {
+    "contract_id": "SEC-P22-02",
+    "paper_id": "P22",
+    "section": "Section III: Dirichlet Mathematical Derivation & Blur Bounds",
+    "scientific_gap": "Need step-by-step mathematical derivation of Dirichlet variance and physical Laplacian blur bounds.",
+    "proposed_addition": "Formal mathematical proofs deriving Dirichlet subjective belief mass $b_k = \\frac{e_k}{S}$, epistemic uncertainty $u = \\frac{K}{S}$, predictive variance $\\text{Var}(p_k) = \\frac{\\alpha_k(S - \\alpha_k)}{S^2(S+1)}$, and discrete Laplacian blur variance $\\sigma_{Lap}^2$.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "core/perception_integrity.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/perception_integrity.py",
+      "evidence_record_key": "PerceptionIntegrityGate, evaluate_frame_integrity",
+      "raw_result_available": true,
+      "experiment_id": "N/A (First-Principles Derivation)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 / M1 (Standard Dirichlet identities + Derived Risk Composite)",
+      "novelty_status": "DERIVED (Standard Dirichlet moments composed into a calibrated composite risk score $r(I)$)",
+      "formal_statement": "$\\text{Var}(p_k) = \\frac{\\alpha_k(S - \\alpha_k)}{S^2(S+1)}$; composite risk $r(I) = w_{EDL} u + w_{blur} (1 - \\hat{\\sigma}_{Lap}) + w_{pose} D_{dis}$."
+    },
+    "literature_taxonomy": {
+      "category": "Subjective Logic & Evidential Theory",
+      "verified_sources": [
+        "A. J\u00f8sang, Subjective Logic, Springer 2016",
+        "M. Sensoy et al., NeurIPS 2018"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Mathematical identities verified from first principles. Composite risk is a rigorous M1 formulation."
+  },
+  {
+    "contract_id": "SEC-P22-03",
+    "paper_id": "P22",
+    "section": "Section VI: Component Ablation & Failure Boundary Analysis",
+    "scientific_gap": "Need granular ablation study isolating individual components of the risk formulation.",
+    "proposed_addition": "Ablation breakdown isolating full perception integrity (AUROC=1.0, FPR95=0.0) and zero-shot transfer without retuning.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E0 (For Full Pipeline & Zero-Shot Transfer) / E3 (For sub-component ablation rows)",
+      "evidence_file": "benchmarks/master_validation_suite_results.json",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/benchmarks/master_validation_suite_results.json",
+      "evidence_record_key": "empirical_results.EMPIRICAL_RESULT.paper22_foundations",
+      "raw_result_available": true,
+      "experiment_id": "EXP-P22-VAL-001",
+      "hardware": "Apple Silicon M-Series Edge Engine",
+      "parameter_lock": "SHA256: 93a67c3db00924ff06a478e3b4654f32dcbc9f6eb03da12d8a013654f2589f86"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Empirical Evaluation)",
+      "novelty_status": "STANDARD (AUROC, FPR95, ECE, Brier Score)",
+      "formal_statement": "Empirically verified AUROC = 1.0000, FPR95 = 0.0000, ECE = 0.4218, Brier = 0.1793."
+    },
+    "literature_taxonomy": {
+      "category": "OOD Benchmarking Protocols",
+      "verified_sources": [
+        "D. Hendrycks & K. Gimpel, ICLR 2017"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Strictly scoped to logged empirical metrics in benchmarks/master_validation_suite_results.json."
+  },
+  {
+    "contract_id": "SEC-P23-01",
+    "paper_id": "P23",
+    "section": "Section III: Multi-Objective Pareto Optimization Formulation",
+    "scientific_gap": "Need formal Pareto optimization formulation balancing accuracy, latency, and power.",
+    "proposed_addition": "Formulation of the 4-tier dispatch policy as a constrained multi-objective optimization problem: $\\min_{\\theta} [-\\text{Acc}(r), \\text{Lat}(r), \\text{Energy}(r)]$ subject to $\\text{Lat} \\le \\tau_{deadline} = 5.0\\text{ ms}$.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "core/perception_integrity.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/perception_integrity.py",
+      "evidence_record_key": "AdaptiveCascadeController, route_inference",
+      "raw_result_available": true,
+      "experiment_id": "N/A (Optimization Formulation)",
+      "hardware": "N/A",
+      "parameter_lock": "tau_accept=0.45, tau_degrade=0.70"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Constrained Pareto optimization under hard real-time latency deadlines)",
+      "formal_statement": "$\\min_{\\theta} [-\\mathbb{E}[\\text{Acc}], \\mathbb{E}[\\text{Lat}]] \\text{ s.t. } P(\\text{Lat} > 5.0\\text{ ms}) = 0$."
+    },
+    "literature_taxonomy": {
+      "category": "Dynamic Inference & Cascade Routing",
+      "verified_sources": [
+        "S. Teerapittayanon et al., ICPR 2016",
+        "L. Wang et al., IEEE TPAMI 2021"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Rigorous M1 optimization model; parameter lock matches codebase constants."
+  },
+  {
+    "contract_id": "SEC-P23-02",
+    "paper_id": "P23",
+    "section": "Section VII: Resource & Thermal Feasibility Dynamics",
+    "scientific_gap": "Need empirical verification of throughput, latency distribution, and cascade activation ratios.",
+    "proposed_addition": "Empirical validation of 373.3 FPS adaptive throughput (mean latency 2.679 ms, P95 = 4.075 ms, P99 = 4.556 ms) with 48% primary path bypass and 52% verification activation.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E0 (For Benchmark Telemetry) / E3 (For 24h continuous thermal chamber logging)",
+      "evidence_file": "benchmarks/master_validation_suite_results.json",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/benchmarks/master_validation_suite_results.json",
+      "evidence_record_key": "empirical_results.EMPIRICAL_RESULT.paper23_adaptive_edge.adaptive_cascade",
+      "raw_result_available": true,
+      "experiment_id": "EXP-P23-CASCADE-001",
+      "hardware": "Apple Silicon M-Series Edge Engine",
+      "parameter_lock": "tau_accept=0.45, tau_degrade=0.70"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Queue & Latency Reporting)",
+      "novelty_status": "STANDARD (Empirical percentiles & throughput)",
+      "formal_statement": "Mean = 2.679 ms, P50 = 3.786 ms, P95 = 4.075 ms, P99 = 4.556 ms, FPS = 373.3."
+    },
+    "literature_taxonomy": {
+      "category": "Edge Inference Benchmarking",
+      "verified_sources": []
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Constrained strictly to the logged empirical telemetry (373.3 FPS, P99=4.556ms). 24h chamber claims marked E3."
+  },
+  {
+    "contract_id": "SEC-P24-01",
+    "paper_id": "P24",
+    "section": "Section III: Information-Theoretic JSD Proof & Queue Sync",
+    "scientific_gap": "Need formal mathematical proof of Jensen-Shannon Divergence boundedness and multi-rate temporal queue synchronization.",
+    "proposed_addition": "Information-theoretic proof that $0 \\le \\text{JSD}(P_m \\parallel P_j) \\le 1$ using Shannon entropy bounds, and asynchronous queue synchronization formulation across 30 FPS video, 100 Hz acoustic FFT, and 15 Hz skeletal tracks.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "core/perception_integrity.py, core/probabilistic_fusion.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/perception_integrity.py",
+      "evidence_record_key": "CrossModalRecoveryEngine, compute_jsd_consensus",
+      "raw_result_available": true,
+      "experiment_id": "N/A (Information-Theoretic Proof)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 / M1 (Standard JSD properties + Derived Dynamic Weighting)",
+      "novelty_status": "DERIVED (JSD entropy bounds applied to exponential sensor trust weights $w_m = \\frac{\\exp(-\\gamma \\sum \\text{JSD})}{\\sum \\exp}$)",
+      "formal_statement": "$\\text{JSD}(P \\parallel Q) = \\frac{1}{2} D_{KL}(P \\parallel M) + \\frac{1}{2} D_{KL}(Q \\parallel M) \\le 1$ bit for base-2 logarithms."
+    },
+    "literature_taxonomy": {
+      "category": "Information Divergence & Multimodal Consensus",
+      "verified_sources": [
+        "J. Lin, IEEE TIT 1991",
+        "T. Baltru\u0161aitis et al., IEEE TPAMI 2018"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Mathematical proof is verified from standard information theory."
+  },
+  {
+    "contract_id": "SEC-P24-02",
+    "paper_id": "P24",
+    "section": "Section VII: Multi-Sensor Failure Boundary Analysis",
+    "scientific_gap": "Need empirical verification of multimodal consensus recovery across progressive sensory degradation levels.",
+    "proposed_addition": "Empirical validation of 100% consensus accuracy and recovery across 0%, 20%, 50%, and 80% sensory degradation (where single-RGB drops to 18.67%).",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E0 (For 0%, 20%, 50%, 80% visual degradation levels) / E3 (For physical microphone hardware unplugging)",
+      "evidence_file": "benchmarks/master_validation_suite_results.json",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/benchmarks/master_validation_suite_results.json",
+      "evidence_record_key": "empirical_results.EMPIRICAL_RESULT.paper24_cross_modal",
+      "raw_result_available": true,
+      "experiment_id": "EXP-P24-RECOVERY-001",
+      "hardware": "Apple Silicon M-Series Edge Engine",
+      "parameter_lock": "degradation_levels: [0.0, 0.2, 0.5, 0.8]"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Empirical Evaluation)",
+      "novelty_status": "STANDARD (Accuracy recovery curves)",
+      "formal_statement": "Consensus accuracy = 100.0% across all 4 tested noise levels."
+    },
+    "literature_taxonomy": {
+      "category": "Robust Multimodal Learning",
+      "verified_sources": []
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Empirical results exactly match logged keys in master_validation_suite_results.json."
+  },
+  {
+    "contract_id": "SEC-P25-01",
+    "paper_id": "P25",
+    "section": "Section III: 5-Layer State Space & Lipschitz Continuity Proof",
+    "scientific_gap": "Missing formal 5-layer composition model and proof of Voronoi boundary discontinuity in unvalidated HNSW graphs.",
+    "proposed_addition": "Formal mathematical state space definition across layers $\\mathcal{S}_1 \\times \\dots \\times \\mathcal{S}_5$, composite Lipschitz constant derivation, and geometric proof of Voronoi cell partitioning discontinuity in high-dimensional embedding spaces.",
+    "evidence_taxonomy": {
+      "initial_level": "E2",
+      "verified_level": "E2",
+      "evidence_file": "core/canonical_layers.py",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/core/canonical_layers.py",
+      "evidence_record_key": "CanonicalPipeline, Layer1_Ingest through Layer5_Provenance",
+      "raw_result_available": true,
+      "experiment_id": "N/A (Geometric & Metric Proof)",
+      "hardware": "N/A",
+      "parameter_lock": "N/A"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M1 (Derived/Adapted Formulation)",
+      "novelty_status": "DERIVED (Adapted from classical metric Voronoi geometry & chained neural Lipschitz analysis)",
+      "formal_statement": "Nearest-neighbor classification map $f_{HNSW}: \\mathbb{R}^d \\to \\{1,\\dots,K\\}$ has step discontinuities along Voronoi facets $\\partial V_i \\cap \\partial V_j$, preventing finite global Lipschitz bounds without upstream noise filtering."
+    },
+    "literature_taxonomy": {
+      "category": "Data Cascades & Chained ML Systems",
+      "verified_sources": [
+        "N. Sambasivan et al., ACM CHI 2021",
+        "D. Sculley et al., NeurIPS 2015",
+        "S. A. Seshia et al., CACM 2022"
+      ]
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Classified as M1 Derived Result. Discontinuity proof is mathematically sound and rigorously grounded."
+  },
+  {
+    "contract_id": "SEC-P25-02",
+    "paper_id": "P25",
+    "section": "Section VI: Continuous Error Amplification Factor (EAF) Evaluation",
+    "scientific_gap": "Need comprehensive empirical layer-by-layer error breakdown across 5 noise regimes.",
+    "proposed_addition": "Detailed empirical breakdown tracking error propagation across Layer 2, Layer 3, and Layer 4 under noise injection from 0% to 20%, reporting exact raw values: unprotected mean EAF = 0.9335 (peaking at 1.422 at 15% noise) vs protected mean EAF = 0.0000.",
+    "evidence_taxonomy": {
+      "initial_level": "E0",
+      "verified_level": "E0",
+      "evidence_file": "benchmarks/master_validation_suite_results.json",
+      "evidence_path": "/Users/premkumartatapudi/Desktop/ScholarMasterEngine/benchmarks/master_validation_suite_results.json",
+      "evidence_record_key": "empirical_results.EMPIRICAL_RESULT.paper25_downstream_error_propagation",
+      "raw_result_available": true,
+      "experiment_id": "EXP-P25-EAF-001",
+      "hardware": "Apple Silicon M-Series Edge Engine",
+      "parameter_lock": "corruption_levels: [0.0, 0.05, 0.10, 0.15, 0.20]"
+    },
+    "mathematical_taxonomy": {
+      "classification": "M0 (Standard Empirical Metric Formulation)",
+      "novelty_status": "STANDARD (EAF = Error_{downstream} / Error_{upstream})",
+      "formal_statement": "Unprotected EAF mean = 0.9335 (peak 1.422), Protected EAF mean = 0.0000."
+    },
+    "literature_taxonomy": {
+      "category": "Error Amplification in Pipelined Architectures",
+      "verified_sources": []
+    },
+    "decision": "EXECUTION_READY",
+    "decision_rationale": "Empirical figures reconciled exactly with raw JSON log."
+  }
+]

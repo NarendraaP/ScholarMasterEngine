@@ -1,0 +1,149 @@
+{
+  "paper_id": "P23",
+  "title": "Adaptive Trustworthy Edge Systems: Dynamic Risk-Driven Cascades and Real-Time SLA Bounds",
+  "tex_sha256": "d163af39c3cddebdbdfa4af81751da9632a1e7ba8d916a59b8c539113e98a327",
+  "pdf_sha256": "f17d5b5919e6b0f395cb9838e5414f37b2c01adc820aadb007f3d57396f71abd",
+  "raw_json_sha256": "858b2bbd28db105e9ccf4665ec5bb37d26dacccbd98fdbc3b05de1882cd0c774",
+  "sections": [
+    {
+      "section_id": "SEC-01",
+      "name": "Abstract",
+      "word_count": 223,
+      "effective_pages": 0.3,
+      "current_grade": "A",
+      "assessment": "Adequately summarizes the problem, Pareto optimization, queueing bounds, and empirical findings."
+    },
+    {
+      "section_id": "SEC-02",
+      "name": "Section 1: Introduction",
+      "word_count": 161,
+      "effective_pages": 0.21,
+      "current_grade": "B",
+      "assessment": "Compressed. Lacks deep problem formalization of thermal throttling, dynamic voltage and frequency scaling (DVFS) hysteresis, and cyber-physical error cascade compounding.",
+      "missing_scientific_reasoning": "Needs explicit formulation of the edge resource dilemma across compute, latency, memory bandwidth, and thermal dissipation, plus explicit statement of core technical contributions.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-03",
+      "name": "Section 2: Related Work & Adaptive Inference Taxonomy",
+      "word_count": 190,
+      "effective_pages": 0.25,
+      "current_grade": "C",
+      "assessment": "Scientifically underdeveloped. Contains only 2 brief subsections (Dynamic NNs and Cascades) covering 6 citations. Fails to establish the comprehensive 12-paradigm adaptive inference taxonomy.",
+      "missing_scientific_reasoning": "Missing systematic scholarly chains across Early Exit (BranchyNet/SDNs), Cascades (Viola-Jones/Bolukbasi/SkipNet), Selective Prediction (Geifman/WiG), Speculative Execution, Resource-Aware Edge Inference, and Trustworthy Adaptive Inference.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-04",
+      "name": "Section 3.1: Constrained Multi-Objective Optimization Formulation",
+      "word_count": 140,
+      "effective_pages": 0.19,
+      "current_grade": "B",
+      "assessment": "Compressed. Mathematical formulation is valid but lacks detailed derivation of the expectation functionals over input distribution D and parameter domain.",
+      "missing_scientific_reasoning": "Needs explicit derivation of the objective functional, measurable policy space Pi = {pi: X -> [0, 1]}, and trade-off curvature.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-05",
+      "name": "Section 3.2: Lagrangian Dual & Zero Duality Gap",
+      "word_count": 210,
+      "effective_pages": 0.28,
+      "current_grade": "B",
+      "assessment": "Compressed proof. Theorem 1 proof is condensed into a single paragraph without detailed Fenchel conjugate verification and Slater condition qualification.",
+      "missing_scientific_reasoning": "Needs formal qualification of Slater interior point condition, convexity of functional domain, and step-by-step Fenchel-Rockafellar duality argument.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-06",
+      "name": "Section 3.3: Pollaczek-Khinchine M/G/1 Queueing Analysis",
+      "word_count": 170,
+      "effective_pages": 0.23,
+      "current_grade": "B",
+      "assessment": "Compressed. Uses standard P-K formula but lacks thorough discussion contrasting Poisson frame arrivals vs deterministic camera shutter intervals and Kingman heavy-traffic bound qualification.",
+      "missing_scientific_reasoning": "Need explicit clarification of arrival process variance (C_a^2 = 0 for camera vs C_a^2 = 1 Poisson bound) and Kingman exponential tail delay bounds.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-07",
+      "name": "Section 3.4: Energy-Delay Product (EDP) Formulation",
+      "word_count": 90,
+      "effective_pages": 0.12,
+      "current_grade": "B",
+      "assessment": "Compressed. Defines EDP = E * L but does not provide closed-form analytic minimum w.r.t routing probability r.",
+      "missing_scientific_reasoning": "Derive d(EDP)/dr to identify analytic Pareto-optimal routing threshold.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-08",
+      "name": "Algorithm 1: Adaptive Risk-Driven Cascade Routing",
+      "word_count": 80,
+      "effective_pages": 0.1,
+      "current_grade": "B",
+      "assessment": "Clear pseudocode, but uses simplified binary switch threshold tau_switch=0.50 rather than explicitly contextualizing the relationship with the 4-state policy.",
+      "missing_scientific_reasoning": "Provide explicit algorithmic commentary reconciling binary dispatch with 4-state system policy.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-09",
+      "name": "Section 4.1: Quantitative Experimental Setup",
+      "word_count": 75,
+      "effective_pages": 0.1,
+      "current_grade": "B",
+      "assessment": "Compressed. Lacks hardware platform details, OS memory allocators, and batch size configuration.",
+      "missing_scientific_reasoning": "Document ARM64 edge node specifications, PyTorch/ONNX Runtime execution providers, and camera ingestion pipeline.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-10",
+      "name": "Section 4.2: Empirical Results & Latency Percentiles",
+      "word_count": 130,
+      "effective_pages": 0.17,
+      "current_grade": "A",
+      "assessment": "Tables II and III accurately report all verified benchmark metrics.",
+      "missing_scientific_reasoning": "None in table formatting.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-11",
+      "name": "Section 4.3: Deep Interpretation of Results (3-Layer Standard)",
+      "word_count": 181,
+      "effective_pages": 0.24,
+      "current_grade": "B",
+      "assessment": "Contains WHAT/WHY/LIMIT structure but requires deeper analytical synthesis on active heavy utilization (8.1%) vs verification rate (52.0%) and thermal stability.",
+      "missing_scientific_reasoning": "Deepen mathematical explanation of why active duty cycle is 8.1% (amortized frame time) and how P99 (4.556ms) remains bounded below 5.0ms.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-12",
+      "name": "Section 5: Failure Boundaries & Overload Containment",
+      "word_count": 40,
+      "effective_pages": 0.05,
+      "current_grade": "C",
+      "assessment": "Severely underdeveloped (only 40 words). Only 3 lines defining graceful degradation without formal queue stability analysis.",
+      "missing_scientific_reasoning": "Formally analyze queue overflow conditions, burst arrival regimes, and state transition invariance under saturation.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    },
+    {
+      "section_id": "SEC-13",
+      "name": "Section 6: Conclusion",
+      "word_count": 43,
+      "effective_pages": 0.06,
+      "current_grade": "B",
+      "assessment": "Extremely brief (43 words). Summarizes findings but lacks forward-looking systems synthesis.",
+      "missing_scientific_reasoning": "Expand summary of theoretical contributions, queueing guarantees, and implications for autonomous edge vision.",
+      "evidence_derivable": true,
+      "new_experiments_required": false
+    }
+  ]
+}

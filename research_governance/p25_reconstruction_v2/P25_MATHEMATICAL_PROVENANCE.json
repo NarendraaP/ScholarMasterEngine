@@ -1,0 +1,23 @@
+{
+  "paper_id": "P25",
+  "derivations": [
+    {
+      "derivation": "Theorem 1: Voronoi Facet Boundary Step Discontinuity",
+      "formulation": "lim_{eps -> 0+} ||phi(x0 + eps n) - phi(x0 - eps n)||_2 = ||g_i - g_j||_2 = sqrt(2 - 2<g_i, g_j>) > 0",
+      "classification": "LOCAL_STEP_JUMP_DISCONTINUITY",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "derivation": "Proposition 1: ArcFace Target Angular Margin Specification",
+      "formulation": "||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= 2 sin(m) approx 0.9589 for m = 0.5 rad",
+      "classification": "TARGET_SPECIFICATION_INVARIANT",
+      "status": "VERIFIED_EXACT"
+    },
+    {
+      "derivation": "Proposition 2: Piecewise Lipschitz Chain Rule Under Domain Partitioning",
+      "formulation": "Lip(Phi|_{X_cert}) <= prod Lip(f_l|_{X_cert}); Lip(f_gate|_{X_quar}) = 0",
+      "classification": "PIECEWISE_DOMAIN_PARTITIONING",
+      "status": "VERIFIED_EXACT"
+    }
+  ]
+}

@@ -85,3 +85,7 @@ Paper 8 provides the trust substrate. It stores only hash commitments on-chain, 
 | **Tamper Detection** | `modules_legacy/trust_layer.py` | ✅ Verified (`verify_integrity` method) |
 | **Genesis Block** | `modules_legacy/trust_layer.py` | ✅ Verified (Bootstrapping Logic) |
 
+
+
+## Perception Risk Leaf Payload Extension
+Merkle tree leaf event payloads include PerceptionPacket metadata (`risk_score`, `cascade_decision`) to provide end-to-end cryptographic provenance for perception integrity decisions.

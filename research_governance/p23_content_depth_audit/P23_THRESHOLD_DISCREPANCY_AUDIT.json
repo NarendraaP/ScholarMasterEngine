@@ -1,0 +1,36 @@
+{
+  "discrepancy_id": "P23-DISC-01",
+  "description": "Reconciliation of routing threshold definitions across Algorithm 1, 4-state policy, and empirical risk regimes.",
+  "competing_assertions": [
+    {
+      "context": "Algorithm 1 (Pseudocode)",
+      "threshold_definition": "tau_switch = 0.50",
+      "semantic_meaning": "Binary dispatch threshold between Primary model M_1 (R_p <= 0.50) and Secondary heavy model M_2 (R_p > 0.50)."
+    },
+    {
+      "context": "Mathematical Policy Section 3.2 (Eq. 11)",
+      "threshold_definition": "tau_accept = 0.45, tau_degrade = 0.70, tau_delegate = 0.85",
+      "semantic_meaning": "4-state discrete operational policy partition: ACCEPT (<=0.45), DEGRADE (0.45-0.70), DELEGATE (0.70-0.85), HALT (>0.85)."
+    },
+    {
+      "context": "Empirical Results Table III",
+      "threshold_definition": "Low Risk (<=0.30), Medium Risk (0.30-0.70), Severe Risk (>0.70)",
+      "semantic_meaning": "Input dataset visual quality distribution regimes for evaluating cascade performance."
+    }
+  ],
+  "codebase_investigation": {
+    "core_class": "core.perception_integrity.adaptive_cascade.AdaptiveCascade",
+    "production_parameter_lock": {
+      "tau_accept": 0.45,
+      "tau_degrade": 0.7,
+      "tau_delegate": 0.85
+    },
+    "source_file": "core/perception_integrity/adaptive_cascade.py:18-22",
+    "parameter_lock_file": "benchmarks/parameter_lock.py:36-38"
+  },
+  "scientific_reconciliation": {
+    "is_contradiction": false,
+    "reconciliation_explanation": "These three representations correspond to distinct architectural abstractions: (1) The parameter-locked 4-state policy (tau_accept=0.45, tau_degrade=0.70, tau_delegate=0.85) is the authoritative production decision system implemented in AdaptiveCascade.route(); (2) Algorithm 1 presents the simplified dual-model algorithmic routing loop (fast-path M1 vs heavy-path M2) where the effective threshold between fast-path bypass and verification falls at tau_switch ~ 0.50; (3) Table III measures empirical response across three standardized benchmark corruption regimes (Clean <=0.30, Degraded 0.30-0.70, Severe >0.70).",
+    "resolution_action": "Clarify the precise architectural role of each threshold in the manuscript text to eliminate ambiguity for reviewers."
+  }
+}

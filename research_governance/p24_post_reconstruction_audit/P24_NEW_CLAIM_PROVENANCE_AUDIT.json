@@ -1,0 +1,41 @@
+{
+  "paper_id": "P24",
+  "claims_audited": [
+    {
+      "claim": "JSD_rgb -> 0.62 under 80% degradation",
+      "classification": "E2_MODEL_DERIVED",
+      "provenance": "Evaluated Dirichlet distribution divergence when corrupted optical channel flattens toward maximum uncertainty relative to intact secondary modalities.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "beta = 5.0 sensitivity hyperparameter",
+      "classification": "E1_ALGORITHMIC_PARAMETER",
+      "provenance": "Exponential softmax sensitivity constant controlling sharpness of trust decay.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "0.03125 asymptotic weight ratio",
+      "classification": "E2_MATHEMATICAL_DERIVATION",
+      "provenance": "Derived analytically via 2^(-beta) = 2^(-5) = 1/32 = 0.03125 when JSD_1 -> ln 2 and JSD_2, JSD_3 -> 0.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "Consensus Entropy H(P_c) = [0.042, 0.098, 0.184, 0.212] nats",
+      "classification": "E2_MODEL_METRIC",
+      "provenance": "Calculated directly on the arithmetic mixture distribution across the 4 degradation levels.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "1.1 ms JSD consensus gating overhead",
+      "classification": "E0_EDGE_BENCHMARK_TELEMETRY",
+      "provenance": "Measured execution time of JSD computation and trust softmax on edge CPU/GPU.",
+      "verification_status": "VERIFIED_ACCURATE"
+    },
+    {
+      "claim": "Multi-rate parameters: K_buf=64, Delta t_sync <= 16.6ms, alpha=0.95",
+      "classification": "E2_SYSTEMS_REFERENCE_MODEL",
+      "provenance": "Formal parameters for Algorithm 1 asynchronous multi-rate ring buffer and software PLL reference model.",
+      "verification_status": "VERIFIED_ACCURATE"
+    }
+  ]
+}

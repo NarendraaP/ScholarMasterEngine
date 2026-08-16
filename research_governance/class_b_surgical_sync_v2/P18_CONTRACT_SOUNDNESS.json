@@ -1,0 +1,21 @@
+{
+  "paper_id": "P18",
+  "title": "Fail-Closed Runtime State Machine Enforcement",
+  "original_contract": "Monitored runtime state transitions across identity and compliance layers to enforce fail-closed safety.",
+  "proposed_contract": "Integrate Layer 1 evidential perception quarantine state into the formal runtime enforcement supervisor.",
+  "actual_dependency": true,
+  "necessity": "REQUIRED",
+  "scientific_ownership": "PRESERVED (P18 owns runtime supervisor state machine; P22 owns perception risk)",
+  "claim_transfer": "NONE",
+  "mathematical_impact": "NONE (State machine transition rules and safety invariants remain sound)",
+  "empirical_impact": "NONE (Runtime overhead benchmarks are preserved; zero reruns required)",
+  "figure_impact": "ANNOTATION (Figure 1: Include Perception Quarantine null token state in supervisor transition diagram)",
+  "citation_impact": "REQUIRED (Cite P22 for perception risk thresholds and P23 for cascade states)",
+  "salami_slicing_impact": "ZERO_RISK (Distinct domains: runtime state supervision vs evidential estimation)",
+  "decision": "APPROVE_WITH_NARROWING",
+  "minimal_patch": {
+    "section": "Section III / Section IV",
+    "action": "Add 2 sentences linking runtime supervisor invariants to Layer-1 perception quarantine signals.",
+    "figure_action": "Annotate Figure 1 state machine with Perception Quarantine state."
+  }
+}

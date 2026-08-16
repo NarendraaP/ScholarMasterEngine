@@ -1,0 +1,124 @@
+{
+  "P22": {
+    "title": "Perception Integrity Foundations",
+    "required_categories": [
+      {
+        "category": "Evidential Deep Learning & Dirichlet Uncertainty",
+        "foundational": "Sensoy et al. (NeurIPS 2018)",
+        "recent": "Gao et al. (IEEE TPAMI 2023), Ulmer et al. (ICLR 2023)",
+        "gap": "Single-forward-pass evidential uncertainty without spatial keypoint disagreement"
+      },
+      {
+        "category": "Out-of-Distribution Detection in Edge Vision",
+        "foundational": "Hendrycks & Gimpel (ICLR 2017), Liang et al. (ICLR 2018)",
+        "recent": "Sun et al. (NeurIPS 2021), Yang et al. (IEEE TPAMI 2022)",
+        "gap": "OOD methods require target split tuning, violating zero-shot parameter lock"
+      },
+      {
+        "category": "Model Disagreement & Ensemble Variance",
+        "foundational": "Lakshminarayanan et al. (NeurIPS 2017)",
+        "recent": "Malinin et al. (ICLR 2020), Ovadia et al. (NeurIPS 2019)",
+        "gap": "Heavy multi-model ensembles exceed edge latency envelopes without adaptive gating"
+      },
+      {
+        "category": "Temperature Scaling & Risk Calibration",
+        "foundational": "Guo et al. (ICML 2017)",
+        "recent": "Kull et al. (NeurIPS 2019), Rahimi et al. (NeurIPS 2020)",
+        "gap": "Probability calibration lacks physical aleatoric blur/noise bounds"
+      },
+      {
+        "category": "Physical Adversarial Attacks & Noise Robustness",
+        "foundational": "Kurakin et al. (ICLR 2017), Hendrycks & Dietterich (ICLR 2019)",
+        "recent": "Croce & Hein (ICML 2020), Dong et al. (IEEE TPAMI 2022)",
+        "gap": "Defense models fail to provide calibrated continuous risk outputs"
+      }
+    ],
+    "current_reference_count": 3,
+    "recommended_reference_count": "28 - 35",
+    "status": "LITERATURE_EXPANSION_REQUIRED"
+  },
+  "P23": {
+    "title": "Adaptive Trustworthy Edge Systems",
+    "required_categories": [
+      {
+        "category": "Dynamic Neural Networks & Early Exits",
+        "foundational": "Teerapittayanon et al. (ICPR 2016), Huang et al. (ICLR 2018)",
+        "recent": "Han et al. (IEEE TPAMI 2021), Wang et al. (CVPR 2022)",
+        "gap": "Early-exit criteria rely on uncalibrated confidence rather than evidential perception risk"
+      },
+      {
+        "category": "Cascaded Inference & Selective Classification",
+        "foundational": "Viola & Jones (IJCV 2004), Geifman & El-Yaniv (NeurIPS 2017)",
+        "recent": "Geifman & El-Yaniv (ICML 2019), Xin et al. (ACL 2020)",
+        "gap": "Selective models optimize accuracy-coverage without evaluating hardware power/thermal envelopes"
+      },
+      {
+        "category": "Resource-Aware Edge Intelligence",
+        "foundational": "Shi et al. (IEEE IoT-J 2016), Satyanarayanan (Computer 2017)",
+        "recent": "Wang et al. (IEEE COMST 2020), Zhou et al. (Proc. IEEE 2019)",
+        "gap": "Edge scheduling assumes uniform sensor reliability without input-dependent verification paths"
+      },
+      {
+        "category": "Pareto Optimization for Edge Machine Learning",
+        "foundational": "Cai et al. (ICLR 2019), Tan & Le (ICML 2019)",
+        "recent": "Cai et al. (ICLR 2020), Lin et al. (NeurIPS 2020)",
+        "gap": "Pareto frontier optimization treats detection as static rather than agreement-gated"
+      }
+    ],
+    "current_reference_count": 1,
+    "recommended_reference_count": "24 - 30",
+    "status": "LITERATURE_EXPANSION_REQUIRED"
+  },
+  "P24": {
+    "title": "Generalized Cross-Modal Recovery",
+    "required_categories": [
+      {
+        "category": "Multimodal Learning & Heterogeneous Fusion",
+        "foundational": "Atrey et al. (Multimedia Syst. 2010), Baltru\u0161aitis et al. (IEEE TPAMI 2018)",
+        "recent": "Nagrani et al. (NeurIPS 2021), Liang et al. (IEEE TPAMI 2023)",
+        "gap": "Fusion algorithms assume all sensors remain operational without dynamic channel corruptions"
+      },
+      {
+        "category": "Missing & Corrupted Modality Learning",
+        "foundational": "Tran et al. (CVPR 2017), Ma et al. (CVPR 2021)",
+        "recent": "Wang et al. (CVPR 2020), Lee et al. (ICLR 2023)",
+        "gap": "Techniques handle complete sensor loss but fail under severe continuous noise degradation"
+      },
+      {
+        "category": "Jensen-Shannon Divergence & Distributional Consensus",
+        "foundational": "Lin (IEEE TIT 1991), Endres & Schindelin (IEEE TIT 2003)",
+        "recent": "Fuglede & Topsoe (IEEE TIT 2004), Bri\u00ebt & Harremo\u00ebs (IEEE TIT 2009)",
+        "gap": "JSD formulations lack dynamic trust weight adaptation for multi-rate edge sensor streams"
+      }
+    ],
+    "current_reference_count": 1,
+    "recommended_reference_count": "24 - 30",
+    "status": "LITERATURE_EXPANSION_REQUIRED"
+  },
+  "P25": {
+    "title": "ScholarMaster Integration Architecture & Downstream Error Propagation",
+    "required_categories": [
+      {
+        "category": "Fault Propagation & Cascading Errors in ML Pipelines",
+        "foundational": "Sculley et al. (NeurIPS 2015), Sambasivan et al. (CHI 2021)",
+        "recent": "Breck et al. (SysML 2019), Polyzotis et al. (SIGMOD 2018)",
+        "gap": "Studies examine training data cascade without measuring real-time inference error amplification"
+      },
+      {
+        "category": "Trustworthy AI & Fault-Tolerant System Architectures",
+        "foundational": "Avizienis et al. (IEEE TDSC 2004), Leveson (MIT Press 2011)",
+        "recent": "Wing (CACM 2021), Seshia et al. (Proc. IEEE 2022)",
+        "gap": "System safety architectures separate formal logic from perception uncertainty models"
+      },
+      {
+        "category": "Biometric Indexing & Vector Search Degradation",
+        "foundational": "Deng et al. (CVPR 2019), Malkov & Yashunin (IEEE TPAMI 2020)",
+        "recent": "Wang & Deng (Neurocomputing 2021), Johnson et al. (IEEE TBD 2021)",
+        "gap": "Vector search evaluations assume uncorrupted probe embeddings"
+      }
+    ],
+    "current_reference_count": 2,
+    "recommended_reference_count": "25 - 32",
+    "status": "LITERATURE_EXPANSION_REQUIRED"
+  }
+}

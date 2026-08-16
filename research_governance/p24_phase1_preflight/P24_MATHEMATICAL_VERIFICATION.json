@@ -1,0 +1,27 @@
+{
+  "jsd_definition": {
+    "equation": "JSD(P_m || P_c) = 1/2 KL(P_m || M) + 1/2 KL(P_c || M) where M = (P_m + P_c)/2",
+    "classification": "M0 (Standard Information Theory)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "jsd_boundedness": {
+    "equation": "0 <= JSD(P_m || P_c) <= ln 2",
+    "classification": "M0 (Analytic Property via Shannon Entropy Concavity)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "pinsker_total_variation_bound": {
+    "equation": "1/2 ||P - Q||_TV^2 <= JSD(P || Q) <= ln(2) ||P - Q||_TV",
+    "classification": "M1 (Adapted Information Inequality)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "infinitesimal_fisher_rao_geometry": {
+    "equation": "ds_FR^2 = 8 JSD(P || P + dP) + O(||dP||^3)",
+    "classification": "M1 (Derived Infinitesimal Geometry)",
+    "soundness": "VERIFIED_SOUND (Verified strictly local/infinitesimal; invalid global claim d_FR^2 <= 8 JSD successfully removed)"
+  },
+  "trust_weight_gradient": {
+    "equation": "partial w_m / partial JSD_m = - beta w_m (1 - w_m)",
+    "classification": "M1 (Derived Gradient Dynamics)",
+    "soundness": "VERIFIED_SOUND"
+  }
+}

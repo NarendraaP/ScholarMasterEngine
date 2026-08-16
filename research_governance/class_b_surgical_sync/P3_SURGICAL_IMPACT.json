@@ -1,0 +1,39 @@
+{
+  "paper_id": "P3",
+  "title": "Pose-Only Edge Action Sensing with Enforced Volatile Memory Confinement",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper3_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes input keypoints K_skeleton are extracted from uncorrupted video.",
+    "perception_input_assumption": "Skeletal keypoint streams are pre-screened by dual-model divergence D_dis in Layer 1.",
+    "architecture_boundary": "Pose engine operates exclusively on validated anatomical skeletons.",
+    "mathematical_assumptions": "Information-theoretic irreversibility proof I(X; K) -> 0 remains 100% sound.",
+    "experimental_assumptions": "Kinematic engagement benchmarks are preserved.",
+    "claims": "Qualify that pose engagement analytics operate downstream of evidential perception filtering.",
+    "figures": "Preserve figure; annotate input pipeline block.",
+    "tables": "Preserve tables.",
+    "references": "Add citation to P22 (for D_dis keypoint divergence).",
+    "downstream_dependencies": "Engagement metrics feeding Layer 4 compliance."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P3",
+      "location": "Section II / Section IV",
+      "change_type": "DOCUMENTATION_ONLY",
+      "current_state": "Describes kinematic extraction directly from video frames.",
+      "new_state": "Document that raw frame keypoints pass through Layer 1 cross-model divergence validation prior to kinematic computation.",
+      "reason": "Ensure privacy and engagement guarantees are bounded to verified keypoint representations.",
+      "affected_by": [
+        "P22"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P3 owns privacy irreversibility and engagement; P22 owns evidential risk)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

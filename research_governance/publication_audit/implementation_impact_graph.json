@@ -1,0 +1,34 @@
+{
+  "pipeline_layers": [
+    {
+      "layer": "Raw Sensor Ingestion",
+      "module": "main.py (_L2_sensor)",
+      "paper": "P1"
+    },
+    {
+      "layer": "Perception Integrity Gate",
+      "module": "core/perception_integrity/gate.py",
+      "paper": "P22-P25"
+    },
+    {
+      "layer": "Identity Integrity (Biometrics)",
+      "module": "modules_legacy/face_registry.py",
+      "paper": "P1, P7, P21"
+    },
+    {
+      "layer": "Context Integrity (Tracking)",
+      "module": "modules_legacy/context_manager.py",
+      "paper": "P4, P9, P14"
+    },
+    {
+      "layer": "Compliance Integrity (ST-CSF)",
+      "module": "core/domain/rules/compliance_rules.py",
+      "paper": "P4, P21"
+    },
+    {
+      "layer": "Audit & Provenance",
+      "module": "modules_legacy/trust_layer.py",
+      "paper": "P8, P16"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "paper_id": "P25",
+  "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+  "research_question": {
+    "question": "Does upstream perception containment measurably suppress downstream error amplification across the ScholarMaster macro pipeline?",
+    "is_explicit": true,
+    "falsifiable_hypothesis": "In an unprotected multi-layer pipeline, upstream errors undergo local error amplification (EAF > 1.0) due to Voronoi boundary crossings, whereas Layer-1 Perception Integrity gating achieves complete error containment (EAF = 0.0000).",
+    "logical_necessity": "Biometric embeddings partition metric space into Voronoi cells; unmitigated continuous perturbations crossing cell boundaries cause instantaneous discrete identity flips.",
+    "evaluation_capability": "Benchmark evaluates 5 canonical layers across 0%, 5%, 10%, 15%, and 20% input corruption.",
+    "conclusion_alignment": "Conclusions directly reflect verified unprotected mean EAF=0.9335 (peak local EAF=1.4220 at 15%) and protected EAF=0.0000.",
+    "standalone_viability": "Paper stands completely independently as a macro system integration and data cascade containment paper.",
+    "rq_status": "STRONG"
+  },
+  "novelty_analysis": {
+    "primary_contribution": "5-layer macro integration architecture formalizing layer-wise state transfers and data cascade containment.",
+    "secondary_contribution": "Quantitative Error Amplification Factor (EAF) framework across Identity, Tracking, Compliance, and Decision layers.",
+    "theoretical_contribution": "Metric-geometry proof of Voronoi facet step jump discontinuity (||g_i - g_j||_2 >= 2 sin(m) approx 0.9589 under ArcFace) + composite Lipschitz product chain rules.",
+    "empirical_contribution": "Demonstration of unprotected local peak EAF=1.4220 vs protected EAF=0.0000 across 0%\u201320% corruption range.",
+    "engineering_contribution": "Zero-copy UMA ring buffer architecture orchestrating 5 canonical layers within 5 ms SLA.",
+    "genuinely_new": "Voronoi step jump discontinuity theorem explaining Data Cascades in high-dimensional vector search + quantitative EAF analysis across 5 layers.",
+    "adaptation_of_known": "ArcFace loss (Deng et al. 2019), FAISS-HNSW (Malkov & Yashunin 2018), Data Cascades concept (Sambasivan et al. 2021).",
+    "must_not_be_called_novel": "ArcFace loss itself, HNSW graph search, LTL logic specifications.",
+    "reviewer_challenge_flag": "LOW_RISK (Rigorous boundary framing: EAF=0.0000 framed as empirical observation over tested regimes, not universal infinite-gallery theorem)."
+  },
+  "methodology_depth": {
+    "five_layer_model": "Layer 1 (Perception) -> Layer 2 (Identity) -> Layer 3 (Tracking) -> Layer 4 (Compliance) -> Layer 5 (Administrative Ledger).",
+    "voronoi_proof_explained": "Analyzes step jump across facet boundary F_ij = V_i cap V_j, establishing lim ||phi(x_0 + eps n) - phi(x_0 - eps n)||_2 = ||g_i - g_j||_2.",
+    "arcface_corollary_explained": "Angular margin loss enforces theta_ij >= 2m, giving chord lower bound sqrt(2 - 2 cos(2m)) = 2 sin(m) = 0.9589 for m=0.5 rad.",
+    "eaf_formula_explained": "EAF_l = Delta E_l / Delta Corruption_1.",
+    "lipschitz_chain_rule": "Lip(Phi) <= prod Lip(f_l); fail-closed quarantine establishes Lip(f_2) = 0 on unsafe domain.",
+    "methodology_verdict": "COMPLETE_AND_RIGOROUS"
+  },
+  "results_interpretation_3layer": {
+    "what": "Unprotected pipeline triggers peak local EAF of 1.4220 at 15% noise (identity error = 0.2133, mean EAF = 0.9335). Protected pipeline achieves EAF = 0.0000 across all regimes.",
+    "why": "Unprotected continuous optical perturbations push ArcFace embeddings past Voronoi facets, causing discrete identity flips that corrupt tracking and compliance. Layer-1 quarantine intercepts uncertified vectors at the root.",
+    "limit": "Verified over evaluated 0%\u201320% corruption range on 5-layer pipeline. Does NOT prove universal zero-error on infinite gallery sizes (N -> inf)."
+  },
+  "ablation_sufficiency": {
+    "ablation_status": "SUFFICIENT (Directly isolates Unprotected Pipeline vs Protected Pipeline across 5 corruption levels)",
+    "ablation_gap": false
+  },
+  "failure_boundaries": {
+    "tested_range": "Multi-layer pipeline under 0% to 20% perception corruption.",
+    "unmeasured_limitations": [
+      "Infinite gallery size (N -> inf)",
+      "Physical distributed network partition faults"
+    ],
+    "firewall_status": "COMPLIANT"
+  },
+  "expansion_decision": {
+    "classification": "A",
+    "verdict": "PUBLICATION_LEVEL_DEPTH_SATISFIED",
+    "justification": "Paper 25 provides a mathematically rigorous geometric explanation for Data Cascades, validated empirically on a full 5-layer cyber-physical pipeline."
+  }
+}

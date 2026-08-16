@@ -1,0 +1,16 @@
+{
+  "production_runtime_features": [
+    "Real-time optical frame acquisition via OpenCV",
+    "Real-time acoustic decibel monitoring via sounddevice",
+    "Real-time skeletal pose extraction via YOLO-Pose",
+    "Cross-modal timestamp skew and activity consistency checking in PerceptionIntegrityGate",
+    "Dynamic operational recovery: switching to pose-only tracking when visual channel is degraded"
+  ],
+  "benchmark_only_features": [
+    "3-stream discrete distribution JSD calculation (P_rgb, P_audio, P_pose in Delta^K)",
+    "Continuous exponential trust weight gradient redistribution (w_m = exp(-beta JSD_m) / sum)",
+    "Asynchronous multi-rate ring buffer software PLL clock offset tracking",
+    "Synthetic corruption regime evaluation (0%, 20%, 50%, 80% noise levels)"
+  ],
+  "relationship_classification": "SHARED_CORE_IMPLEMENTATION (Production implements multi-modal ingestion and consistency-driven cascade recovery; Benchmark implements generalized information-theoretic JSD weight redistribution across synthetic channels)."
+}

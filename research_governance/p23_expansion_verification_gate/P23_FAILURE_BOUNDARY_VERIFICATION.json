@@ -1,0 +1,14 @@
+{
+  "audit_target": "Verification of Graceful Degradation Protocol (Q > Q_max)",
+  "mathematical_safety_model": {
+    "equation": "If Q > Q_max => Route x -> Primary Fast-Path U Flag Low-Confidence Alarm",
+    "theoretical_basis": "Queue admission control under heavy traffic (rho >= 1.0) to prevent unrecoverable buffer overflow.",
+    "status": "VALID_SYSTEMS_SAFETY_INVARIANT"
+  },
+  "codebase_status": {
+    "production_gate": "core.perception_integrity.adaptive_cascade.AdaptiveCascade directly returns CascadeDecision.HALT upon severe corruption (risk > tau_delegate = 0.85).",
+    "runtime_supervisor": "main.py:677 checks CascadeDecision.HALT to safely drop corrupted frames without memory allocation.",
+    "qualification": "The manuscript must frame Q > Q_max as a formal queue admission control policy that guarantees an upper bound on latency (L_1 = 1.264ms) under burst overload."
+  },
+  "verdict": "FORMAL_SAFETY_MODEL_AUTHORIZED"
+}

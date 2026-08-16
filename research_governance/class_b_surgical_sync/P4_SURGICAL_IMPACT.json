@@ -1,0 +1,39 @@
+{
+  "paper_id": "P4",
+  "title": "Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper4_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes event stream sigma = (e_1, e_2, ...) contains authentic student detections.",
+    "perception_input_assumption": "Events are generated from Layer 1/2 validated payloads; null tokens (bot) are dropped.",
+    "architecture_boundary": "ST-CSF logic engine receives discrete events from validated feature payloads.",
+    "mathematical_assumptions": "Interval temporal logic semantics and O(1) amortized stream evaluation remain 100% mathematically valid.",
+    "experimental_assumptions": "Compliance verification throughput holds.",
+    "claims": "Clarify that compliance proofs assume upstream Layer 1 fail-closed protection against spoofed/blurred events.",
+    "figures": "Annotate Figure 1 event ingress interface.",
+    "tables": "Preserve benchmark tables.",
+    "references": "Add citation to P25 (Macro Integration & EAF).",
+    "downstream_dependencies": "Layer 4 to Layer 5 Merkle tree commits."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P4",
+      "location": "Section III (Event Stream Formulation)",
+      "change_type": "EQUATION_DOMAIN_UPDATE",
+      "current_state": "Defines event stream sigma over raw detection events without explicit quarantine filtering.",
+      "new_state": "Explicitly define sigma over validated non-null event alphabet Sigma_{valid} = Sigma \\setminus {bot}.",
+      "reason": "Formally prevent unvalidated sensory noise from generating spurious temporal logic violations.",
+      "affected_by": [
+        "P25"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P4 owns ST-CSF interval logic; P25 owns EAF propagation)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

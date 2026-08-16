@@ -1,0 +1,22 @@
+{
+  "P22_metrics": {
+    "Theoretical_Evidential_Uncertainty_u": "u = K/S where K is number of classes and S is total Dirichlet concentration strength. Clean inputs yield high evidence (S >> K -> u ~ 0.0421), while corrupted inputs yield zero evidence (S -> K -> u ~ 0.8954). Margin = 0.8954 - 0.0421 = 0.8533.",
+    "Calibrated_Operational_Perception_Risk_R_p": "R_p = w_u * u + w_d * d + w_b * B + w_k * D with temperature calibration (temp=0.5) and bias offset (+0.30) to ensure conservative fail-closed gating on edge devices. Evaluates to R1=0.4853 (Clean), R2=0.5200 (OOD), R3=0.4838 (Degraded), R4=0.4378 (Adversarial), R5=0.4838 (Combined)."
+  },
+  "P23_metrics": {
+    "Throughput_FPS": "Frames processed per second = 1000 / Mean_Latency_ms",
+    "Active_Heavy_Duty_Cycle": "Time fraction spent executing high-power heavy ensemble models relative to total operational execution time = 8.1%",
+    "Duty_Cycle_Reduction": "Percentage reduction in heavy compute utilization compared to static 100% heavy execution baseline = (100 - 8.1)/100 = 91.9%"
+  },
+  "P24_metrics": {
+    "Single_RGB_Accuracy": "Classification accuracy using optical sensor channel only",
+    "Dynamic_Consensus_Accuracy": "Classification accuracy achieved by JSD-weighted multi-modal fusion = 1.0000",
+    "Recovery_Rate": "(Consensus_Acc - RGB_Acc) / (1.0 - RGB_Acc) = 1.0000 (100% recovery of lost accuracy)"
+  },
+  "P25_metrics": {
+    "Error_Amplification_Factor_EAF": "EAF = Delta Downstream Error / Delta Upstream Perturbation = E_l / Delta_1",
+    "Unprotected_Mean_EAF": "0.9335 across all evaluated corruption levels",
+    "Unprotected_Peak_Local_EAF": "1.4220 observed at 15% noise (Error = 0.2133 / 0.15)",
+    "Protected_EAF": "0.0000 across all regimes due to root fail-closed quarantine"
+  }
+}

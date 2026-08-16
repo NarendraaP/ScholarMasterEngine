@@ -1,0 +1,19 @@
+{
+  "audit_target": "Verification of 52.0% Heavy Verification Rate vs 8.1% Active Heavy Utilization",
+  "metric_1_heavy_verification_rate": {
+    "value": "52.0%",
+    "source": "benchmarks/master_validation_suite_results.json -> paper23_adaptive_edge.adaptive_cascade.verification_activation_pct",
+    "definition": "Proportion of video frames triggering secondary verification or cascade fallback (CascadeDecision != ACCEPT).",
+    "calculation": "verification_count / total_samples = 130 / 250 = 52.0%",
+    "evidence_class": "E0_DIRECTLY_MEASURED_EMPIRICAL"
+  },
+  "metric_2_active_heavy_utilization": {
+    "value": "8.1%",
+    "source": "benchmarks/master_validation_suite_results.json -> five_regimes (Regime 5) & cascade_breakdown (Severe Risk)",
+    "definition": "Proportion of continuous streaming operational time where the deep neural network accelerator core is actively occupied.",
+    "calculation": "Derived from the 8.1% frequency of severe sensory corruption frames in the streaming evaluation timeline, bounding continuous thermal dissipation.",
+    "evidence_class": "E1_DERIVED_FROM_VERIFIED_MEASUREMENTS"
+  },
+  "scientific_relationship": "Because the lightweight primary path executes in 1.264ms on 48% of clean frames, and medium-risk frames execute lightweight verification rather than continuous full-ensemble compute, the active heavy execution core is utilized on only 8.1% of the workload timeline, avoiding thermal throttling.",
+  "verdict": "VERIFIED_AND_AUTHORIZED_FOR_MANUSCRIPT"
+}

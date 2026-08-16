@@ -1,0 +1,54 @@
+{
+  "audit_timestamp": "2026-08-15 06:27:54",
+  "parameter_lock_sha256": "93a67c3db00924ff06a478e3b4654f32dcbc9f6eb03da12d8a013654f2589f86",
+  "claims_audited": [
+    {
+      "paper": "P22",
+      "claim": "AUROC = 1.0000 under zero-shot transfer",
+      "reported_result": "AUROC = 1.0000, FPR95 = 0.0000",
+      "experiment": "paper22_foundations",
+      "raw_evidence": "benchmarks/master_validation_suite_results.json: family_b_zero_shot.auroc",
+      "statistical_evidence": "ECE = 0.4218, Brier = 0.1793",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility": "REPRODUCIBLE",
+      "verification": "VERIFIED_WITH_QUALIFICATION",
+      "required_action": "Document zero-shot evaluation protocol in paper metadata"
+    },
+    {
+      "paper": "P23",
+      "claim": "373.3 FPS adaptive cascade throughput",
+      "reported_result": "373.3 FPS (2.68ms mean latency)",
+      "experiment": "paper23_adaptive_edge",
+      "raw_evidence": "benchmarks/master_validation_suite_results.json: adaptive_cascade.fps",
+      "statistical_evidence": "48.0% Primary path, 52.0% Heavy verification path",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility": "REPRODUCIBLE",
+      "verification": "VERIFIED",
+      "required_action": "Preserve Apple Silicon UMA hardware benchmarking notes"
+    },
+    {
+      "paper": "P24",
+      "claim": "1.00 Recovery Rate under 80% visual degradation",
+      "reported_result": "Recovery Rate = 1.00, Consensus Accuracy = 1.00",
+      "experiment": "paper24_cross_modal",
+      "raw_evidence": "benchmarks/master_validation_suite_results.json: degradation_80pct.recovery_rate",
+      "statistical_evidence": "Single RGB = 0.1867, Dynamic Consensus = 1.00",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility": "REPRODUCIBLE",
+      "verification": "VERIFIED",
+      "required_action": "Preserve multi-modal JSD consensus formulas"
+    },
+    {
+      "paper": "P25",
+      "claim": "Protected EAF = 0.000 downstream error suppression",
+      "reported_result": "Protected EAF = 0.000 vs Unprotected EAF = 0.933",
+      "experiment": "paper25_downstream_error_propagation",
+      "raw_evidence": "benchmarks/master_validation_suite_results.json: level_reports.corruption_20pct",
+      "statistical_evidence": "Protected downstream error = 0.000 across 0%-20% noise",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility": "REPRODUCIBLE",
+      "verification": "VERIFIED",
+      "required_action": "Preserve end-to-end integration architecture claims"
+    }
+  ]
+}

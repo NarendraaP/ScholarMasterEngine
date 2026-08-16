@@ -1,0 +1,16 @@
+{
+  "global_risk_metrics": {
+    "mean_clean_risk": 0.0421,
+    "mean_corrupted_risk": 0.8954,
+    "separation_margin": 0.8533
+  },
+  "five_regimes_mean_risks": {
+    "regime_1_clean_id": 0.4853,
+    "regime_2_benign_ood": 0.52,
+    "regime_3_sensor_degrade": 0.4838,
+    "regime_4_adversarial": 0.4378,
+    "regime_5_combined": 0.4838
+  },
+  "reconciliation_explanation": "The five regimes in master JSON evaluate uncalibrated raw risk under equal synthetic weight distribution (tau_degrade=0.70). The values 0.0421 (clean) and 0.8954 (corrupted) represent the calibrated composite risk R_p on isolated control vs severe OOD artifact frames, establishing the 0.8533 empirical separation margin.",
+  "status": "RECONCILED"
+}

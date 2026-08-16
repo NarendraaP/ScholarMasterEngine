@@ -1,0 +1,16 @@
+{
+  "paper_id": "P22",
+  "runtime_boundaries": {
+    "production_classes": [
+      "core.perception_integrity.gate.PerceptionIntegrityGate",
+      "core.perception_integrity.uncertainty.UncertaintyEstimator",
+      "core.perception_integrity.disagreement.DisagreementEngine",
+      "core.perception_integrity.consistency.ConsistencyChecker",
+      "core.perception_integrity.risk_calibrator.RiskCalibrator"
+    ],
+    "production_parameters": "blur_threshold=50.0, tau_risk=0.70, temperature=0.5, bias_offset=0.30",
+    "benchmark_evaluation": "benchmarks/master_validation_suite.py across 2,000 edge inferences",
+    "formal_state_system": "Sigma = (S, T, bot) deterministic fail-closed state transition"
+  },
+  "verdict": "PRODUCTION_BENCHMARK_THEORY_EXPLICITLY_SEPARATED"
+}

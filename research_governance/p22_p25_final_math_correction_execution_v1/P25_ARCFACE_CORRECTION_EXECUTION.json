@@ -1,0 +1,17 @@
+{
+  "correction_id": "EXEC-P25-01-ARCFACE-SEPARATION",
+  "paper": "P25",
+  "target_file": "docs/papers/paper25_revised.tex",
+  "section": "Section III-B: Corollary 1 (ArcFace Margin Separation Bound)",
+  "executed_changes": {
+    "previous_prose": "Under additive angular margin loss L_ArcFace with angular margin parameter m = 0.5 rad, the geodesic distance between target identity centroids satisfies theta_ij >= 2m...",
+    "corrected_prose": "For enrolled gallery biometric prototypes on the unit hypersphere S^{D-1} satisfying the ArcFace target angular separation condition theta_ij >= 2m (under angular margin parameter m = 0.5 rad), the Euclidean distance between adjacent class centroids satisfies: ||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= 2 sin(m) approx 0.9589."
+  },
+  "verification_checks": {
+    "explicit_gallery_assumption_present": true,
+    "chord_numerical_value_preserved": true,
+    "empirical_telemetry_unchanged": true,
+    "compilation_success": true
+  },
+  "status": "EXECUTED_AND_VERIFIED"
+}

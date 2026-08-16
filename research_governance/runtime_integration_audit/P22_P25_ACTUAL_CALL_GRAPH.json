@@ -1,0 +1,78 @@
+{
+  "root_entry": "main.py: ScholarMasterUnified.process_video()",
+  "call_sequence": [
+    {
+      "step": 1,
+      "layer": "L1/L2 Ingestion",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "SensorAcquisition.capture_frame(frame)",
+      "source": "core/canonical_layers.py:97",
+      "payload_in": "np.ndarray (BGR image)",
+      "payload_out": "int (frame_id)"
+    },
+    {
+      "step": 2,
+      "layer": "L1 Perception Integrity",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "PerceptionIntegrityGate.process_frame()",
+      "source": "core/perception_integrity/gate.py:93",
+      "payload_in": "frame, audio_db, zone_id",
+      "payload_out": "PerceptionPacket(decision, metrics, is_valid)"
+    },
+    {
+      "step": 3,
+      "layer": "L2 Identity Recognition",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "FaceRegistry.search_face(embedding)",
+      "source": "modules_legacy/face_registry.py:85",
+      "condition": "pi_packet.decision in (ACCEPT, DELEGATE)",
+      "payload_in": "512-dim ArcFace embedding",
+      "payload_out": "Tuple[bool, str] (found, match_id)"
+    },
+    {
+      "step": 4,
+      "layer": "L3 Context & Tracking",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "PrivacyEngagement.process_batch(keypoints_list)",
+      "source": "modules_legacy/privacy_analytics.py:45",
+      "payload_in": "List[np.ndarray] (pose skeletons)",
+      "payload_out": "float (engagement_score)"
+    },
+    {
+      "step": 5,
+      "layer": "L4 Compliance Logic",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "SpatiotemporalCSF.validate_event(event_dict)",
+      "source": "modules_legacy/st_csf.py:112",
+      "payload_in": "{student_id, timestamp, zone}",
+      "payload_out": "Tuple[bool, str] (st_valid, st_reason)"
+    },
+    {
+      "step": 6,
+      "layer": "L5 Governance Filter",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "GovernanceFilter.compliance_check(event_id)",
+      "source": "core/canonical_layers.py:465",
+      "payload_in": "gov_payload (allowlist fields)",
+      "payload_out": "bool (event_approved)"
+    },
+    {
+      "step": 7,
+      "layer": "L5 Decision & Audit Ledger",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "AuditLog.append_event(audit_event)",
+      "source": "modules_legacy/audit_trail.py:65",
+      "payload_in": "AttendanceEvent",
+      "payload_out": "str (event_hash)"
+    },
+    {
+      "step": 8,
+      "layer": "L3 Memory Destruction",
+      "caller": "ScholarMasterUnified.process_video()",
+      "callee": "EdgeAbstraction._destroy_frame(frame, frame_id, capture_time)",
+      "source": "core/canonical_layers.py:215",
+      "payload_in": "frame buffer, TTL timestamp",
+      "payload_out": "None (volatile memory zeroed)"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "P22_Perception_Integrity": {
+    "production_runtime": "YES (main.py:476, 671)",
+    "integration_tests": "YES (tests/test_perception_integrity.py, tests/test_runtime_integration.py)",
+    "unit_tests": "YES (tests/test_perception_integrity.py)",
+    "benchmarks": "YES (benchmarks/benchmark_perception_integrity.py, benchmarks/paper1_foundations.py)",
+    "governance_classification": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "P23_Adaptive_Cascade": {
+    "production_runtime": "YES (core/perception_integrity/adaptive_cascade.py, main.py:677, 685, 874)",
+    "integration_tests": "YES (tests/test_runtime_integration.py)",
+    "unit_tests": "YES (tests/test_perception_integrity.py)",
+    "benchmarks": "YES (benchmarks/paper2_adaptive_edge.py)",
+    "governance_classification": "FULLY_RUNTIME_INTEGRATED"
+  },
+  "P24_Cross_Modal_Recovery": {
+    "production_runtime": "PARTIAL (Video + Audio dB ingestion in main.py:673, ConsistencyChecker in gate.py:64)",
+    "integration_tests": "YES (tests/test_perception_integrity.py)",
+    "unit_tests": "YES (tests/test_perception_integrity.py)",
+    "benchmarks": "YES (benchmarks/paper3_cross_modal_recovery.py)",
+    "governance_classification": "PARTIALLY_RUNTIME_INTEGRATED"
+  },
+  "P25_Macro_Integration": {
+    "production_runtime": "YES (5-layer orchestration in main.py:660-918, core/canonical_layers.py)",
+    "integration_tests": "YES (tests/test_runtime_integration.py, tests/test_canonical_architecture.py)",
+    "unit_tests": "YES (tests/test_layer_contracts.py)",
+    "benchmarks": "YES (benchmarks/paper4_error_propagation.py)",
+    "governance_classification": "FULLY_RUNTIME_INTEGRATED"
+  }
+}

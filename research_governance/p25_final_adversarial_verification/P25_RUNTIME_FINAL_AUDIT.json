@@ -1,0 +1,41 @@
+{
+  "paper_id": "P25",
+  "five_layer_codebase_mapping": [
+    {
+      "layer": 1,
+      "name": "Perception Integrity",
+      "file": "core/perception_integrity/gate.py",
+      "class": "PerceptionIntegrityGate",
+      "status": "PRODUCTION"
+    },
+    {
+      "layer": 2,
+      "name": "Identity Recognition",
+      "file": "infrastructure/face_recognition/insightface_adapter.py and infrastructure/indexing/faiss_face_index.py",
+      "classes": "InsightFaceAdapter, FaissFaceIndex",
+      "status": "PRODUCTION"
+    },
+    {
+      "layer": 3,
+      "name": "Context Tracking",
+      "file": "modules_legacy/trust_layer.py and main.py",
+      "functions": "Kalman tracking, spatial engagement",
+      "status": "PRODUCTION"
+    },
+    {
+      "layer": 4,
+      "name": "Compliance Logic",
+      "file": "core/domain/rules/compliance_rules.py",
+      "class": "ComplianceRules",
+      "status": "PRODUCTION"
+    },
+    {
+      "layer": 5,
+      "name": "Administrative Decision",
+      "file": "api/ and core/failure_semantics.py",
+      "functions": "Audit logging, incident dispatch",
+      "status": "PRODUCTION"
+    }
+  ],
+  "verdict": "CODEBASE_TRUTH_STRICTLY_MAINTAINED"
+}

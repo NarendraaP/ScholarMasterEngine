@@ -155,7 +155,7 @@ class EdgeAbstraction:
     Enforces <33ms frame lifetime and irreversibility.
     """
     
-    FRAME_TTL_MS = 300  # Maximum frame lifetime in milliseconds (increased for CPU demo compatibility)
+    FRAME_TTL_MS = 33  # Maximum frame lifetime in milliseconds (33ms TTL per ARCHITECTURE_CANONICAL.md)
     AUDIO_TTL_SECONDS = 3  # Maximum audio lifetime in seconds
     MAX_SKELETON_DIMS = 34  # Maximum allowed skeleton dimensions
     MIN_COMPRESSION_RATIO = 1000  # Minimum required compression ratio
@@ -978,3 +978,5 @@ __all__ = [
     # Engine
     "CanonicalRuntimeEngine",
 ]
+
+# INV-16: Perception Integrity Gate MUST evaluate sensor inputs before Layer 2 biometric processing.

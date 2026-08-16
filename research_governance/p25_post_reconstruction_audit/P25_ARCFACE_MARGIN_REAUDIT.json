@@ -1,0 +1,7 @@
+{
+  "paper_id": "P25",
+  "target_margin_formula": "||g_i - g_j||_2 = 2 sin(theta_ij / 2) >= 2 sin(m) approx 0.9589 for m = 0.5 rad",
+  "theoretical_grounding": "In ArcFace (Deng et al. 2019), the additive angular margin loss penalizes cos(theta + m), encouraging inter-class centroid angular separation theta_ij >= 2m.",
+  "mathematical_qualification": "While the loss objective drives centroids toward theta_ij >= 2m, finite-sample stochastic gradient descent does not algebraically guarantee this bound for all arbitrary unconstrained pairs. The statement must be framed as a Target Angular Separation Invariant.",
+  "verdict": "RATIFIED_AS_TARGET_SPECIFICATION_INVARIANT"
+}

@@ -1,0 +1,23 @@
+{
+  "production_implementation": [
+    "cv2.VideoCapture (Optical video capture in main.py:660)",
+    "sounddevice.InputStream & AudioSentinel (Acoustic level in main.py:385, 673)",
+    "YOLO-Pose (Kinematic keypoints extraction in main.py:864)",
+    "ConsistencyChecker (Timestamp skew & audio-visual activity consistency in core/perception_integrity/consistency.py:22)",
+    "AdaptiveCascade (Operational recovery switching to pose-only tracking under visual degradation in main.py:685, 860)"
+  ],
+  "benchmark_implementation": [
+    "Synthetic degradation generator (0%, 20%, 50%, 80% noise in benchmarks/paper3_cross_modal_recovery.py:39)",
+    "Simulated multi-modal sensor packet generator (SensorInputPacket wrapper in line 57)",
+    "Recovery rate quantification harness ((acc_consensus - acc_rgb)/(1 - acc_rgb) in line 71)"
+  ],
+  "shared_implementation": [
+    "core.perception_integrity.PerceptionIntegrityGate (Directly instantiated and invoked in both main.py:476,671 and paper3_cross_modal_recovery.py:20,62)",
+    "core.perception_integrity.contracts.SensorInputPacket (Unified schema for multi-modal frames, audio, and keypoints)",
+    "core.perception_integrity.adaptive_cascade.AdaptiveCascade (Common cascade routing logic across ACCEPT/DEGRADE/HALT)"
+  ],
+  "separate_implementation": [
+    "Continuous 3-way categorical JSD distribution calculation and infinitesimal Fisher-Rao geometry (formal mathematical model in Paper 24 manuscript)",
+    "Asynchronous multi-rate ring buffer software PLL clock tracking (Algorithm 1 in Paper 24 manuscript; runtime implements timestamp skew gating in ConsistencyChecker)"
+  ]
+}

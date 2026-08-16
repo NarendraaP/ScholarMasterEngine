@@ -1,0 +1,54 @@
+[
+  {
+    "correction_id": "EXEC-P24-01-FISHER-RAO",
+    "paper": "P24",
+    "target_file": "docs/papers/paper24_revised.tex",
+    "section": "Section III-C: Infinitesimal Fisher Information Geometry",
+    "executed_changes": {
+      "removed_claim": "d_M^2(P_m, P_c) = 8(1 - sum sqrt(P_m P_c)) <= 8 JSD(P_m || P_c)",
+      "inserted_claim": "ds_{FR}^2 = 8 \\cdot \\mathrm{JSD}(P_m \\parallel P_m + dP) + \\mathcal{O}(\\|dP\\|^3)",
+      "pinsker_bounds_retained": "1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV"
+    },
+    "verification_checks": {
+      "no_global_inequality_assertion": true,
+      "local_expansion_verified": true,
+      "empirical_telemetry_unchanged": true,
+      "compilation_success": true
+    },
+    "status": "EXECUTED_AND_VERIFIED"
+  },
+  {
+    "correction_id": "EXEC-P25-01-ARCFACE-SEPARATION",
+    "paper": "P25",
+    "target_file": "docs/papers/paper25_revised.tex",
+    "section": "Section III-B: Corollary 1 (ArcFace Margin Separation Bound)",
+    "executed_changes": {
+      "previous_prose": "Under additive angular margin loss L_ArcFace with angular margin parameter m = 0.5 rad, the geodesic distance between target identity centroids satisfies theta_ij >= 2m...",
+      "corrected_prose": "For enrolled gallery biometric prototypes on the unit hypersphere S^{D-1} satisfying the ArcFace target angular separation condition theta_ij >= 2m (under angular margin parameter m = 0.5 rad), the Euclidean distance between adjacent class centroids satisfies: ||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= 2 sin(m) approx 0.9589."
+    },
+    "verification_checks": {
+      "explicit_gallery_assumption_present": true,
+      "chord_numerical_value_preserved": true,
+      "empirical_telemetry_unchanged": true,
+      "compilation_success": true
+    },
+    "status": "EXECUTED_AND_VERIFIED"
+  },
+  {
+    "correction_id": "EXEC-P25-02-QUARANTINE-LIPSCHITZ",
+    "paper": "P25",
+    "target_file": "docs/papers/paper25_revised.tex",
+    "section": "Section IV-B: Composite Lipschitz Chain Rule Analysis",
+    "executed_changes": {
+      "previous_prose": "In contrast, under Layer 1 fail-closed gating, the domain of f_2 is restricted to certified low-risk sub-manifolds X_cert = {x | R_p(x) <= 0.70}, strictly bounding Lip(f_2) and guaranteeing EAF = 0.0.",
+      "corrected_prose": "In contrast, under Layer 1 fail-closed gating, uncertified sensory inputs (X_quar) are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, while certified inputs are restricted to sub-manifolds X_cert = {x | R_p(x) <= 0.70} within Voronoi cell interiors, guaranteeing EAF = 0.0000 on quarantined perturbations."
+    },
+    "verification_checks": {
+      "domain_restricted_quarantine_qualified": true,
+      "unconstrained_discontinuity_distinguished": true,
+      "eaf_empirical_telemetry_unchanged": true,
+      "compilation_success": true
+    },
+    "status": "EXECUTED_AND_VERIFIED"
+  }
+]

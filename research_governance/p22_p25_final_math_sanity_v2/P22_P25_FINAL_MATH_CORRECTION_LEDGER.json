@@ -1,0 +1,29 @@
+[
+  {
+    "item_id": "CORR-01-P24-FISHER-GEO",
+    "paper": "P24",
+    "claim": "d_M^2(P_m, P_c) <= 8 JSD(P_m || P_c) as global inequality",
+    "finding": "GLOBAL_INEQUALITY_FAILS (Counterexample: P=(1,0), Q=(0,1) yields d_FR^2 = pi^2 approx 9.8696 > 8 ln 2 approx 5.5452).",
+    "mathematical_truth": "LOCAL_INFINITESIMAL_EQUIVALENCE (ds_FR^2 = 8 JSD(P || P + dP) + O(||dP||^3) as dP -> 0).",
+    "verdict": "METRIC_CONFLATION_ERROR",
+    "action_required": "Replace invalid global inequality with valid local infinitesimal expansion and emphasize rigorous global Pinsker bounds."
+  },
+  {
+    "item_id": "CORR-02-P25-ARCFACE-SEPARATION",
+    "paper": "P25",
+    "claim": "||g_i - g_j||_2 >= 2 sin(m) approx 0.9589",
+    "finding": "VALID_CONDITIONALLY (Derivation is exact on unit sphere for centroids satisfying theta_ij >= 2m).",
+    "mathematical_truth": "Chord distance lower bound under the stated ArcFace separation assumption.",
+    "verdict": "VALID_WITH_EXPLICIT_ASSUMPTION",
+    "action_required": "Explicitly state the gallery separation assumption theta_ij >= 2m in Corollary 1."
+  },
+  {
+    "item_id": "CORR-03-P25-QUARANTINE-LIPSCHITZ",
+    "paper": "P25",
+    "claim": "Lip(f_2) = 0 on unsafe inputs",
+    "finding": "VALID_RESTRICTED (Constant mapping to bot has Lip = 0 on quarantine sub-domain).",
+    "mathematical_truth": "Domain-restricted quarantine property preventing Voronoi boundary traversal.",
+    "verdict": "VALID_WITH_EXPLICIT_ASSUMPTION",
+    "action_required": "Maintain explicit distinction between constant quarantine mapping and unconstrained discontinuous classifier."
+  }
+]

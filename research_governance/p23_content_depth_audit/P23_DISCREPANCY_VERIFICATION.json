@@ -1,0 +1,18 @@
+{
+  "audit_id": "P23_DISCREPANCY_AUDIT",
+  "discrepancies_found": 0,
+  "reconciled_items": 1,
+  "items": [
+    {
+      "item_id": "DISC-P23-01",
+      "disputed_item": "Routing threshold values (0.50 vs 0.45/0.70/0.85 vs 0.30/0.70)",
+      "competing_assertions": "Algorithm 1 (0.50), Section 3.2 (0.45, 0.70, 0.85), Table III (0.30, 0.70)",
+      "authoritative_source": "core/perception_integrity/adaptive_cascade.py & benchmarks/master_validation_suite_results.json",
+      "verification_command": "PYTHONPATH=. ./.venv/bin/python -c 'from core.perception_integrity.adaptive_cascade import AdaptiveCascade; c=AdaptiveCascade(); print(c.tau_accept, c.tau_degrade, c.tau_delegate)'",
+      "observed_output": "0.45 0.7 0.85",
+      "authoritative_value": "Production Policy: tau_accept=0.45, tau_degrade=0.70, tau_delegate=0.85; Algorithmic threshold: tau_switch=0.50; Test regimes: [0.30, 0.70]",
+      "rejected_values": "None (all are valid at their respective architectural layers)",
+      "resolution": "RESOLVED_WITH_LAYER_EXPLANATION"
+    }
+  ]
+}

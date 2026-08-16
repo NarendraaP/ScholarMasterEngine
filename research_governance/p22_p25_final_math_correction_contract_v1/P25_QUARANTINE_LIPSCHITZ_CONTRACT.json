@@ -1,0 +1,28 @@
+{
+  "contract_id": "MCC-P25-02-QUARANTINE-LIPSCHITZ",
+  "paper_id": "P25",
+  "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+  "original_manuscript_claim": "Section IV-B / lines 136\u2013142: Lip(f_2) bounded under Layer 1 fail-closed gating, preventing downstream error propagation.",
+  "why_accepted_previously": "Constant mapping to null symbol bot has zero Lipschitz constant on the quarantine sub-domain, halting execution before Layer 2.",
+  "exact_mathematical_discrepancy": "The property Lip = 0 applies strictly to the constant quarantine map f_gate|_{X_quar}: X_quar -> {bot}. It must not be generalized to claim that the unconstrained nearest-neighbor classifier is globally Lipschitz (which has step jump discontinuities across Voronoi facets).",
+  "independent_verification_performed": "Verified domain partitioning into certified sub-manifold X_cert and quarantine region X_quar. Confirmed that fail-closed gating intercepts corrupted inputs before Layer 2 execution.",
+  "corrected_mathematical_statement": "Under Layer-1 fail-closed gating, uncertified sensory inputs are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, preventing evaluation on discontinuous Voronoi boundaries and guaranteeing EAF = 0.0000 on quarantined perturbations.",
+  "required_assumptions": [
+    "Deterministic binary gating threshold tau_risk = 0.70.",
+    "Domain partitioned into certified sub-manifold X_cert and quarantine region X_quar.",
+    "Quarantined inputs map to constant null state bot."
+  ],
+  "exact_manuscript_location": "docs/papers/paper25_revised.tex: Section IV-B (lines 136\u2013142)",
+  "changes_classification": {
+    "equation_changed": false,
+    "theorem_changed": false,
+    "proof_changed": false,
+    "prose_changed": true,
+    "figure_changed": false,
+    "experiment_changed": false
+  },
+  "empirical_results_affected": false,
+  "citation_impact": "None.",
+  "single_owner_impact": "None (P25 retains exclusive ownership of macro containment and EAF).",
+  "originality_cross_paper_impact": "None (No overlap with P22, P23, or P24)."
+}

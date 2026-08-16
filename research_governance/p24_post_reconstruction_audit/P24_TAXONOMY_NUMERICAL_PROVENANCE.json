@@ -1,0 +1,48 @@
+{
+  "paper_id": "P24",
+  "table_id": "Table I: Comparative Taxonomy",
+  "entries": [
+    {
+      "paradigm": "Early Fusion (Concat)",
+      "latency": "<0.1 ms",
+      "source": "Literature baseline (tensor concat overhead in PyTorch/ONNX)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "Late Fusion (Averaging)",
+      "latency": "0.5 ms",
+      "source": "Literature baseline (unweighted decision averaging overhead)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "Cross-Modal Transformer",
+      "latency": ">40 ms",
+      "source": "Literature benchmark for edge transformer attention matrices (Tsai et al. 2019, Jaegle et al. 2021)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "Generative Imputation (SMIL/VAE)",
+      "latency": "15-25 ms",
+      "source": "Literature benchmark for latent generative reconstruction (Ma et al. 2021, Lee et al. 2020)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "Modality Dropout",
+      "latency": "0.6 ms",
+      "source": "Literature baseline for unimodal subnet execution (Neverova et al. 2015)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "Reliability-Gated Fusion",
+      "latency": "0.8 ms",
+      "source": "Literature baseline for heuristic confidence gating (Khaleghi et al. 2013)",
+      "status": "VERIFIED_REPRESENTATIVE"
+    },
+    {
+      "paradigm": "ScholarMaster JSD Consensus",
+      "latency": "1.1 ms",
+      "source": "ScholarMaster Master Validation Suite logged telemetry",
+      "status": "VERIFIED_EMPIRICAL"
+    }
+  ]
+}

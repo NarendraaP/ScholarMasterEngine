@@ -1,0 +1,13 @@
+{
+  "paper": "P25",
+  "title": "Macro Integration Architecture and Downstream Error Propagation",
+  "runtime_integration_status": "DIRECT",
+  "5_layer_runtime_mapping": {
+    "Layer_1_Perception": "core.perception_integrity.PerceptionIntegrityGate (main.py:671)",
+    "Layer_2_Identity": "modules_legacy.face_registry.FaceRegistry (main.py:688)",
+    "Layer_3_Context": "modules_legacy.privacy_analytics.PrivacyEngagement (main.py:875)",
+    "Layer_4_Compliance": "modules_legacy.st_csf.SpatiotemporalCSF & core.canonical_layers.GovernanceFilter (main.py:782, 800)",
+    "Layer_5_Decision": "modules_legacy.attendance_logger.AttendanceManager & modules_legacy.audit_trail.AuditLog (main.py:753, 828)"
+  },
+  "findings": "The 5-layer macro state machine described in P25 directly mirrors the production ScholarMaster architecture. The EAF benchmark evaluates this exact sequential stack."
+}

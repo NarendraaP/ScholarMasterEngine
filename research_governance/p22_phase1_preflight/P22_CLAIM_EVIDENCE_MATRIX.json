@@ -1,0 +1,58 @@
+[
+  {
+    "claim": "Dirichlet Subjective Logic evidential uncertainty formulation u = K/S",
+    "source": "core/perception_integrity/uncertainty.py:28 & docs/papers/paper22_revised.tex",
+    "evidence_level": "E0 (Repository Implementation + Verified Derivation)",
+    "mathematical_status": "M0 / M1 (Standard Subjective Logic Parameterization)",
+    "current_location": "docs/papers/paper22_revised.tex: Section III-A"
+  },
+  {
+    "claim": "Dirichlet variance bound Var(p_k) <= 1/[4(S+1)] < 1/(4K) and lim_{S -> infty} Var(p_k) = 0",
+    "source": "docs/papers/paper22_revised.tex (Theorem 1)",
+    "evidence_level": "E0 (Verified First-Principles Mathematical Proof)",
+    "mathematical_status": "M1 (Derived Closed-Form Upper Bound)",
+    "current_location": "docs/papers/paper22_revised.tex: Theorem 1 / Section III-B"
+  },
+  {
+    "claim": "Pairwise negative Dirichlet covariance Cov(p_i, p_j) = - alpha_i alpha_j / [S^2 (S+1)] < 0",
+    "source": "docs/papers/paper22_revised.tex (Corollary 1)",
+    "evidence_level": "E0 (Verified Analytic Covariance Identity)",
+    "mathematical_status": "M0 (Analytic Dirichlet Property)",
+    "current_location": "docs/papers/paper22_revised.tex: Corollary 1 / Section III-B"
+  },
+  {
+    "claim": "Frequency-domain Modified Laplacian and Fourier high-frequency energy blur bounds",
+    "source": "core/perception_integrity/uncertainty.py:55 & docs/papers/paper22_revised.tex",
+    "evidence_level": "E0 (Repository Implementation + Verified Derivation)",
+    "mathematical_status": "M1 (Normalized Energy Formulation)",
+    "current_location": "docs/papers/paper22_revised.tex: Section III-C"
+  },
+  {
+    "claim": "Composite perception risk R_p = 0.35u + 0.25d + 0.25B + 0.15D",
+    "source": "core/perception_integrity/gate.py & parameter_lock.py",
+    "evidence_level": "E0 (Repository Implementation + Parameter Lock)",
+    "mathematical_status": "M2 (Novel Calibrated Multi-Signal Perception Risk)",
+    "current_location": "docs/papers/paper22_revised.tex: Section III-D"
+  },
+  {
+    "claim": "Empirical OOD discrimination: AUROC = 1.0000, FPR95 = 0.0000",
+    "source": "benchmarks/master_validation_suite_results.json",
+    "evidence_level": "E0 (Immutable Master Validation JSON)",
+    "mathematical_status": "M0 (Standard Binary Classification Metrics)",
+    "current_location": "docs/papers/paper22_revised.tex: Section IV-B / Table II"
+  },
+  {
+    "claim": "Temperature scaling reduces ECE by 90.2% from 0.4218 to 0.0412",
+    "source": "benchmarks/master_validation_suite_results.json & parameter_lock.py",
+    "evidence_level": "E0 (Immutable Master Validation JSON + Verified Math)",
+    "mathematical_status": "M1 (Post-Hoc Probability Calibration)",
+    "current_location": "docs/papers/paper22_revised.tex: Section IV-B / Table II"
+  },
+  {
+    "claim": "Gating latency bounded between 1.307 ms and 1.666 ms (mean 1.486 ms)",
+    "source": "benchmarks/master_validation_suite_results.json (five_regimes)",
+    "evidence_level": "E0 (Immutable Master Validation JSON)",
+    "mathematical_status": "M0 (Empirical Timing Benchmarks)",
+    "current_location": "docs/papers/paper22_revised.tex: Section IV-B"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "constrained_optimization": {
+    "equation": "min_pi E[(1-r)E_1 + r(E_1+E_2)] s.t. E[L(pi)] <= L_SLA, E[R_task(pi)] <= eps_risk",
+    "classification": "M1 (Adapted Constrained Multi-Objective Formulation)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "lagrangian_dual_zero_gap": {
+    "equation": "min_pi max_{lambda, mu >= 0} L(pi, lambda, mu) = max_{lambda, mu >= 0} min_pi L(pi, lambda, mu)",
+    "classification": "M1 (Convex Dual Optimization Proof)",
+    "conditions": "Holds under continuum randomized routing policies pi(x) in [0, 1] and convex lower envelope risk curve",
+    "soundness": "VERIFIED_SOUND_WITH_EXPLICIT_ASSUMPTIONS"
+  },
+  "pollaczek_khinchine_formula": {
+    "equation": "W_q = lambda E[S^2] / [2(1 - rho)], rho = lambda E[S] < 1",
+    "classification": "M0 (Classical M/G/1 Queueing Identity)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "kingman_heavy_traffic_tail": {
+    "equation": "P(W_q > t) approx exp(- 2(1 - rho) t / [lambda Var(S)/E[S] + E[S]])",
+    "classification": "M0 (Asymptotic Heavy-Traffic Approximation)",
+    "soundness": "VERIFIED_SOUND"
+  },
+  "energy_delay_product": {
+    "equation": "EDP = E[E] * E[L] = (E_1 + r_bar E_2) * (L_1 + r_bar L_2)",
+    "classification": "M0 / M1 (Normalized Systems Metric)",
+    "soundness": "VERIFIED_SOUND"
+  }
+}

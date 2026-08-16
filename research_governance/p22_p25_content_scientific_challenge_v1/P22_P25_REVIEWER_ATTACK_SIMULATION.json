@@ -1,0 +1,65 @@
+{
+  "Reviewer_1_Theory": {
+    "focus": "Mathematical Novelty, Assumptions, and Proof Rigor",
+    "P22_evaluation": {
+      "major_concern": "Is the Dirichlet variance bound trivial since Beta variance is known?",
+      "minor_concern": "Assumption that alpha_k >= 1 should be explicitly emphasized.",
+      "defense": "While Beta variance is classical, bounding it uniformly by 1/[4(S+1)] < 1/(4K) and proving monotonic decay O(1/S) as an operational edge gating invariant is novel and rigorous.",
+      "required_action": "Preserve explicit step-by-step Beta derivation."
+    },
+    "P23_evaluation": {
+      "major_concern": "Does strong duality hold if risk function is non-convex?",
+      "minor_concern": "Queuing model assumes Poisson arrivals which may not hold during bursty video feeds.",
+      "defense": "The theorem explicitly specifies convexity over the measurable policy space; Poisson arrival is framed as standard theoretical analysis with Kingman heavy-traffic bounds.",
+      "required_action": "Maintain clear classification as E2 theoretical queuing model."
+    },
+    "P24_evaluation": {
+      "major_concern": "Is the JSD boundedness proof simply Shannon entropy concavity?",
+      "minor_concern": "Explain why beta=5.0 was chosen.",
+      "defense": "The proof establishes the exact [0, ln 2] normalization range required for exponential gradient stability, and Pinsker bounds formalize the total variation contraction.",
+      "required_action": "Preserve definitions and Pinsker corollary."
+    },
+    "P25_evaluation": {
+      "major_concern": "Does the Voronoi jump proof hold for non-spherical metric spaces?",
+      "minor_concern": "Lipschitz constant Lip(f_2) = 0 under quarantine assumes ideal binary rejection.",
+      "defense": "ArcFace embeddings are explicitly normalized to unit hypersphere S^{D-1}; fail-closed gating halts execution deterministically, establishing exact containment.",
+      "required_action": "State hyperspherical normalization assumption clearly."
+    }
+  },
+  "Reviewer_2_Experiments": {
+    "focus": "Baselines, Metrics, Empirical Scope, and Reproducibility",
+    "P22_evaluation": {
+      "major_concern": "Are 2,000 samples sufficient for OOD validation?",
+      "minor_concern": "Report FPR95 confidence intervals if available.",
+      "defense": "Evaluations span 5 distinct corruption regimes on ARM64 edge hardware, achieving exact zero-shot Family-A to Family-B transfer.",
+      "required_action": "Maintain exact logged numbers from master_validation_suite_results.json."
+    },
+    "P23_evaluation": {
+      "major_concern": "Does P99 < 5ms hold under continuous 100% heavy load?",
+      "minor_concern": "Thermal throttling was not measured across 24 hours.",
+      "defense": "Paper explicitly documents continuous DoS heavy saturation as a theoretical failure boundary, resolved via graceful degradation.",
+      "required_action": "Retain explicit LIMIT boundary in Section IV."
+    },
+    "P24_evaluation": {
+      "major_concern": "Is 100% recovery realistic if multiple sensors fail simultaneously?",
+      "minor_concern": "Clarify that 100% recovery was tested under single-modality optical corruption.",
+      "defense": "Paper explicitly defines the boundary: 100% recovery is achieved when secondary sensors remain intact; multi-channel failure triggers quarantine.",
+      "required_action": "Ensure Table II and III distinguish empirical accuracy from analytic weight curves."
+    },
+    "P25_evaluation": {
+      "major_concern": "Does EAF=0.0000 mean the system is flawless?",
+      "minor_concern": "Evaluate on larger galleries if possible.",
+      "defense": "EAF=0.0000 proves that corrupted vectors do not enter downstream layers (fail-closed quarantine); it is bounded strictly to the tested 0%\u201320% range.",
+      "required_action": "Preserve explicit limitation regarding infinite gallery universality."
+    }
+  },
+  "Reviewer_3_Novelty": {
+    "focus": "Originality, Salami-Slicing, and Engineering Integration",
+    "portfolio_evaluation": {
+      "major_concern": "Are P22\u2013P25 separate papers or parts of one large architecture?",
+      "minor_concern": "Ensure terminology is harmonized across papers.",
+      "defense": "Each paper addresses a completely distinct, standalone scientific research question: P22 solves perception uncertainty calibration; P23 solves multi-objective edge scheduling and queuing; P24 solves cross-modal information recovery; P25 solves macro systemic data cascades and geometric metric jumps.",
+      "required_action": "Preserve strict Single-Owner Law boundaries across all 4 manuscripts."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "paper_id": "P18",
+  "title": "Runtime Enforcement of Architectural Irreversibility in Edge AI Systems \\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \\& Technology (Autonomous), as part of academic research activities.",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper18_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes runtime enforcement intercepts illegal state transitions across layers.",
+    "perception_input_assumption": "Enforcement monitor binds to Layer 1 composite risk r(I) to trigger HALT / REJECT states.",
+    "architecture_boundary": "Runtime state machine acts as supervisor over Layer 1 perception gate decisions.",
+    "mathematical_assumptions": "Enforcement invariants and state transition rules remain sound.",
+    "experimental_assumptions": "Runtime overhead benchmarks are preserved.",
+    "claims": "State that fail-closed runtime safety encompasses perception-level evidential quarantine.",
+    "figures": "Update state machine figure to include Perception Quarantine (bot) transition.",
+    "tables": "Preserve runtime enforcement tables.",
+    "references": "Add citation to P22 (Perception Gate) and P23 (Adaptive Cascade).",
+    "downstream_dependencies": "System-wide execution containment."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P18",
+      "location": "Section III / Section IV / Figure 1",
+      "change_type": "ARCHITECTURE_BOUNDARY_UPDATE",
+      "current_state": "Runtime enforcement state machine monitors identity and compliance violation states.",
+      "new_state": "Integrate Layer 1 evidential perception quarantine state into the formal runtime enforcement supervisor.",
+      "reason": "Unify fail-closed perceptual gating with macro runtime execution invariants.",
+      "affected_by": [
+        "P22",
+        "P23"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P18 owns runtime enforcement state machine; P22 owns perception risk)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

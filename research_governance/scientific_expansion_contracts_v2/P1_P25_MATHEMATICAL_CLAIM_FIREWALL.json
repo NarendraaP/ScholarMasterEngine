@@ -1,0 +1,122 @@
+[
+  {
+    "contract_id": "SEC-P01-01",
+    "paper_id": "P1",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Memory bandwidth bounds adapted from standard UMA bus formulations)",
+    "formal_statement": "Memory transfer latency $T_{mem} = 0$ under shared pointer references in UMA address space.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P01-02",
+    "paper_id": "P1",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Interface contract specification mapping)",
+    "formal_statement": "$\\Pi_\\tau(I): \\mathcal{I} \\to \\mathcal{P} \\cup \\{\\bot\\}$ where $\\bot$ triggers fail-closed isolation.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P02-01",
+    "paper_id": "P2",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Adapted from continuous-discrete Kalman filtering under multi-rate asynchronous sampling)",
+    "formal_statement": "Posterior covariance $P_{t|t} = (I - K_t H) P_{t|t-1}$ with bounded error divergence under non-zero measurement noise.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P03-01",
+    "paper_id": "P3",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Data Processing Inequality application on geometric skeletal embeddings)",
+    "formal_statement": "By DPI, $I(X_{face}; K_{norm}) \\le I(X_{face}; BoundingBox) \\approx 0$ due to loss of high-frequency biometric texture.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P04-01",
+    "paper_id": "P4",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Domain-specific adaptation of Signal Temporal Logic to timetable intervals)",
+    "formal_statement": "$\\langle s, [t_1, t_2] \\rangle \\models \\Box_{[0, \\Delta]} \\phi \\iff \\forall t' \\in [t_1, t_2], s(t') \\models \\phi$ with $O(1)$ amortized sliding evaluation.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P07-01",
+    "paper_id": "P7",
+    "classification": "M0 (Standard Known Mathematics)",
+    "novelty_status": "STANDARD (HNSW graph distance computation bounds)",
+    "formal_statement": "Query complexity $O(\\log N)$ distance computations per search.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P22-01",
+    "paper_id": "P22",
+    "classification": "M0 (Standard Known Mathematics)",
+    "novelty_status": "STANDARD (Literature taxonomy of published methods)",
+    "formal_statement": "Standard formulation of predictive entropy, variance, and calibration error.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P22-02",
+    "paper_id": "P22",
+    "classification": "M0 / M1 (Standard Dirichlet identities + Derived Risk Composite)",
+    "novelty_status": "DERIVED (Standard Dirichlet moments composed into a calibrated composite risk score $r(I)$)",
+    "formal_statement": "$\\text{Var}(p_k) = \\frac{\\alpha_k(S - \\alpha_k)}{S^2(S+1)}$; composite risk $r(I) = w_{EDL} u + w_{blur} (1 - \\hat{\\sigma}_{Lap}) + w_{pose} D_{dis}$.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P22-03",
+    "paper_id": "P22",
+    "classification": "M0 (Standard Empirical Evaluation)",
+    "novelty_status": "STANDARD (AUROC, FPR95, ECE, Brier Score)",
+    "formal_statement": "Empirically verified AUROC = 1.0000, FPR95 = 0.0000, ECE = 0.4218, Brier = 0.1793.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P23-01",
+    "paper_id": "P23",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Constrained Pareto optimization under hard real-time latency deadlines)",
+    "formal_statement": "$\\min_{\\theta} [-\\mathbb{E}[\\text{Acc}], \\mathbb{E}[\\text{Lat}]] \\text{ s.t. } P(\\text{Lat} > 5.0\\text{ ms}) = 0$.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P23-02",
+    "paper_id": "P23",
+    "classification": "M0 (Standard Queue & Latency Reporting)",
+    "novelty_status": "STANDARD (Empirical percentiles & throughput)",
+    "formal_statement": "Mean = 2.679 ms, P50 = 3.786 ms, P95 = 4.075 ms, P99 = 4.556 ms, FPS = 373.3.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P24-01",
+    "paper_id": "P24",
+    "classification": "M0 / M1 (Standard JSD properties + Derived Dynamic Weighting)",
+    "novelty_status": "DERIVED (JSD entropy bounds applied to exponential sensor trust weights $w_m = \\frac{\\exp(-\\gamma \\sum \\text{JSD})}{\\sum \\exp}$)",
+    "formal_statement": "$\\text{JSD}(P \\parallel Q) = \\frac{1}{2} D_{KL}(P \\parallel M) + \\frac{1}{2} D_{KL}(Q \\parallel M) \\le 1$ bit for base-2 logarithms.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P24-02",
+    "paper_id": "P24",
+    "classification": "M0 (Standard Empirical Evaluation)",
+    "novelty_status": "STANDARD (Accuracy recovery curves)",
+    "formal_statement": "Consensus accuracy = 100.0% across all 4 tested noise levels.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P25-01",
+    "paper_id": "P25",
+    "classification": "M1 (Derived/Adapted Formulation)",
+    "novelty_status": "DERIVED (Adapted from classical metric Voronoi geometry & chained neural Lipschitz analysis)",
+    "formal_statement": "Nearest-neighbor classification map $f_{HNSW}: \\mathbb{R}^d \\to \\{1,\\dots,K\\}$ has step discontinuities along Voronoi facets $\\partial V_i \\cap \\partial V_j$, preventing finite global Lipschitz bounds without upstream noise filtering.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  },
+  {
+    "contract_id": "SEC-P25-02",
+    "paper_id": "P25",
+    "classification": "M0 (Standard Empirical Metric Formulation)",
+    "novelty_status": "STANDARD (EAF = Error_{downstream} / Error_{upstream})",
+    "formal_statement": "Unprotected EAF mean = 0.9335 (peak 1.422), Protected EAF mean = 0.0000.",
+    "firewall_status": "MATHEMATICALLY_SOUND"
+  }
+]

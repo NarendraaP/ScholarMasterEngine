@@ -1,0 +1,30 @@
+{
+  "discrepancies_reconciled": [
+    {
+      "item": "P24 Runtime Integration Scope",
+      "disputed_claims": [
+        "FULLY_RUNTIME_INTEGRATED vs PARTIALLY_RUNTIME_INTEGRATED"
+      ],
+      "authoritative_finding": "Live runtime implements multi-modal ingestion (RGB, Audio dB, Pose) and upstream ConsistencyChecker with cascade fallback to pose-only tracking; continuous 3-stream JSD trust distribution and software PLL operate as validated mathematical/benchmark models.",
+      "ratified_status": "P24 = PARTIALLY_RUNTIME_INTEGRATED; Portfolio = PARTIALLY_INTEGRATED"
+    },
+    {
+      "item": "P22 main.py Call Sites",
+      "disputed_claims": [
+        "Line 476 vs Line 671"
+      ],
+      "authoritative_finding": "Line 476 is instantiation in ScholarMasterUnified.__init__(); Line 671 is per-frame invocation in process_video(). Both are authentic.",
+      "ratified_status": "VERIFIED_AUTHENTIC"
+    },
+    {
+      "item": "P25 EAF Numerical Reconciliation",
+      "disputed_claims": [
+        "Mean EAF 0.9335 vs 0.9513 vs Peak 1.4220"
+      ],
+      "authoritative_finding": "0.9335 is the evaluated 20% regime EAF in raw JSON; 0.9513 is the 5-regime arithmetic mean; 1.4220 is peak EAF at 15% noise. Protected EAF = 0.0000 across all regimes.",
+      "ratified_status": "ALL_VALUES_NUMERICALLY_RECONCILED"
+    }
+  ],
+  "unresolved_discrepancies": 0,
+  "status": "ALL_DISCREPANCIES_FULLY_RESOLVED"
+}

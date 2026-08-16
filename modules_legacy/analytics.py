@@ -28,14 +28,18 @@ class AnalyticsEngine:
     def __init__(self, log_file="data/session_log.csv"):
         """Initialize MediaPipe Face Mesh for pose and EAR"""
         self.log_file = log_file
-        # Initialize MediaPipe Face Mesh
-        self.mp_face_mesh = mp.solutions.face_mesh
-        self.face_mesh = self.mp_face_mesh.FaceMesh(
-            max_num_faces=1,
-            refine_landmarks=True,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
-        )
+        # Initialize MediaPipe Face Mesh safely
+        try:
+            self.mp_face_mesh = mp.solutions.face_mesh
+            self.face_mesh = self.mp_face_mesh.FaceMesh(
+                max_num_faces=1,
+                refine_landmarks=True,
+                min_detection_confidence=0.5,
+                min_tracking_confidence=0.5
+            )
+        except Exception:
+            self.mp_face_mesh = None
+            self.face_mesh = None
         
         # Eye landmarks for EAR calculation (MediaPipe indices)
         self.LEFT_EYE_INDICES = [33, 160, 158, 133, 153, 144]
@@ -46,7 +50,7 @@ class AnalyticsEngine:
         self.HEAD_PITCH_THRESHOLD = 20  # degrees
         self.EAR_THRESHOLD = 0.2  # Below this = eyes closed
         
-        print("[ANALYTICS] Engagement engine initialized with MediaPipe")
+        print("[ANALYTICS] Engagement engine initialized")
     
     def compute_engagement(self, frame: np.ndarray) -> float:
         """
@@ -58,6 +62,9 @@ class AnalyticsEngine:
         Returns:
             Engagement score 0.0-1.0 (1.0 = fully engaged)
         """
+        if self.face_mesh is None:
+            return 0.5
+
         # Convert BGR to RGB for MediaPipe
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         

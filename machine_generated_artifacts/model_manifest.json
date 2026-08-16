@@ -1,0 +1,34 @@
+{
+  "models": [
+    {
+      "name": "InsightFace",
+      "family": "Family-A",
+      "type": "Face Recognition",
+      "weights": "buffalo_sc"
+    },
+    {
+      "name": "YOLOv8-Pose",
+      "family": "Family-A",
+      "type": "Pose Keypoints",
+      "weights": "yolov8n-pose.pt"
+    },
+    {
+      "name": "MediaPipe Pose",
+      "family": "Family-B",
+      "type": "Pose Keypoints Zero-Shot",
+      "weights": "mediapipe_builtin"
+    },
+    {
+      "name": "FAISS-HNSW",
+      "family": "Family-B",
+      "type": "Vector Index",
+      "parameters": "M=16, efConst=200"
+    },
+    {
+      "name": "PerceptionIntegrityGate",
+      "family": "Upstream Gatekeeper",
+      "type": "Integrity Gate",
+      "hash": "93a67c3db00924ff06a478e3b4654f32dcbc9f6eb03da12d8a013654f2589f86"
+    }
+  ]
+}

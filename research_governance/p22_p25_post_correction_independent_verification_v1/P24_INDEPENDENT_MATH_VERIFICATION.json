@@ -1,0 +1,22 @@
+{
+  "paper": "P24",
+  "global_fisher_inequality_absent": true,
+  "local_infinitesimal_relation_present": true,
+  "taylor_expansion_proof": {
+    "expansion_derivation": "d_FR^2(P, P+eps v) = 4 arccos^2(sum sqrt(P_k(P_k+eps v_k))) = eps^2 sum (v_k^2/P_k) + O(eps^3). JSD(P || P+eps v) = 1/8 eps^2 sum (v_k^2/P_k) + O(eps^3). Limiting ratio = 8.",
+    "coefficient_8_verified": true,
+    "remainder_order_O3_verified": true,
+    "simplex_constraint_sum_dP_zero_verified": true
+  },
+  "global_jsd_bounds_verified": {
+    "formula": "0 <= JSD(P_m || P_c) <= ln(2)",
+    "present_in_tex": true,
+    "proof_technique": "Shannon entropy concavity (H(M) <= ln 2 + 1/2 H(P) + 1/2 H(Q))"
+  },
+  "global_tv_pinsker_bounds_verified": {
+    "formula": "1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV",
+    "present_in_tex": true,
+    "tv_normalization_constant": "1/2 factor verified (TV distance in [0, 1])"
+  },
+  "verdict": "MATHEMATICALLY_SOUND_AND_VERIFIED"
+}

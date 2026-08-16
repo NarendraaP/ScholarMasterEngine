@@ -132,3 +132,15 @@ Paper 18 provides **runtime verification evidence** for the architectural claims
 **Updated**: 2026-02-18  
 **CC Audit**: Passed (zero overclaims)  
 **Authority**: Paper 18 LaTeX Source
+
+
+## Perception Risk Fault Handling
+Chaos engineering circuit breakers intercept `HALT` cascade decisions triggered by high perception risk scores, executing fail-closed recovery policies cleanly.
+
+
+## Perception Risk Fault Handling
+Chaos engineering circuit breakers intercept `HALT` cascade decisions triggered by high perception risk scores, executing fail-closed recovery policies cleanly.
+
+
+## Perception Risk Fault Handling
+Chaos engineering circuit breakers intercept `HALT` cascade decisions triggered by high perception risk scores, executing fail-closed recovery policies cleanly.

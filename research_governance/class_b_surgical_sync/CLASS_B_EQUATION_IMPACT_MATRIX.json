@@ -1,0 +1,18 @@
+[
+  {
+    "paper": "P4",
+    "location": "Section III (Event Stream Formulation)",
+    "change_type": "EQUATION_DOMAIN_UPDATE",
+    "current_state": "Defines event stream sigma over raw detection events without explicit quarantine filtering.",
+    "new_state": "Explicitly define sigma over validated non-null event alphabet Sigma_{valid} = Sigma \\setminus {bot}.",
+    "reason": "Formally prevent unvalidated sensory noise from generating spurious temporal logic violations.",
+    "affected_by": [
+      "P25"
+    ],
+    "scientific_necessity": true,
+    "result_change": false,
+    "experiment_rerun": false,
+    "salami_risk": "NONE (P4 owns ST-CSF interval logic; P25 owns EAF propagation)",
+    "priority": "MANDATORY"
+  }
+]

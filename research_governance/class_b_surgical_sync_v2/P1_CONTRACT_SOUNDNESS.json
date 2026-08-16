@@ -1,0 +1,21 @@
+{
+  "paper_id": "P1",
+  "title": "ScholarMaster Macro System Architecture",
+  "original_contract": "Assumed direct frame flow from physical sensor capture to Layer 2 (ArcFace) and Layer 3 (Kalman tracking).",
+  "proposed_contract": "Explicitly insert Layer-1 Perception Integrity Gate (ValidatedFeaturePayload contract) upstream of Layer 2.",
+  "actual_dependency": true,
+  "necessity": "REQUIRED",
+  "scientific_ownership": "PRESERVED (P1 retains macro orchestration & UMA buffer sharing; P22 owns perception gate math; P25 owns EAF)",
+  "claim_transfer": "NONE",
+  "mathematical_impact": "NONE (UMA memory bounds and bandwidth formulations remain 100% valid)",
+  "empirical_impact": "NONE (End-to-end 30 FPS pipeline throughput holds under 373.3 FPS Layer-1 gate; zero reruns required)",
+  "figure_impact": "ANNOTATION (Figure 1: Add Layer-1 Perception Gate box upstream of Layer-2 ArcFace in macro pipeline)",
+  "citation_impact": "REQUIRED (Cite P22 for perception gate interface and P25 for macro 5-layer composition)",
+  "salami_slicing_impact": "ZERO_RISK (Shared macro architecture context without mathematical overlap)",
+  "decision": "APPROVE_WITH_NARROWING",
+  "minimal_patch": {
+    "section": "Section III (Macro Pipeline)",
+    "action": "Add 2-sentence interface qualification defining ValidatedFeaturePayload ingestion contract from Layer 1.",
+    "figure_action": "Annotate Figure 1 with Layer-1 Perception Gate block."
+  }
+}

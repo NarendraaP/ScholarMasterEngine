@@ -1,0 +1,41 @@
+{
+  "paper_id": "P22",
+  "title": "Perception Integrity Foundations",
+  "parameter_lock_sha256": "93a67c3db00924ff06a478e3b4654f32dcbc9f6eb03da12d8a013654f2589f86",
+  "claims": [
+    {
+      "claim_id": "P22-C1",
+      "manuscript_location": "Section II-C Equation (4)",
+      "claim_text": "Temperature-scaled sigmoid calibration maps evidential uncertainty and predictor disagreement into a normalized risk score r in [0, 1].",
+      "metric": "Risk Score Normalization",
+      "reported_value": "r in [0.0, 1.0]",
+      "experiment_id": "PAPER22_CALIBRATION",
+      "raw_artifact": "benchmarks/master_validation_suite_results.json",
+      "configuration": "Config E (Full Perception Integrity)",
+      "dataset": "Model Family A Calibration Split",
+      "split": "Calibration 500 Samples",
+      "seed": 42,
+      "statistical_support": "ECE = 0.4218, Brier Score = 0.1793",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility_status": "REPRODUCIBLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "claim_id": "P22-C2",
+      "manuscript_location": "Section III Table 1",
+      "claim_text": "Zero-shot transfer of frozen parameter lock parameters to Model Family-B achieves AUROC = 1.0000 and FPR95 = 0.0000.",
+      "metric": "AUROC / FPR95",
+      "reported_value": "AUROC = 1.0000, FPR95 = 0.0000",
+      "experiment_id": "PAPER22_ZERO_SHOT_TRANSFER",
+      "raw_artifact": "benchmarks/master_validation_suite_results.json",
+      "configuration": "Family-B Zero-Shot (MediaPipe Pose + FAISS-HNSW)",
+      "dataset": "Model Family B Test Split",
+      "split": "750 Evaluation Samples across 5 Regimes",
+      "seed": 42,
+      "statistical_support": "Zero-Shot Transfer Status: PASSED_WITHOUT_RETUNING",
+      "leakage_status": "NO_LEAKAGE_DETECTED",
+      "reproducibility_status": "REPRODUCIBLE",
+      "verification_status": "VERIFIED_WITH_QUALIFICATION"
+    }
+  ]
+}

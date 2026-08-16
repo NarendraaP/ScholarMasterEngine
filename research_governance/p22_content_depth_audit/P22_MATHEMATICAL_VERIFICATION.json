@@ -1,0 +1,41 @@
+{
+  "audit_target": "P22 Mathematical Proofs and Formal Claims",
+  "verifications": [
+    {
+      "claim": "Dirichlet Evidence & Belief Mass Sum Rule: sum_{k=1}^K b_k + u = 1.0",
+      "formulation": "b_k = e_k / S, u = K / S, alpha_k = e_k + 1, S = sum alpha_k = K + sum e_k",
+      "proof_status": "VERIFIED_EXACT",
+      "proof_details": "sum b_k + u = (sum e_k + K) / S = S / S = 1.0 unconditionally."
+    },
+    {
+      "claim": "Theorem 1: Dirichlet Evidence Variance Upper Bound Var(p_k) <= 1/(4(S+1)) < 1/(4K)",
+      "formulation": "Var(p_k) = (alpha_k (S - alpha_k)) / (S^2 (S+1)) = (z_k (1 - z_k)) / (S + 1)",
+      "proof_status": "VERIFIED_EXACT",
+      "proof_details": "Quadratic f(z) = z(1-z) attains unique global maximum 1/4 at z = 1/2 on [0, 1]. Thus Var(p_k) <= 1/(4(S+1)). Since alpha_j >= 1, S = sum alpha_j >= K >= 2, which implies S + 1 >= K + 1 > K. Thus 1/(4(S+1)) < 1/(4K)."
+    },
+    {
+      "claim": "Theorem 1 Asymptotic Convergence: lim_{S -> inf} Var(p_k) = 0",
+      "formulation": "Var(p_k) <= 1/(4(S+1)) = O(1/S)",
+      "proof_status": "VERIFIED_EXACT",
+      "proof_details": "By Squeeze Theorem, 0 <= Var(p_k) <= 1/(4(S+1)) -> 0 as S -> inf."
+    },
+    {
+      "claim": "Dirichlet Variance Monotonicity Claim",
+      "formulation": "Var(p_k) decays monotonically as total evidence S accumulates",
+      "proof_status": "VERIFIED_WITH_EXPLICIT_QUALIFICATION",
+      "proof_details": "The upper bound 1/(4(S+1)) is strictly monotonically decreasing in S for all S >= K. Furthermore, under uniform evidence scaling alpha -> c*alpha (fixed class ratio z_k), Var(p_k) = z_k(1-z_k)/(c*S_0 + 1) is strictly monotonically decreasing in c. If evidence is accumulated on a single class starting from near zero in an imbalanced regime, the point variance z(1-z)/(S+1) may initially increase before monotonically decreasing. The manuscript statement is mathematically valid under the global bound and proportional evidence accumulation; the exact single-class qualification should be documented."
+    },
+    {
+      "claim": "Corollary 1: Pairwise Negative Covariance Cov(p_i, p_j) = - (alpha_i alpha_j) / (S^2 (S+1)) < 0",
+      "formulation": "Cov(p_i, p_j) = E[p_i p_j] - E[p_i]E[p_j] = (alpha_i alpha_j)/(S(S+1)) - (alpha_i alpha_j)/S^2",
+      "proof_status": "VERIFIED_EXACT",
+      "proof_details": "E[p_i p_j] - E[p_i]E[p_j] = (alpha_i alpha_j)/S * [ 1/(S+1) - 1/S ] = (alpha_i alpha_j)/S * [ -1 / (S(S+1)) ] = - (alpha_i alpha_j) / (S^2 (S+1)). Since alpha_i, alpha_j >= 1, numerator is strictly positive, hence Cov(p_i, p_j) < 0 strictly."
+    },
+    {
+      "claim": "Composite Risk Function Boundedness R_p in [0, 1]",
+      "formulation": "R_p = w_u u + w_d d + w_b B + w_k D, sum w = 1.0",
+      "proof_status": "VERIFIED_WITH_NORMALIZATION_QUALIFICATION",
+      "proof_details": "u = K/S in (0, 1]; d in [0, 1] (normalized L1 or cosine); B(I) = 1 - sigma(...) in (0, 1). To ensure D(k) in [0, 1], raw pixel landmark dispersion must be normalized by max displacement scale tau_disp: D_norm = min(D / tau_disp, 1.0). With normalized D, R_p is a convex combination of [0, 1] terms, strictly guaranteeing R_p in [0, 1]."
+    }
+  ]
+}

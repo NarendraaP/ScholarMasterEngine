@@ -1,0 +1,39 @@
+{
+  "paper_id": "P2",
+  "title": "A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper2_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Assumes multi-rate sensory observations have calibrated covariance.",
+    "perception_input_assumption": "Kalman observation updates receive dynamic weights w_m from P24 JSD consensus.",
+    "architecture_boundary": "Context engine consumes multimodal consensus posteriors rather than raw unvalidated sensory streams.",
+    "mathematical_assumptions": "Bayesian covariance equations hold; input noise variance R_k is dynamically scaled by 1/w_m.",
+    "experimental_assumptions": "Multi-rate tracking experiments remain 100% valid.",
+    "claims": "Qualify that tracking stability under severe visual blur relies on upstream cross-modal recovery (P24).",
+    "figures": "Annotate Figure 1 with upstream JSD consensus weight input.",
+    "tables": "Preserve existing tracking benchmark tables.",
+    "references": "Add citation to P24 (Generalized Cross-Modal Recovery).",
+    "downstream_dependencies": "Layer 3 to Layer 4 schedule compliance."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P2",
+      "location": "Section III / Section IV",
+      "change_type": "CLAIM_QUALIFICATION",
+      "current_state": "Formulates multi-rate Bayesian fusion assuming sensor covariance matrices R_k are fixed or heuristic.",
+      "new_state": "Qualify that observation covariance R_k dynamically incorporates upstream JSD trust weights w_m from Layer 1.",
+      "reason": "Formalize mathematical interface between Layer 1 cross-modal recovery and Layer 3 context tracking.",
+      "affected_by": [
+        "P24"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P2 owns Bayesian context fusion; P24 owns JSD sensor recovery)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

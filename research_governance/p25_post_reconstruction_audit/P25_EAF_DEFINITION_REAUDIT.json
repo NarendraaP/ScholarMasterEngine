@@ -1,0 +1,15 @@
+{
+  "paper_id": "P25",
+  "definition": "EAF_l = E_l / Delta_1",
+  "parameters": {
+    "Delta_1": "Normalized input perturbation level ||x - x_clean|| / ||x_clean|| in [0, 1] (dimensionless)",
+    "E_l": "Downstream misclassification / error rate at layer l in [0, 1] (dimensionless)",
+    "EAF_l": "Error Amplification Factor (dimensionless sensitivity condition number)"
+  },
+  "regime_interpretations": {
+    "EAF > 1.0": "Pipeline acts as an error amplifier (downstream error exceeds upstream perturbation)",
+    "EAF <= 1.0": "Pipeline attenuates noise",
+    "EAF = 0.0": "Complete fail-closed containment (zero corrupted payloads reach downstream layers)"
+  },
+  "verdict": "MATHEMATICALLY_CONSISTENT_AND_DIMENSIONALLY_VALID"
+}

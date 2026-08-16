@@ -1,0 +1,56 @@
+{
+  "rule_name": "ABSOLUTE_UNCERTAINTY_DISCREPANCY_VERIFICATION_RULE",
+  "governance_version": "SROS Version 2.1 / SEOP Version 2.0 / SROS-004",
+  "effective_date": "2026-08-15 13:36:45",
+  "status": "RATIFIED_PERMANENT_GOVERNANCE",
+  "scope": "All P1\u2013P25 manuscripts, audits, synchronization, expansion, figures, tables, equations, citations, and experiments",
+  "verification_priority_hierarchy": {
+    "1_empirical_numbers": [
+      "benchmarks/master_validation_suite_results.json",
+      "Raw machine-readable experiment output / JSON / CSV logs",
+      "Implementation source code execution",
+      "Only then historical generated reports"
+    ],
+    "2_implementation_claims": [
+      "Actual codebase source code (core/, infrastructure/, etc.)",
+      "Automated test suites (tests/)",
+      "Deterministic runtime state machines"
+    ],
+    "3_mathematical_claims": [
+      "Actual algorithmic implementation",
+      "First-principles mathematical derivations & metric geometry proofs",
+      "Peer-reviewed foundational literature"
+    ],
+    "4_figures": [
+      "Actual source data and matplotlib/tikz scripts",
+      "Actual rendered PDF visual bounding boxes",
+      "Direct visual inspection"
+    ],
+    "5_page_and_depth_claims": [
+      "Clean LaTeX compilation of canonical .tex",
+      "PyMuPDF native bounding-box continuous rendered-area integration",
+      "Strict distinction between Physical PDF pages and Substantive Body pages",
+      "Never rely on estimated word-count multiplier formulas"
+    ],
+    "6_citations": [
+      "Actual cited papers and verifiable bibliographic metadata",
+      "Direct relevance and explicit conceptual gap mapping"
+    ]
+  },
+  "mandatory_discrepancy_reporting_schema": [
+    "disputed_item",
+    "competing_values_or_claims",
+    "authoritative_source_checked",
+    "exact_source_location",
+    "verification_procedure_executed",
+    "verified_result",
+    "rejected_results",
+    "reason_for_rejection",
+    "manuscript_action_permitted"
+  ],
+  "hard_stop_condition": {
+    "unresolved_discrepancy_status": "STATUS = VERIFICATION_REQUIRED",
+    "manuscript_modification_flag": "MANUSCRIPT_MODIFICATION = BLOCKED",
+    "release_criteria": "SOURCE VERIFIED + DEFINITION VERIFIED + VALUE VERIFIED + PROVENANCE RECORDED"
+  }
+}

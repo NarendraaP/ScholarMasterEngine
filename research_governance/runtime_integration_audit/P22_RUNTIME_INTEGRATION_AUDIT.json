@@ -1,0 +1,15 @@
+{
+  "paper": "P22",
+  "title": "Perception Integrity Foundations",
+  "runtime_integration_status": "DIRECT",
+  "entry_point": "main.py:671 (pi_packet = self.perception_gate.process_frame(...))",
+  "runtime_class": "core.perception_integrity.PerceptionIntegrityGate",
+  "input_schema": "SensorInputPacket (frame, audio_db, keypoints, zone_id)",
+  "output_schema": "PerceptionPacket (packet_id, timestamp, metrics, decision, is_valid)",
+  "quarantine_behavior": "CascadeDecision.HALT -> continue (drops frame before face search, tracking, or compliance)",
+  "downstream_recipients": [
+    "main.py:688 (FaceRegistry / InsightFace on ACCEPT/DELEGATE)",
+    "main.py:860 (YOLO-Pose / PrivacyEngagement on DEGRADE/ACCEPT)"
+  ],
+  "findings": "PerceptionIntegrityGate is directly invoked on every ingested camera frame in the main video processing loop."
+}

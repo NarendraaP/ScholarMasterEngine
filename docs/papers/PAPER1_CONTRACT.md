@@ -42,3 +42,7 @@ Paper 1 defines the design philosophy, layer boundaries, and integration strateg
 - Does **not** introduce any algorithms.
 - Does **not** show experiments, graphs, or datasets.
 - Does **not** claim "we achieve X accuracy."
+
+
+## Upstream Perception Integrity Gate Qualification
+Incoming visual sensor streams pass through an upstream `PerceptionIntegrityGate` (Paper 22/25) prior to biometric face recognition and context tracking, protecting macro onion layers from corrupted sensor inputs.

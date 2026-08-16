@@ -1,0 +1,44 @@
+[
+  {
+    "claim": "Symmetric Jensen-Shannon Divergence boundedness 0 <= JSD(P_m || P_c) <= ln 2",
+    "source": "docs/papers/paper24_revised.tex: Theorem 1",
+    "evidence_level": "E0 (Verified Information-Theoretic Proof)",
+    "mathematical_status": "M0 (Classical Information-Theoretic Identity)",
+    "current_location": "docs/papers/paper24_revised.tex: Theorem 1 / Section III-B"
+  },
+  {
+    "claim": "Pinsker-type total variation inequality bounds 1/2 ||P - Q||_TV^2 <= JSD(P || Q) <= ln(2) ||P - Q||_TV",
+    "source": "docs/papers/paper24_revised.tex: Proposition 1",
+    "evidence_level": "E0 (Verified Information-Theoretic Identity)",
+    "mathematical_status": "M1 (Adapted Total Variation Bound)",
+    "current_location": "docs/papers/paper24_revised.tex: Proposition 1 / Section III-C"
+  },
+  {
+    "claim": "Infinitesimal Fisher-Rao Riemannian metric tensor relation ds_FR^2 = 8 JSD(P || P+dP) + O(||dP||^3)",
+    "source": "docs/papers/paper24_revised.tex: Proposition 2",
+    "evidence_level": "E0 (Verified Local Geometric Derivation)",
+    "mathematical_status": "M1 (Derived Infinitesimal Geometry)",
+    "current_location": "docs/papers/paper24_revised.tex: Proposition 2 / Section III-C"
+  },
+  {
+    "claim": "Dynamic exponential trust weighting w_m = exp(-beta JSD_m) / sum exp(-beta JSD_j)",
+    "source": "docs/papers/paper24_revised.tex: Section III-D",
+    "evidence_level": "E0 (Derived Softmax Trust Redistribution)",
+    "mathematical_status": "M1 (Derived Gradient Dynamics)",
+    "current_location": "docs/papers/paper24_revised.tex: Section III-D"
+  },
+  {
+    "claim": "100% state recovery rate across 0%, 20%, 50%, and 80% synthetic visual degradation regimes",
+    "source": "benchmarks/master_validation_suite_results.json",
+    "evidence_level": "E0 (Immutable Master Validation JSON)",
+    "mathematical_status": "M0 (Empirical Benchmark Telemetry)",
+    "current_location": "docs/papers/paper24_revised.tex: Section IV-B / Table II"
+  },
+  {
+    "claim": "Dynamic trust weight decay under 80% corruption: RGB (0.4000 -> 0.0500), Audio/Pose (0.3000 -> 0.4750)",
+    "source": "benchmarks/master_validation_suite_results.json & parameter_lock.py",
+    "evidence_level": "E0 (Immutable Master Validation JSON + Verified Math)",
+    "mathematical_status": "M1 (Calculated Trust Redistribution)",
+    "current_location": "docs/papers/paper24_revised.tex: Section IV-B / Table III"
+  }
+]

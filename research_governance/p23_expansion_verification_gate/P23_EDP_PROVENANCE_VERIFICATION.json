@@ -1,0 +1,14 @@
+{
+  "audit_target": "Verification of Energy-Delay Product (EDP) Formulation",
+  "formulation": "EDP = E[E] * E[L] = (E_1 + r_bar * E_2) * (L_1 + r_bar * L_2)",
+  "definitions": {
+    "E_1": "Nominal computational energy index of primary model M_1 (normalized FLOPs / compute scale)",
+    "E_2": "Nominal computational energy index of secondary heavy model M_2 (normalized FLOPs / compute scale)",
+    "L_1": "Primary model execution latency (1.264ms)",
+    "L_2": "Secondary model additional execution latency (14.501ms)",
+    "r_bar": "Expected heavy model invocation probability E[r(x)] in [0, 1]"
+  },
+  "status": "THEORETICAL_OPTIMIZATION_METRIC",
+  "governance_rule": "The manuscript explicitly defines EDP as a normalized theoretical metric for Pareto frontier characterization, with zero claims of physical oscilloscope power measurements.",
+  "verdict": "THEORETICAL_EDP_AUTHORIZED"
+}

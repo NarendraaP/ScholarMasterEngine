@@ -1,0 +1,83 @@
+{
+  "paper_id": "P23",
+  "title": "Adaptive Trustworthy Edge Systems",
+  "empirical_claims": {
+    "Static_Primary_FPS": {
+      "value": 791.2,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Static_Heavy_FPS": {
+      "value": 69.0,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Adaptive_Cascade_FPS": {
+      "value": 373.3,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Mean_Latency_ms": {
+      "value": 2.679,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "P50_Latency_ms": {
+      "value": 3.786,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "P95_Latency_ms": {
+      "value": 4.075,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "P99_Latency_ms": {
+      "value": 4.556,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Primary_Bypass_Pct": {
+      "value": 48.0,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Verification_Activation_Pct": {
+      "value": 52.0,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Active_Heavy_Duty_Cycle_Pct": {
+      "value": 8.1,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "master_validation_suite_results.json"
+    },
+    "Heavy_Duty_Cycle_Reduction_Pct": {
+      "value": 91.9,
+      "status": "EMPIRICALLY_VERIFIED",
+      "source": "derived_against_static_heavy"
+    }
+  },
+  "theoretical_claims": {
+    "Zero_Duality_Gap_Theorem": {
+      "formula": "min_pi max L(pi, lambda, mu) = max min L(pi, lambda, mu)",
+      "status": "THEORETICALLY_SUPPORTED",
+      "classification": "DERIVED_RESULT"
+    },
+    "Pollaczek_Khinchine_Queue_Delay": {
+      "formula": "W_q = lambda E[S^2] / [2(1 - rho)]",
+      "status": "STANDARD_THEORY_USED_CORRECTLY",
+      "classification": "STANDARD_RESULT"
+    },
+    "Kingman_Heavy_Traffic_Tail_Bound": {
+      "formula": "P(W_q > t) <= exp(-2(1 - rho)t / [lambda Var(S)/E[S] + E[S]])",
+      "status": "STANDARD_THEORY_USED_CORRECTLY",
+      "classification": "STANDARD_RESULT"
+    }
+  },
+  "quarantined_claims": [
+    "24-hour continuous environmental thermal chamber runs (Quarantined E3/E4)",
+    "Direct shunt resistor physical energy measurements (Quarantined E3/E4)"
+  ],
+  "verdict": "VERIFIED_100_PERCENT"
+}

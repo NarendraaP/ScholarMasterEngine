@@ -1,0 +1,10 @@
+{
+  "paper_id": "P24",
+  "runtime_boundaries": {
+    "production_class": "core.perception_integrity.consistency.ConsistencyChecker",
+    "production_parameters": "max_timestamp_skew_sec = 1.0, audio-visual activity cross-checking (main.py:671)",
+    "benchmark_evaluation": "benchmarks/paper3_cross_modal_recovery.py: synthetic 0-80% visual noise injection with consensus recovery",
+    "theoretical_reference_model": "Algorithm 1: Asynchronous multi-rate ring buffer (K_buf=64) with software PLL clock tracking (alpha=0.95, Delta t_sync <= 16.6ms)"
+  },
+  "verdict": "PRODUCTION_BENCHMARK_THEORY_EXPLICITLY_SEPARATED"
+}

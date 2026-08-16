@@ -1,0 +1,28 @@
+{
+  "disputed_item": "P25 EAF Aggregate Telemetry (0.9335 vs 0.9513)",
+  "authoritative_source": "benchmarks/master_validation_suite_results.json & benchmarks/paper4_error_propagation.py",
+  "raw_regime_errors": {
+    "0pct": 0.0,
+    "5pct": 0.0667,
+    "10pct": 0.1067,
+    "15pct": 0.2133,
+    "20pct": 0.1867
+  },
+  "raw_regime_eaf_array": [
+    0.0,
+    1.334,
+    1.067,
+    1.422,
+    0.9335
+  ],
+  "arithmetic_mean_of_regimes": 0.9513,
+  "end_to_end_span_eaf": 0.9335,
+  "json_logged_unprotected_eaf": 0.9335,
+  "mathematical_reconciliation": {
+    "0_9335_definition": "End-to-End Span EAF slope = (Error_20pct - Error_0pct) / (0.20 - 0.00) = 0.1867 / 0.20 = 0.9335.",
+    "0_9513_definition": "Unweighted arithmetic mean of the 5 point-wise chord EAFs: mean([0.0000, 1.3340, 1.0670, 1.4220, 0.9335]) = 0.9513.",
+    "manuscript_label_classification": "AMBIGUOUS_LABEL ('Mean Overall' should be explicitly labeled 'End-to-End Span EAF (0.9335)' to distinguish from point-wise arithmetic mean 0.9513).",
+    "numerical_soundness": "BOTH_VALUES_AUTHENTIC_UNDER_THEIR_RESPECTIVE_DEFINITIONS"
+  },
+  "status": "RECONCILED_AND_DOCUMENTED"
+}

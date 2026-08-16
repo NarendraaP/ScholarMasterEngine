@@ -1,0 +1,19 @@
+{
+  "claim_id": "P25-ARCFACE-SEPARATION-VERIFICATION",
+  "paper": "P25",
+  "claimed_formula": "||g_i - g_j||_2 >= 2 sin(m) approx 0.9589 for m = 0.5 rad",
+  "source": "docs/papers/paper25_revised.tex (Theorem 1, Corollary 1)",
+  "mathematical_audit": {
+    "loss_function_mechanism": "ArcFace loss applies an additive angular margin penalty L = -ln( exp(s cos(theta_y + m)) / [exp(s cos(theta_y + m)) + sum_{j != y} exp(s cos theta_j)] ).",
+    "equilibrium_analysis": "ArcFace penalizes embeddings when angular separation to non-target class centers is less than 2m. In an ideal zero-loss or well-separated gallery equilibrium, enrolled centroids satisfy theta_ij >= 2m.",
+    "chord_formula_soundness": "Given theta_ij >= 2m on unit sphere S^{D-1}, ||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= sqrt(2 - 2 cos(2m)) = 2 sin(m). For m = 0.5 rad, 2 * sin(0.5) = 0.958851... approx 0.9589.",
+    "unconditional_vs_conditional": "ArcFace loss alone does NOT guarantee theta_ij >= 2m unconditionally for arbitrary degenerate or under-trained models with capacity bottlenecks. It guarantees the bound CONDITIONALLY under the assumption that enrolled gallery prototypes achieve the margin separation condition theta_ij >= 2m."
+  },
+  "verdict": "VALID_WITH_EXPLICIT_ASSUMPTION",
+  "assumptions": [
+    "1. Embeddings lie on unit hypersphere S^{D-1} (||g||_2 = 1).",
+    "2. Gallery prototypes achieve ArcFace angular margin separation theta_ij >= 2m in enrolled database.",
+    "3. Angular margin parameter m = 0.5 rad in (0, pi/2)."
+  ],
+  "safe_manuscript_wording": "Under additive angular margin loss (ArcFace) with margin parameter m, enrolled gallery prototypes satisfying the target angular separation theta_ij >= 2m exhibit an Euclidean separation lower bound of ||g_i - g_j||_2 >= 2 sin(m) approx 0.9589 (for m = 0.5 rad)."
+}

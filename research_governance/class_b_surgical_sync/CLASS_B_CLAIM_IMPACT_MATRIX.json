@@ -1,0 +1,52 @@
+[
+  {
+    "paper": "P2",
+    "location": "Section III / Section IV",
+    "change_type": "CLAIM_QUALIFICATION",
+    "current_state": "Formulates multi-rate Bayesian fusion assuming sensor covariance matrices R_k are fixed or heuristic.",
+    "new_state": "Qualify that observation covariance R_k dynamically incorporates upstream JSD trust weights w_m from Layer 1.",
+    "reason": "Formalize mathematical interface between Layer 1 cross-modal recovery and Layer 3 context tracking.",
+    "affected_by": [
+      "P24"
+    ],
+    "scientific_necessity": true,
+    "result_change": false,
+    "experiment_rerun": false,
+    "salami_risk": "NONE (P2 owns Bayesian context fusion; P24 owns JSD sensor recovery)",
+    "priority": "MANDATORY"
+  },
+  {
+    "paper": "P7",
+    "location": "Section I / Section IV",
+    "change_type": "CLAIM_QUALIFICATION",
+    "current_state": "Presents HNSW retrieval performance without discussing input embedding corruption risks.",
+    "new_state": "Qualify that high-recall nearest-neighbor traversal is safeguarded against Voronoi boundary perturbations by Layer-1 evidential gating.",
+    "reason": "Explain architectural context of sub-millisecond vector retrieval in safety-critical deployments.",
+    "affected_by": [
+      "P22",
+      "P25"
+    ],
+    "scientific_necessity": true,
+    "result_change": false,
+    "experiment_rerun": false,
+    "salami_risk": "NONE (P7 owns HNSW cache optimization; P25 owns Voronoi geometry proof)",
+    "priority": "MANDATORY"
+  },
+  {
+    "paper": "P10",
+    "location": "Section III / Section V",
+    "change_type": "CLAIM_QUALIFICATION",
+    "current_state": "Formal reliability model addresses process crashes and communication drops.",
+    "new_state": "Explicitly include sensory corruption as a modeled fault class mitigated by Layer 1 fail-closed gating.",
+    "reason": "Ensure end-to-end formal verification bounds include perceptual integrity faults.",
+    "affected_by": [
+      "P22",
+      "P25"
+    ],
+    "scientific_necessity": true,
+    "result_change": false,
+    "experiment_rerun": false,
+    "salami_risk": "NONE (P10 owns formal reliability verification; P22 owns perception gate)",
+    "priority": "MANDATORY"
+  }
+]

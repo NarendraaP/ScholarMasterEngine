@@ -1,0 +1,77 @@
+{
+  "audit_target": "Section 2: Related Work & Adaptive Inference Taxonomy",
+  "current_state": {
+    "subsections": 2,
+    "citations": 6,
+    "word_count": 190,
+    "classification": "SCIENTIFICALLY_INSUFFICIENT"
+  },
+  "taxonomic_paradigms_evaluation": [
+    {
+      "paradigm_id": "P-01",
+      "name": "Dynamic Neural Networks & Multi-Branch Architectures",
+      "prior_work": "Han et al. (2021), Huang et al. (MSDNet 2017)",
+      "core_idea": "Conditionally execute sub-networks or spatial feature layers based on sample difficulty.",
+      "what_it_achieves": "Amortized FLOP reduction across dataset distributions.",
+      "limitation": "Shared feature backbones propagate early sensory corruptions to all deeper layers.",
+      "edge_sla_limitation": "Dynamic routing overhead introduces non-deterministic memory access patterns.",
+      "why_it_does_not_solve_p23": "Does not provide formal queueing delay bounds or independent perceptual risk metrics.",
+      "exact_p23_differentiator": "Decoupled dual-model cascade with orthogonal evidential risk gating and Pollaczek-Khinchine queueing bounds."
+    },
+    {
+      "paradigm_id": "P-02",
+      "name": "Early-Exit Architectures",
+      "prior_work": "BranchyNet (Teerapittayanon 2016), Shallow-Deep Networks (Kaya 2019)",
+      "core_idea": "Attach early classification heads to intermediate backbone layers.",
+      "what_it_achieves": "Fast exit for easy samples without executing deeper layers.",
+      "limitation": "Early exits suffer from negative overthinking and shared noise vulnerabilities.",
+      "edge_sla_limitation": "Intermediate exits cannot run asynchronously from the backbone pipeline.",
+      "why_it_does_not_solve_p23": "Vulnerable to common corruptions (Hendrycks & Dietterich 2019) that corrupt early layers.",
+      "exact_p23_differentiator": "Primary and secondary models have separate model weights and distinct computational graphs."
+    },
+    {
+      "paradigm_id": "P-03",
+      "name": "Confidence- & Entropy-Gated Cascades",
+      "prior_work": "Bolukbasi et al. (2017), Wang et al. (SkipNet 2018)",
+      "core_idea": "Route to heavy model when maximum softmax probability is below a threshold or entropy is high.",
+      "what_it_achieves": "Empirical accuracy improvement on uncorrupted benchmarks.",
+      "limitation": "Softmax confidence is notoriously uncalibrated and overconfident on OOD noise (Guo 2017).",
+      "edge_sla_limitation": "Heuristic thresholds lack formal duality guarantees and queue stability proofs.",
+      "why_it_does_not_solve_p23": "Fails under high-magnitude sensory noise where softmax remains falsely confident.",
+      "exact_p23_differentiator": "Gating is driven by calibrated Subjective Logic Dirichlet vacuity and Fourier blur bounds."
+    },
+    {
+      "paradigm_id": "P-04",
+      "name": "Selective Prediction & Reject Option",
+      "prior_work": "Geifman & El-Yaniv (SelectiveNet 2019), Bartlett & Wegkamp (2006)",
+      "core_idea": "Allow the model to abstain from predicting when risk exceeds a target coverage constraint.",
+      "what_it_achieves": "Guaranteed low error on accepted prediction subset.",
+      "limitation": "Abstention drops the frame rather than invoking an alternative specialized model.",
+      "edge_sla_limitation": "Does not address hardware queue dynamics or real-time frame rate SLAs.",
+      "why_it_does_not_solve_p23": "Edge vision requires continuous situational awareness rather than passive dropping.",
+      "exact_p23_differentiator": "4-tier active dispatch (ACCEPT, DEGRADE, DELEGATE, HALT) ensuring continuous safe operation."
+    },
+    {
+      "paradigm_id": "P-05",
+      "name": "Speculative Execution & Model Cascades",
+      "prior_work": "Viola & Jones (2001), Leviathan et al. (Speculative Decoding 2023)",
+      "core_idea": "Execute fast draft model and verify with heavy model.",
+      "what_it_achieves": "Throughput acceleration in sequential processing.",
+      "limitation": "Verification cost dominates if draft rejection rate is high.",
+      "edge_sla_limitation": "Draft-verify synchronization creates tail latency spikes.",
+      "why_it_does_not_solve_p23": "Lacks mathematical queueing analysis for streaming frame ingestion.",
+      "exact_p23_differentiator": "M/G/1 queueing delay bounds and Kingman heavy-traffic exponential tail guarantees."
+    },
+    {
+      "paradigm_id": "P-06",
+      "name": "Resource-Aware Edge Inference & DVFS Schedulers",
+      "prior_work": "Kang et al. (Neurosurgeon 2017), Satyanarayanan (2017)",
+      "core_idea": "Partition workloads across edge-cloud or scale frequency dynamically.",
+      "what_it_achieves": "Adapts execution to battery state and wireless bandwidth.",
+      "limitation": "Offloading incurs network jitter; DVFS has millisecond-scale transition hysteresis.",
+      "edge_sla_limitation": "Network round-trip times (>50ms) violate sub-5ms SLAs.",
+      "why_it_does_not_solve_p23": "P23 targets autonomous on-device edge execution without network dependency.",
+      "exact_p23_differentiator": "Self-contained on-device Pareto-optimal routing with normalized Energy-Delay Product (EDP) optimization."
+    }
+  ]
+}

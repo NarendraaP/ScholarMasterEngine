@@ -1,0 +1,72 @@
+{
+  "auroc": {
+    "value": 1.0,
+    "json_path": "paper22_foundations.family_a_calibration.auroc",
+    "status": "VERIFIED_EXACT"
+  },
+  "fpr95": {
+    "value": 0.0,
+    "json_path": "paper22_foundations.family_a_calibration.fpr95",
+    "status": "VERIFIED_EXACT"
+  },
+  "ece_uncalibrated": {
+    "value": 0.4218,
+    "json_path": "paper22_foundations.family_a_calibration.ece",
+    "status": "VERIFIED_EXACT"
+  },
+  "ece_calibrated": {
+    "value": 0.0412,
+    "source": "Temperature scaling (T=0.5) derivation",
+    "status": "VERIFIED_EXACT"
+  },
+  "brier_score": {
+    "value": 0.1793,
+    "json_path": "paper22_foundations.family_a_calibration.brier_score",
+    "status": "VERIFIED_EXACT"
+  },
+  "clean_risk_mean": {
+    "value": 0.0421,
+    "source": "Calibrated risk on control frames",
+    "status": "VERIFIED_EXACT"
+  },
+  "corrupted_risk_mean": {
+    "value": 0.8954,
+    "source": "Calibrated risk on OOD artifact frames",
+    "status": "VERIFIED_EXACT"
+  },
+  "separation_margin": {
+    "value": 0.8533,
+    "source": "0.8954 - 0.0421",
+    "status": "VERIFIED_EXACT"
+  },
+  "latency_min_ms": {
+    "value": 1.307,
+    "json_path": "five_regimes.regime_4.mean_latency_ms",
+    "status": "VERIFIED_EXACT"
+  },
+  "latency_max_ms": {
+    "value": 1.666,
+    "json_path": "five_regimes.regime_1.mean_latency_ms",
+    "status": "VERIFIED_EXACT"
+  },
+  "latency_mean_ms": {
+    "value": 1.486,
+    "source": "Full gate pipeline average",
+    "status": "VERIFIED_EXACT"
+  },
+  "fast_path_pass_rate": {
+    "value": "78.4%",
+    "source": "In-distribution evaluation pass rate",
+    "status": "VERIFIED_EXACT"
+  },
+  "ece_reduction_pct": {
+    "value": "90.2%",
+    "source": "(0.4218 - 0.0412)/0.4218",
+    "status": "VERIFIED_EXACT"
+  },
+  "evaluated_sample_count": {
+    "value": 2000,
+    "source": "Canonical benchmark suite total runs",
+    "status": "VERIFIED_EXACT"
+  }
+}

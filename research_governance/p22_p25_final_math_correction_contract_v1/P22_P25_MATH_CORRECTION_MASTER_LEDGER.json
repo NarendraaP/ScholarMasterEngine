@@ -1,0 +1,86 @@
+[
+  {
+    "contract_id": "MCC-P24-01-FISHER-RAO",
+    "paper_id": "P24",
+    "title": "Generalized Cross-Modal Recovery under Compromised Primary Sensing",
+    "original_manuscript_claim": "Section III-C, Equation (14) / line 117: d_M^2(P_m, P_c) = 8(1 - sum sqrt(P_m P_c)) <= 8 JSD(P_m || P_c) claimed as a global inequality bounding Riemannian geodesic distance.",
+    "why_accepted_previously": "Endres & Schindelin (2003) and Nielsen (2020) established relationships between JSD and Hellinger distance, and infinitesimal equivalence with the Fisher metric tensor. Preliminary audits accepted the factor 8 without testing boundary distributions on the simplex.",
+    "exact_mathematical_discrepancy": "The global inequality fails for orthogonal/disjoint distributions. For P=(1,0), Q=(0,1): d_FR^2 = pi^2 approx 9.8696, whereas 8 JSD = 8 ln 2 approx 5.5452. Thus 9.8696 <= 5.5452 is false (fails by factor 1.7798).",
+    "independent_verification_performed": "Evaluated analytical and numerical counterexample on Delta^1. Derived exact Taylor expansion for dP -> 0 proving infinitesimal equivalence ds_FR^2 = 8 JSD(P || P + dP) + O(||dP||^3).",
+    "corrected_mathematical_statement": "Infinitesimally on the statistical manifold, ds_{FR}^2 = 8 \\mathrm{JSD}(P_m \\parallel P_m + dP) + \\mathcal{O}(\\|dP\\|^3). Globally, the Jensen-Shannon Divergence is bounded in [0, ln 2] and bounds total variation distance via Pinsker's inequality: 1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV.",
+    "required_assumptions": [
+      "Discrete probability distributions P_m, P_c in Delta^K.",
+      "Fisher-Rao metric tensor g_ij(P) defined on the interior of the simplex.",
+      "Infinitesimal displacement dP with sum dP_k = 0."
+    ],
+    "exact_manuscript_location": "docs/papers/paper24_revised.tex: Section III-C (lines 114\u2013120, Eq. 14)",
+    "changes_classification": {
+      "equation_changed": true,
+      "theorem_changed": false,
+      "proof_changed": false,
+      "prose_changed": true,
+      "figure_changed": false,
+      "experiment_changed": false
+    },
+    "empirical_results_affected": false,
+    "citation_impact": "None (Endres & Schindelin 2003 and Lin 1991 remain valid citations for metric properties and bounds).",
+    "single_owner_impact": "None (P24 retains exclusive ownership of multimodal JSD consensus and dynamic trust weighting).",
+    "originality_cross_paper_impact": "None (No overlap with P22, P23, or P25)."
+  },
+  {
+    "contract_id": "MCC-P25-01-ARCFACE-SEPARATION",
+    "paper_id": "P25",
+    "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+    "original_manuscript_claim": "Section III-B, Corollary 1 / lines 100\u2013105: ||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= 2 sin(m) approx 0.9589 under ArcFace margin m = 0.5 rad.",
+    "why_accepted_previously": "The Euclidean chord distance on the unit sphere S^{D-1} for angle theta_ij >= 2m evaluates exactly to 2 sin(m) = 2 sin(0.5) = 0.958851... approx 0.9589.",
+    "exact_mathematical_discrepancy": "ArcFace training loss alone does not guarantee theta_ij >= 2m unconditionally for arbitrary degenerate or capacity-constrained models. It guarantees the bound conditionally for enrolled gallery prototypes that achieve the target angular margin separation.",
+    "independent_verification_performed": "Verified trigonometric chord length formula on unit sphere. Confirmed mathematical validity conditional on enrolled gallery prototypes satisfying theta_ij >= 2m.",
+    "corrected_mathematical_statement": "For enrolled gallery biometric prototypes on the unit hypersphere S^{D-1} satisfying the ArcFace angular separation condition theta_ij >= 2m (where m = 0.5 rad), the Euclidean distance between adjacent class centroids satisfies ||g_i - g_j||_2 >= 2 sin(m) approx 0.9589.",
+    "required_assumptions": [
+      "Embeddings normalized on unit hypersphere S^{D-1} (||g||_2 = 1).",
+      "Gallery centroids satisfy the ArcFace target margin separation condition theta_ij >= 2m.",
+      "Angular margin parameter m = 0.5 rad in (0, pi/2)."
+    ],
+    "exact_manuscript_location": "docs/papers/paper25_revised.tex: Section III-B, Corollary 1 (lines 100\u2013105)",
+    "changes_classification": {
+      "equation_changed": false,
+      "theorem_changed": false,
+      "proof_changed": false,
+      "prose_changed": true,
+      "figure_changed": false,
+      "experiment_changed": false
+    },
+    "empirical_results_affected": false,
+    "citation_impact": "None (Deng et al. 2019 ArcFace citation remains intact).",
+    "single_owner_impact": "None (P25 retains exclusive ownership of 5-layer macro integration and downstream EAF).",
+    "originality_cross_paper_impact": "None (No overlap with P22, P23, or P24)."
+  },
+  {
+    "contract_id": "MCC-P25-02-QUARANTINE-LIPSCHITZ",
+    "paper_id": "P25",
+    "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+    "original_manuscript_claim": "Section IV-B / lines 136\u2013142: Lip(f_2) bounded under Layer 1 fail-closed gating, preventing downstream error propagation.",
+    "why_accepted_previously": "Constant mapping to null symbol bot has zero Lipschitz constant on the quarantine sub-domain, halting execution before Layer 2.",
+    "exact_mathematical_discrepancy": "The property Lip = 0 applies strictly to the constant quarantine map f_gate|_{X_quar}: X_quar -> {bot}. It must not be generalized to claim that the unconstrained nearest-neighbor classifier is globally Lipschitz (which has step jump discontinuities across Voronoi facets).",
+    "independent_verification_performed": "Verified domain partitioning into certified sub-manifold X_cert and quarantine region X_quar. Confirmed that fail-closed gating intercepts corrupted inputs before Layer 2 execution.",
+    "corrected_mathematical_statement": "Under Layer-1 fail-closed gating, uncertified sensory inputs are intercepted and mapped to a constant quarantine state (bot) with Lip(f_gate|_{X_quar}) = 0, preventing evaluation on discontinuous Voronoi boundaries and guaranteeing EAF = 0.0000 on quarantined perturbations.",
+    "required_assumptions": [
+      "Deterministic binary gating threshold tau_risk = 0.70.",
+      "Domain partitioned into certified sub-manifold X_cert and quarantine region X_quar.",
+      "Quarantined inputs map to constant null state bot."
+    ],
+    "exact_manuscript_location": "docs/papers/paper25_revised.tex: Section IV-B (lines 136\u2013142)",
+    "changes_classification": {
+      "equation_changed": false,
+      "theorem_changed": false,
+      "proof_changed": false,
+      "prose_changed": true,
+      "figure_changed": false,
+      "experiment_changed": false
+    },
+    "empirical_results_affected": false,
+    "citation_impact": "None.",
+    "single_owner_impact": "None (P25 retains exclusive ownership of macro containment and EAF).",
+    "originality_cross_paper_impact": "None (No overlap with P22, P23, or P24)."
+  }
+]

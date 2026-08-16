@@ -1,0 +1,26 @@
+[
+  {
+    "figure": "P22 Figure 1 (Perception Gate Flow)",
+    "transition": "Sensors -> Uncertainty -> Disagreement -> Consistency -> Risk -> Cascade",
+    "code_equivalent": "core/perception_integrity/gate.py: process()",
+    "status": "VERIFIED"
+  },
+  {
+    "figure": "P23 Figure 1 (Adaptive Cascade Routing)",
+    "transition": "Perception Packet -> Thresholds -> Fast Path / Heavy Path / Halt",
+    "code_equivalent": "core/perception_integrity/adaptive_cascade.py: route() & main.py:677-686",
+    "status": "VERIFIED"
+  },
+  {
+    "figure": "P24 Figure 1 (Cross-Modal Ring Buffer)",
+    "transition": "RGB / Audio / Pose -> Ring Buffer -> JSD Weights -> Consensus",
+    "code_equivalent": "benchmarks/paper3_cross_modal_recovery.py: MultiRateRingBuffer",
+    "status": "VERIFIED"
+  },
+  {
+    "figure": "P25 Figure 1 (5-Layer Macro Pipeline)",
+    "transition": "L1 (Perception) -> L2 (Identity) -> L3 (Context) -> L4 (Compliance) -> L5 (Decision)",
+    "code_equivalent": "main.py: process_video() lines 660-918",
+    "status": "VERIFIED"
+  }
+]

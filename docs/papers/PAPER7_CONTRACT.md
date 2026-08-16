@@ -46,3 +46,7 @@ Paper 7 provides the high-throughput identity resolution execution layer. It rel
 - Does **not** track students over time or monitor engagement (P3/P2).
 - Does **not** evaluate spatiotemporal compliance rules (P4/P21).
 - Does **not** design the edge hardware (P5).
+
+
+## HNSW Input Probe Boundary
+Vector retrieval tau(N) operates on embeddings generated from visual probes that pass the upstream `PerceptionIntegrityGate` (Paper 22/25), preserving O(log log N) search speeds without probe noise distortion.

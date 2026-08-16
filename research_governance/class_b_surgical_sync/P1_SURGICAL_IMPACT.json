@@ -1,0 +1,40 @@
+{
+  "paper_id": "P1",
+  "title": "ScholarMaster: A Layered Edge-Native Architecture for Real-Time Context-Aware Intelligent Systems",
+  "audit_timestamp": "2026-08-15 13:19:22",
+  "tex_path": "docs/papers/paper1_revised.tex",
+  "impact_summary": {
+    "system_input_assumption": "Previously assumed direct frame ingestion into ArcFace/Kalman. Needs qualification that ingestion is mediated by Layer-1 Perception Integrity Gate.",
+    "perception_input_assumption": "Raw RGB decoded frames -> ValidatedFeaturePayload.",
+    "architecture_boundary": "Layer 1 now explicitly owns Perception Integrity (P22-P25), while P1 orchestrates the 5-layer macro pipeline.",
+    "mathematical_assumptions": "Zero-copy UMA buffer sharing math remains M1 derived; memory transfer bounds are valid.",
+    "experimental_assumptions": "End-to-end 30 FPS pipeline throughput holds; verified under 373.3 FPS Layer-1 gate.",
+    "claims": "Claims of 'end-to-end reliability' should qualify that upstream Layer 1 guarantees clean biometric embeddings.",
+    "figures": "Figure 1 (System Architecture) should explicitly demarcate Layer-1 Perception Integrity Gatekeeper before Layer-2 ArcFace.",
+    "tables": "Table of layer latencies should list Layer-1 Gate (1.44 ms) alongside ArcFace (1.26 ms).",
+    "references": "Add citations to P22 (Perception Integrity) and P25 (Macro Integration / EAF).",
+    "downstream_dependencies": "Layer 2-5 consumption interfaces."
+  },
+  "surgical_contracts": [
+    {
+      "paper": "P1",
+      "location": "Section III / Section V / Figure 1",
+      "change_type": "ARCHITECTURE_BOUNDARY_UPDATE",
+      "current_state": "Macro model depicts sensory capture connecting directly to Layer 2 identity extraction.",
+      "new_state": "Explicitly insert Layer-1 Perception Integrity Gate (ValidatedFeaturePayload contract) upstream of Layer 2.",
+      "reason": "Align macro system architecture with ratified 25-paper canonical layer stack.",
+      "affected_by": [
+        "P22",
+        "P25"
+      ],
+      "scientific_necessity": true,
+      "result_change": false,
+      "experiment_rerun": false,
+      "salami_risk": "NONE (P1 owns macro architecture; P22 owns perception gate math; P25 owns EAF)",
+      "priority": "MANDATORY"
+    }
+  ],
+  "requires_modification": true,
+  "requires_experiment_rerun": false,
+  "salami_risk": "NONE"
+}

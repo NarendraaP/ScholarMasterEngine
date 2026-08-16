@@ -1,0 +1,32 @@
+{
+  "supported_experiments": [
+    {
+      "name": "Cross-Modal Recovery Evaluation",
+      "regimes": [
+        "0%",
+        "20%",
+        "50%",
+        "80%"
+      ],
+      "samples": 200,
+      "source": "benchmarks/paper3_cross_modal_recovery.py",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Single RGB Baseline vs Unweighted Fusion vs Dynamic Consensus",
+      "source": "master_validation_suite_results.json",
+      "status": "VERIFIED"
+    },
+    {
+      "name": "Dynamic Trust Weight Redistribution Telemetry",
+      "source": "parameter_lock.py",
+      "status": "VERIFIED"
+    }
+  ],
+  "quarantined_unsupported_experiments": [
+    "Physical microphone hardware unplugging tests",
+    "Physical sensor lens spray/tampering experiments",
+    "Simultaneous 3-modality blackout stress tests"
+  ],
+  "recovery_definition": "Recovery Rate = (acc_consensus - acc_rgb) / (1.0 - acc_rgb + 1e-9), measuring percentage of single-modality error recovered by multimodal consensus."
+}

@@ -1,0 +1,50 @@
+{
+  "paper_id": "P23",
+  "theorems_and_formulations": [
+    {
+      "formulation_id": "MATH-01",
+      "name": "Constrained Multi-Objective Optimization Problem",
+      "equation": "min_pi E[(1-r)E_1 + r(E_1+E_2)] s.t. E[(1-r)L_1 + r(L_1+L_2)] <= L_SLA, E[R_task] <= epsilon_risk",
+      "convexity_status": "PROVEN",
+      "verification_notes": "The decision variable pi(x) = P(r=1|x) lies in the convex functional space Pi: X -> [0, 1]. The objective functional is affine in pi. The latency constraint is affine in pi. The risk functional is convex in pi under the assumption that invoking a stronger model weakly decreases expected task error. Thus, the optimization problem is a convex functional program."
+    },
+    {
+      "formulation_id": "MATH-02",
+      "name": "Theorem 1: Zero Duality Gap in Continuum Edge Cascades",
+      "statement": "min_pi max_lambda,mu L(pi, lambda, mu) = max_lambda,mu min_pi L(pi, lambda, mu)",
+      "status": "PROVEN_UNDER_EXPLICIT_ASSUMPTIONS",
+      "assumptions_required": [
+        "Policy space Pi is the convex set of measurable functions X -> [0, 1].",
+        "Expected task risk functional E[R_task(pi)] is convex in pi.",
+        "Slater's condition holds: there exists an interior policy pi_0 in Pi such that E[L(pi_0)] < L_SLA and E[R_task(pi_0)] < epsilon_risk."
+      ],
+      "slater_condition_analysis": "Strict feasibility is satisfied when the all-heavy policy pi(x)=1 satisfies the risk constraint strictly, while queueing admission control or appropriate baseline latency guarantees average latency feasibility for randomized combinations."
+    },
+    {
+      "formulation_id": "MATH-03",
+      "name": "Pollaczek-Khinchine M/G/1 Queueing Analysis",
+      "equation": "W_q = lambda E[S^2] / (2(1 - rho)), rho = lambda E[S] < 1",
+      "status": "PROVEN_UNDER_EXPLICIT_ASSUMPTIONS",
+      "assumptions_required": [
+        "Frame inter-arrival times are independent and exponentially distributed (M) or periodic.",
+        "Service times are general i.i.d. random variables with finite second moment E[S^2].",
+        "Stability condition rho = lambda E[S] < 1 is strictly satisfied."
+      ],
+      "arrival_model_qualification": "Camera video frames arrive periodically with C_a^2 -> 0. The M/G/1 Poisson arrival assumption (C_a^2 = 1) serves as a rigorous upper bound on buffer delay (G/G/1 mean waiting time is bounded above by M/G/1 under Kingman's bound)."
+    },
+    {
+      "formulation_id": "MATH-04",
+      "name": "Kingman Heavy-Traffic Approximation & Tail Delay",
+      "equation": "P(W_q > t) approx exp(- 2(1 - rho) t / (lambda Var(S)/E[S] + E[S]))",
+      "status": "PROVEN_UNDER_EXPLICIT_ASSUMPTIONS",
+      "qualification": "Kingman's approximation provides an asymptotic upper bound on the tail delay distribution as rho -> 1 for general G/G/1 queues."
+    },
+    {
+      "formulation_id": "MATH-05",
+      "name": "Energy-Delay Product (EDP) Metric",
+      "equation": "EDP = E[E] * E[L] = (E_1 + r_bar E_2) * (L_1 + r_bar L_2)",
+      "status": "PROVEN",
+      "derivation_note": "d(EDP)/d(r_bar) = E_2(L_1 + r_bar L_2) + L_2(E_1 + r_bar E_2) = E_2 L_1 + E_1 L_2 + 2 r_bar E_2 L_2 > 0, showing that EDP is strictly monotonically increasing in heavy model invocation rate r_bar. Minimizing EDP under task risk constraints pushes the policy to the boundary of the risk constraint."
+    }
+  ]
+}

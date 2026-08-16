@@ -58,3 +58,7 @@ Paper 4 operates strictly as the logical bridge between incoming sensory events 
 - Does **not** design the publish-subscribe broker or define system-wide messaging topologies.
 - Does **not** evaluate complex streaming states like moving average drift or lazy migration (that is P7).
 - Does **not** detect people (that is P3 and P6).
+
+
+## Upstream Integrity Prerequisite
+Spatiotemporal compliance evaluation assumes presence observations are filtered by the upstream `PerceptionIntegrityGate` (Paper 22/25), shielding truancy debouncing from false visual identity claims.

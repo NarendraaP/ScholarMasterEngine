@@ -1,0 +1,8 @@
+{
+  "formula": "EAF = E_downstream / E_upstream",
+  "upstream_error_definition": "E_upstream = ||I_corrupt - I_clean|| / ||I_clean||, measuring normalized sensory corruption level (0.05, 0.10, 0.15, 0.20).",
+  "downstream_error_definition": "E_downstream = Fraction of downstream state evaluations (identity classification / compliance decisions) that differ from ground-truth uncorrupted execution.",
+  "zero_upstream_handling": "At 0% noise (E_upstream = 0.0), EAF is defined by continuity as 0.0000 since E_downstream = 0.0.",
+  "interpretation": "EAF > 1.0 indicates amplification (e.g. 15% noise producing 21.33% error -> EAF = 1.4220). EAF = 0.0000 indicates complete containment.",
+  "status": "MATHEMATICALLY_RIGOROUS_AND_UNAMBIGUOUS"
+}

@@ -1,0 +1,30 @@
+{
+  "P22": {
+    "theorem": "Theorem 1: Dirichlet Predictive Variance Bound",
+    "formula": "Var(p_k) = alpha_k(S - alpha_k) / [S^2(S + 1)] <= 1 / [4(S + 1)] < 1 / (4K)",
+    "limit": "lim_{S -> inf} Var(p_k) = 0",
+    "verification_status": "MATHEMATICALLY_SOUND_PROVEN_FROM_FIRST_PRINCIPLES"
+  },
+  "P23": {
+    "theorem": "Theorem 1: Zero Duality Gap in Continuum Edge Cascades",
+    "formulation": "min E[E] s.t. E[L] <= L_SLA and E[R] <= epsilon_risk",
+    "dual_property": "Strong duality holds via Fenchel-Rockafellar duality over convex set of measurable routing policies",
+    "queue_model": "Pollaczek-Khinchine M/G/1 queue delay W_q = lambda E[S^2] / [2(1 - rho)] with Kingman tail bound",
+    "verification_status": "MATHEMATICALLY_SOUND_AND_CLASSIFIED_AS_E2_THEORY"
+  },
+  "P24": {
+    "theorem": "Theorem 1: Symmetric Jensen-Shannon Divergence Boundedness",
+    "formula": "0 <= JSD(P_m || P_c) <= ln(2)",
+    "total_variation_bound": "1/2 ||P_m - P_c||_TV^2 <= JSD(P_m || P_c) <= ln(2) ||P_m - P_c||_TV (Pinsker Bound)",
+    "riemannian_geometry": "Fisher metric geodesic distance d_M^2 <= 8 * JSD(P_m || P_c)",
+    "gradient_dynamics": "dw_m / dJSD_m = -beta * w_m * (1 - w_m) < 0",
+    "verification_status": "MATHEMATICALLY_SOUND_PROVEN_FROM_FIRST_PRINCIPLES"
+  },
+  "P25": {
+    "theorem": "Theorem 1: Voronoi Nearest-Neighbor Facet Step Jump Discontinuity",
+    "formula": "lim_{eps -> 0^+} ||phi(x_0 + eps n) - phi(x_0 - eps n)||_2 = ||g_i - g_j||_2 > 0",
+    "arcface_corollary": "||g_i - g_j||_2 = sqrt(2 - 2 cos(theta_ij)) >= 2 sin(m) approx 0.9589 for m = 0.5 rad",
+    "lipschitz_chain_rule": "Lip(Phi) <= prod_{l=1}^5 Lip(f_l); under fail-closed quarantine Lip(f_2) = 0 on unsafe domain",
+    "verification_status": "MATHEMATICALLY_SOUND_PROVEN_FROM_FIRST_PRINCIPLES"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "dirichlet_expected_prob": {
+    "equation": "p_hat_k = alpha_k / S",
+    "classification": "M0 (Standard Definition)",
+    "proof_status": "VERIFIED"
+  },
+  "epistemic_uncertainty": {
+    "equation": "u = K / S",
+    "classification": "M0 (Subjective Logic Identity)",
+    "proof_status": "VERIFIED"
+  },
+  "dirichlet_variance_bound": {
+    "equation": "Var(p_k) = alpha_k(S - alpha_k) / [S^2(S + 1)] <= 1/[4(S + 1)] < 1/(4K)",
+    "classification": "M1 (Derived Upper Bound)",
+    "proof_steps": [
+      "1. Marginal distribution p_k ~ Beta(alpha_k, S - alpha_k)",
+      "2. Analytic Beta variance: alpha_k(S - alpha_k) / [S^2(S + 1)]",
+      "3. Setting z = alpha_k / S in (0, 1), numerator is S^2 z(1 - z)",
+      "4. Quadratic z(1 - z) achieves global maximum 1/4 at z = 1/2",
+      "5. Hence Var(p_k) <= 1/[4(S + 1)]",
+      "6. Since S >= K and K >= 2, S + 1 > K => Var(p_k) < 1/(4K)",
+      "7. Taking S -> infty yields lim Var(p_k) = 0"
+    ],
+    "proof_status": "VERIFIED_SOUND"
+  },
+  "dirichlet_covariance": {
+    "equation": "Cov(p_i, p_j) = - alpha_i alpha_j / [S^2(S + 1)] < 0 (for all i != j)",
+    "classification": "M0 (Analytic Identity)",
+    "proof_status": "VERIFIED_SOUND"
+  },
+  "modified_laplacian_blur": {
+    "equation": "E_lap(I) = 1/|Omega| sum |nabla^2 I|, B(I) = 1 - sigma(gamma_1 E_lap + gamma_2 E_fft - tau_blur)",
+    "classification": "M1 (Normalized Blur Metric)",
+    "proof_status": "VERIFIED_SOUND"
+  },
+  "composite_risk_function": {
+    "equation": "R_p(x) = 0.35 u(x) + 0.25 d(x) + 0.25 B(I) + 0.15 D(k)",
+    "classification": "M2 (Composite Multi-Signal Risk)",
+    "proof_status": "VERIFIED_SOUND"
+  }
+}

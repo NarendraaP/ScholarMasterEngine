@@ -1,0 +1,22 @@
+{
+  "paper_id": "P7",
+  "title": "FAISS-HNSW Vector Retrieval & Cache Optimization",
+  "original_contract": "Assumed query embeddings q in R^512 are standard ArcFace unit vectors.",
+  "proposed_contract_v1": "Query Vectors Protected from Voronoi Jump Flips by Layer 1.",
+  "firewall_evaluation": "UNSUPPORTED_GUARANTEE: Stating that Layer 1 'protects from Voronoi jump flips' implies an absolute theorem that Layer 1 eliminates all nearest-neighbor boundary crossings, which is an overclaim.",
+  "actual_dependency": true,
+  "necessity": "REQUIRED (with narrowing)",
+  "scientific_ownership": "PRESERVED (P7 owns HNSW cache optimization; P25 owns Voronoi geometry proof)",
+  "claim_transfer": "PREVENTED (Replaced overclaim with narrow interface statement)",
+  "mathematical_impact": "NONE (HNSW graph complexity and cache alignment math remain 100% valid)",
+  "empirical_impact": "NONE (Recall-latency benchmark curves hold; zero reruns required)",
+  "figure_impact": "NONE",
+  "citation_impact": "REQUIRED (Cite P22 for perception gating and P25 for Voronoi metric geometry)",
+  "salami_slicing_impact": "ZERO_RISK (Distinct domains: vector indexing algorithms vs metric boundary proofs)",
+  "decision": "APPROVE_WITH_NARROWING",
+  "replacement_rationale": "Replace overclaimed guarantee with safe interface statement: 'The vector retrieval subsystem ingests candidate query embeddings satisfying the upstream perception-validity contract; rejected frames are quarantined prior to index submission.'",
+  "minimal_patch": {
+    "section": "Section I / Section IV",
+    "action": "Add 2-sentence safe interface qualification."
+  }
+}

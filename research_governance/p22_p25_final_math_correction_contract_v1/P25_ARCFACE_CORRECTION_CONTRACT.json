@@ -1,0 +1,28 @@
+{
+  "contract_id": "MCC-P25-01-ARCFACE-SEPARATION",
+  "paper_id": "P25",
+  "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+  "original_manuscript_claim": "Section III-B, Corollary 1 / lines 100\u2013105: ||g_i - g_j||_2 = sqrt(2 - 2 cos theta_ij) >= 2 sin(m) approx 0.9589 under ArcFace margin m = 0.5 rad.",
+  "why_accepted_previously": "The Euclidean chord distance on the unit sphere S^{D-1} for angle theta_ij >= 2m evaluates exactly to 2 sin(m) = 2 sin(0.5) = 0.958851... approx 0.9589.",
+  "exact_mathematical_discrepancy": "ArcFace training loss alone does not guarantee theta_ij >= 2m unconditionally for arbitrary degenerate or capacity-constrained models. It guarantees the bound conditionally for enrolled gallery prototypes that achieve the target angular margin separation.",
+  "independent_verification_performed": "Verified trigonometric chord length formula on unit sphere. Confirmed mathematical validity conditional on enrolled gallery prototypes satisfying theta_ij >= 2m.",
+  "corrected_mathematical_statement": "For enrolled gallery biometric prototypes on the unit hypersphere S^{D-1} satisfying the ArcFace angular separation condition theta_ij >= 2m (where m = 0.5 rad), the Euclidean distance between adjacent class centroids satisfies ||g_i - g_j||_2 >= 2 sin(m) approx 0.9589.",
+  "required_assumptions": [
+    "Embeddings normalized on unit hypersphere S^{D-1} (||g||_2 = 1).",
+    "Gallery centroids satisfy the ArcFace target margin separation condition theta_ij >= 2m.",
+    "Angular margin parameter m = 0.5 rad in (0, pi/2)."
+  ],
+  "exact_manuscript_location": "docs/papers/paper25_revised.tex: Section III-B, Corollary 1 (lines 100\u2013105)",
+  "changes_classification": {
+    "equation_changed": false,
+    "theorem_changed": false,
+    "proof_changed": false,
+    "prose_changed": true,
+    "figure_changed": false,
+    "experiment_changed": false
+  },
+  "empirical_results_affected": false,
+  "citation_impact": "None (Deng et al. 2019 ArcFace citation remains intact).",
+  "single_owner_impact": "None (P25 retains exclusive ownership of 5-layer macro integration and downstream EAF).",
+  "originality_cross_paper_impact": "None (No overlap with P22, P23, or P24)."
+}
