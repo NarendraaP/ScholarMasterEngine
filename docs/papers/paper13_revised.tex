@@ -75,7 +75,7 @@ In practical deployments, temporal distribution shifts manifest across three ope
 \end{itemize}
 
 \subsection{Contributions and Subsystem Scope}
-This research proposes an epistemic uncertainty-aware adaptation framework that treats local drift mitigation specifically as a resource-constrained \textit{active data acquisition} problem. The primary contributions are:
+This study introduces an epistemic uncertainty-aware adaptation framework that models local drift mitigation as a resource-constrained active data acquisition task. The primary contributions are:
 \begin{enumerate}
     \item We formulate temporal adaptation using Bayesian Active Learning by Disagreement (BALD) executed via Monte Carlo dropout, separating epistemic uncertainty (model ignorance) from aleatoric noise (environmental blur) directly on the edge node.
     \item We empirically demonstrate that strict layer-freezing geometries are not merely communication optimizations but stability-preservation constraints required under privacy-noise amplification.
@@ -110,7 +110,10 @@ Let the overarching global dataset space be abstracted into finite partitions ma
 
 We express the degree of inter-temporal drift at a single location using the Wasserstein metric $W_1$. The distribution diverges significantly over a time delay $\Delta t$ such that:
 \begin{equation}
-W_1(P_i^{(t_1)}, P_i^{(t_1 + \Delta t)}) = \inf_{\gamma \in \Gamma(P, Q)} \int_{\mathcal{X} \times \mathcal{Y}} \|z - z'\| d\gamma(z, z') > \tau_{drift}
+\begin{aligned}
+W_1(P_i^{(t_1)}, P_i^{(t_1 + \Delta t)}) &= \inf_{\gamma \in \Gamma(P, Q)} \int_{\mathcal{X} \times \mathcal{Y}} \|z - z'\| \, d\gamma(z, z') \\
+&> \tau_{\mathrm{drift}}
+\end{aligned}
 \end{equation}
 
 When evaluating the overarching system, this translates to compounding non-IID properties. The system architecture must reconcile both the temporal shift occurring locally within node $i$, and the generalized non-IID distribution divergence occurring spatially between node $i$ and node $j$, without ever aggregating the divergent sets \cite{b29}.
@@ -148,11 +151,12 @@ For an input $\mathbf{x}_t$, the node is executed $K$ times, producing independe
 
 Algorithm \ref{alg:mc_bald} details how this directly translates into an on-device sample acquisition engine.
 
-\begin{algorithm}[h]
-\caption{Information-Theoretic Sample Acquisition (Edge)}
+\begin{algorithm}[htbp]
+\caption{Information-Theoretic Sample Acquisition}
+\label{alg:mc_bald}
 \begin{algorithmic}[1]
-\REQUIRE Abstract Inference Stream $S$, Pretrained Base Model $M$, Selection Threshold $\tau_{MI}$, Oracle Capacity $C_{max}$
-\ENSURE Highly Informative Verified Batch $B_{train}$
+\REQUIRE Feature Stream $S$, Model $M$, Threshold $\tau_{\mathrm{MI}}$, Capacity $C_{\mathrm{max}}$
+\ENSURE Verified Training Batch $B_{\mathrm{train}}$
 \STATE $B_{train} \leftarrow \emptyset$, $Count \leftarrow 0$
 \FOR{each generic feature vector $x_t \in S$}
     \STATE \textbf{// Step 1: Stochastic MC Forward Passes}
@@ -180,7 +184,6 @@ Algorithm \ref{alg:mc_bald} details how this directly translates into an on-devi
 \ENDFOR
 \RETURN $B_{train} \cup D_{auto}$
 \end{algorithmic}
-\label{alg:mc_bald}
 \end{algorithm}
 
 Setting $K = 10$ proved optimal in terms of variance bounds while still allowing the active learning pipeline to avoid causing thermal throttling events in standard ARM Cortex cores during real-time edge streaming. Increasing $K$ beyond 10 only provided marginal improvements in uncertainty estimation while introducing unacceptable latency spikes to the processing pipeline for sustained streaming workloads.
@@ -274,7 +277,7 @@ To quantify active tracking success against silent deterioration, we compute the
 
 Table \ref{tab:drift} details the specific breakdown of evaluation recoveries averaged across multiple evaluation runs. 
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Drift Mitigation Comparative Matrix}
 \begin{center}
 \resizebox{\columnwidth}{!}{%
@@ -305,7 +308,7 @@ Conversely, the BALD Epistemic target array systematically narrowed the selectio
 \subsection{Ablation: Optimization Trajectory Stability}
 To empirically validate the mathematical necessity of the constrained parameter updating previously formalized in Section V, we executed ablation variations systematically unfurling the deep feature arrays to observe convergence reaction limits.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \caption{Trajectory Variance vs. Freezing Geometry}
 \begin{center}
 \resizebox{\columnwidth}{!}{%

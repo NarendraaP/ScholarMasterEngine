@@ -7,7 +7,6 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{microtype}
 \usepackage{url}
 
 \newtheorem{theorem}{Theorem}
@@ -36,11 +35,9 @@ System integration, error propagation, data cascades, fail-closed architecture, 
 \end{IEEEkeywords}
 
 \section{Introduction}
-Modern autonomous cyber-physical edge computing systems---such as automated transit hubs, smart educational campuses, automated manufacturing facilities, and secure healthcare environments---are fundamentally organized as multi-stage, hierarchical processing pipelines \cite{sculley2015hidden, sambasivan2021everyone, leveson1995safeware}. In these mission-critical deployments, raw continuous sensory observations (such as optical video frames, skeletal keypoints, and acoustic streams) are sequentially ingested, filtered, mapped into high-dimensional latent metric spaces for biometric identity recognition, tracked over time via Bayesian kinematic state estimators, validated against temporal logic schedule compliance rules, and finally committed to immutable audit logs for administrative decision-making \cite{kumar2026scholar22, kumar2026scholar23}.
+Complex edge intelligence pipelines are really composed by multiple levels of inference, ranging from the lowest levels of sensory perception up through higher level policy enforcement \cite{sculley2015hidden, sambasivan2021everyone, leveson1995safeware}. In naive architectures, a minor change or fluctuation in sensory input at the lowest level can have a non-linear impact on downstream inference, cascading through deep learning features, spatial trackers and formal compliance state machines, creating what we call a Data Cascade \cite{sambasivan2021everyone}. 
 
-While conventional systems engineering practices evaluate and benchmark each individual pipeline component in strict isolation \cite{he2016deep, deng2019arcface, malkov2018efficient}, real-world cyber-physical failures emerge predominantly from \textit{systemic error compounding} across stage boundaries \cite{avizienis2004basic, baheti2011cyber}. Sambasivan et al. \cite{sambasivan2021everyone} empirically demonstrated that in high-stakes artificial intelligence deployments, over $92\%$ of mission-critical system breakdowns originate from upstream data quality degradations that cascade non-linearly through downstream models---a systemic failure phenomenon designated as \textit{Data Cascades}. 
-
-In multi-tier vision architectures, this compounding vulnerability is exacerbated by the mathematical nature of representation learning and metric retrieval. When optical sensors experience subtle environmental corruptions (such as lens defocus blur, illumination dropouts, atmospheric fog, or motion smear), the continuous feature embedding output by a deep neural network (e.g., ArcFace \cite{deng2019arcface}) shifts across the high-dimensional hypersphere $\mathbb{S}^{D-1}$. Because nearest-neighbor vector indexing engines (such as FAISS-HNSW \cite{malkov2018efficient}) partition the embedding manifold into discrete Voronoi cells, a continuous perturbation crossing a cell facet boundary produces an instantaneous, discrete identity misclassification. This discrete error instantaneously corrupts the kinematic track association in Layer 3, generates spurious event sequences in the Layer 4 Spatio-Temporal Compliance supervisor, and commits falsified infraction records to Layer 5 administrative databases.
+In multi-tier vision architectures, this compounding vulnerability is exacerbated by the mathematical nature of representation learning and metric retrieval. When optical sensors are subject to mild environmental perturbations (e.g., focal blur, decreases in intensity, advection of atmospheric particles, and motion smear), the continuous embedding output by a deep neural network (e.g., ArcFace \cite{deng2019arcface}) undergoes a drift along the high-dimensional hypersphere $\mathcal{S}^{D-1}$. Because nearest-neighbor vector indexing engines (such as FAISS-HNSW \cite{malkov2018efficient}) partition the embedding manifold into discrete Voronoi cells, a continuous perturbation crossing a cell facet boundary produces an instantaneous, discrete identity misclassification. This discrete error corrupts the kinematic track association in Layer 3, spawns false event sequences in the Layer 4 Spatio-Temporal Compliance supervisor, and commits false infraction records to Layer 5 administrative databases.
 
 Despite the prevalence of multi-stage pipelines in edge computing, existing literature exhibits five foundational systems research gaps:
 \begin{enumerate}
@@ -56,14 +53,14 @@ To resolve these challenges, this paper presents the complete macro integration 
 Specifically, this paper makes four core contributions:
 \begin{enumerate}
     \item \textbf{5-Layer Macro System Formalization}: We formalize the complete state transfer functions, data interfaces, and zero-copy ring-buffer orchestration across all five canonical layers of ScholarMaster.
-    \item \textbf{First-Principles Voronoi Step Jump Proof}: We prove from first principles that nearest-neighbor retrieval on the unit hypersphere exhibits an essential step jump discontinuity across Voronoi facet boundaries, deriving the exact jump magnitude under the ArcFace target angular separation invariant.
-    \item \textbf{Error Amplification Factor (EAF) \& Lipschitz Domain Analysis}: We formulate the Error Amplification Factor ($\text{EAF}_l = E_l / \Delta_1$) as a sensitivity condition number, deriving composite Lipschitz chain rules under domain partitioning into certified sub-manifolds ($\mathcal{X}_{cert}$) and fail-closed quarantine regions ($\mathcal{X}_{quar}$).
-    \item \textbf{Empirical Macro Containment Telemetry}: Across five standardized corruption regimes ($0\%$, $5\%$, $10\%$, $15\%$, $20\%$), we demonstrate that unprotected pipelines amplify upstream noise to a peak localized $\text{EAF}$ of $1.4220$, whereas Layer-1 Perception Integrity gating achieves an $\text{EAF}$ of $0.0000$ across all evaluated regimes.
+    \item \textbf{First-Principles Voronoi Step Jump Proof}: We prove from first principles that nearest-neighbor retrieval on the unit hypersphere is discontinuous across Voronoi facets---more precisely, that the discontinuity jump exceeds a constant factor of the ArcFace target angular separation.
+    \item \textbf{Error Amplification Factor (EAF) \& Lipschitz Domain Analysis}: We define the Error Amplification Factor ($\text{EAF}_l = E_l / \Delta_1$) as a sensitivity condition number, and obtain composite Lipschitz chain rules by partitioning the state-space into certified sub-manifolds $\mathcal{X}_{cert}$ and fail-closed quarantine regions $\mathcal{X}_{quar}$.
+    \item \textbf{Empirical Macro Containment Telemetry}: Across five standardized corruption levels ($0\%$, $5\%$, $10\%$, $15\%$, $20\%$), we show that unprotected pipelines amplify upstream noise toward a maximal local $\text{EAF}$ of $1.4220$, while Layer-1 Perception Integrity gating achieves an $\text{EAF}$ of $0.0000$ across all corruption regimes.
 \end{enumerate}
 
 \section{Related Work \& Systemic Safety Taxonomy}
 \subsection{Data Cascades \& Machine Learning Technical Debt}
-Sculley et al. \cite{sculley2015hidden} articulated the concept of hidden technical debt in machine learning systems, showing that glue code, pipeline jungles, and component entanglement create severe system maintenance fragility. Sambasivan et al. \cite{sambasivan2021everyone} conducted an extensive empirical survey across 53 high-stakes AI deployments, establishing that $92\%$ of real-world failures originate from upstream data quality cascades rather than model architecture flaws. While these works retrospectively document empirical pipeline degradation, they do not provide real-time architectural gating mechanisms or formal mathematical error amplification bounds.
+Sculley et al. \cite{sculley2015hidden} introduced the idea of hidden technical debt in machine learning systems, which demonstrated that glue code, pipeline jungles, and component entanglement contribute to systems where downstream components are particularly fragile to maintenance and upgrades. Sambasivan et al. \cite{sambasivan2021everyone} performed an extensive survey across 53 different high-stakes production AI systems, uncovering that $92\%$ of production failures were caused by upstream data quality issues, not model design or specification errors. The papers provide a post-hoc analysis of the failure modes seen in production pipelines but give no mathematical or algorithmic guarantees about the error propagation characteristics of the model itself or its ability to be safely composed with other system components.
 
 \subsection{Error Propagation in Multi-Stage ML Pipelines}
 Multi-stage machine learning pipelines are increasingly adopted for complex inference tasks \cite{kang2017noscope, kumar2026scholar22}. Kang et al. \cite{kang2017noscope} developed NoScope, utilizing cascading filters to accelerate video analytics query processing. However, multi-stage pipelines typically prioritize throughput optimization without modeling how perceptual noise compounds across downstream semantic stages. ScholarMaster provides a formal framework defining layer-wise error transfer functions and quantitative Error Amplification Factors.
@@ -78,10 +75,10 @@ Runtime verification monitors execution traces against formal specifications exp
 Hendrycks and Dietterich \cite{hendrycks2019benchmarking} established standardized benchmarks for evaluating neural network robustness against common image corruptions. Goodfellow et al. \cite{goodfellow2014explaining} demonstrated that adversarial perturbations shift feature activations across decision boundaries. However, these investigations evaluate isolated classifiers, ignoring how misclassifications propagate into multi-stage tracking and rule-evaluation pipelines.
 
 \subsection{Compositional Verification \& Lipschitz Sensitivity Analysis}
-Szegedy et al. \cite{szegedy2013intriguing} and Weng et al. \cite{weng2018towards} introduced Lipschitz continuity analysis to bound the output sensitivity of deep neural networks under input perturbations. Fazlyab et al. \cite{fazlyab2019efficient} utilized semidefinite programming to compute tight Lipschitz bounds. However, existing Lipschitz frameworks assume continuous end-to-end function compositions, failing to account for nearest-neighbor vector indexing stages that introduce discrete step jump discontinuities.
+Szegedy et al. \cite{szegedy2013intriguing} and Weng et al. \cite{weng2018towards} introduced Lipschitz continuity analysis to bound the output sensitivity of deep neural networks under input perturbations. Fazlyab et al. \cite{fazlyab2019efficient} used semidefinite programming to calculate tight Lipschitz bounds, but Lipschitz theory assumes continuous end-to-end function composition, and does not account for nearest-neighbor vector indexing stages introducing discrete step jump discontinuities.
 
 \subsection{Metric-Space Partitioning \& Voronoi Geometry}
-Voronoi diagrams partition metric spaces into convex polyhedral cells based on nearest-neighbor distances \cite{aurenhammer1991voronoi, cover1967nearest}. In modern vector search, Hierarchical Navigable Small World (HNSW) graphs perform approximate nearest-neighbor retrieval over high-dimensional Voronoi graphs \cite{malkov2018efficient}. ScholarMaster formally characterizes the step jump discontinuity across hyperspherical Voronoi facets under deep angular margin representations.
+Voronoi diagrams partition a metric space into convex polyhedral regions defined by proximity to a set of points \cite{aurenhammer1991voronoi, cover1967nearest}. Contemporary vector search relies on Hierarchical Navigable Small World graphs to yield approximate nearest neighbor queries over high-dimensional Voronoi graph representations \cite{malkov2018efficient}. ScholarMaster formally analyzes the step jump discontinuity in hyperspherical Voronoi facet normals under deep angular margin models.
 
 \subsection{Safety-Critical Edge Cyber-Physical Architectures}
 Cyber-physical edge platforms integrate sensing, computation, and control within strict real-time deadlines \cite{baheti2011cyber, lee2008cyber}. Achieving deterministic execution requires zero-copy shared memory and predictable control loops. Table~\ref{tab:macro_taxonomy} synthesizes these eight paradigms against the ScholarMaster macro architecture.
@@ -171,7 +168,7 @@ Under the ArcFace loss formulation with additive angular margin parameter $m = 0
 \end{proposition}
 
 \begin{proof}
-Using the trigonometric identity $1 - \cos \theta = 2\sin^2(\theta/2)$:
+Applying the standard half-angle trigonometric identity $1 - \cos \theta = 2\sin^2(\theta/2)$ directly yields:
 \begin{equation}
 \|\mathbf{g}_i - \mathbf{g}_j\|_2 = \sqrt{4\sin^2\left(\frac{\theta_{ij}}{2}\right)} = 2\sin\left(\frac{\theta_{ij}}{2}\right).
 \end{equation}
@@ -312,9 +309,9 @@ $20\%$ Noise & $18.67\%$ & $23.10\%$ & $34.20\%$ & $34.20\%$ \\ \bottomrule
 In the unprotected pipeline, input noise produces severe downstream error amplification: $5\%$ input noise triggers an identity error rate of $6.67\%$ ($\text{EAF} = 1.3340$), while $15\%$ noise produces a peak error rate of $21.33\%$ ($\text{EAF} = 1.4220$). Across all five corruption levels, the unprotected mean EAF evaluates to $0.9513$. As documented in Table~\ref{tab:layerwise_compounding}, initial Layer-2 identity errors ($21.33\%$ at $15\%$ noise) compound temporally into a $26.80\%$ track association failure rate at Layer 3, culminating in a $38.90\%$ falsified violation commit rate at Layers 4 and 5. In contrast, under Layer-1 Perception Integrity gating, downstream error rates and EAF evaluate to exactly $0.0000$ across all five regimes.
 
 \subsubsection{WHY (Scientific Mechanism)}
-The unprotected pipeline experiences non-linear error compounding due to Voronoi boundary transitions: continuous sensory noise shifts ArcFace embeddings across hyperspherical decision facets, inducing discrete identity misclassifications in Layer 2. Because tracking Kalman filters and temporal compliance state machines maintain internal memory states, a single identity misclassification destabilizes multi-frame trajectory association, causing falsified compliance event emissions. Layer-1 Perception Integrity intercepts corrupted frames prior to vector search via fail-closed quarantine ($\mathrm{Lip}(f_{gate}|_{\mathcal{X}_{quar}}) = 0$), completely preventing corrupted embeddings from entering downstream layers.
+The unprotected pipeline suffers from error compounding in non-linear decision boundaries: varying levels of noise in sensory input cause ArcFace embeddings to rotate across hypersurfaces, producing discrete identity misclassifications in Layer 2. Since Kalman trajectories and temporal compliance state machines retain memory of previous states, an isolated identity classification error produces false positive/negative compliance events in subsequent frames. Layer-1 Perception Integrity prevents such errors by performing fail-closed quarantining of corrupted input before vector quantization has occurred ($\mathrm{Lip}(f_{gate}|_{\mathcal{X}_{quar}}) = 0$).
 
-\paragraph{Analysis of Non-Monotonic EAF Trajectory} The empirical EAF curve exhibits a non-monotonic trajectory ($1.3340 \to 1.0670 \to 1.4220 \to 0.9335$). While the benchmark conclusively establishes this measured response, the experimental suite does not isolate the exact causal mechanism responsible for the dip at $20\%$ noise (which may reflect feature saturation or non-uniform gallery cluster densities). We report the measured empirical trajectory without asserting unverified causal hypotheses.
+\paragraph{Analysis of Non-Monotonic EAF Trajectory} The empirical EAF curve exhibits a non-monotonic trajectory ($1.3340 \to 1.0670 \to 1.4220 \to 0.9335$). While the benchmark clearly identifies this pattern, the test suite does not reveal the reason for the drop at $20\%$ noise (which may be caused by feature saturation or non-uniform gallery cluster distribution). We report the observed pattern but do not speculate on unsubstantiated causal relationships.
 
 \subsubsection{LIMIT (Exact Scope \& Non-Extrapolations)}
 The empirical containment guarantee ($\text{EAF} = 0.0000$) is verified strictly over the evaluated $0\%\text{--}20\%$ sensory corruption range on the 5-layer ScholarMaster pipeline. It does \textbf{not} establish:
@@ -332,9 +329,9 @@ To ensure robust edge deployment, the 5-layer macro architecture enforces two fo
 
 \paragraph{Domain Boundary Classifications} We explicitly separate:
 \begin{itemize}
-    \item \textbf{Production Runtime}: \texttt{PerceptionIntegrityGate}, \texttt{InsightFaceAdapter}, \texttt{FaissFaceIndex}, and \texttt{ComplianceRules} running on edge hardware with $<5.0\text{ ms}$ latency budget.
-    \item \textbf{Benchmark Evaluation}: \texttt{paper4\_error\_propagation.py} and master suite evaluating progressive synthetic corruptions across 2,000 samples.
-    \item \textbf{Mathematical Model}: Voronoi facet step jump discontinuity (Theorem~\ref{thm:voronoi_discontinuity}), ArcFace target margin invariant (Proposition~\ref{prop:arcface_margin}), and piecewise Lipschitz chain rule (Proposition~2).
+    \item \textbf{Production Runtime}: Real-time perception gates, biometric feature extractors, FAISS indices, and formal compliance engines operating within a 5.0\,ms edge budget.
+    \item \textbf{Benchmark Suite}: End-to-end evaluation harness quantifying progressive synthetic corruptions across 2,000 empirical samples.
+    \item \textbf{Mathematical Foundations}: Metric Voronoi facet step jump discontinuities (Theorem~\ref{thm:voronoi_discontinuity}), angular margin invariants (Proposition~\ref{prop:arcface_margin}), and piecewise Lipschitz chain rules.
 \end{itemize}
 
 \section{Conclusion}
@@ -342,32 +339,32 @@ We established the macro integration architecture of ScholarMaster and presented
 
 \begin{thebibliography}{00}
 \small
-\bibitem{sculley2015hidden} D.~Sculley et al., ``Hidden technical debt in machine learning systems,'' in \emph{Proc. NeurIPS}, 2015, pp. 2503--2511.
-\bibitem{sambasivan2021everyone} N.~Sambasivan, S.~Kapania, H.~Highfill, D.~Akrong, P.~Paritosh, and L.~M.~Aroyo, ```Everyone wants to do the model work, not the data work': Data Cascades in high-stakes AI,'' in \emph{Proc. CHI}, 2021, pp. 1--15.
-\bibitem{leveson1995safeware} N.~G.~Leveson, \emph{Safeware: System Safety and Computers}, Addison-Wesley, 1995.
-\bibitem{avizienis2004basic} A.~Avizienis, J.~C.~Laprie, B.~Randell, and C.~Landwehr, ``Basic concepts and taxonomy of dependable and secure computing,'' \emph{IEEE Trans. Dependable Secure Comput.}, vol. 1, no. 1, pp. 11--33, 2004.
-\bibitem{deng2019arcface} J.~Deng, J.~Guo, N.~Xue, and S.~Zafeiriou, ``ArcFace: Additive angular margin loss for deep face recognition,'' in \emph{Proc. CVPR}, 2019, pp. 4690--4699.
-\bibitem{malkov2018efficient} Y.~A.~Malkov and D.~A.~Yashunin, ``Efficient and robust approximate nearest neighbors using Hierarchical Navigable Small World graphs,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 42, no. 4, pp. 824--836, 2018.
-\bibitem{seshia2018toward} S.~A.~Seshia, D.~Sadigh, and S.~S.~Sastry, ``Toward verified artificial intelligence,'' \emph{Commun. ACM}, vol. 65, no. 7, pp. 46--55, 2022.
-\bibitem{pnueli1977temporal} A.~Pnueli, ``The temporal logic of programs,'' in \emph{Proc. FOCS}, 1977, pp. 46--57.
-\bibitem{katz2017reluplex} G.~Katz, C.~Barrett, D.~L.~Dill, K.~Julian, and M.~J.~Kochenderfer, ``Reluplex: An efficient SMT solver for verifying deep neural networks,'' in \emph{Proc. CAV}, 2017, pp. 97--117.
-\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar23} S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \emph{ScholarMaster Technical Report Series}, Paper 23, 2026.
-\bibitem{kumar2026scholar24} S.~Suresh~Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \emph{ScholarMaster Technical Report Series}, Paper 24, 2026.
-\bibitem{he2016deep} K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image recognition,'' in \emph{Proc. CVPR}, 2016, pp. 770--778.
-\bibitem{vaswani2017attention} A.~Vaswani et al., ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017, pp. 5998--6008.
-\bibitem{aurenhammer1991voronoi} F.~Aurenhammer, ``Voronoi diagrams---a survey of a fundamental geometric data structure,'' \emph{ACM Comput. Surv.}, vol. 23, no. 3, pp. 345--405, 1991.
-\bibitem{kang2017noscope} D.~Kang, J.~Emmons, F.~Abuzaid, P.~Bailis, and M.~Zaharia, ``NoScope: Optimizing neural network queries over video at scale,'' \emph{Proc. VLDB Endow.}, vol. 10, no. 11, pp. 1586--1597, 2017.
-\bibitem{szegedy2013intriguing} C.~Szegedy et al., ``Intriguing properties of neural networks,'' in \emph{Proc. ICLR}, 2014.
-\bibitem{weng2018towards} T.~W.~Weng et al., ``Towards fast computation of certified robustness for ReLU networks,'' in \emph{Proc. ICML}, 2018, pp. 5276--5285.
-\bibitem{fazlyab2019efficient} M.~Fazlyab, A.~Robey, H.~Hassani, M.~Morari, and G.~Pappas, ``Efficient and accurate estimation of Lipschitz constants for deep neural networks,'' in \emph{Proc. NeurIPS}, 2019, pp. 11423--11434.
-\bibitem{hendrycks2019benchmarking} D.~Hendrycks and T.~Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
-\bibitem{goodfellow2014explaining} I.~J.~Goodfellow, J.~Shlens, and C.~Szegedy, ``Explaining and harnessing adversarial examples,'' in \emph{Proc. ICLR}, 2015.
-\bibitem{cover1967nearest} T.~Cover and P.~Hart, ``Nearest neighbor pattern classification,'' \emph{IEEE Trans. Inf. Theory}, vol. 13, no. 1, pp. 21--27, 1967.
-\bibitem{baheti2011cyber} R.~Baheti and H.~Gill, ``Cyber-physical systems,'' \emph{The Impact of Control Technology}, vol. 12, pp. 161--166, 2011.
-\bibitem{lee2008cyber} E.~A.~Lee, ``Cyber physical systems: Design challenges,'' in \emph{Proc. ISORC}, 2008, pp. 363--369.
-\bibitem{guo2017calibration} C.~Guo, G.~Pleiss, Y.~Sun, and K.~Q.~Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
-\bibitem{khaleghi2013multisensor} B.~Khaleghi, A.~Khamis, F.~O.~Karray, and S.~N.~Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
+\bibitem{sculley2015hidden} D. Sculley et al., ``Hidden technical debt in machine learning systems,'' in \emph{Proc. NeurIPS}, 2015, pp. 2503--2511.
+\bibitem{sambasivan2021everyone} N. Sambasivan, S. Kapania, H. Highfill, D. Akrong, P. Paritosh, and L. M. Aroyo, ```Everyone wants to do the model work, not the data work': Data Cascades in high-stakes AI,'' in \emph{Proc. CHI}, 2021, pp. 1--15.
+\bibitem{leveson1995safeware} N. G. Leveson, \emph{Safeware: System Safety and Computers}, Addison-Wesley, 1995.
+\bibitem{avizienis2004basic} A. Avizienis, J. C. Laprie, B. Randell, and C. Landwehr, ``Basic concepts and taxonomy of dependable and secure computing,'' \emph{IEEE Trans. Dependable Secure Comput.}, vol. 1, no. 1, pp. 11--33, 2004.
+\bibitem{deng2019arcface} J. Deng, J. Guo, N. Xue, and S. Zafeiriou, ``ArcFace: Additive angular margin loss for deep face recognition,'' in \emph{Proc. CVPR}, 2019, pp. 4690--4699.
+\bibitem{malkov2018efficient} Y. A. Malkov and D. A. Yashunin, ``Efficient and robust approximate nearest neighbors using Hierarchical Navigable Small World graphs,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 42, no. 4, pp. 824--836, 2018.
+\bibitem{seshia2018toward} S. A. Seshia, D. Sadigh, and S. S. Sastry, ``Toward verified artificial intelligence,'' \emph{Commun. ACM}, vol. 65, no. 7, pp. 46--55, 2022.
+\bibitem{pnueli1977temporal} A. Pnueli, ``The temporal logic of programs,'' in \emph{Proc. FOCS}, 1977, pp. 46--57.
+\bibitem{katz2017reluplex} G. Katz, C. Barrett, D. L. Dill, K. Julian, and M. J. Kochenderfer, ``Reluplex: An efficient SMT solver for verifying deep neural networks,'' in \emph{Proc. CAV}, 2017, pp. 97--117.
+\bibitem{kumar2026scholar22} S. Suresh Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
+\bibitem{kumar2026scholar23} S. Suresh Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \emph{ScholarMaster Technical Report Series}, Paper 23, 2026.
+\bibitem{kumar2026scholar24} S. Suresh Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \emph{ScholarMaster Technical Report Series}, Paper 24, 2026.
+\bibitem{he2016deep} K. He, X. Zhang, S. Ren, and J. Sun, ``Deep residual learning for image recognition,'' in \emph{Proc. CVPR}, 2016, pp. 770--778.
+\bibitem{vaswani2017attention} A. Vaswani et al., ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017, pp. 5998--6008.
+\bibitem{aurenhammer1991voronoi} F. Aurenhammer, ``Voronoi diagrams---a survey of a fundamental geometric data structure,'' \emph{ACM Comput. Surv.}, vol. 23, no. 3, pp. 345--405, 1991.
+\bibitem{kang2017noscope} D. Kang, J. Emmons, F. Abuzaid, P. Bailis, and M. Zaharia, ``NoScope: Optimizing neural network queries over video at scale,'' \emph{Proc. VLDB Endow.}, vol. 10, no. 11, pp. 1586--1597, 2017.
+\bibitem{szegedy2013intriguing} C. Szegedy et al., ``Intriguing properties of neural networks,'' in \emph{Proc. ICLR}, 2014.
+\bibitem{weng2018towards} T. W. Weng et al., ``Towards fast computation of certified robustness for ReLU networks,'' in \emph{Proc. ICML}, 2018, pp. 5276--5285.
+\bibitem{fazlyab2019efficient} M. Fazlyab, A. Robey, H. Hassani, M. Morari, and G. Pappas, ``Efficient and accurate estimation of Lipschitz constants for deep neural networks,'' in \emph{Proc. NeurIPS}, 2019, pp. 11423--11434.
+\bibitem{hendrycks2019benchmarking} D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
+\bibitem{goodfellow2014explaining} I. J. Goodfellow, J. Shlens, and C. Szegedy, ``Explaining and harnessing adversarial examples,'' in \emph{Proc. ICLR}, 2015.
+\bibitem{cover1967nearest} T. Cover and P. Hart, ``Nearest neighbor pattern classification,'' \emph{IEEE Trans. Inf. Theory}, vol. 13, no. 1, pp. 21--27, 1967.
+\bibitem{baheti2011cyber} R. Baheti and H. Gill, ``Cyber-physical systems,'' \emph{The Impact of Control Technology}, vol. 12, pp. 161--166, 2011.
+\bibitem{lee2008cyber} E. A. Lee, ``Cyber physical systems: Design challenges,'' in \emph{Proc. ISORC}, 2008, pp. 363--369.
+\bibitem{guo2017calibration} C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
+\bibitem{khaleghi2013multisensor} B. Khaleghi, A. Khamis, F. O. Karray, and S. N. Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
 \end{thebibliography}
 
 \end{document}

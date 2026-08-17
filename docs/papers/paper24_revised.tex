@@ -7,7 +7,6 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{microtype}
 \usepackage{url}
 
 \newtheorem{theorem}{Theorem}
@@ -40,23 +39,23 @@ Autonomous cyber-physical systems, such as automated transit hubs, industrial ro
 
 To mitigate single-channel vulnerability, modern edge platforms deploy heterogeneous sensor suites combining optical RGB cameras, skeletal pose estimators, thermal infrared detectors, acoustic arrays, and inertial measurement units (IMUs) \cite{khaleghi2013multisensor}. Nevertheless, simply aggregating multi-modal inputs does not guarantee system robustness. Standard multimodal architectures suffer from severe architectural limitations:
 \begin{enumerate}
-    \item \textbf{Early Feature Concatenation}: Concatenating raw sensory embeddings into a unified dense layer creates tight feature entanglement. When an optical channel degrades, corrupted feature values propagate through subsequent layers, corrupting the entire latent representation \cite{baltrusaitis2018multimodal}.
-    \item \textbf{Static Late Fusion}: Linearly combining independent decision vectors via fixed heuristic weights (e.g., $w_{rgb}=0.5, w_{audio}=0.5$) implicitly assumes time-invariant sensor reliability. Under severe optical noise, static weighting forces the corrupted visual prediction to pull down the joint decision, causing system accuracy to collapse \cite{tsai2019multimodal}.
+    \item \textbf{Early Feature Concatenation}: Concatenating raw sensory embeddings into a unified dense layer causes feature entanglement. One corrupted channel renders downstream processing meaningless, biasing the posterior distribution \cite{baltrusaitis2018multimodal}.
+    \item \textbf{Static Late Fusion}: Linearly combining independent decision vectors using a predetermined set of weights for the different modalities (e.g., $w_{rgb} = 0.5, w_{audio} = 0.5$) implicitly assumes that a sensor's reliability, expressed by its relative weight in the fusion model, is static and independent of time. When the reliability of a modality drastically decreases due to environmental factors (e.g., optical noise in the vision sensor), the system is unable to adapt, leading to an overall decrease in decision reliability \cite{tsai2019multimodal}.
     \item \textbf{Deep Attention Overhead}: Heavy transformer-based cross-attention mechanisms (e.g., Multimodal Transformers \cite{tsai2019multimodal}) model all-to-all token interactions but introduce prohibitive computational latencies ($>40\text{ ms}$) and uncalibrated attention logits under out-of-distribution noise \cite{guo2017calibration}.
 \end{enumerate}
 
-To overcome these deficiencies, we draw a fundamental distinction between \textit{Multimodal Fusion} (aggregating features assuming clean inputs) and \textit{Multimodal Recovery} (actively identifying corrupted channels, suppressing their authority, and reconstructing intact state estimations without model retraining). The central scientific question addressed in this paper is:
+To address these shortcomings, we propose to make a fundamental distinction between \textit{Multimodal Fusion}, which assumes clean inputs, and \textit{Multimodal Recovery} that actively identifies corrupted channels, suppresses their influence, and recovers the distribution of intact states without retraining. The central scientific question this paper addresses is therefore:
 \begin{quote}
-\textit{When a primary sensory channel experiences severe degradation, how can an edge system detect inter-modality disagreement in real time, dynamically decay the compromised channel's authority, and preserve accurate downstream state estimation using intact secondary modalities?}
+\textit{When a primary sensory channel is subject to severe performance degradation, how can an edge system detect intermodality inconsistency in real time and perform dynamic downweighting of the failing channel while maintaining accurate downstream state estimation using the compensated measurements?}
 \end{quote}
 
-This paper establishes the mathematical foundations, synchronization architecture, and empirical verification of \textit{Generalized Cross-Modal Consensus Recovery}. Our architecture treats modality trust as a continuous, time-varying dynamic state governed by symmetric Jensen-Shannon Divergence ($\mathrm{JSD}$). When sensory noise or physical occlusion corrupts a sensor, its output distribution diverges from the arithmetic consensus distribution $P_c$, triggering exponential trust weight decay and autonomously transferring decision authority to intact secondary streams.
+This paper establishes the mathematical foundations, synchronization architecture, and empirical verification of \textit{Generalized Cross-Modal Consensus Recovery}. Our architecture treats modality trust as a continuous, time-varying dynamic state governed by symmetric Jensen-Shannon Divergence ($\mathrm{JSD}$). If a sensor is sabotaged by noise or obscurations, the distribution of outputs from it will no longer agree with the arithmetic mean distribution $P_c$, and its trust weights will exponentially decay, allowing decision making to be transferred to unaffected sensors.
 
 Specifically, this paper makes four core contributions:
 \begin{enumerate}
-    \item \textbf{Information-Theoretic Consensus \& Boundedness Proof}: We formalize cross-modal agreement on the statistical probability simplex using symmetric Jensen-Shannon Divergence. We prove from first principles that $\mathrm{JSD}(P_m \parallel P_c)$ is strictly bounded in $[0, \ln 2]$, derive Pinsker-type total variation bounds, and prove local equivalence to the Riemannian Fisher-Rao metric tensor.
-    \item \textbf{Dynamic Trust Gradient Adaptation}: We formulate an exponential trust weighting function with sensitivity parameter $\beta=5.0$, deriving the analytical self-gradients ($\frac{\partial w_m}{\partial \mathrm{JSD}_m} < 0$) and cross-gradients ($\frac{\partial w_m}{\partial \mathrm{JSD}_j} > 0$) that govern smooth, monotonic authority reallocation.
-    \item \textbf{Asynchronous Multi-Rate Synchronization Architecture}: We formulate a multi-rate ring buffer reference model with software phase-locked loop (PLL) clock tracking to align heterogeneous sensor streams ($30\text{ FPS}$ RGB, $100\text{ Hz}$ IMU, $15\text{ FPS}$ Audio), distinguishing the theoretical PLL reference model from the production runtime's $1.0\text{ s}$ timestamp skew checking window in \texttt{ConsistencyChecker}.
+    \item \textbf{Information-Theoretic Consensus \& Boundedness Proof}: We formalize cross-modal agreement on the statistical probability simplex using symmetric Jensen-Shannon Divergence. We establish from first principles that $\mathrm{JSD}(P_m \parallel P_c)$ exhibits strict boundedness on $[0, \ln 2]$, derive Pinsker-type total variation bounds for the same, and finally establish local equivalence to the Riemannian Fisher-Rao metric tensor.
+    \item \textbf{Dynamic Trust Gradient Adaptation}: We define an exponential trust weighting function with sensitivity parameter $\beta = 5.0$, obtaining analytical expressions for the self-gradients ($\frac{\partial w_m}{\partial \mathrm{JSD}_m} < 0$) and cross-gradients ($\frac{\partial w_m}{\partial \mathrm{JSD}_j} > 0$) of the authority redistribution process.
+    \item \textbf{Asynchronous Multi-Rate Synchronization Architecture}: We create a multi-rate ring buffer reference model with software PLL clock tracking to synchronize these different rate sensors ($30\text{ FPS}$ RGB, $100\text{ Hz}$ IMU, $15\text{ FPS}$ Audio), while distinguishing the PLL-based theoretical reference from the $1.0\text{ s}$ timestamp skew checking window in \texttt{ConsistencyChecker} for production runtime.
     \item \textbf{Empirical Recovery \& Breakdown Boundaries}: Across progressive synthetic degradation levels ($0\%$, $20\%$, $50\%$, $80\%$), we demonstrate that dynamic consensus achieves a $100\%$ ($1.0000$) state recovery rate under single-channel degradation, dynamically attenuating corrupted RGB trust from $0.4000 \to 0.0500$ while intact secondary modalities increase to $0.4750$ each. We derive analytical multi-channel breakdown boundaries and fail-closed quarantine criteria.
 \end{enumerate}
 
@@ -67,9 +66,9 @@ Multisensor data fusion has a long history in distributed radar networks, roboti
 \subsection{Deep Multimodal Fusion Strategies}
 Modern deep multimodal architectures are traditionally categorized by their fusion stage \cite{baltrusaitis2018multimodal, ramachandram2017deep}:
 \begin{itemize}
-    \item \textbf{Early Fusion}: Concatenates raw feature maps or sensor tokens at the network input layer \cite{baltrusaitis2018multimodal}. Early fusion enables rich low-level cross-modal feature correlations but exhibits zero fault tolerance: a single noisy sensor contaminates the shared feedforward pipeline.
-    \item \textbf{Late Fusion}: Trains separate unimodal neural networks and aggregates their softmax outputs via fixed linear averaging or voting \cite{khaleghi2013multisensor}. While modular, static late fusion cannot dynamically adjust its weights when environmental conditions degrade a specific sensor.
-    \item \textbf{Intermediate / Cross-Attention Fusion}: Employs pairwise self-attention or cross-modal transformer blocks (e.g., Multimodal Transformer \cite{tsai2019multimodal} or Perceiver \cite{jaegle2021perceiver}) to dynamically weight cross-modal tokens. However, transformer attention matrices scale quadratically with sequence length, generating execution latencies ($>40\text{ ms}$) that violate edge SLA constraints. Furthermore, attention weights over unbounded logits can allocate high attention to high-frequency noise \cite{guo2017calibration}.
+    \item \textbf{Early Fusion}: Concatenates raw feature maps or sensor tokens at the network input layer \cite{baltrusaitis2018multimodal}. Early fusion allows for rich low-level cross-modal feature interactions but provides zero fault tolerance; single-sensor failures corrupt the fused representation since all information is fed into the same downstream network.
+    \item \textbf{Late Fusion}: Trains separate unimodal neural networks and aggregates their softmax outputs by a fixed linear averaging or voting \cite{khaleghi2013multisensor}. While modular, static late fusion cannot adaptively adjust its weights when the environment degrades a particular sensor.
+    \item \textbf{Intermediate / Cross-Attention Fusion}: Employs pairwise self-attention or cross-modal transformer blocks (e.g., Multimodal Transformer \cite{tsai2019multimodal} or Perceiver \cite{jaegle2021perceiver}) to dynamically weight cross-modal tokens. However, transformer attention matrices scale quadratically with sequence length, producing execution latencies ($>40\text{ ms}$) that defy edge SLA constraints. Moreover, attention weights over unbounded logits can amplify model attention to high-frequency noise \cite{guo2017calibration}.
 \end{itemize}
 
 \begin{table*}[t]
@@ -102,7 +101,7 @@ Information-theoretic metrics, notably Kullback-Leibler (KL) divergence, are wid
 
 \section{Information-Theoretic JSD Consensus Formulation}
 \subsection{Modality Probability Representations \& Mixture Consensus}
-Let $M = \{m_1, m_2, \dots, m_{|M|}\}$ denote the active set of heterogeneous sensory modalities deployed on the edge platform (in our primary realization, $|M|=3$: $m_1 = \text{Optical RGB}$, $m_2 = \text{Acoustic}$, and $m_3 = \text{Pose}$). Each modality $m \in M$ processes incoming sensor frames to output a normalized probability distribution $P_m \in \Delta^K$ over $K$ discrete semantic hypothesis states:
+Let $M = \{m_1, m_2, \dots, m_{|M|}\}$ be the set of active heterogeneous sensing modalities on the edge platform (in the main case $|M| = 3$: $m_1 = \text{Optical RGB}$, $m_2 = \text{Acoustic}$, $m_3 = \text{Pose}$). For each modality, $m \in M$, a frame from the sensor is processed to obtain a distribution $P_m \in \Delta^K$, where $K$ is the number of semantic hypothesis states, over the states:
 \begin{equation}
 P_m = [P_m(1), \dots, P_m(K)]^T, \quad \sum_{k=1}^K P_m(k) = 1.
 \end{equation}
@@ -268,7 +267,7 @@ In physical edge deployments, hardware sensors operate across heterogeneous samp
     \item \textbf{IMU / Skeletal Pose Estimators}: $100\text{ Hz}$ kinematic update rate ($T_2 = 10.0\text{ ms}$).
     \item \textbf{Acoustic Spectral Analyzers}: $15\text{ FPS}$ FFT windowing rate ($T_3 = 66.6\text{ ms}$).
 \end{itemize}
-When sensor clocks drift or experience variable kernel scheduling latency, query timestamps $t_{query}$ fall between sampling ticks. If unaligned frames are directly compared, temporal phase discrepancy introduces artificial distribution divergence ($\mathrm{JSD} > 0$), erroneously penalizing intact sensors.
+If sensor clocks drift, or kernel scheduling latency varies, query timestamps $t_{query}$ lie in between sampling ticks. Comparing directly the aligned frames would yield spurious JSD (Jensen-Shannon divergence) divergence if their temporal phase differs.
 
 \subsection{Multi-Rate Ring Buffer Synchronization Model}
 To resolve temporal misalignment, Layer 1 formalizes an asynchronous lock-free Ring Buffer architecture (Algorithm~\ref{alg:multirate_sync}):
@@ -328,7 +327,7 @@ $80\%$ Noise & $0.0500$ & $0.4750$ & $0.4750$ & $0.212\text{ nats}$ \\ \bottomru
 
 \subsection{Deep Interpretation of Recovery Telemetry (3-Layer Standard)}
 \subsubsection{WHAT (Empirical Observation)}
-Single-modality RGB accuracy collapses monotonically across degradation levels: $1.0000$ ($0\%$) $\to 0.8000$ ($20\%$) $\to 0.5000$ ($50\%$) $\to 0.1867$ ($80\%$). Unweighted static fusion matches this collapse ($0.1867$ at $80\%$). In contrast, dynamic consensus maintains a $1.0000$ ($100\%$) state recovery rate across all four regimes. As optical corruption increases, the dynamic trust weight of RGB decays from $0.4000 \to 0.2840 \to 0.1250 \to 0.0500$, while acoustic and skeletal pose weights increase symmetrically from $0.3000 \to 0.3580 \to 0.4375 \to 0.4750$. Consensus distribution entropy increases moderately from $0.042\text{ nats} \to 0.212\text{ nats}$, remaining well below the maximum uniform uncertainty ceiling ($\ln 3 \approx 1.098\text{ nats}$).
+Single-modality RGB accuracy collapses monotonically across degradation levels: $1.0000$ ($0\%$) $\to 0.8000$ ($20\%$) $\to 0.5000$ ($50\%$) $\to 0.1867$ ($80\%$). Unweighted static fusion corresponds to this collapse ($0.1867$ at $80\%$). By contrast, the dynamic consensus algorithm recovers all four regimes at $1.0000$ ($100\%$). As optical corruption increases, the dynamic trust weight of RGB decreases steadily from $0.4000 \to 0.2840 \to 0.1250 \to 0.0500$, while the weights of audio and skeletal pose increase symmetrically from $0.3000 \to 0.3580 \to 0.4375 \to 0.4750$. The entropy of the consensus distribution increases moderately from $0.042\text{ nats} \to 0.212\text{ nats}$, still far below maximum uncertainty ($\ln 3 \approx 1.098\text{ nats}$).
 
 \subsubsection{WHY (Scientific Mechanism)}
 When primary optical sensing experiences noise injection, its output distribution $P_{rgb}$ flattens toward maximum entropy, increasing its statistical divergence against the coherent acoustic and pose distributions ($\mathrm{JSD}_{rgb} \to 0.62\text{ nats}$). By Proposition~1, the negative self-gradient ($\frac{\partial w_1}{\partial \mathrm{JSD}_1} < 0$) rapidly drives $w_{rgb} \to 0.0500$. Simultaneously, positive cross-gradients ($\frac{\partial w_2}{\partial \mathrm{JSD}_1} > 0, \frac{\partial w_3}{\partial \mathrm{JSD}_1} > 0$) reallocate decision authority to the intact secondary modalities ($w_2 + w_3 = 0.9500$), completely insulating downstream state estimation from optical corruption.
@@ -344,44 +343,35 @@ These empirical guarantees are verified strictly under single-primary-channel de
 To characterize the operational limits of consensus recovery, we analyze the mathematical and architectural failure boundaries under compound sensor breakdown.
 
 \subsection{Multi-Modality Breakdown Conditions}
-Let $M_{fail} \subset M$ denote the subset of compromised modalities. Consensus recovery operates successfully if and only if the aggregate trust weight of intact modalities dominates the corrupted channels:
-\begin{equation}
-\sum_{m \in M \setminus M_{fail}} w_m > \sum_{m \in M_{fail}} w_m.
-\end{equation}
-In a 3-modality system ($|M|=3$), if two modalities fail simultaneously ($|M_{fail}|=2$), the corrupted distributions dominate the arithmetic consensus $P_c$, causing erroneous trust reallocation to the failing channels.
+Let $M_{fail} \subset M$ denote the subset of compromised modalities. Consensus recovery operates successfully if and only if the aggregate trust weight of intact modalities strictly dominates the corrupted channels: $\sum_{m \in M \setminus M_{fail}} w_m > \sum_{m \in M_{fail}} w_m$. In a 3-modality system ($|M|=3$), if two modalities fail simultaneously ($|M_{fail}|=2$), the corrupted distributions dominate the arithmetic consensus $P_c$, causing erroneous trust reallocation to the failing channels.
 
 \subsection{Correlated Sensor Contamination \& Fail-Closed Quarantine}
-Under maximal divergence where all active modalities contradict each other ($\mathrm{JSD}_m \to \ln 2$ for all $m \in M$):
-\begin{equation}
-\lim_{\mathrm{JSD}_m \to \ln 2, \, \forall m} w_m = \frac{1}{|M|}, \quad H(P_c) \to \ln K.
-\end{equation}
-When the consensus entropy exceeds the safety ceiling $H(P_c) > \tau_{quarantine} = 0.80\ln K$, the system triggers the \textit{Fail-Closed Quarantine Protocol} ($\bot$), safely invalidating real-time state estimates and issuing an acoustic-visual sensor fault alarm.
+Under maximal divergence where all active modalities contradict each other ($\mathrm{JSD}_m \to \ln 2$ for all $m \in M$), we have $\lim_{\mathrm{JSD}_m \to \ln 2} w_m = \frac{1}{|M|}$ and $H(P_c) \to \ln K$. When the consensus entropy exceeds the safety ceiling $H(P_c) > \tau_{quarantine} = 0.80\ln K$, the system triggers the \textit{Fail-Closed Quarantine Protocol} ($\bot$), safely invalidating real-time state estimates and issuing an acoustic-visual sensor fault alarm.
 
 \section{Conclusion}
 We established the information-theoretic formulation, mathematical bounds, and empirical validation of Layer-1 Generalized Cross-Modal Consensus Recovery for edge computing. By proving symmetric $\mathrm{JSD}$ boundedness in $[0, \ln 2]$, deriving analytical trust weight gradients, and coupling multi-rate software PLL synchronization with runtime consistency checking, our system achieves $100\%$ state recovery under severe $80\%$ primary optical degradation. The dynamic consensus mechanism bounds corrupted channel authority to $0.0500$, providing robust fault-tolerant perception for safety-critical cyber-physical systems.
 
 \begin{thebibliography}{00}
 \small
-\bibitem{baltrusaitis2018multimodal} T.~Baltru{\v{s}}aitis, C.~Ahuja, and L.~P.~Morency, ``Multimodal machine learning: A survey and taxonomy,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 41, no. 2, pp. 423--443, 2018.
-\bibitem{ramachandram2017deep} D.~Ramachandram and G.~W.~Taylor, ``Deep multimodal learning: A survey on recent advances and trends,'' \emph{IEEE Signal Process. Mag.}, vol. 34, no. 6, pp. 96--108, 2017.
-\bibitem{dodge2016understanding} S.~Dodge and L.~Karam, ``Understanding how image quality affects deep neural networks,'' in \emph{Proc. QoMEX}, 2016, pp. 1--6.
-\bibitem{hendrycks2019benchmarking} D.~Hendrycks and T.~Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
-\bibitem{tsai2019multimodal} Y.~H.~H.~Tsai et al., ``Multimodal transformer for unaligned multimodal language sequences,'' in \emph{Proc. ACL}, 2019, pp. 6558--6569.
-\bibitem{ma2021smil} M.~Ma, J.~Ren, L.~Zhao, D.~Testuggine, and X.~Peng, ``SMIL: Multimodal learning with severely missing modality,'' in \emph{Proc. AAAI}, 2021, pp. 2302--2310.
-\bibitem{lee2020private} N.~Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in \emph{Proc. NeurIPS}, 2020.
-\bibitem{khaleghi2013multisensor} B.~Khaleghi, A.~Khamis, F.~O.~Karray, and S.~N.~Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
-\bibitem{lin1991divergence} J.~Lin, ``Divergence measures based on the Shannon entropy,'' \emph{IEEE Trans. Inf. Theory}, vol. 37, no. 1, pp. 145--151, 1991.
-\bibitem{endres2003new} D.~M.~Endres and J.~E.~Schindelin, ``A new metric for probability distributions,'' \emph{IEEE Trans. Inf. Theory}, vol. 49, no. 7, pp. 1858--1860, 2003.
-\bibitem{kullback1951information} S.~Kullback and R.~A.~Leibler, ``On information and sufficiency,'' \emph{Ann. Math. Stat.}, vol. 22, no. 1, pp. 79--86, 1951.
-\bibitem{julier2000new} S.~Julier, J.~Uhlmann, and H.~F.~Durrant-Whyte, ``A new method for the nonlinear transformation of means and covariances in filters,'' \emph{IEEE Trans. Autom. Control}, vol. 45, no. 3, pp. 477--482, 2000.
-\bibitem{jaegle2021perceiver} A.~Jaegle et al., ``Perceiver: General perception with iterative attention,'' in \emph{Proc. ICML}, 2021, pp. 4651--4664.
-\bibitem{neverova2015moddrop} N.~Neverova, C.~Wolf, G.~Taylor, and F.~Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 38, no. 8, pp. 1692--1706, 2015.
-\bibitem{blundell2015weight} C.~Blundell, J.~Cornebise, K.~Kavukcuoglu, and D.~Wierstra, ``Weight uncertainty in neural networks,'' in \emph{Proc. ICML}, 2015, pp. 1613--1622.
-\bibitem{guo2017calibration} C.~Guo, G.~Pleiss, Y.~Sun, and K.~Q.~Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
-\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar23} S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \emph{ScholarMaster Technical Report Series}, Paper 23, 2026.
-\bibitem{kumar2026scholar25} S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \emph{ScholarMaster Technical Report Series}, Paper 25, 2026.
-\bibitem{liggins2008handbook} M.~E.~Liggins, D.~L.~Hall, and J.~Llinas, \emph{Handbook of Multisensor Data Fusion: Theory and Practice}, CRC Press, 2008.
+\bibitem{baltrusaitis2018multimodal} T. Baltru{\v{s}}aitis, C. Ahuja, and L. P. Morency, ``Multimodal machine learning: A survey and taxonomy,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 41, no. 2, pp. 423--443, 2018.
+\bibitem{ramachandram2017deep} D. Ramachandram and G. W. Taylor, ``Deep multimodal learning: A survey on recent advances and trends,'' \emph{IEEE Signal Process. Mag.}, vol. 34, no. 6, pp. 96--108, 2017.
+\bibitem{dodge2016understanding} S. Dodge and L. Karam, ``Understanding how image quality affects deep neural networks,'' in \emph{Proc. QoMEX}, 2016, pp. 1--6.
+\bibitem{hendrycks2019benchmarking} D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
+\bibitem{tsai2019multimodal} Y. H. H. Tsai et al., ``Multimodal transformer for unaligned multimodal language sequences,'' in \emph{Proc. ACL}, 2019, pp. 6558--6569.
+\bibitem{ma2021smil} M. Ma, J. Ren, L. Zhao, D. Testuggine, and X. Peng, ``SMIL: Multimodal learning with severely missing modality,'' in \emph{Proc. AAAI}, 2021, pp. 2302--2310.
+\bibitem{lee2020private} N. Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in \emph{Proc. NeurIPS}, 2020.
+\bibitem{khaleghi2013multisensor} B. Khaleghi, A. Khamis, F. O. Karray, and S. N. Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
+\bibitem{lin1991divergence} J. Lin, ``Divergence measures based on the Shannon entropy,'' \emph{IEEE Trans. Inf. Theory}, vol. 37, no. 1, pp. 145--151, 1991.
+\bibitem{endres2003new} D. M. Endres and J. E. Schindelin, ``A new metric for probability distributions,'' \emph{IEEE Trans. Inf. Theory}, vol. 49, no. 7, pp. 1858--1860, 2003.
+\bibitem{kullback1951information} S. Kullback and R. A. Leibler, ``On information and sufficiency,'' \emph{Ann. Math. Stat.}, vol. 22, no. 1, pp. 79--86, 1951.
+\bibitem{julier2000new} S. Julier, J. Uhlmann, and H. F. Durrant-Whyte, ``A new method for the nonlinear transformation of means and covariances in filters,'' \emph{IEEE Trans. Autom. Control}, vol. 45, no. 3, pp. 477--482, 2000.
+\bibitem{jaegle2021perceiver} A. Jaegle et al., ``Perceiver: General perception with iterative attention,'' in \emph{Proc. ICML}, 2021, pp. 4651--4664.
+\bibitem{neverova2015moddrop} N. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 38, no. 8, pp. 1692--1706, 2015.
+\bibitem{blundell2015weight} C. Blundell, J. Cornebise, K. Kavukcuoglu, and D. Wierstra, ``Weight uncertainty in neural networks,'' in \emph{Proc. ICML}, 2015, pp. 1613--1622.
+\bibitem{guo2017calibration} C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
+\bibitem{kumar2026scholar22} S. Suresh Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
+\bibitem{kumar2026scholar23} S. Suresh Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \emph{ScholarMaster Technical Report Series}, Paper 23, 2026.
+\bibitem{liggins2008handbook} M. E. Liggins, D. L. Hall, and J. Llinas, \emph{Handbook of Multisensor Data Fusion: Theory and Practice}, CRC Press, 2008.
 \end{thebibliography}
 
 \end{document}

@@ -9,6 +9,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{float}
+\usepackage{array}
 \usepackage{nomencl}
 \usepackage{url}
 
@@ -145,7 +146,7 @@ Over the course of developing the ScholarMaster subsystem ecosystem, these archi
 \begin{enumerate}
     \item \textbf{End-to-End Monoliths:} Optimization pressures favor direct, opaque coupling. While performant in static benchmarks, these pipelines proved brittle under incremental evolution \cite{b17}.
     \item \textbf{Cloud-Modular Dependencies:} Offloading reasoning introduces temporal jitter and privacy exposure \cite{b3, b18}.
-    \item \textbf{Loose Event-Driven Buses:} Exhibit ``abstraction drift''---components operating on conflicting temporal views accumulate synchronization inconsistencies.
+    \item \textbf{Loose Event-Driven Buses:} Exhibit ``abstraction drift''---subsystems operating on conflicting temporal views accumulate synchronization inconsistencies.
 \end{enumerate}
 
 \subsection{Subsystem Scope and Canonical Separation}
@@ -171,15 +172,15 @@ A commonality of these approaches in this regard is that in none of them is cons
 \caption{Architectural Paradigm Comparison}
 \label{tab:related_work}
 \centering
-\begin{tabular}{@{}p{2.5cm} p{2.5cm} p{2.8cm}@{}}
+\begin{tabular}{@{}p{2.3cm} p{2.5cm} p{3.0cm}@{}}
 \toprule
 \textbf{Paradigm} & \textbf{Primary Weakness} & \textbf{ScholarMaster Alternative} \\
 \midrule
 Monolithic AI & Opaque coupling & Boundary invariants \\
 \addlinespace
-Microservice AI & Weak determinism & Edge-native memory confinement \\
+Microservice AI & Weak determinism & Edge memory confinement \\
 \addlinespace
-Event-Driven & Synchronization drift & Strict upward abstraction admissibility \\
+Event-Driven & Synchronization drift & Upward abstraction admissibility \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -369,15 +370,15 @@ When a vision layer accumulates temporal tracking state that belongs to the inte
 \caption{Examples of Forbidden Cross-Layer Behaviors}
 \label{tab:forbidden}
 \centering
-\begin{tabular}{@{}p{3.8cm} p{4.2cm}@{}}
+\begin{tabular}{@{}p{3.6cm} p{4.4cm}@{}}
 \toprule
 \textbf{Architectural Violation} & \textbf{Why it is Strictly Forbidden} \\
 \midrule
 Vision layer making logical access decisions & Violates \textit{separation of concerns}; locks logic inside perception weights. \\
 \addlinespace
-Runtime layer modifying probabilistic inference priors & Breaks \textit{deterministic composition}; causes hardware load to alter reasoning. \\
+Runtime layer modifying inference priors & Breaks \textit{deterministic composition}; causes hardware load to alter reasoning. \\
 \addlinespace
-Logic layer caching raw camera/audio sensor streams & Violates \textit{data minimization}; creates severe privacy liabilities. \\
+Logic layer caching raw sensor streams & Violates \textit{data minimization}; creates severe privacy liabilities. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -481,21 +482,20 @@ This decomposition also allows selective recertification. For instance, a change
 \section{Certification and Regulatory Implications}
 Edge intelligent systems tend to function in environments where regulations require explanations, audit trails, and a limited behavior set. Certification is often challenging for such systems if perception weights cause direct business logic effects, as is the case with many monolithic deep learning systems, since they are typically not directly tied to business logic.
 
-ScholarMaster tackles this by slicing up the responsibility surface into independently verifiable layers so that any given component can be certified for logical or control behavior without diving into implementation details below. The design reflects institutional governance frameworks like GDPR \cite{b10}, where data minimization and deterministic reconstruction of operational logic are mandated features, not optional extensions.
+ScholarMaster tackles this by slicing up the responsibility surface into independently verifiable layers so that any given component can be certified for logical or control behavior without diving into implementation details below. The design reflects institutional governance frameworks like GDPR \cite{b11}, where data minimization and deterministic reconstruction of operational logic are mandated features, not optional extensions.
 
-\section{Architectural Scope, Tradeoffs, and Operational Economics}
+\subsection{Architectural Scope and Economic Tradeoffs}
+ScholarMaster focuses on application domains where interpretability, lifecycle auditing, predictable composition, and bounded execution profiles matter more than throughput optimization. Thus, it has a higher latency floor than specialized fused pipelines that prioritize performance isolation.
 
-ScholarMaster makes no claims of outperforming existing work on specific benchmarks or maximizing accuracy gains via monolithic, non-auditable inference pipelines. It focuses on application domains where interpretability, lifecycle auditing, predictable composition, and bounded execution profiles matter more than throughput optimization. Thus, it has a higher latency floor than specialized fused pipelines that prioritize performance isolation.
+A practical intelligent system rarely stays the same throughout its lifespan. Hardware diverges, versions skew between generations of a subsystem, performance degrades on older hardware, serialized processing introduces overhead, and institutional deployment diversity leads to heterogeneity. The architecture given is designed around an expectation of ongoing evolution rather than uniform upgrades of an entire stack at once, and thus emphasizes subsystem survivability in the face of iterative replacement.
 
-A practical intelligent system rarely stays the same throughout its lifespan. Hardware diverges, versions skew between generations of a subsystem, performance degrades on older hardware, serialized processing introduces overhead, and institutional deployment diversity leads to heterogeneity. Cameras stop working, microphones wear out, policies change, and hardware acquisition practices lead to widely varying subsystem generations being deployed at the same time. In practice, this has proven to be a significant challenge to later subsystems by the time they were developed. The architecture given is designed around an expectation of ongoing evolution rather than uniform upgrades of an entire stack at once, and thus emphasizes subsystem survivability in the face of iterative replacement.
-
-Each abstraction boundary in ScholarMaster incurs costs such as serialization overhead, interface verification, and reduced ownership. The architecture reflects this by making it more difficult to connect components loosely coupled and therefore less likely to have ad hoc couplings that are hard to manage. Systems with tighter coupling often seem more cost-effective during implementation, as the benefits of direct memory access can reduce immediate engineering costs \cite{b17}. However, these costs are often deferred to later stages in the development cycle.
+Each abstraction boundary in ScholarMaster incurs costs such as serialization overhead, interface verification, and reduced ownership. Systems with tighter coupling often seem more cost-effective during implementation, as direct memory access reduces immediate engineering costs \cite{b17}. However, these costs are often deferred to later stages in the development cycle.
 
 \subsection{Failed Design Alternatives}
-Early architectural prototypes explored shared-memory fusion between the sensing and logic layers, on the premise that raw memory pointers would eliminate serialization copy overhead. The approach reduced end-to-end latency by several milliseconds, but produced hidden coupling: the logic layer became implicitly dependent on the memory layout of the vision pipeline. When the vision model was quantized for deployment, downstream logic failed without any interface contract violation being reported. This experience---among several similar integration episodes---led the architecture to reject shared-memory fusion, accepting serialization overhead as the structural cost of independent verifiability.
+Early architectural prototypes explored shared-memory fusion between the sensing and logic layers, on the premise that raw memory pointers would eliminate serialization copy overhead. The approach reduced end-to-end latency by several milliseconds, but produced hidden coupling: the logic layer became implicitly dependent on the memory layout of the vision pipeline. When the vision model was quantized for deployment, downstream logic failed without any interface contract violation being reported. This experience led the architecture to reject shared-memory fusion, accepting serialization overhead as the structural cost of independent verifiability.
 
 \subsection{Hard Architectural Limitations}
-This framework is not a universal solution. The architecture intentionally prioritizes modularity and auditability over peak throughput optimization. We explicitly acknowledge the architectural tradeoff: the framework accepts higher latency floors relative to fused pipelines, significant interface-maintenance overhead, increased engineering discipline requirements, and deployment complexity in ultra-low-latency domains. In environments where ultra-low latency dominates all other constraints---such as high-frequency automated trading or low-level drone motor stabilization---tightly coupled, fused pipelines will achieve lower latency bounds. ScholarMaster is explicitly scoped to edge-native domains where interpretability, deterministic containment, and lifecycle maintainability are operationally more valuable than marginal throughput gains.
+This framework is not a universal solution. The architecture intentionally prioritizes modularity and auditability over peak throughput optimization. We explicitly acknowledge the architectural tradeoff: the framework accepts higher latency floors relative to fused pipelines, significant interface-maintenance overhead, increased engineering discipline requirements, and deployment complexity in ultra-low-latency domains. ScholarMaster is explicitly scoped to edge-native domains where interpretability, deterministic containment, and lifecycle maintainability are operationally more valuable than marginal throughput gains.
 
 % ==========================================
 % X. CONCLUSION
@@ -515,6 +515,8 @@ This paper collates systems-engineering understanding distilled from a larger bo
 \bibitem{b12} D. L. Parnas, "On the criteria to be used in decomposing systems into modules," \textit{Communications of the ACM}, vol. 15, no. 12, pp. 1053-1058, 1972.
 
 \bibitem{b10} A. Avizienis, J. Laprie, B. Randell, and C. Landwehr, "Basic concepts and taxonomy of dependable and secure computing," \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11-33, 2004.
+
+\bibitem{b8} P. Th. Eugster, P. A. Felber, R. Guerraoui, and A.-M. Kermarrec, "The many faces of publish/subscribe," \textit{ACM Computing Surveys}, vol. 35, no. 2, pp. 114-131, 2003.
 
 \bibitem{b9} M. Quigley et al., "ROS: an open-source Robot Operating System," in \textit{ICRA workshop on open source software}, 2009.
 

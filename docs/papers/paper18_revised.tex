@@ -111,7 +111,7 @@ Privacy systems often exhibit failures during the abnormal state. Crash conditio
 \begin{table}[htbp]
 \caption{Failure Taxonomy}
 \centering
-\begin{tabular}{p{2.5cm} p{5cm}}
+\begin{tabular}{@{}p{2.6cm} p{5.5cm}@{}}
 \toprule
 \textbf{Failure Mode} & \textbf{Privacy Risk} \\
 \midrule
@@ -139,8 +139,8 @@ The system must maintain privacy invariants under \textit{all} enumerated failur
 Raw sensor data is processed exclusively in volatile memory. The system enforces this through:
 \begin{itemize}
     \item RAM disk allocation for sensor buffers
-    \item Disabled swap partition (kernel parameter \texttt{vm.swappiness=0})
-    \item Crash dump exclusion via \texttt{/proc/\$PID/coredump\_filter}
+    \item Disabled swap partitions via \texttt{vm.swappiness=0}
+    \item Crash dump exclusion through process \texttt{coredump\_filter}
     \item No file handles opened for raw data paths
 \end{itemize}
 
@@ -203,7 +203,7 @@ The \texttt{verify\_zero} check forces a read-back to improve operational confid
 A separate watchdog process monitors TTL compliance, ensuring deterministic fail-closed escalation. The watchdog:
 \begin{itemize}
     \item Runs as a distinct process with separate memory space
-    \item Executes at an equal or higher scheduling class (\texttt{SCHED\_FIFO}) to enforce starvation resistance
+    \item Executes at a real-time scheduling priority (\texttt{SCHED\_FIFO}) for starvation resistance
     \item Queries the main process via shared memory fence heartbeat semantics
     \item Terminates the main process via SIGKILL if a TTL violation is detected
     \item Cannot be disabled by the main process
@@ -255,15 +255,17 @@ The invariants below are organized as a layered enforcement chain. This sequence
 
 \subsection{P18-INV-01: Boundary Non-Crossing}
 Invariant P18-INV-01 validates the irreversibility boundary as defined in Paper 17.
-
-Formally: $\forall d \in \text{RawData}, \forall t: \text{accessible}(d, t) \Rightarrow \text{is\_pre\_boundary}(d, t)$
+\begin{equation}
+\forall d \in \mathcal{D}_{\mathrm{raw}}, \forall t: \mathrm{accessible}(d, t) \implies \mathrm{is\_pre\_boundary}(d, t)
+\end{equation}
 
 Enforcement: Type system prevents raw data types from appearing in post-boundary function signatures. Runtime assertions verify payload types at the boundary transition.
 
 \subsection{P18-INV-02: TTL Compliance}
 \textit{No process holds raw data beyond the defined TTL.}
-
-Formally: $\forall d \in \text{RawData}, \forall t: \text{accessible}(d, t) \Rightarrow \text{age}(d, t) < \text{TTL}(d)$
+\begin{equation}
+\forall d \in \mathcal{D}_{\mathrm{raw}}, \forall t: \mathrm{accessible}(d, t) \implies \mathrm{age}(d, t) < \mathrm{TTL}(d)
+\end{equation}
 
 Enforcement: TTL enforcement loop (10ms interval) + independent watchdog (100ms interval). Dual enforcement provides defense in depth.
 
@@ -327,7 +329,7 @@ We employ systematic fault injection to verify invariant preservation under fail
 \begin{table}[htbp]
 \caption{Fault Injection Scenarios}
 \centering
-\begin{tabular}{p{1cm} p{2cm} p{4cm}}
+\begin{tabular}{@{}lp{2.2cm}p{4.2cm}@{}}
 \toprule
 \textbf{ID} & \textbf{Failure} & \textbf{Injection Method} \\
 \midrule
@@ -354,7 +356,7 @@ Post-failure residue detection operates at the application layer and includes:
     \item Network capture analysis for leaked payloads
     \item Process memory dump inspection (where permitted by kernel)
 \end{itemize}
-Note: these checks verify the absence of recoverable application-layer references. Physical DRAM-level forensics (e.g., cold-boot extraction) are outside the scope of this software-level verification.
+\textit{Scope Note:} These checks verify the absence of recoverable application-layer references; hardware DRAM remanence (e.g., cold-boot attacks) falls outside software-level verification.
 
 \subsection{Test Harness Implementation}
 The test harness is implemented in Python with C extensions for memory inspection:
@@ -641,8 +643,6 @@ This runtime-verification study demonstrates that architectural privacy claims c
 \bibitem{b13} N. Babu P., ``Fail-safe semantics for privacy-critical edge systems,'' \textit{ScholarMaster Series}, Paper 9, 2025.
 
 \bibitem{b17} N. Babu P., ``Architectural irreversibility: Enforcing privacy, governance, and trust in intelligent campus systems,'' \textit{ScholarMaster Series}, Paper 17 (Capstone), 2026.
-\bibitem{b22} S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b25} S. Suresh Kumar, ``ScholarMaster Integration Architecture and Downstream Error Propagation Analysis,'' \textit{ScholarMaster Research Series}, Paper 25, 2026.
 
 \bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
 \bibitem{kumar2026scholar23} S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \emph{ScholarMaster Technical Report Series}, Paper 23, 2026.

@@ -1,0 +1,608 @@
+[
+  {
+    "source_paper_id": "P6",
+    "source_plan_order": 3,
+    "target_paper_id": "P5",
+    "target_plan_order": 2,
+    "target_status": "PUBLISHED",
+    "bib_key": "b34",
+    "bib_text": "P. Narendra et al., \"Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,\" \\textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.",
+    "citing_body_lines": [
+      [
+        119,
+        "When you have larger temporal context windows, they help enhance your performing semantic recognition accuracy but at the same time introduce structural latency. Introducing 10-second windows before inference is inherently against strict response constraints. Furthermore, large transformer-based models, such as those containing around 85 million parameters, require excessive memory and bandwidth \\cite{b15, b16}. These models are particularly onerous on edge hardware based on ARM that does not contain NPU. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \\cite{b34}, while the present work focuses on reverberant acoustic sensing."
+      ]
+    ],
+    "classification": "VALID_PUBLISHED_PAPER_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P3",
+    "source_plan_order": 4,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P7",
+    "source_plan_order": 5,
+    "target_paper_id": "P5",
+    "target_plan_order": 2,
+    "target_status": "PUBLISHED",
+    "bib_key": "b16",
+    "bib_text": "P. Narendra et al., \"Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,\" \\textit{ScholarMaster Series}, Paper 5, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PUBLISHED_PAPER_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P7",
+    "source_plan_order": 5,
+    "target_paper_id": "P3",
+    "target_plan_order": 4,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "p3",
+    "bib_text": "N. Babu P., \"Privacy-Preserving Academic Engagement Metrics via Pose-Only Architectural Irreversibility,\" \\textit{ScholarMaster Series}, Paper 3, 2026.",
+    "citing_body_lines": [
+      [
+        437,
+        "In order to achieve high throughput retrieval without incurring cloud latency, the algorithm makes use of a strictly local processing paradigm. After being loaded into memory, video frames are immediately processed and discarded. By executing the computation on the local device, no data needs to be transmitted during retrieval. The embeddings are furthermore stored encrypted at rest; the privacy preserving mechanisms are further discussed in related work \\cite{p3}. Finally, by only allowing processing of single video frames at a time, the algorithm is physically limited to a retrieval window of one frame."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P7",
+    "source_plan_order": 5,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, \"Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,\" \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P7",
+    "source_plan_order": 5,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P23",
+    "source_plan_order": 6,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        49,
+        "To resolve this challenge, this paper establishes the theoretical foundations, algorithmic design, and empirical validation of an \\textit{Adaptive Risk-Driven Cascade Architecture} for edge computing. By consuming the Layer-1 Perception Risk metric $R_p \\in [0, 1]$ established in \\cite{kumar2026scholar22}\u2014which unifies Dirichlet evidential uncertainty, multi-branch cross-agreement discrepancy, optical blur bounds, and landmark dispersion\u2014the edge runtime dynamically dispatches frames along an optimal accuracy-latency Pareto frontier. Clear, unambiguous frames execute swiftly through an ultra-fast primary model ($1.264\\text{ ms}$), while corrupted or ambiguous scenes trigger selective heavy verification ($14.501\\text{ ms}$) or fail-closed privacy degradation."
+      ],
+      [
+        85,
+        "Model cascades date back to the classic Viola-Jones boosted cascade for real-time face detection \\cite{viola2001rapid}. Modern deep learning cascades employ lightweight filter models to classify easy inputs, triggering large networks only when confidence falls below a threshold \\cite{bolukbasi2017adaptive, wang2018skipnet}. However, existing deep cascades rely on maximum softmax probability (MSP) or predictive entropy for routing. Because deep neural networks are notoriously uncalibrated and overconfident on out-of-distribution inputs \\cite{guo2017calibration}, softmax-gated cascades erroneously route severely corrupted frames through the fast path. ScholarMaster replaces heuristic softmax routing with calibrated Subjective Logic Dirichlet vacuity and physical optical blur bounds \\cite{kumar2026scholar22}."
+      ],
+      [
+        104,
+        "Operationally, $\\pi(\\mathbf{x}) = \\mathbb{P}(r(\\mathbf{x}) = 1 \\mid R_p(\\mathbf{x}))$ denotes the probability of invoking the secondary heavy model given the Layer-1 perception risk $R_p(\\mathbf{x}) \\in [0, 1]$ computed by the upstream integrity gate \\cite{kumar2026scholar22}."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P4",
+    "source_plan_order": 8,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, \"Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,\" \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        145,
+        "The emphasis here is on relational reconciliation rather than perceptual optimization---a distinction that positions this work closer to stream-processing systems research \\cite{b22} than to computer vision or behavioral analytics."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P24",
+    "source_plan_order": 10,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P24",
+    "source_plan_order": 10,
+    "target_paper_id": "P23",
+    "target_plan_order": 6,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar23",
+    "bib_text": "S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \\emph{ScholarMaster Technical Report Series}, Paper 23, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P2",
+    "target_plan_order": 7,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P2",
+    "bib_text": "N. Babu P., \"Context-Aware Multi-Modal Framework,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        447,
+        "\\bibitem{P2} N. Babu P., \"Context-Aware Multi-Modal Framework,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P3",
+    "target_plan_order": 4,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P3",
+    "bib_text": "N. Babu P., \"Privacy-Preserving Academic Engagement Metrics,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        208,
+        "\\item \\textbf{INV-01 (Raw Non-Persistence):} No sensor data shall persist beyond the volatile RAM boundary, ensuring physical ephemerality \\cite{P3}."
+      ],
+      [
+        211,
+        "\\item \\textbf{INV-10 (Density Constraint):} L3 output dimensionality is strictly capped to ensure abstract irreversibility, formally preventing the inversion of the neural network back to pixel space \\cite{P3}."
+      ],
+      [
+        216,
+        "\\item \\textbf{INV-02 (Identity Non-Propagation):} Identity tokens are ephemeral, randomly generated per session, and valid only for the immediate execution context \\cite{P3, P9}."
+      ],
+      [
+        449,
+        "\\bibitem{P3} N. Babu P., \"Privacy-Preserving Academic Engagement Metrics,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P4",
+    "target_plan_order": 8,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P4",
+    "bib_text": "N. Babu P., \"Automated Schedule-Compliance Monitoring,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        451,
+        "\\bibitem{P4} N. Babu P., \"Automated Schedule-Compliance Monitoring,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P6",
+    "target_plan_order": 3,
+    "target_status": "ACCEPTED",
+    "bib_key": "P6",
+    "bib_text": "N. Babu P., \"Privacy-Preserving Acoustic Anomaly Detection,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        453,
+        "\\bibitem{P6} N. Babu P., \"Privacy-Preserving Acoustic Anomaly Detection,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_ACCEPTED_PAPER_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P7",
+    "target_plan_order": 5,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P7",
+    "bib_text": "N. Babu P., \"Operationalizing Spatiotemporal Constraints,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        455,
+        "\\bibitem{P7} N. Babu P., \"Operationalizing Spatiotemporal Constraints,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P9",
+    "target_plan_order": 9,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P9",
+    "bib_text": "N. Babu P., \"Privacy-Governed Multi-Module Orchestration,\" \\textit{ScholarMaster Series}, 2025.",
+    "citing_body_lines": [
+      [
+        217,
+        "\\item \\textbf{INV-03 (Governance Non-Bypass):} No data, even abstract metadata, can transition to the network egress module without passing L5 Governance logic checks \\cite{P9}."
+      ],
+      [
+        459,
+        "\\bibitem{P9} N. Babu P., \"Privacy-Governed Multi-Module Orchestration,\" \\textit{ScholarMaster Series}, 2025."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P11",
+    "target_plan_order": 11,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P11",
+    "bib_text": "N. Babu P., \"Production-Grade Edge MLOps Architecture,\" \\textit{ScholarMaster Series}, 2026.",
+    "citing_body_lines": [
+      [
+        232,
+        "\\item \\textbf{INV-08 (Fail-Closed Liveness):} System and execution failures inevitably transition the node to a HALT/Reboot state, never an OPEN/permissive bypass state \\cite{P11}."
+      ],
+      [
+        234,
+        "\\item \\textbf{INV-15 (Privacy Mode Default):} Following any reboot or power loss, the system inevitably boots into restricted Privacy Mode, requiring an explicit, cryptographically signed remote handshake to elevate privileges \\cite{P11}."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P12",
+    "target_plan_order": 12,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P12",
+    "bib_text": "N. Babu P., \"Flash Endurance Engineering for Edge AI,\" \\textit{ScholarMaster Series}, 2026.",
+    "citing_body_lines": [
+      [
+        210,
+        "\\item \\textbf{INV-09 (Volatile-Only Processing):} All execution must occur exclusively in volatile memory, structurally preventing state persistence to disk or swap space \\cite{P12}."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P5",
+    "target_plan_order": 2,
+    "target_status": "PUBLISHED",
+    "bib_key": "P5",
+    "bib_text": "N. Polisetti et al., \"Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,\" \\textit{ScholarMaster Series}, 2026.",
+    "citing_body_lines": [
+      [
+        231,
+        "\\item \\textbf{INV-06 (Thermal Equilibrium):} Inference loads must be dynamically throttled to maintain component temperatures strictly below physical silicon degradation limits \\cite{P5, P11}."
+      ]
+    ],
+    "classification": "VALID_PUBLISHED_PAPER_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P20",
+    "source_plan_order": 13,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "P22",
+    "bib_text": "S. Suresh Kumar, \"Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,\" \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P8",
+    "source_plan_order": 14,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        137,
+        "Secure provenance schemes \\cite{b5} typically employ directed acyclic graphs (DAGs) to capture data derivation and file modification histories in a distributed cloud setting. Our approach also uses DAGs, but aims at the more modest goal of recording linear event logs that can be safely stored on memory-constrained edge nodes \\cite{b22}. While general-purpose provenance systems such as the InterPlanetary File System (IPFS) aim to make information publicly accessible by default, CPL makes use of permissioned access to satisfy institutional privacy and access control policies \\cite{b7}."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P19",
+    "source_plan_order": 16,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P19",
+    "source_plan_order": 16,
+    "target_paper_id": "P24",
+    "target_plan_order": 10,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar24",
+    "bib_text": "S.~Suresh~Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \\emph{ScholarMaster Technical Report Series}, Paper 24, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P10",
+    "source_plan_order": 19,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        300,
+        "Although the architecture is edge native, the audit layer requires external communication for ledger commitment. The design question is whether under moderate network congestion this can lead to indirect backlog in shared resources \\cite{b22}."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P10",
+    "source_plan_order": 19,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P3",
+    "target_plan_order": 4,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b10",
+    "bib_text": "N. Babu P., ``Privacy-preserving pose analytics via architectural irreversibility,'' \\textit{ScholarMaster Series}, Paper 3, 2025.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P10",
+    "target_plan_order": 19,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b11",
+    "bib_text": "N. Babu P., ``Mandatory governance gates for edge AI systems,'' \\textit{ScholarMaster Series}, Paper 10, 2025.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P11",
+    "target_plan_order": 11,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b12",
+    "bib_text": "N. Babu P., ``Visible privacy indicators in intelligent environments,'' \\textit{ScholarMaster Series}, Paper 11, 2025.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P9",
+    "target_plan_order": 9,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b13",
+    "bib_text": "N. Babu P., ``Fail-safe semantics for privacy-critical edge systems,'' \\textit{ScholarMaster Series}, Paper 9, 2025.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P17",
+    "target_plan_order": 21,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b17",
+    "bib_text": "N. Babu P., ``Architectural irreversibility: Enforcing privacy, governance, and trust in intelligent campus systems,'' \\textit{ScholarMaster Series}, Paper 17 (Capstone), 2026.",
+    "citing_body_lines": [
+      [
+        554,
+        "Paper 17 \\cite{b17} defines the canonical eight-layer architecture and states architectural irreversibility as a design principle. This paper \\textbf{validates}, but does not extend, those claims. We provide runtime evidence that the architecture behaves as specified, strictly isolating empirical verification from theoretical design."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        607,
+        "\\bibitem{b22} J. Rushby, ``Partitioning in avionics architectures: Requirements, mechanisms, and assurance,'' \\textit{NASA Contractor Report}, 1999."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P18",
+    "source_plan_order": 22,
+    "target_paper_id": "P23",
+    "target_plan_order": 6,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar23",
+    "bib_text": "S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \\emph{ScholarMaster Technical Report Series}, Paper 23, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P25",
+    "source_plan_order": 23,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [
+      [
+        39,
+        "Modern autonomous cyber-physical edge computing systems---such as automated transit hubs, smart educational campuses, automated manufacturing facilities, and secure healthcare environments---are fundamentally organized as multi-stage, hierarchical processing pipelines \\cite{sculley2015hidden, sambasivan2021everyone, leveson1995safeware}. In these mission-critical deployments, raw continuous sensory observations (such as optical video frames, skeletal keypoints, and acoustic streams) are sequentially ingested, filtered, mapped into high-dimensional latent metric spaces for biometric identity recognition, tracked over time via Bayesian kinematic state estimators, validated against temporal logic schedule compliance rules, and finally committed to immutable audit logs for administrative decision-making \\cite{kumar2026scholar22, kumar2026scholar23}."
+      ],
+      [
+        51,
+        "\\item \\textbf{Absence of Root-Level Fail-Closed Invariants}: Standard pipelines rely on downstream heuristic exception handling rather than provably containing sensory corruption at Layer 1 prior to vector index submission \\cite{kumar2026scholar22, kumar2026scholar24}."
+      ],
+      [
+        113,
+        "\\item \\textbf{Layer 1 (Perception Integrity)}: Ingests raw multi-modal sensory observations $\\mathbf{x} = \\{I, \\mathbf{k}, \\mathbf{a}\\}$, evaluates evidential uncertainty, multi-branch disagreement, Laplacian blur, and temporal consistency, computing the composite risk $R_p(\\mathbf{x}) \\in [0, 1]$ \\cite{kumar2026scholar22}. It emits a validated sensory payload $\\mathcal{P}(\\mathbf{x})$ if $R_p(\\mathbf{x}) \\le \\tau_{risk} = 0.70$, or triggers immediate fail-closed quarantine ($\\bot$) otherwise."
+      ]
+    ],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P25",
+    "source_plan_order": 23,
+    "target_paper_id": "P23",
+    "target_plan_order": 6,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar23",
+    "bib_text": "S.~Suresh~Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' \\emph{ScholarMaster Technical Report Series}, Paper 23, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P25",
+    "source_plan_order": 23,
+    "target_paper_id": "P24",
+    "target_plan_order": 10,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar24",
+    "bib_text": "S.~Suresh~Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \\emph{ScholarMaster Technical Report Series}, Paper 24, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P1",
+    "source_plan_order": 25,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b22",
+    "bib_text": "S. Suresh Kumar, \"Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,\" \\textit{ScholarMaster Research Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P1",
+    "source_plan_order": 25,
+    "target_paper_id": "P25",
+    "target_plan_order": 23,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "b25",
+    "bib_text": "S. Suresh Kumar, \"ScholarMaster Integration Architecture and Downstream Error Propagation Analysis,\" \\textit{ScholarMaster Research Series}, Paper 25, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P1",
+    "source_plan_order": 25,
+    "target_paper_id": "P22",
+    "target_plan_order": 1,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar22",
+    "bib_text": "S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \\emph{ScholarMaster Technical Report Series}, Paper 22, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  },
+  {
+    "source_paper_id": "P1",
+    "source_plan_order": 25,
+    "target_paper_id": "P25",
+    "target_plan_order": 23,
+    "target_status": "UNPUBLISHED_PLANNED",
+    "bib_key": "kumar2026scholar25",
+    "bib_text": "S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \\emph{ScholarMaster Technical Report Series}, Paper 25, 2026.",
+    "citing_body_lines": [],
+    "classification": "VALID_PRIOR_PLANNED_CITATION",
+    "is_valid": true
+  }
+]

@@ -258,9 +258,8 @@ This state-machine behavior (Figure \ref{fig:fsm}) stabilizes evaluation across 
     \State $ID \leftarrow e.identity$
     \State $Zone \leftarrow e.zone$
     \State $StateBuffer[ID].append(Zone, now())$
-    \State
     \State \textbf{// Check contiguous duration in current zone}
-    \If{$\text{Duration}(StateBuffer[ID] == Zone) \ge \tau_{debounce}$}
+    \If{$\mathrm{Duration}(StateBuffer[ID], Zone) \ge \tau_{\mathrm{debounce}}$}
         \State $E.add(ID, Zone)$ \Comment{Promote to stable event}
     \Else
         \State \textbf{Drop} \Comment{Filter as transient noise}
@@ -280,10 +279,10 @@ Synchronized class transitions impose brief, extremely high event traffic. Laten
 
 \subsection{Schema Partitioning Strategy}
 
-The \texttt{student\_schedule} table is partitioned by \texttt{day\_of\_week}, immediately reducing search scope to a single partition. This reduces unnecessary cross-day scanning and constrains index traversal depth.
+The schedule table is partitioned by \texttt{day\_of\_week}, immediately constraining lookup scope to a single active daily partition. This eliminates cross-day index scans and bounds traversal depth.
 
 % --- LISTING 1: SQL SCHEMA ---
-\begin{figure}[htbp] % <--- CHANGED FROM [H] TO FIX SPACING
+\begin{figure}[htbp]
 \centering
 \textbf{Listing 1: PostgreSQL Schedule Schema}
 \begin{lstlisting}[language=SQL]
@@ -413,7 +412,7 @@ With transaction-level pooling enabled, the latency curve becomes noticeably fla
     \addlegendentry{With Pooling}
 \end{axis}
 \end{tikzpicture}
-\caption{Throughput Stress Test - without pooling (Red): connection exhaustion leads to p99 latency spiking beyond 3000 QPS. With connection pooling (Green): 5000 QPS with p99 latency below 15 ms.}
+\caption{Throughput Stress Test. Without pooling (Red): connection exhaustion causes p99 latency spikes beyond 3,000 QPS. With connection pooling (Green): 5,000 QPS is sustained with p99 latency below 15 ms.}
 \label{fig:throughput}
 \end{figure}
 
@@ -529,10 +528,7 @@ The design emphasizes its role in managing predictable processes rather than pro
 \bibitem{b8} L. Zhang, "Spatio-Temporal Visual Analysis for Urban Traffic Characters Based on Video Surveillance Camera Data," \textit{ISPRS International Journal of Geo-Information}, vol. 10, no. 3, p. 177, 2021.
 
 \bibitem{b7} M. A. Khan et al., "Video Surveillance Anomaly Detection: A Review on Deep Learning Benchmarks," \textit{IEEE Access}, vol. 12, pp. 1-15, 2024.
-\bibitem{b22} S. Suresh Kumar, "Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision," \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b25} S. Suresh Kumar, "ScholarMaster Integration Architecture and Downstream Error Propagation Analysis," \textit{ScholarMaster Research Series}, Paper 25, 2026.
 
-\bibitem{kumar2026scholar25} S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \emph{ScholarMaster Technical Report Series}, Paper 25, 2026.
 \end{thebibliography}
 
 \end{document}

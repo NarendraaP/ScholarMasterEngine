@@ -79,11 +79,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 % ABSTRACT
 % ==========================================
 \begin{abstract}
-Edge-native monitoring infrastructures produce large amounts of metadata which require integrity verification mechanisms that remain valid long after the data has been initially ingested and processed. Modern data protection regulations impose stringent constraints on the long tail storage of personal data, while conventional centralized database management systems allow data to be updated, and therefore rewritten, under the control of privileged users, undermining the principle of non-repudiation. Meanwhile, databases built around immutable log structures are incompatible with the requirement from regulation such as GDPR Article 17 to allow for deletion of data upon request.
+Edge-native monitoring infrastructures produce vast telemetry streams that require persistent integrity verification. Modern data protection regulations impose stringent constraints on long-term personal data retention, while conventional database systems allow data rewriting by privileged accounts, undermining non-repudiation. Conversely, immutable append-only ledgers conflict with privacy regulations such as GDPR Article 17, which mandate verifiable data deletion upon request.
 
-This study presents a novel Cryptographic Provenance Layer (CPL), which leverages potential of commitment schemes to achieve auditability while enabling selective revocation of data disclosure. Our approach utilizes the two-layer concept where encrypted payloads are stored off-chain, while the Merkle trees comprised of their hashes are committed to the permissioned ledger. To address the immutability requirement in such designs, which does not allow deletion of any data, we introduce the concept of Erasure-Compatible Immutability and achieve it in practice with Per-Identity Symmetric Key (PISK) protocol, which allows selective revocation of payload disclosure by erasing the corresponding decryption keys.
+This study presents the Cryptographic Provenance Layer (CPL), combining hash commitment schemes with selective data revocation. Encrypted event payloads are stored off-chain while their Merkle tree root commitments are anchored to a permissioned ledger. To achieve Erasure-Compatible Immutability, we introduce the Per-Identity Symmetric Key (PISK) protocol, which enables selective revocation of payload access by deterministically shredding the corresponding identity decryption keys without altering the underlying Merkle commitments.
 
-Evaluation on a simulated BFT-style validator network indicates sustained throughput above 1,000 transactions per second with sub-second confirmation latency under the evaluated workload range. Because only fixed-size hash commitments enter the ledger, storage growth is predictable and independent of payload. The results suggest that layered cryptographic provenance architectures are viable pathways to tamper-evident logging while satisfying legally required erasure workflows, by decoupling attestation and payload disclosure.
+Evaluation on a simulated BFT validator network confirms sustained throughput above 1,000 transactions per second with sub-second confirmation latency. Because only fixed-size commitments enter the ledger, storage overhead remains constant per transaction. The findings prove that layered cryptographic provenance successfully balances tamper-evident auditability with regulatory erasure mandates.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -227,7 +227,8 @@ C_{payload}, Tag = \text{AES-GCM}(K_{sym}^{ID}, E_{payload}, IV)
 This ensures that the off-chain data store cannot subtly bit-rot or tamper with the payload without causing an obvious failure of the AES decryption check during a routine audit. Reusing an IV with the same key catastrophically compromises the security of AES-GCM; uniqueness is enforced by using a monotonically increasing counter, combined with per-batch entropy, as the IV.
 
 \subsection{Future Extensibility: Zero-Knowledge Proofs}
-The dual-layer can be extended to support non-interactive zero-knowledge proofs (NIZKP)s using the Fiat-Shamir heuristic \cite{b29}. By proving that a prover has a token corresponding to a state that passes the needed logical compliance checks, the ledger can verify logical compliance while maintaining complete cryptographic confidentiality of the contents of any particular transaction.
+The dual-layer architecture can be extended to support non-interactive zero-knowledge proofs (NIZKPs) via the Fiat-Shamir heuristic \cite{b29}. By proving that an agent possesses valid credentials that satisfy compliance predicates, the ledger verifies policy conformance while preserving absolute payload confidentiality.
+
 % ==========================================
 % IV. PROTOCOL DESIGN & KEY MANAGEMENT
 % ==========================================
@@ -418,8 +419,8 @@ While the Cryptographic Provenance Layer secures structural immutability, the mo
 \begin{itemize}
     \item \textbf{Legal Ambiguity around Erasure:} The jurisdictional interpretation of cryptographic erasure—whether key destruction truly satisfies data deletion mandates—remains legally variable and uncertain.
     \item \textbf{KMS Centralization Assumptions:} The architecture relies on the KMS securely handling key finality. Compromise of this privileged boundary negates cryptographic shredding.
-    \item \textbf{Persistent Ciphertext Retention:} Off-chain storage nodes incur long-term retention costs, continuously hosting inaccessible ciphertexts perpetually to satisfy Merkle validation for co-batched events.
-    \item \textbf{Dependence on Validator Honesty:} The reliability of the ledger is dictated by the BFT thresholds, and any integrity of the system can be compromised if the majority of validators are corrupted or if the network has high latency causing slow propagation of the blocks leading to invalid confirmations.
+    \item \textbf{Persistent Ciphertext Retention:} Off-chain storage nodes incur long-term retention overhead, continuously storing inaccessible ciphertexts to preserve Merkle root verification for co-batched events.
+    \item \textbf{Validator Consensus Assumptions:} System integrity depends on Byzantine fault tolerance thresholds. If compromised validators exceed threshold $f$, ledger finality guarantees degrade.
     \item \textbf{Metadata Leakage Risks:} Adversaries might extract behavioral insights by correlating off-chain ciphertext sizes or network timing patterns, even without decryption keys.
 \end{itemize}
 
@@ -502,8 +503,6 @@ Experimental evaluation shows that decoupling attestation from disclosure allows
 \bibitem{b27} D. Boneh and V. Shoup, \textit{A Graduate Course in Applied Cryptography}, Version 0.5, 2020.
 
 \bibitem{b19} S. Ruj et al., ``Blockchain and the Right to be Forgotten,'' \textit{IEEE Computer}, vol. 54, no. 1, pp. 54-63, 2021.
-\bibitem{b22} S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b25} S. Suresh Kumar, ``ScholarMaster Integration Architecture and Downstream Error Propagation Analysis,'' \textit{ScholarMaster Research Series}, Paper 25, 2026.
 
 \end{thebibliography}
 

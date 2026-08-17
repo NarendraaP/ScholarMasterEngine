@@ -7,7 +7,6 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{microtype}
 \usepackage{url}
 
 \newtheorem{theorem}{Theorem}
@@ -46,7 +45,7 @@ Under these severe operating boundaries, static deployment strategies suffer fro
 
 Hardware-level mitigations, such as DVFS clock scaling, cannot resolve this dilemma in streaming real-time vision because frequency transitions incur millisecond-scale latency penalties and fail to eliminate memory bus bottlenecks. Furthermore, traditional heuristic software cascades rely on uncalibrated maximum softmax outputs or entropy thresholds that exhibit dangerous overconfidence under high-frequency sensory noise \cite{guo2017calibration, nguyen2015deep}.
 
-To resolve this challenge, this paper establishes the theoretical foundations, algorithmic design, and empirical validation of an \textit{Adaptive Risk-Driven Cascade Architecture} for edge computing. By consuming the Layer-1 Perception Risk metric $R_p \in [0, 1]$ established in \cite{kumar2026scholar22}—which unifies Dirichlet evidential uncertainty, multi-branch cross-agreement discrepancy, optical blur bounds, and landmark dispersion—the edge runtime dynamically dispatches frames along an optimal accuracy-latency Pareto frontier. Clear, unambiguous frames execute swiftly through an ultra-fast primary model ($1.264\text{ ms}$), while corrupted or ambiguous scenes trigger selective heavy verification ($14.501\text{ ms}$) or fail-closed privacy degradation.
+To resolve this challenge, this paper establishes the theoretical foundations, algorithmic design, and empirical validation of an \textit{Adaptive Risk-Driven Cascade Architecture} for edge computing. By consuming the Layer 1 Perception Risk metric $R_p \in [0,1]$ formulated in \cite{kumar2026scholar22} which bundles together Dirichlet evidential uncertainty, multi-branch agreement discrepancy, optical blur bounds, and landmark dispersion, the edge-runtime routes video-frames through the perception pipeline along an accuracy-latency Pareto frontier. Near-certain frames are rapidly processed through an ultra-fast top model ($1.264\text{ ms}$), while ambiguous or corrupted scenes are subjected to targeted heavy verification ($14.501\text{ ms}$) or closed-loop privacy degradation.
 
 Specifically, this paper makes four core contributions:
 \begin{enumerate}
@@ -58,7 +57,7 @@ Specifically, this paper makes four core contributions:
 
 \section{Related Work \& Analytical 6-Paradigm Taxonomy}
 \subsection{Dynamic Neural Networks \& Multi-Branch Architectures}
-Dynamic neural networks adapt their computational graphs conditioned on input difficulty \cite{han2021dynamic}. Multi-branch architectures, such as Multi-Scale Dense Networks (MSDNet) \cite{huang2017multi}, execute progressive convolutional layers and evaluate intermediate features. While dynamic architectures reduce average FLOPs, their branches share early feature representations. When an upstream sensor anomaly (e.g., optical defocus or Gaussian noise) corrupts the initial layers, the perturbation propagates through all interconnected branches, causing simultaneous classification failures across all exits \cite{hendrycks2019benchmarking}. In contrast, our architecture decouples the primary and secondary models into independent computational graphs with distinct feature extractors.
+Dynamic neural networks are able to modify their computational graph depending on the difficulty of the input data \cite{han2021dynamic}. Such networks as Multi-Scale Dense Network MSDNet \cite{huang2017multi} perform a set of convolution operations in parallel while implementing progressive convolution layers with multi-branch architecture and assess the different layers features. Though the amount of FLOPs in such networks is reduced, their branches share features extracted by the first convolution layers. In case of the first convolution layers' sensor defect (for example, the lens blur or optical sensor noise), the error will affect all the following branches' calculations resulting in all exits giving incorrect classifications \cite{hendrycks2019benchmarking}. Contrary, our design allows to separate the calculations of the main and the auxiliary model and, thus, decouples their computational graphs with shared weights.
 
 \subsection{Early-Exit Inference Frameworks}
 Early-exit networks attach intermediate auxiliary heads to deep backbones to terminate easy samples early (e.g., BranchyNet \cite{teerapittayanon2016branchynet} and Shallow-Deep Networks \cite{kaya2019shallow}). Although early exits accelerate inference on clean canonical benchmarks, they suffer from two major limitations: (1) intermediate classifiers exhibit high semantic overthinking and feature misalignment, and (2) early exits cannot run asynchronously from the shared backbone pipeline, preventing independent memory locking on edge neural accelerators. Our cascade avoids shared representation coupling by deploying fully separate primary and secondary models.
@@ -286,14 +285,14 @@ Severe Risk ($R_p > 0.70$) & $8.1\%$ & Heavy + Quarantine & $4.556\text{ ms}$ & 
 
 \subsection{Deep Interpretation of Empirical Results (3-Layer Standard)}
 \subsubsection{WHAT (Empirical Observations)}
-The adaptive cascade achieves a sustained throughput of $373.3\text{ FPS}$, representing a $5.41\times$ throughput speedup over the static heavy ensemble ($69.0\text{ FPS}$). Mean frame execution latency is $2.679\text{ ms}$. Tail latency percentiles evaluate to $P50 = 3.786\text{ ms}$, $P95 = 4.075\text{ ms}$, and $P99 = 4.556\text{ ms}$, strictly satisfying the $5.0\text{ ms}$ sub-frame SLA across all percentiles. The fast-path bypass rate is $48.0\%$, while secondary verification is triggered on $52.0\%$ of frames. Crucially, the active heavy accelerator utilization is bounded at only $8.1\%$.
+The adaptive cascade achieves a sustained throughput of $373.3\text{ FPS}$, representing a $5.41\times$ throughput speedup over the static heavy ensemble ($69.0\text{ FPS}$), with a mean frame execution latency of $2.679\text{ ms}$. Tail latency percentiles are at $P50 = 3.786\text{ ms}$, $P95 = 4.075\text{ ms}$, and $P99 = 4.556\text{ ms}$, which is well within the $5.0\text{ ms}$ per-frame SLA. Thus, the fast-path bypass rate is $48.0\%$, while the remaining $52.0\%$ of the traffic was subjected to secondary verification. However, the utilization of the heavy accelerator is capped at just $8.1\%$.
 
 \subsubsection{WHY (Scientific Mechanism)}
 The superior Pareto efficiency of our architecture arises from \textit{evidential load shedding}:
 \begin{enumerate}
     \item \textbf{Fast-Path Bypass ($48.0\%$)}: In unambiguous scenes ($R_p \le 0.30$), the primary model produces high evidential precision, enabling instantaneous termination in $1.264\text{ ms}$.
     \item \textbf{Verification vs. Utilization Disparity ($52.0\%$ vs $8.1\%$)}: While $52.0\%$ of frames invoke secondary verification routines, $43.9\%$ of these frames represent transient medium-risk disturbances ($0.30 < R_p \le 0.70$) that require only lightweight verification steps ($3.786\text{ ms}$). Severe sensory corruptions that engage the full heavy ensemble ($R_p > 0.70$) occur on only $8.1\%$ of the continuous streaming timeline. Consequently, the heavy accelerator core remains idle for $91.9\%$ of the operational timeline, preventing thermal throttling.
-    \item \textbf{Tail Latency Containment ($P99 = 4.556\text{ ms}$)}: Because average frame service time ($\mathbb{E}[S] = 2.679\text{ ms}$) provides a service rate of $\mu = 373.3\text{ FPS}$ that far exceeds nominal ingestion rates ($\lambda \le 200\text{ Hz}$), the queue buffer remains nearly empty ($Q < 2$), preventing queueing accumulation and bounding tail response time below $5.0\text{ ms}$.
+    \item \textbf{Tail Latency Containment ($P99 = 4.556\text{ ms}$)}: Since average frame service time $\mathbb{E}[S] = 2.679\text{ ms}$ gives a service rate of $\mu = 373.3\text{ FPS}$ which is much higher than nominal ingestion rates ($\lambda \le 200\text{ Hz}$), the queue buffer is nearly empty ($Q < 2$) so that queueing does not cause tail response time to exceed $5.0\text{ ms}$.
 \end{enumerate}
 
 \subsubsection{LIMIT (Exact Scope \& Non-Extrapolations)}
@@ -318,37 +317,35 @@ When the queue length exceeds the safety threshold $Q > Q_{max}$ (where $Q_{max}
 This bounds per-frame execution time to $L_1 = 1.264\text{ ms}$, ensuring that the system clears the backlog at $791.2\text{ FPS}$ and prevents unrecoverable queue collapse. When frames exhibit catastrophic corruption ($R_p > 0.85$), the system issues a fail-closed halt ($\bot$), safely dropping corrupted inputs before downstream memory allocation.
 
 \section{Conclusion}
-We have presented the theoretical formulation, queueing analysis, and empirical validation of an Adaptive Risk-Driven Cascade Architecture for trustworthy edge vision. By combining constrained Pareto optimization, Fenchel-Rockafellar strong duality, Pollaczek-Khinchine queueing bounds, and dynamic perception risk routing, our system delivers $373.3\text{ FPS}$ sustained throughput and sub-$4.6\text{ ms}$ P99 latency SLA compliance on edge hardware. The dynamic cascade bounds active heavy core utilization to $8.1\%$, eliminating thermal throttling while guaranteeing safety-critical verification integrity.
+We have presented the theoretical formulation, queueing analysis, and empirical validation of an Adaptive Risk-Driven Cascade Architecture for trustworthy edge vision. By combining constrained Pareto optimization, Fenchel-Rockafellar strong duality, Pollaczek-Khinchine queueing bounds, and dynamic perception risk routing, the system achieves $373.3\text{ FPS}$ sustained throughput and sub-$4.6\text{ ms}$ P99 latency SLA on edge hardware, while keeping active heavy core utilization to $8.1\%$, enabling safe operation without thermal throttling.
 
 \begin{thebibliography}{00}
-\bibitem{satyanarayanan2017emergence} M.~Satyanarayanan, ``The emergence of edge computing,'' \emph{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
-\bibitem{chen2019deep} J.~Chen and X.~Ran, ``Deep learning with edge computing: A review,'' \emph{Proc. IEEE}, vol. 107, no. 8, pp. 1655--1674, 2019.
-\bibitem{canziani2016analysis} A.~Canziani, A.~Paszke, and E.~Culurciello, ``An analysis of deep neural network models for practical applications,'' \emph{arXiv preprint arXiv:1605.07678}, 2016.
-\bibitem{sandler2018mobilenetv2} M.~Sandler, A.~Howard, M.~Zhu, A.~Zhmoginov, and L.~C.~Chen, ``MobileNetV2: Inverted residuals and linear bottlenecks,'' in \emph{Proc. CVPR}, 2018, pp. 4510--4520.
-\bibitem{zhang2018shufflenet} X.~Zhang, X.~Zhou, M.~Lin, and J.~Sun, ``ShuffleNet: An extremely efficient convolutional neural network for mobile devices,'' in \emph{Proc. CVPR}, 2018, pp. 6848--6856.
-\bibitem{he2016deep} K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image recognition,'' in \emph{Proc. CVPR}, 2016, pp. 770--778.
-\bibitem{vaswani2017attention} A.~Vaswani et al., ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017, pp. 5998--6008.
-\bibitem{han2021dynamic} Y.~Han et al., ``Dynamic neural networks: A survey,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 44, no. 11, pp. 7436--7456, 2021.
-\bibitem{huang2017multi} G.~Huang, D.~Chen, T.~Li, F.~Wu, L.~van~der~Maaten, and K.~Weinberger, ``Multi-scale dense networks for resource constrained object categorization,'' in \emph{Proc. ICLR}, 2017.
-\bibitem{teerapittayanon2016branchynet} S.~Teerapittayanon, B.~McDanel, and H.~T.~Kung, ``BranchyNet: Fast inference via early exiting from deep neural networks,'' in \emph{Proc. ICPR}, 2016, pp. 2464--2469.
-\bibitem{kaya2019shallow} Y.~Kaya, S.~Hong, and T.~Dumitras, ``Shallow-deep networks: Understanding and mitigating negative overthinking in deep neural networks,'' in \emph{Proc. ICML}, 2019, pp. 3301--3310.
-\bibitem{hendrycks2019benchmarking} D.~Hendrycks and T.~Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
-\bibitem{viola2001rapid} P.~Viola and M.~Jones, ``Rapid object detection using a boosted cascade of simple features,'' in \emph{Proc. CVPR}, 2001, pp. 511--518.
-\bibitem{bolukbasi2017adaptive} T.~Bolukbasi, J.~Wang, O.~Dekel, and V.~Saligrama, ``Adaptive neural networks for efficient inference,'' in \emph{Proc. ICML}, 2017, pp. 527--536.
-\bibitem{wang2018skipnet} X.~Wang, F.~Yu, Z.~Y.~Dou, T.~Darrell, and J.~E.~Gonzalez, ``SkipNet: Learning dynamic routing in convolutional networks,'' in \emph{Proc. ECCV}, 2018, pp. 409--424.
-\bibitem{guo2017calibration} C.~Guo, G.~Pleiss, Y.~Sun, and K.~Q.~Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
-\bibitem{nguyen2015deep} A.~Nguyen, J.~Yosinski, and J.~Clune, ``Deep neural networks are easily fooled: High confidence predictions for unrecognizable images,'' in \emph{Proc. CVPR}, 2015, pp. 427--436.
-\bibitem{geifman2019selectivenet} Y.~Geifman and R.~El-Yaniv, ``SelectiveNet: A deep neural network with an integrated reject option,'' in \emph{Proc. NeurIPS}, 2019, pp. 7268--7277.
-\bibitem{bartlett2006convexity} P.~L.~Bartlett and M.~H.~Wegkamp, ``Classification with a reject option using a hinge loss,'' \emph{J. Mach. Learn. Res.}, vol. 9, pp. 1823--1840, 2008.
-\bibitem{leviathan2023fast} Y.~Leviathan, M.~Kalkstein, and Y.~Matias, ``Fast inference from transformers via speculative decoding,'' in \emph{Proc. ICML}, 2023, pp. 19274--19286.
-\bibitem{kang2017neurosurgeon} Y.~Kang et al., ``Neurosurgeon: Collaborative intelligence between the cloud and mobile edge,'' in \emph{Proc. ASPLOS}, 2017, pp. 615--629.
-\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar24} S.~Suresh~Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \emph{ScholarMaster Technical Report Series}, Paper 24, 2026.
-\bibitem{kumar2026scholar25} S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \emph{ScholarMaster Technical Report Series}, Paper 25, 2026.
-\bibitem{kleinrock1975queueing} L.~Kleinrock, \emph{Queueing Systems, Volume I: Theory}, John Wiley \& Sons, 1975.
-\bibitem{rockafellar1970convex} R.~T.~Rockafellar, \emph{Convex Analysis}, Princeton University Press, 1970.
-\bibitem{kingman1961single} J.~F.~C.~Kingman, ``The single server queue in heavy traffic,'' \emph{Proc. Camb. Philos. Soc.}, vol. 57, no. 4, pp. 902--904, 1961.
-\bibitem{gonzalez1997energy} R.~Gonzalez and M.~Horowitz, ``Energy dissipation in general purpose microprocessors,'' \emph{IEEE J. Solid-State Circuits}, vol. 31, no. 9, pp. 1277--1284, 1996.
+\bibitem{satyanarayanan2017emergence} M. Satyanarayanan, ``The emergence of edge computing,'' \emph{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
+\bibitem{chen2019deep} J. Chen and X. Ran, ``Deep learning with edge computing: A review,'' \emph{Proc. IEEE}, vol. 107, no. 8, pp. 1655--1674, 2019.
+\bibitem{canziani2016analysis} A. Canziani, A. Paszke, and E. Culurciello, ``An analysis of deep neural network models for practical applications,'' \emph{arXiv preprint arXiv:1605.07678}, 2016.
+\bibitem{sandler2018mobilenetv2} M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L. C. Chen, ``MobileNetV2: Inverted residuals and linear bottlenecks,'' in \emph{Proc. CVPR}, 2018, pp. 4510--4520.
+\bibitem{zhang2018shufflenet} X. Zhang, X. Zhou, M. Lin, and J. Sun, ``ShuffleNet: An extremely efficient convolutional neural network for mobile devices,'' in \emph{Proc. CVPR}, 2018, pp. 6848--6856.
+\bibitem{he2016deep} K. He, X. Zhang, S. Ren, and J. Sun, ``Deep residual learning for image recognition,'' in \emph{Proc. CVPR}, 2016, pp. 770--778.
+\bibitem{vaswani2017attention} A. Vaswani et al., ``Attention is all you need,'' in \emph{Proc. NeurIPS}, 2017, pp. 5998--6008.
+\bibitem{han2021dynamic} Y. Han et al., ``Dynamic neural networks: A survey,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 44, no. 11, pp. 7436--7456, 2021.
+\bibitem{huang2017multi} G. Huang, D. Chen, T. Li, F. Wu, L. van der Maaten, and K. Weinberger, ``Multi-scale dense networks for resource constrained object categorization,'' in \emph{Proc. ICLR}, 2017.
+\bibitem{teerapittayanon2016branchynet} S. Teerapittayanon, B. McDanel, and H. T. Kung, ``BranchyNet: Fast inference via early exiting from deep neural networks,'' in \emph{Proc. ICPR}, 2016, pp. 2464--2469.
+\bibitem{kaya2019shallow} Y. Kaya, S. Hong, and T. Dumitras, ``Shallow-deep networks: Understanding and mitigating negative overthinking in deep neural networks,'' in \emph{Proc. ICML}, 2019, pp. 3301--3310.
+\bibitem{hendrycks2019benchmarking} D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
+\bibitem{viola2001rapid} P. Viola and M. Jones, ``Rapid object detection using a boosted cascade of simple features,'' in \emph{Proc. CVPR}, 2001, pp. 511--518.
+\bibitem{bolukbasi2017adaptive} T. Bolukbasi, J. Wang, O. Dekel, and V. Saligrama, ``Adaptive neural networks for efficient inference,'' in \emph{Proc. ICML}, 2017, pp. 527--536.
+\bibitem{wang2018skipnet} X. Wang, F. Yu, Z. Y. Dou, T. Darrell, and J. E. Gonzalez, ``SkipNet: Learning dynamic routing in convolutional networks,'' in \emph{Proc. ECCV}, 2018, pp. 409--424.
+\bibitem{guo2017calibration} C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
+\bibitem{nguyen2015deep} A. Nguyen, J. Yosinski, and J. Clune, ``Deep neural networks are easily fooled: High confidence predictions for unrecognizable images,'' in \emph{Proc. CVPR}, 2015, pp. 427--436.
+\bibitem{geifman2019selectivenet} Y. Geifman and R. El-Yaniv, ``SelectiveNet: A deep neural network with an integrated reject option,'' in \emph{Proc. NeurIPS}, 2019, pp. 7268--7277.
+\bibitem{bartlett2006convexity} P. L. Bartlett and M. H. Wegkamp, ``Classification with a reject option using a hinge loss,'' \emph{J. Mach. Learn. Res.}, vol. 9, pp. 1823--1840, 2008.
+\bibitem{leviathan2023fast} Y. Leviathan, M. Kalkstein, and Y. Matias, ``Fast inference from transformers via speculative decoding,'' in \emph{Proc. ICML}, 2023, pp. 19274--19286.
+\bibitem{kang2017neurosurgeon} Y. Kang et al., ``Neurosurgeon: Collaborative intelligence between the cloud and mobile edge,'' in \emph{Proc. ASPLOS}, 2017, pp. 615--629.
+\bibitem{kumar2026scholar22} S. Suresh Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
+\bibitem{kleinrock1975queueing} L. Kleinrock, \emph{Queueing Systems, Volume I: Theory}, John Wiley \& Sons, 1975.
+\bibitem{rockafellar1970convex} R. T. Rockafellar, \emph{Convex Analysis}, Princeton University Press, 1970.
+\bibitem{kingman1961single} J. F. C. Kingman, ``The single server queue in heavy traffic,'' \emph{Proc. Camb. Philos. Soc.}, vol. 57, no. 4, pp. 902--904, 1961.
+\bibitem{gonzalez1997energy} R. Gonzalez and M. Horowitz, ``Energy dissipation in general purpose microprocessors,'' \emph{IEEE J. Solid-State Circuits}, vol. 31, no. 9, pp. 1277--1284, 1996.
 \end{thebibliography}
 
 \end{document}

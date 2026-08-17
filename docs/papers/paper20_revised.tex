@@ -201,36 +201,36 @@ This layer treats sociotechnical legitimacy as an operational systems constraint
 
 To ensure consistency across the 19-paper research program, we formalize the \textbf{ScholarMaster Invariant Namespace}. 
 
-Contrastingly, the invariant namespace does not enforce any new constraints. Instead, it collects all the checked constraints from the component studies (P1, P3, P9, P17, P18). These invariants are formal contracts between the system layers: a violation of any invariant results in an immediate L1 hardware exception.
+The invariant namespace defines the foundational formal contracts across the edge execution stack: a violation of any invariant results in an immediate L1 hardware exception.
 
 \subsection{Ephemeral Data Constraints}
 \begin{itemize}
-    \item \textbf{INV-01 (Raw Non-Persistence):} No sensor data shall persist beyond the L3 boundary (Volatile RAM) \cite{P17, P18}. 
+    \item \textbf{INV-01 (Raw Non-Persistence):} No sensor data shall persist beyond the volatile RAM boundary, ensuring physical ephemerality \cite{P3}. 
     \item \textbf{INV-04 (Bounded Temporal Exposure):} Any buffer containing raw data must be explicitly zeroed within a strict temporal boundary (detailed in Paper 18). 
-    \item \textbf{INV-09 (Volatile-Only Processing):} All L1-L4 execution must occur exclusively in volatile memory, structurally preventing state persistence to disk or swap space \cite{P12, P18}.
+    \item \textbf{INV-09 (Volatile-Only Processing):} All execution must occur exclusively in volatile memory, structurally preventing state persistence to disk or swap space \cite{P12}.
     \item \textbf{INV-10 (Density Constraint):} L3 output dimensionality is strictly capped to ensure abstract irreversibility, formally preventing the inversion of the neural network back to pixel space \cite{P3}.
 \end{itemize}
 
 \subsection{Governance \& Control Flow}
 \begin{itemize}
-    \item \textbf{INV-02 (Identity Non-Propagation):} Identity tokens are ephemeral, randomly generated per session, and valid only for the immediate execution context \cite{P1, P3, P9}.
+    \item \textbf{INV-02 (Identity Non-Propagation):} Identity tokens are ephemeral, randomly generated per session, and valid only for the immediate execution context \cite{P3, P9}.
     \item \textbf{INV-03 (Governance Non-Bypass):} No data, even abstract metadata, can transition to the network egress module without passing L5 Governance logic checks \cite{P9}.
-    \item \textbf{INV-07 (Audit Immutability):} All governance decisions (accept/reject) must be cryptographically hashed and logged to the immutable ledger \textit{before} the corresponding physical or network action is executed \cite{P8}.
-    \item \textbf{INV-11 (Consent-Gated Enrollment):} No biometric or behavioral embedding is generated or stored without verified, non-expired, and digitally signed user consent \cite{P8}.
+    \item \textbf{INV-07 (Audit Immutability):} All governance decisions (accept/reject) must be cryptographically hashed and logged to the immutable ledger \textit{before} the corresponding physical or network action is executed.
+    \item \textbf{INV-11 (Consent-Gated Enrollment):} No biometric or behavioral embedding is generated or stored without verified, non-expired, and digitally signed user consent.
 \end{itemize}
 
 \subsection{Distributed Sovereignty}
 \begin{itemize}
-    \item \textbf{INV-05 (Federation Sovereignty):} No cross-campus model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples \cite{P14}.
-    \item \textbf{INV-12 (Deletion Propagation):} User data deletion/revocation requests must propagate to the global federation state, forcing an unlearning routine within one aggregation round \cite{P14}.
-    \item \textbf{INV-13 (Federation Payload Restriction):} L8 egress transmits only DP-noised gradient summaries; explicit data types are banned at the gRPC schema level \cite{P13}.
+    \item \textbf{INV-05 (Federation Sovereignty):} No model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples.
+    \item \textbf{INV-12 (Deletion Propagation):} User data deletion/revocation requests must propagate across active state, forcing an unlearning routine within one aggregation round.
+    \item \textbf{INV-13 (Federation Payload Restriction):} Network egress transmits only DP-noised gradient summaries; explicit raw data types are banned at the schema level.
 \end{itemize}
 
 \subsection{Operational Resilience}
 \begin{itemize}
     \item \textbf{INV-06 (Thermal Equilibrium):} Inference loads must be dynamically throttled to maintain component temperatures strictly below physical silicon degradation limits \cite{P5, P11}.
-    \item \textbf{INV-08 (Fail-Closed Liveness):} System and execution failures inevitably transition the node to a HALT/Reboot state, never an OPEN/permissive bypass state \cite{P11, P18}.
-    \item \textbf{INV-14 (Non-Disableable Enforcement):} Lifecycle constraints and bounds are structurally enforced by the runtime architecture and cannot be bypassed via configuration files \cite{P18}.
+    \item \textbf{INV-08 (Fail-Closed Liveness):} System and execution failures inevitably transition the node to a HALT/Reboot state, never an OPEN/permissive bypass state \cite{P11}.
+    \item \textbf{INV-14 (Non-Disableable Enforcement):} Lifecycle constraints and bounds are structurally enforced by the runtime architecture and cannot be bypassed via configuration files.
     \item \textbf{INV-15 (Privacy Mode Default):} Following any reboot or power loss, the system inevitably boots into restricted Privacy Mode, requiring an explicit, cryptographically signed remote handshake to elevate privileges \cite{P11}.
 \end{itemize}
 
@@ -438,9 +438,9 @@ This unified reference architecture shows that achieving the combination of both
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{P1} N. Babu P., "Scalable High-Throughput Biometric Identification using HNSW," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_hoare} C. A. R. Hoare, "An axiomatic basis for computer programming," \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
 
-\bibitem{P10} N. Babu P., "System-Level Validation of Smart Campus Intelligence," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_leveson} N. G. Leveson, \textit{Safeware: System Safety and Computers}, Addison-Wesley, 1995.
 
 % 2026 Series
 
@@ -454,7 +454,7 @@ This unified reference architecture shows that achieving the combination of both
 
 \bibitem{P7} N. Babu P., "Operationalizing Spatiotemporal Constraints," \textit{ScholarMaster Series}, 2025.
 
-\bibitem{P8} N. Babu P., "Trust-Aware Metadata Provenance," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_merkle} R. C. Merkle, "A certified digital signature," in \textit{Advances in Cryptology --- CRYPTO}, pp. 218--238, Springer, 1989.
 
 \bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
 
@@ -462,23 +462,23 @@ This unified reference architecture shows that achieving the combination of both
 
 \bibitem{P12} N. Babu P., "Flash Endurance Engineering for Edge AI," \textit{ScholarMaster Series}, 2026.
 
-\bibitem{P13} N. Babu P., "Intra-Campus Federated Learning," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_mcmahan} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," in \textit{AISTATS}, pp. 1273--1282, 2017.
 
-\bibitem{P14} N. Babu P., "Cross-Campus Federated Intelligence," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_dwork} C. Dwork, "Differential Privacy: A Survey of Results," in \textit{TAMC}, pp. 1--19, Springer, 2008.
 
-\bibitem{P15} N. Babu P., "Augmented Situation Awareness (AR)," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_lamport} L. Lamport, "Time, clocks, and the ordering of events in a distributed system," \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558--565, 1978.
 
-\bibitem{P16} N. Babu P., "Beyond the Panopticon: Sociological Trust," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_amari} S. Amari, \textit{Information Geometry and Its Applications}, Applied Mathematical Sciences, vol. 194, Springer, 2016.
 
-\bibitem{P17} N. Babu P., "Architectural Irreversibility (Capstone)," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_meyer} B. Meyer, "Applying design by contract," \textit{Computer}, vol. 25, no. 10, pp. 40--51, 1992.
 
-\bibitem{P18} N. Babu P., "Runtime Enforcement of Irreversibility," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_clarke} E. M. Clarke et al., \textit{Model Checking}, MIT Press, 1999.
 
-\bibitem{P19} N. Babu P., "Formal Threat Model and TCB Definition," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_saltzer} J. H. Saltzer and M. D. Schroeder, "The protection of information in computer systems," \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
 
 \bibitem{P5} N. Polisetti et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, 2026.
 \bibitem{P22} S. Suresh Kumar, "Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision," \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{P25} S. Suresh Kumar, "ScholarMaster Integration Architecture and Downstream Error Propagation Analysis," \textit{ScholarMaster Research Series}, Paper 25, 2026.
+\bibitem{b_kass} R. E. Kass and P. W. Vos, \textit{Geometrical Foundations of Asymptotic Inference}, John Wiley \& Sons, 1997.
 
 \end{thebibliography}
 

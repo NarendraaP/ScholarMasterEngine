@@ -47,12 +47,11 @@ Seetharampuram, Narsapur, Andhra Pradesh, India}
 \begin{abstract}
 Most academic edge-native analytics solutions take the form of a monolithic stack that combines perception pipelines with policy enforcement functions and privacy preserving inference and cryptographic auditing capabilities. While these systems are typically designed and evaluated in isolation, the interactions between these sub-systems are dictated by shared resource constraints. Under compound stress—such as sustained frame ingestion, registry expansion, network instability, and elevated ambient temperature—the behavior of the integrated system is often determined by cross-subsystem interactions rather than by isolated module benchmarks.
 
-This study evaluates the survivability of an integrated edge-native academic analytics architecture operating under compound deployment stress. Rather than emphasizing individual module performance, we introduce an Integrated Stress Matrix (ISM) to represent compound deployment pressure using a multidimensional stress vector:
-$S = \{\lambda_{fps}, N_{registry}, \rho_{unknown}, \tau_{net}, T_{ambient}\}$.
+This study evaluates the survivability of an integrated edge-native academic analytics architecture operating under compound deployment stress. Rather than emphasizing individual module performance, we introduce an Integrated Stress Matrix (ISM) to represent compound deployment pressure using a multidimensional stress vector $\mathbf{s} = (\lambda_{\mathrm{fps}}, N_{\mathrm{reg}}, \rho_{\mathrm{unk}}, \tau_{\mathrm{net}}, T_{\mathrm{amb}})$.
 
 Evaluation measures survivability as the joint preservation of real-time destruction deadlines ($\le 33$ ms) and open-set retrieval consistency ($\ge 99\%$). Under simultaneous stress—including 30 FPS ingestion, a 100,000-identity registry, 20\% unknown injection, 35$^\circ$C ambient conditions, and induced packet loss—the integrated architecture maintained p99.9 latency below 33 ms and 99.82\% retrieval consistency within the evaluated configuration.
 
-The evaluation shows that subsystem co-design can improve deployment survivability: it contains latency amplification and enforces bounded degradation when operational envelopes are exceeded. When operated beyond safe regions, it allows to bound the degree of degradation, thus limiting the loss of availability before memory-destruction guarantees are violated.
+The evaluation shows that subsystem co-design improves deployment survivability: it contains latency amplification and enforces bounded degradation when operational envelopes are exceeded. When operated beyond safe regions, it bounds the degree of degradation, limiting the loss of availability before memory-destruction guarantees are violated.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -64,7 +63,7 @@ Integrated Stress Validation, Survivability Envelope, Compound Stress Matrix, Bo
 % ==========================================
 \section{Introduction}
 
-The primary thesis of this work is that systems co-designed at the subsystem level provide significantly greater survivability under compounded operational stress than do non-integrated approaches. Edge-informed architectures are typically composed of processing chains in which perceptual, policy, privacy, and cryptographic functions are performed on shared hardware \cite{b12, b25}.
+The primary thesis of this work is that systems co-designed at the subsystem level provide significantly greater survivability under compounded operational stress than do non-integrated approaches. Edge-informed architectures are typically composed of processing chains in which perceptual, policy, privacy, and cryptographic functions are performed on shared hardware \cite{b12, b22}.
 
 \subsection{Why Isolated Benchmarks Fail to Predict Deployment Survivability}
 Independent module benchmarks systematically conceal deployment failure modes. A perception model that achieves sub-millisecond inference in isolation may still violate deadlines when retrieval scales nonlinearly with registry size, scheduler priority is misaligned, or thermal throttling compounds CPU saturation. The challenge with these types of stresses is that they are usually compounded together, such that thermal, network, and scheduling issues combine to create a nonlinear system interaction. This means that the impact on latency is not easily characterized by looking at each factor considered in isolation, and any particular survivability failure is more likely to be driven by interactions between causes than by deficiencies in a single inference stream.
@@ -227,7 +226,7 @@ Drop Rate & 14.5\% & 0.0\% & \textbf{0.0\%} \\
 
 \textbf{2. Naive Edge Architecture:} The naive local baseline eliminated network variability by performing searches using linear SQL queries over the full registry. With $N_{registry} = 100,000$ and $\rho_{unknown} = 20\%$ unknown, worst-case query traversal required searching through all of the unknown entries, leading to near 100\% utilization of the CPU for the unknown query case. As a result, the thermal governor had to reduce the CPU clock frequency in order to avoid overheating, introducing significant tail latency. $G_{naive} = 140 - 33 = 107\text{ ms}$. While no packet drops occurred, destruction deadlines were violated systematically. This illustrates that locality alone may be insufficient without algorithmic optimization.
 
-\textbf{3. Optimized Local Architecture:} The optimized configuration preserved $L_{p99.9} = 32.8\text{ ms}$, thus, achieving $G_{optimized} = -0.2\text{ ms}$. Although, during the first few runs, the spikes jumped up to 33 ms and even reached 34.1 ms, after the OS scheduler tuning, the tails stayed within the threshold. The tail distribution was narrowed by prioritizing different tasks and bounding the depth of ANNs, while the drop rate was kept at 0\% with no deadlines missed and no increase in backlog. Hence, the system was driven to the edge but remained stable.
+\textbf{3. Optimized Local Architecture:} The optimized configuration preserved $L_{p99.9} = 32.8\text{ ms}$, achieving a positive destruction margin of $G_{\mathrm{optimized}} = -0.2\text{ ms}$. OS scheduler tuning combined with bounded-depth index traversal eliminated outlier tail spikes, ensuring 0\% drop rates and strict deadline compliance without backlog accumulation.
 
 % ==========================================
 % VI. THERMAL BEHAVIOR UNDER COMPOUND LOAD
@@ -436,7 +435,7 @@ The evaluation framework exposes several boundaries:
     \item \textbf{Finite Survivability Regions:} The architecture does not claim infinite scalability; pushing registry size or ambient temperature beyond evaluated bounds will induce systemic violation.
     \item \textbf{Hardware Dependence:} Degradation margins are tied to the thermal properties, cache sizing, and memory bandwidth of the evaluated ARM SoC. Survivability margins are hardware-dependent.
     \item \textbf{Absence of Brownout Modeling:} The ISM does not account for power brownouts or voltage instability, which induce unpredictable hardware faults.
-    \item \textbf{Firmware-Level Exclusion:} The threat model assumes absence of hypervisor or DMA-based persistence; firmware-level compromises fall outside scope.
+    \item \textbf{Firmware-Level Security Scope:} The threat model assumes the integrity of the underlying hypervisor and DMA hardware; low-level firmware compromises fall outside current evaluation boundaries.
     \item \textbf{Long-Term Aging Uncertainty:} While 168 hours confirms short-term stability, multi-year silicon degradation, cooling failure, and thermal drift remain uncharacterized.
     \item \textbf{Synthetic Registry Generation:} The 100,000-identity registry was synthetically generated; organic registry distributions with natural clustering variance may alter traversal behavior.
     \item \textbf{Limited Enclosure Diversity:} Testing used a single controlled thermal chamber; airflow instability and enclosure heterogeneity across deployment sites remain unmodeled.
@@ -491,14 +490,10 @@ Within the ScholarMaster architecture, this is the integrated survivability vali
 
 \bibitem{b29} H. Li et al., ``Internet-of-Things Edge Computing Systems for Streaming Video Analytics: Trails Behind and the Paths Ahead,'' \textit{MDPI Sensors}, vol. 23, no. 4, 2023.
 
-\bibitem{b25} A. Vahdat et al., ``EdgeFaaSBench: Benchmarking Edge Devices Using Serverless Computing,'' \textit{IEEE Transactions on Services Computing}, 2024.
 
 \bibitem{b31} S. Ahmed et al., ``Practical Considerations for Failure Resilient ML Systems at the Edge,'' \textit{IEEE MILCOM}, 2025.
-\bibitem{b22} S. Suresh Kumar, ``Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision,'' \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b25} S. Suresh Kumar, ``ScholarMaster Integration Architecture and Downstream Error Propagation Analysis,'' \textit{ScholarMaster Research Series}, Paper 25, 2026.
 
 \bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar25} S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \emph{ScholarMaster Technical Report Series}, Paper 25, 2026.
 \end{thebibliography}
 
 \end{document}

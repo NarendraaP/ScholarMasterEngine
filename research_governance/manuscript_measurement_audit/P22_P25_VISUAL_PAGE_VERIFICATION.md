@@ -1,6 +1,6 @@
 # ScholarMaster Actual PDF Visual Page Verification Report (P22–P25)
 
-**Audit Execution Date**: 2026-08-16 21:06:43  
+**Audit Execution Date**: 2026-08-17 17:33:18  
 **Governance Standard**: `SROS Version 2.1 — RATIFIED`, `SEOP Version 2.0 — RATIFIED`  
 **Authoritative Artifact**: Actual Compiled PDF Files  
 **Audit Mode**: 🔍 **100% VISUAL & NATIVE PDF VERIFICATION**
@@ -11,10 +11,10 @@
 
 | Paper | Canonical .tex File | TEX SHA-256 | Compiled .pdf File | PDF SHA-256 | PDF Size | Compile Exit |
 |---|---|---|---|---|---|---|
-| **P22** | `paper22_revised.tex` | `86ac860ab045005cd896486e752da901f5756a1b56219abc7721a85dba5a0599` | `paper22_revised.pdf` | `45051daf20a427634ed930a1b3091454e66cf03510bc8f4390807077a990caf0` | 30985 B | 0 (PASS) |
-| **P23** | `paper23_revised.tex` | `db16a9518d525727274d35a6bda9258614d736f825963e7422a54020802a6010` | `paper23_revised.pdf` | `ec2c178a39f5b1c8d68129ce269870bbc4e7ec8a07fbb9a860603917d9fc1cec` | 31077 B | 0 (PASS) |
-| **P24** | `paper24_revised.tex` | `a11945507d85dd0e9f5fc862d0ed63bdf349667b8b718e3eb0bf53f980c01578` | `paper24_revised.pdf` | `38c7a134e46ab8f960d5b7dc9c03e09f7c041c1a622545d4083aa80d9741c258` | 31597 B | 0 (PASS) |
-| **P25** | `paper25_revised.tex` | `a255e6f4523ce31bb84f1563baf60d4be489c30cd29c0772f7c4b804e6d0ae7b` | `paper25_revised.pdf` | `d83ba05c2283f840718463f2ffca263bf35f293ab27f9cee6af744ff661d0c04` | 31088 B | 0 (PASS) |
+| **P22** | `paper22_revised.tex` | `8cd9e6dad030d8e880372399c16668ceff23c158d1a55e4a9589a394115eb99e` | `paper22_revised.pdf` | `a73c82a57a77fe8a3eee4db457d338a770112f778ae7670e4478028e4ff25869` | 30648 B | 0 (PASS) |
+| **P23** | `paper23_revised.tex` | `7934f63d3a4de28a67bca2961cdc9320695ff13538e4aa3f6f1c81a0506d4d64` | `paper23_revised.pdf` | `87e1010c8c8e02fe8eacc3f58cb227f82045bf5dd3d8ecd9eb593791c738e4e1` | 30924 B | 0 (PASS) |
+| **P24** | `paper24_revised.tex` | `28147312aa558417e2aa4d4e980f3129d283d67851e61200e3f62aa48fe60dd9` | `paper24_revised.pdf` | `70326cbfa9e75f81a617f4b24475fe9b4208bffc2b2242d5aa55a6fa72ee4c2c` | 31435 B | 0 (PASS) |
+| **P25** | `paper25_revised.tex` | `a255e6f4523ce31bb84f1563baf60d4be489c30cd29c0772f7c4b804e6d0ae7b` | `paper25_revised.pdf` | `6178759f081e3f501ab228c13d4cb480c8fe7493b3b833d748666e7cc12d7999` | 31088 B | 0 (PASS) |
 
 ---
 
@@ -22,10 +22,10 @@
 
 | Paper | TEX SHA256 | PDF SHA256 | Physical PDF Pages | Body Pages | Ref Pages | Body Words |
 |---|---|---|---|---|---|---|
-| **P22** | `86ac860ab045005c...` | `45051daf20a42763...` | **7 pages** | 7 | 3 | 3963 |
-| **P23** | `db16a9518d525727...` | `ec2c178a39f5b1c8...` | **7 pages** | 6 | 2 | 4043 |
-| **P24** | `a11945507d85dd0e...` | `38c7a134e46ab8f9...` | **8 pages** | 8 | 3 | 3739 |
-| **P25** | `a255e6f4523ce31b...` | `d83ba05c2283f840...` | **7 pages** | 7 | 2 | 3973 |
+| **P22** | `8cd9e6dad030d8e8...` | `a73c82a57a77fe8a...` | **7 pages** | 7 | 3 | 3913 |
+| **P23** | `7934f63d3a4de28a...` | `87e1010c8c8e02fe...` | **7 pages** | 6 | 2 | 4018 |
+| **P24** | `28147312aa558417...` | `70326cbfa9e75f81...` | **8 pages** | 8 | 2 | 3725 |
+| **P25** | `a255e6f4523ce31b...` | `6178759f081e3f50...` | **7 pages** | 7 | 2 | 3973 |
 
 ### Discrepancy Breakdown Against Previous Analytical Estimate:
 | Paper | Previous Report (Analytical Estimate) | Actual Physical PDF Pages | Difference |
@@ -73,8 +73,8 @@ Contact sheets showing every rendered page in sequence for each manuscript:
 - **Page 3** (676 words): Top: `\caption{Comparative 6-Paradigm Taxonomy of Uncertainty Quantification and Perception Integrity Approaches} | \label{tab` | Sections: `[]` | References: `False`
 - **Page 4** (675 words): Top: `When the network observes an unfamiliar or corrupted sample, all evidence outputs remain near zero (e → 0), driving \alp` | Sections: `[]` | References: `False`
 - **Page 5** (574 words): Top: `Equation: B(I) = 1.0 - \sigma≤ft( \gamma_1 E_{lap}(I) + \gamma_2 E_{fft}(I) - \tau_{blur} \right). | For spatial pose ki` | Sections: `['|. T']` | References: `True`
-- **Page 6** (771 words): Top: `• Perfect OOD Discrimination: Layer-1 Perception Integrity achieves an AUROC of 1.0000 and an FPR95 of 0.0000, completel` | Sections: `[]` | References: `True`
-- **Page 7** (429 words): Top: `[6] A.~Malinin and M.~Gales, "Predictive uncertainty estimation via prior networks," in \emph{Proc. NeurIPS}, 2018, pp. ` | Sections: `[]` | References: `True`
+- **Page 6** (778 words): Top: `• Perfect OOD Discrimination: Layer-1 Perception Integrity achieves an AUROC of 1.0000 and an FPR95 of 0.0000, completel` | Sections: `[]` | References: `True`
+- **Page 7** (360 words): Top: `[7] J.~Deng, J.~Guo, N.~Xue, and S.~Zafeiriou, "ArcFace: Additive angular margin loss for deep face recognition," in \em` | Sections: `[]` | References: `True`
 
 ### Paper 23 Content Map:
 - **Page 1** (685 words): Top: `Adaptive Trustworthy Edge Systems: Dynamic Risk-Driven | Cascades and Real-Time SLA Bounds | Dr. S. Suresh Kumar` | Sections: `[]` | References: `False`
@@ -83,7 +83,7 @@ Contact sheets showing every rendered page in sequence for each manuscript:
 - **Page 4** (739 words): Top: `\end{align} | where L_{SLA} = 5.0 ms represents the hard Service Level Agreement deadline, and \epsilon_{risk} > 0 denot` | Sections: `['X. A']` | References: `False`
 - **Page 5** (522 words): Top: `Normalized Energy-Delay Product (EDP) Analysis | To characterize the joint Pareto trade-off between energy consumption a` | Sections: `[]` | References: `True`
 - **Page 6** (674 words): Top: `Throughput / Latency | 373.3 FPS / 2.679 ms (p95 = | 4.075ms)` | Sections: `[]` | References: `False`
-- **Page 7** (533 words): Top: `eliminating thermal throttling while guaranteeing safety-critical verification integrity. | REFERENCES | [1] M.~Satyanar` | Sections: `[]` | References: `True`
+- **Page 7** (500 words): Top: `eliminating thermal throttling while guaranteeing safety-critical verification integrity. | REFERENCES | [1] M.~Satyanar` | Sections: `[]` | References: `True`
 
 ### Paper 24 Content Map:
 - **Page 1** (652 words): Top: `Generalized Cross-Modal Recovery under Compromised | Primary Sensing | Dr. S. Suresh Kumar` | Sections: `[]` | References: `False`
@@ -93,7 +93,7 @@ Contact sheets showing every rendered page in sequence for each manuscript:
 - **Page 5** (538 words): Top: `\begin{align} | KL(P_m \parallel \bar{M}_m) &≥ 2 \|P_m - \bar{M}_m\|_{TV}^2 \nonumber \\ | &= 2 ≤ft( \tfrac{1}{2}\|P_m -` | Sections: `[]` | References: `True`
 - **Page 6** (591 words): Top: `\STATE Flag sensor underflow timeout: set weight w_m ≤ftarrow 0. | \ENDIF | \ENDFOR` | Sections: `[]` | References: `False`
 - **Page 7** (773 words): Top: `Consensus distribution entropy increases moderately from 0.042 nats → 0.212 nats, remaining well below the maximum unifo` | Sections: `[]` | References: `True`
-- **Page 8** (34 words): Top: `[19] S.~Suresh~Kumar, "ScholarMaster macro integration architecture and downstream error propagation analysis," \emph{Sc` | Sections: `[]` | References: `True`
+- **Page 8** (16 words): Top: `[19] M.~E.~Liggins, D.~L.~Hall, and J.~Llinas, \emph{Handbook of Multisensor Data Fusion: Theory and Practice}, CRC Pres` | Sections: `[]` | References: `False`
 
 ### Paper 25 Content Map:
 - **Page 1** (679 words): Top: `ScholarMaster Macro Integration Architecture and | Downstream Error Propagation Analysis | Dr. S. Suresh Kumar` | Sections: `[]` | References: `False`
