@@ -1,0 +1,508 @@
+{
+  "P1": {
+    "paper_id": "P1",
+    "paper_number": 1,
+    "title": "ScholarMaster: A Layered Edge-Native Architecture for Real-Time Context-Aware Intelligent Systems",
+    "abstract": "Modern intelligent systems are increasingly required to operate under stringent real-time, privacy, and resource constraints, particularly at the edge. While recent advances in individual subsystems such as perception, inference, and control have contributed to improved performance at the component level, the lack of architectural principles has typically resulted in tightly coupled monolithic systems that are challenging to evaluate in isolation. A system\u2019s degree of decomposition is a fundamental property in architectural synthesis - ScholarMaster takes this to be a given. By synthesizing results of a multi-paper research agenda, this paper proposes an edge-native framework that isolates the context-aware pipeline into focused domains: sensing, geometric abstraction, probabilistic interpretation, logical evaluation, and control. By ensuring strict abstraction admissibility between these stages, the architecture greatly limits cross-layer leakage. This, in turn, allows for an overall design that is modular by construction. By building on previous results in independently verifiable sub-systems, we proceed to demonstrate the benefits of this deterministic composition over more monolithic approaches, particularly in the face of interpretability, fault confinement, and auditability concerns.",
+    "keywords": "System Architecture, Edge-Native, Boundary Invariants, Deterministic Composition, Abstraction Admissibility, Fault Containment.",
+    "sections": [
+      "Introduction",
+      "Related Architectural Paradigms",
+      "Boundary Invariants and Formalisms",
+      "The ScholarMaster Reference Model: A 4-Stratum Architecture",
+      "Cross-Layer Consistency and the Research Ecosystem",
+      "Example Operational Trace: Attendance Validation",
+      "Architectural Hazards of Cross-Layer Leakage",
+      "Operational and System-Level Properties",
+      "Lifecycle Stability and Upgrade Semantics",
+      "Institutional Deployment and Multi-Tenant Realities",
+      "Certification and Regulatory Implications",
+      "Conclusion"
+    ],
+    "line_count": 563,
+    "word_count": 5160
+  },
+  "P2": {
+    "paper_id": "P2",
+    "paper_number": 2,
+    "title": "A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis",
+    "abstract": "The automated engagement classifiers we propose are hampered by the fact that many facial expressions characteristic of negative emotions (furrowed brows, averted gaze, reduced facial expressiveness) are also characteristic of deep cognitive processing. As a result, as the level of cognitive processing deepens, visual models systematically confuse boredom with high cognitive load. Standard cost-sensitive approaches fail to account for this fundamental inference problem during training, and our intuitions about individual predictions are often difficult to disentangle. This paper introduces a contextual probabilistic interpretation layer capturing the distributional interplay between observed facial valence and instructional context. The model jointly accounts for facial valence estimates and schedule metadata alongside semantic density of instructional speech, with lexical density playing a role of a context-dependent Bayesian prior. The posterior predictive is downweighted during episodes of heightened instructional demand, thus mitigating the false-negative concentration bias while retaining demonstrative uncertainty. Across all random splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\\% (95\\% CI [4.1\\%, 7.9\\%]) versus 42.0\\% for a vision-only baseline. By prefering structured priors to opaque deep re-weighting, traceable modifications to the decision function are enabled. The results emphasize the value of reasoning in the space of instructional semantics: asymmetric classification errors can be reduced by a factor of 7 with limited costs in terms of model transparency.",
+    "keywords": "Context-Aware Probabilistic Interpretation, Asymmetric Risk Minimization, Bayesian Prior Conditioning, Learning Analytics, Engagement Inference, Explainable AI.",
+    "sections": [
+      "Introduction",
+      "Theoretical Framework and Contextual Modeling",
+      "Asymmetric Risk Minimization via Probabilistic Re-weighting",
+      "Formulation of the Re-weighting Logic",
+      "Simulation Design (Sim-Class-24)",
+      "Empirical Evaluation",
+      "Discussion",
+      "Limitations",
+      "Conclusion"
+    ],
+    "line_count": 535,
+    "word_count": 4568
+  },
+  "P3": {
+    "paper_id": "P3",
+    "paper_number": 3,
+    "title": "Pose-Only Edge Action Sensing with Enforced Volatile Memory Confinement",
+    "abstract": "Real-time vision pipelines often process full RGB frames, even though downstream inference uses only geometric information. This design choice results in unnecessary high-resolution biometric texture in intermediate computations. Though the final decision logic utilizes only sparse spatial structure, the processing of RGB frames still has to deal with high-resolution biometric texture. This work introduces a pose-only sensing architecture for inference at the very edge under strictly bounded volatile memory constraints. Instead of storing texture-rich RGB matrices for subsequent perceptual processing, the perception layer (a) extracts sparser skeletal coordinates and (b) reuses the same frame buffer for the next incoming frame within a limited time window (e.g. $\\Delta T_{\\text{volatile}} \\le 33$ ms). A rank-based projection analysis then shows that the skeleton-reconstruction problem has insufficient degrees of freedom for uniquely reconstructing the original pixel space under certain adversarial settings. The P3P algorithm estimates the camera center via the Perspective-n-Point (PnP) paradigm while coordinate uncertainty is reduced using a confidence-adaptive Kalman filter with $R_k = \\sigma^2 / (c_i + \\epsilon)$. Across 1,200 labeled kinematic events, the perception layer achieves 97.4\\% detection accuracy (Precision: 0.98 $\\pm$ 0.01, Recall: 0.96 $\\pm$ 0.02) while operating at under 33 ms end-to-end latency. These results suggest that geometric edge analytics can be made to operate within strictly limited exposure windows by jointly considering dimensional projection and memory constraints as co-design dimensions rather than separate optimization axes.",
+    "keywords": "Constrained Edge Perception, Geometric Abstraction, Volatile Memory Confinement, Dimensional Projection, Pose Estimation, Bounded Exposure Sensing.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Sensing Constraints and Threat Modeling",
+      "Signal Processing Methodology",
+      "Memory-Aware Sensing Constraints",
+      "Algorithm Design",
+      "Experimental Evaluation",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 543,
+    "word_count": 4810
+  },
+  "P4": {
+    "paper_id": "P4",
+    "paper_number": 4,
+    "title": "Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup",
+    "abstract": "Sensing infrastructure detecting spatial presence is becoming autonomous from institutional schedule databases, making it challenging to ensure observations of presence correspond to required obligations. This work introduces a relational evaluation framework which constantly harmonizes detected spatial presence with institutional schedules using predicate logic. The framework introduces the Continuous Predicate Evaluation Model (CPEM) which encodes institutional rules as logical predicates over continuous streams of event-tuples. A Persistent Constraint Violation Filter (PCVF) is used to suppress transient sensor-induced and transit-related constraint violations that arise due to temporal instability of state transitions. This is achieved through persistent violation accumulation before allowing any state transition to occur. Additionally, spatial exclusion constraints prevent simultaneous detections within proximity zones which could lead to contradictory rule evaluations. To ensure that bursty traffic during context switches between classes is handled correctly, the relational pipeline caches connections via transaction-level pooling, partitions tables using list-based partitioning and composite time-based indexes in PostgreSQL. Evaluation layer load-testing confirms that at around 5000 queries per second (QPS) with less than 15 ms p99 latency from evaluation layer is achievable under bursty loads, thus continuous schedule reconciliation can be maintained within acceptable evaluation latency by optimizing relational access patterns.",
+    "keywords": "Continuous Predicate Evaluation, Spatiotemporal Compliance, Relational Stream Processing, Temporal Debounce Logic, Burst-Resilient Query Optimization.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Operational Model",
+      "Abstract Processing Model",
+      "Data Sanitization \\& Debounce Logic",
+      "Burst-Elastic Read Optimization",
+      "Experimental Evaluation",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 534,
+    "word_count": 4380
+  },
+  "P5": {
+    "paper_id": "P5",
+    "paper_number": 5,
+    "title": "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model",
+    "abstract": "Continuous edge inference introduces architectural constraints that extend beyond raw computational throughput. Sustained vision workloads expose the energetic and latency costs of data movement across heterogeneous memory hierarchies. In discrete CPU--GPU platforms, the cost of transferring data across the PCIe bus can approach---and occasionally exceed---the cost of the computation itself. This study develops an analytical framework termed the Memory-Bound Edge Efficiency Envelope (MBEEE) to characterize how latency, energy, and thermal constraints jointly bound sustained edge inference. Rather than relying on benchmark comparisons, the analysis models the physics of data movement ($pJ/bit$), queueing behavior ($M/M/1$ versus $M/D/1$ abstractions), and steady-state thermodynamics to derive architectural operating bounds. The resulting analysis indicates that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an estimated 5.4$\\times$ improvement in energy efficiency relative to discrete systems, while maintaining deterministic responsiveness within constrained power envelopes.",
+    "keywords": "Memory-Bound Inference, Unified Memory Architecture, Hardware Operating Envelope, Transfer Energy Modeling, Queueing-Aware Latency, Thermodynamic Edge Constraints.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "The Memory-Bound Edge Efficiency Envelope (MBEEE)",
+      "Microarchitectural Implications",
+      "Queueing Theory and Latency Jitter",
+      "Thermodynamic and Reliability Modeling",
+      "Operational Energy and TCO",
+      "Discussion: Architectural Tradeoffs",
+      "Conclusion"
+    ],
+    "line_count": 530,
+    "word_count": 4734
+  },
+  "P6": {
+    "paper_id": "P6",
+    "paper_number": 6,
+    "title": "NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT",
+    "abstract": "There are areas in many indoor situations where optical detection cannot indicate in time. The deployment of cameras in areas with bends, architectural junctions and partly occluded space generates permanent blind spots. The phenomenon of sound propagating and diffracting everywhere could offer a possible new physical modality. The proposed work designs a deterministic acoustic sensor unit to detect high-decibel impulse events occurring at sources hidden by visual obstruction from corridor locations. Input audio signals are processed using a finite-size circular RAM buffer, which is immune to swap persistence attacks. An STFT-based spectral gating system is used to filter broadband impulse signals, whereas an autocorrelation-based periodicity filtering function eliminates any periodic mechanical signal artifacts. GCC-PHAT is employed in the directional analysis process for reverberating corridors in a well-defined reverberant field operational mode ($\\mathcal{R}_{rev}$). In controlled corridor evaluation, detection probability of more than 95\\% was achieved within a 15 m safety envelope and end-to-end latency remained below about 120 ms. Raw PCM segments are overwritten right after feature extraction. Hence, the light-weight directional metadata is all that is retained. The results show that one can use physics-driven acoustic processing to extend spatial awareness into non-line-of-sight environments under bounded latency and bounded audio retention.",
+    "keywords": "Reverberant Acoustic Sensing, Non-Line-of-Sight Detection, Spectral Gating, GCC-PHAT Localization, Bounded-Memory Edge Processing, Deterministic Signal Discrimination.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Theoretical Framework",
+      "System Implementation",
+      "Experimental Setup",
+      "Performance Evaluation",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 578,
+    "word_count": 5167
+  },
+  "P7": {
+    "paper_id": "P7",
+    "paper_number": 7,
+    "title": "Sub-Millisecond Identity Retrieval via HNSW + LDCC",
+    "abstract": "Institutional identity resolution is a practical systems engineering problem: large embedding registries require efficient querying to ensure continuous video surveillance streaming. Deep neural networks are typically used to produce embeddings, but similarity searches over massive galleries become a bottleneck. Video identification systems implemented today often resort to processing on remote cloud clusters. This work studies the possibility of institutional-scale identity retrieval with latencies compatible with real-time performance on embedded hardware. We introduce a retrieval subsystem with log-scale search time based on Hierarchical Navigable Small World indexing. We propose a Local Density Consisteny Criterion (LDCC) which allows to ensure open-set rejections in sparse regions of the embedding space by validating candidate neighborhoods before resolution. Our edge hardware benchmarks show that the mean retrieval latency stays under one millisecond across a 100K identity database. Meanwhile, open set tests show that the system maintains a 99.8\\% unknown rejection rate while keeping queue sizes stable and throughput over 30FPS. By constraining approximate nearest neighbor search to a fixed latency budget the system provides bounded-latency edge identification without requiring cloud connectivity.",
+    "keywords": "Approximate Nearest Neighbor Search, HNSW Indexing, Bounded-Latency Retrieval, Open-Set Rejection, Edge Identification, Institutional-Scale Scaling.",
+    "sections": [
+      "Introduction",
+      "Retrieval Bottleneck at Institutional Scale",
+      "Embedding Geometry Assumptions",
+      "Graph-Based Index Construction",
+      "Local Density Consistency Criterion (LDCC)",
+      "Experimental Evaluation",
+      "Deployment and Data Handling",
+      "Discussion",
+      "Limitations",
+      "Conclusion"
+    ],
+    "line_count": 527,
+    "word_count": 4504
+  },
+  "P8": {
+    "paper_id": "P8",
+    "paper_number": 8,
+    "title": "A Cryptographic Provenance Model with Erasure-Compatible Immutability",
+    "abstract": "Edge-native monitoring infrastructures produce vast telemetry streams that require persistent integrity verification. Modern data protection regulations impose stringent constraints on long-term personal data retention, while conventional database systems allow data rewriting by privileged accounts, undermining non-repudiation. Conversely, immutable append-only ledgers conflict with privacy regulations such as GDPR Article 17, which mandate verifiable data deletion upon request. This study presents the Cryptographic Provenance Layer (CPL), combining hash commitment schemes with selective data revocation. Encrypted event payloads are stored off-chain while their Merkle tree root commitments are anchored to a permissioned ledger. To achieve Erasure-Compatible Immutability, we introduce the Per-Identity Symmetric Key (PISK) protocol, which enables selective revocation of payload access by deterministically shredding the corresponding identity decryption keys without altering the underlying Merkle commitments. Evaluation on a simulated BFT validator network confirms sustained throughput above 1,000 transactions per second with sub-second confirmation latency. Because only fixed-size commitments enter the ledger, storage overhead remains constant per transaction. The findings prove that layered cryptographic provenance successfully balances tamper-evident auditability with regulatory erasure mandates.",
+    "keywords": "Blockchain, Data Provenance, Cryptographic Shredding, Merkle Trees, Smart Campus, Data Integrity, Key Management.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Cryptographic Construction",
+      "Protocol Design \\& Key Management",
+      "Performance Evaluation",
+      "Security Analysis",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 509,
+    "word_count": 5078
+  },
+  "P9": {
+    "paper_id": "P9",
+    "paper_number": 9,
+    "title": "A Hierarchical Edge Control Plane for Policy-Aware Multi-Module AI Orchestration",
+    "abstract": "Edge deployments of multi-model AI perception pipelines face orchestration challenges that are largely independent of individual model accuracy. Dynamic coordination of heterogeneous inference pipelines subject to shared latency, computational, and policy constraints presents a control theory challenge. The tight coupling of such systems can create cascading fault conditions in the perception pipeline while introducing unacceptable response time delays in the cloud-coordination approach for instructional contexts. To deal with this orchestration problem, this work proposes a hierarchical control-plane abstraction for policy-aware coordination of multi-module AI workloads at the edge. The paper describes a layered execution environment, including Perception, Reasoning, and Governance, with limited cross-layer communication via typed, bounded context vectors. It introduces the Compute Justification Model for Inference Rate Governance (IRG), which allows for dynamic activation/suppression of sensing modules based on lecture phase and associated heuristics in order to manage computational cost. System resilience is evaluated via fault injection that exposes particular orchestrator to deterministic failure scenarios including module timeouts, memory pressure, and routing perturbations. To assess orchestration behavior independently from downstream model accuracy, we introduce four policy-aware metrics: Inference Suppression Ratio, Ethical Compute Utilization, Context-Aware Duty Cycle, and Layer Isolation Factor. The experiments demonstrate that orchestration according to hierarchical policies can localize failures and enforce operating policies down to individual model layers.",
+    "keywords": "Hierarchical Orchestration, Policy-Aware Control Plane, Inference Rate Governance, Deterministic Degradation, Fault Containment, Edge-Native Activation.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Problem Statement",
+      "Hierarchical Control Plane Abstraction",
+      "Compute Justification Model",
+      "Failure Containment Design",
+      "Policy-Aware Scheduler",
+      "Validation via Fault Injection",
+      "Experimental Results",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 438,
+    "word_count": 3994
+  },
+  "P10": {
+    "paper_id": "P10",
+    "paper_number": 10,
+    "title": "Integrated Stress Validation of an Edge-Native Academic Analytics Architecture",
+    "abstract": "Most academic edge-native analytics solutions take the form of a monolithic stack that combines perception pipelines with policy enforcement functions and privacy preserving inference and cryptographic auditing capabilities. While these systems are typically designed and evaluated in isolation, the interactions between these sub-systems are dictated by shared resource constraints. Under compound stress\u2014such as sustained frame ingestion, registry expansion, network instability, and elevated ambient temperature\u2014the behavior of the integrated system is often determined by cross-subsystem interactions rather than by isolated module benchmarks. This study evaluates the survivability of an integrated edge-native academic analytics architecture operating under compound deployment stress. Rather than emphasizing individual module performance, we introduce an Integrated Stress Matrix (ISM) to represent compound deployment pressure using a multidimensional stress vector $\\mathbf{s} = (\\lambda_{\\mathrm{fps}}, N_{\\mathrm{reg}}, \\rho_{\\mathrm{unk}}, \\tau_{\\mathrm{net}}, T_{\\mathrm{amb}})$. Evaluation measures survivability as the joint preservation of real-time destruction deadlines ($\\le 33$ ms) and open-set retrieval consistency ($\\ge 99\\%$). Under simultaneous stress\u2014including 30 FPS ingestion, a 100,000-identity registry, 20\\% unknown injection, 35$^\\circ$C ambient conditions, and induced packet loss\u2014the integrated architecture maintained p99.9 latency below 33 ms and 99.82\\% retrieval consistency within the evaluated configuration. The evaluation shows that subsystem co-design improves deployment survivability: it contains latency amplification and enforces bounded degradation when operational envelopes are exceeded. When operated beyond safe regions, it bounds the degree of degradation, limiting the loss of availability before memory-destruction guarantees are violated.",
+    "keywords": "Integrated Stress Validation, Survivability Envelope, Compound Stress Matrix, Bounded Degradation, Thermal Amplification, Edge-System Stability.",
+    "sections": [
+      "Introduction",
+      "The System Under Test (SUT)",
+      "Integrated Stress Matrix (ISM)",
+      "Experimental Stress Configuration",
+      "Comparative Failure Analysis",
+      "Thermal Behavior Under Compound Load",
+      "Resource Contention Profiling",
+      "Retrieval Consistency Under Stress",
+      "Survivability Under Network Degradation",
+      "168-Hour Burn-In Evaluation",
+      "Bounded Degradation Model",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 499,
+    "word_count": 4603
+  },
+  "P11": {
+    "paper_id": "P11",
+    "paper_number": 11,
+    "title": "Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability",
+    "abstract": "Edge-based academic installations are typically unmonitored embedded appliances that are placed in an environment where infrastructure resources are limited. The ability to operate in these conditions is mainly related to the degree of reliability of the operating system and updates rather than the accuracy of the applications. Mostly because the devices need to function reliably under varying loads, which is a limiting factor in their adoption for institutional academic settings. Therefore, in such cases, the OS configuration and updates are becoming more critical to ensuring the overall performance and functionality rather than the underlying application. This study presents an invariable edge deployment architecture targeting the enhanced resilience to corruption and self-healing capabilities in the presence of power and network supply fluctuations. We propose an Appliance Invariance Model that utilizes a read-only OverlayFS rootfs, thus isolating all writes in the system to either volatile memory or persistent storage in the form of versioned containers. An extended safety is achieved through watchdog-based hardware monitoring of inference queue liveliness, as well as a Blue/Green OTA update procedure with an automated rollback mechanism. A controlled testbed subject to frequent hard power cycles and update failures shows reliable reboots and automated recovery. The resulting system shows the potential improvements in the reliability of distributed academic embedded appliances to be gained by disciplined operating-system immutability and automated lifecycle control.",
+    "keywords": "Immutable Appliance Architecture, Lifecycle Hardening, OverlayFS Invariance, Bounded Recovery, OTA Rollback, Zero-Touch Provisioning.",
+    "sections": [
+      "Introduction",
+      "Failure-State Taxonomy and Related Work",
+      "Appliance Invariance Model",
+      "Reliability Engineering",
+      "OTA Updates \\& Fleet Management",
+      "Operational Configuration Policies",
+      "Network \\& Data Resilience",
+      "Defense-in-Depth Security Architecture",
+      "Full-Stack Observability Pipeline",
+      "Fleet Lifecycle Validation",
+      "Deployment Economics (BOM)",
+      "Conclusion"
+    ],
+    "line_count": 425,
+    "word_count": 4150
+  },
+  "P12": {
+    "paper_id": "P12",
+    "paper_number": 12,
+    "title": "Flash Endurance Engineering for Write-Intensive Embedded Workloads: Extending SD Card Lifespan Through Kernel-Level Optimization",
+    "abstract": "Low-cost flash has become the default storage medium for many embedded devices to date. Meanwhile, the endurance limits of flash memory have been a major reliability concern whenever such devices need to handle frequent writes, such as during intensive machine-learning workloads. Default linux filesystems generate a high number of small writes which are detrimental to flash storage that typically comes with little over-provisioning, thus significantly limiting the lifespan of such devices. We have developed an algorithm which dramatically improves the endurance of small random writes. To address this reliability feature, this experiment was conducted to evaluate the storage characteristics of a representative 32Gb SD card. A set of coordinated kernel- and filesystem-level optimizations have been applied to reduce write amplification. With the help of such technologies as swap compression (ZRAM), page-cache consolidation, multi-queue NOOP scheduler, and log-structured F2FS filesystem, the write amplification factor (WAF) has been reduced from 12.43 to only 2.10. As a result, daily writes were decreased from 4.2Gb to approximately 0.8Gb (Fig. 1). When applied in the context of a JEDEC-endurance projection model, these reductions lead to a storage system lifetime projection that is three orders of magnitude higher than what was initially measured under the same JEDEC workload. Moreover, the optimized storage stack dramatically reduces tail-latency spikes due to intensive garbage collection in aged filesystems. The results illustrate benefits of host-side I/O shaping for prolonging the service lifetime of low-cost flash storage. The improvements are especially valuable in the context of continuous embedded operation.",
+    "keywords": "Flash Endurance Engineering, Write Amplification Factor, Log-Structured Filesystem, JEDEC Endurance Projection, Kernel Writeback, Embedded Storage Reliability.",
+    "sections": [
+      "Introduction",
+      "NAND Flash Mechanics and FTL Modeling",
+      "Problem Formulation",
+      "Optimization Architecture (Kernel \\& VFS)",
+      "Filesystem Architecture: F2FS vs Ext4",
+      "Experimental Methodology",
+      "Experimental Results",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 472,
+    "word_count": 5435
+  },
+  "P13": {
+    "paper_id": "P13",
+    "paper_number": 13,
+    "title": "Federated Drift Compensation via Active Learning in Edge Deployed Neural Networks",
+    "abstract": "Edge-deployed neural networks frequently operate in an evolving physical domain, where slow and subtle shifts in the environment alter the properties of the sensor stream statistics. Thus, distributions of incoming observations change with time, which significantly impacts the prediction accuracy of models trained only on historical data. While centralized model retraining procedures address this issue, they require large amounts of data for retraining, which contradicts the data-minimization principles and the available bandwidth on edge devices. In order to resolve the stated problem, the paper presents an active learning based drift compensation framework that is localized and relies on the acquisition function of Bayesian Active Learning by Disagreement (BALD). The latter selects informative training samples from the out-of-distribution domain with limited annotation needs, thus, reducing the amount of unstructured data that must be processed to update the model. The framework synchronizes the locally acquired information through a private federated mechanism. The extensive simulations of environment brightness decay, demography drift, and physical occlusions performed on the five edge nodes confirm the effectiveness of the proposed approach. In particular, our active learning sample selection mechanism managed to recover 79.6\\% of the observed temporal degradation with only about 15\\% of all video frames annotated. Furthermore, this study demonstrates that strict layer-freezing geometries are not merely communication optimizations, but are mathematically required constraints to ensure learning trajectory stability under the obfuscation noise inherent to privacy-preserving federated aggregations.",
+    "keywords": "Federated Drift Compensation, Active Learning Stability, Bayesian Uncertainty, Epistemic Disagreement, Sparse-Label Adaptation, Non-IID Stabilization.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "Problem Formulation \\& Data Abstraction",
+      "Label-Efficient Drift Adaptation Framework",
+      "Stability Constraints under Noisy Obfuscation",
+      "Empirical Evaluation",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 394,
+    "word_count": 3763
+  },
+  "P14": {
+    "paper_id": "P14",
+    "paper_number": 14,
+    "title": "Hierarchical Federated Aggregation for Cross-Institution Model Adaptation Under Asynchronous Participation",
+    "abstract": "Distributed machine-learning systems that span multiple institutions often face the challenge of domain heterogeneity that limits the prediction performance of a model learned by any single institution. The differences in environments and populations between institutions produce persistent shifts in the data distribution that cannot be easily captured through classical approaches that operate on the data of one or several institutions alone. While federated learning allows for collaborative optimization of models without sharing data directly, flat architectures fail to encode realistic aggregation hierarchies. This study presents Hierarchical Federated Averaging (H-FedAvg) as a multi-tiered distributed learning formulation allowing for a hierarchical aggregation setting and large asynchronous participation gaps. In doing so, the algorithm explicitly models dual-level Non-IID data divergence (structural covariate shift + Dirichlet skew). Furthermore, a polynomial staleness-aware dampening mechanism is proposed which allows to limit delayed structural updates\u2019 influence without resorting to direct exponential discarding. Finally, a two-tier differential privacy technique is also introduced which factorizes structured gradient obfuscation into theoretical administrative partitions. In multi-domain experiments the framework achieves 4.8 absolute percent increase in average cross-domain F1-score over isolated local training baselines. With simulated temporal delay and up to 50\\% institutional node dropout the asynchronous optimization process demonstrates emprical robustness with over 90\\% accuracy convergence. The results show that with mathematics, hierarchical aggregation is able to eliminate cross domain drift. It isolates the variance of the internal domains and retains the optimization bounds even when the updates arrive very asynchronously as may happen with different organizations.",
+    "keywords": "Hierarchical Federated Optimization, Asynchronous Aggregation, Dual-Level Non-IID Divergence, Staleness Dampening, Cross-Domain Convergence, Bounded Participation Tolerance.",
+    "sections": [
+      "Introduction",
+      "Related Work",
+      "The Hierarchical Federated Setting",
+      "Asynchronous Optimal Objective",
+      "Lightweight Privacy Perturbation Layer",
+      "Algorithmic Optimization Characteristics",
+      "Empirical Evaluation",
+      "Conclusion"
+    ],
+    "line_count": 432,
+    "word_count": 3523
+  },
+  "P15": {
+    "paper_id": "P15",
+    "paper_number": 15,
+    "title": "Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-Anchored AR Visualization",
+    "abstract": "Large-scale campus monitoring systems can quickly generate thousands of alerts in a short time. As these systems detect anomalies, human operators must make sense of these alerts and respond physically. Conventional dashboards often present streams of text or other visual summaries such as markers on a geographic display that require operators to interpret these abstractions into physical locations. This work evaluates the potential of spatially anchored Augmented Reality (AR) visualization to offload cognitive translation of spatial information from the operator. We introduce a light-weight AR client that interprets standardized event streams and renders detected anomalies as location-bound visual overlays on the operator\u2019s view. The contribution of this work lies in the description of the interface layer between automated event detection and operator response. In a controlled within-subjects user study ($N = 20$), participants using an AR interface needed 42\\% less time to accomplish the multi-point campus navigation task than with traditional dashboard displays. Additionally, NASA-TLX results suggest that the AR interface was associated with significantly reduced mental workload and frustration compared to 2D interfaces. These results suggest that spatial computing interfaces can substantially reduce interpretation latency between automated anomaly detection and human operational response.",
+    "keywords": "Spatial Cognitive Offloading, AR Visualization, Situation Awareness, Perceptual Abstraction, Interpretation Latency, Ergonomic Interface Design.",
+    "sections": [
+      "Introduction",
+      "Theoretical Framework",
+      "AR Client Design",
+      "Methodology: Visual Positioning System",
+      "Holographic Design System",
+      "Methodology: User Study",
+      "Experimental Results",
+      "Energy Constraints",
+      "Ergonomic Considerations",
+      "Conclusion"
+    ],
+    "line_count": 496,
+    "word_count": 5070
+  },
+  "P16": {
+    "paper_id": "P16",
+    "paper_number": 16,
+    "title": "Beyond the Panopticon: A Longitudinal Study of Student Trust in Automated Stewardship Systems",
+    "abstract": "Automated monitoring systems, which are pervasive in modern educational institutions, may cause situations in which student privacy is at odds with efficiency. Students may simultaneously desire the convenience of automated services, and the lack of automated sensing. This study examines whether the visible enforcement of privacy constraints influences how trust develops within institutional monitoring environments. A longitudinal field study ($N = 540$) was conducted across a sixteen-week academic semester consisting of two deployment phases. During the initial phase the system operated in a conventional opaque monitoring configuration. In the second phase a series of transparency interventions was introduced, including skeletal abstraction displays and student-accessible audit dashboards. Following the transparency interventions, mean Trust Scores increased from 2.4/5.0 to 4.1/5.0 on a validated System Trust Scale, while reported surveillance anxiety declined substantially. A strong positive correlation ($r = 0.82$) was observed between exposure to visible abstraction mechanisms and acceptance of the monitoring environment. The results indicate that privacy safeguards become socially meaningful only when their operational boundaries are perceptible to the individuals affected by the system.",
+    "keywords": "Automated Stewardship, Visible Abstraction, Transparency-Mediated Trust, Sociotechnical Acceptance, Contextual Integrity, Longitudinal Sentiment Analysis.",
+    "sections": [
+      "Introduction",
+      "Theoretical Framework",
+      "Methodology",
+      "Results",
+      "Trust Mechanics Analysis",
+      "Discussion",
+      "Conclusion"
+    ],
+    "line_count": 507,
+    "word_count": 5026
+  },
+  "P17": {
+    "paper_id": "P17",
+    "paper_number": 17,
+    "title": "Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems",
+    "abstract": "Intelligent campus infrastructure is growing increasingly reliant on sensors and analytics both to aid in safety and coordination, and to interpret the information flows better. These mechanisms often seek to balance the analytical benefits of observation with institutional obligations to protect privacy. Administrative measures are often in place to prevent abuse and ensure a baseline level of security, but rarely go beyond the capacity to collect, store, or recreate full biodata sets. This paper introduces the design principle of Architectural Irreversibility: embedding privacy constraints in computations such that reconstruction of the original data is made impossible. By limiting the ability to retrace calculations, Architectural Irreversibility creates new opportunities for enforcing privacy by design. It is suggested here that technical privacy mechanisms that appear invisible to the user rarely serve to build trust, and that interface abstractions must instead be used to communicate privacy constraints directly to stakeholders. Within this framework, durable public trust emerges from infrastructures that structurally eliminate the ability to observe or retain sensitive information instead of relying solely on administrative restraint.",
+    "keywords": "Architectural Irreversibility, Capability Elimination, Governance-Embedded Inference, Destructive Abstraction, Monotonic Sensitivity Reduction, Socio-Technical Trust.",
+    "sections": [
+      "Introduction",
+      "Problem Reframing: Why Privacy-by-Policy Fails",
+      "A Taxonomy of Privacy Architectures",
+      "Architectural Irreversibility",
+      "Mandatory Governance",
+      "Visible Privacy and Trust",
+      "The Architecture of Stewardship",
+      "Non-Negotiable Architectural Constraints",
+      "Ethical Positioning",
+      "Conclusion"
+    ],
+    "line_count": 334,
+    "word_count": 4840
+  },
+  "P18": {
+    "paper_id": "P18",
+    "paper_number": 18,
+    "title": "Runtime Enforcement of Architectural Irreversibility in Edge AI Systems",
+    "abstract": "Architectural privacy claims require runtime validation to ensure compliance under adverse deployment conditions. This paper presents a verification methodology for confirming that privacy invariants---defined in ScholarMasterEngine's canonical architecture---are enforced at runtime, including under crash and failure conditions. We enumerate a failure taxonomy covering process crashes, power loss, kernel panics, network partitions, clock skew, and watchdog failures. We describe the runtime enforcement mechanisms: volatile-memory-only processing, time-to-live (TTL) enforcement, forced zeroization, independent watchdog processes, and fail-closed semantics. We define formal irreversibility invariants and present a fault injection test harness that simulates failures at each pipeline stage. Results demonstrate zero application-layer post-crash data residue (DRAM-level remanence is outside the scope of this software verification), consistent watchdog termination success, and correct system halt behavior across all tested failure scenarios. This paper empirically verifies the runtime enforcement of the architectural claims defined in Paper 17, without modifying the underlying architecture.",
+    "keywords": "Runtime Privacy Verification, Crash-Oriented Enforcement, Temporal-Bound Supervision, Compiler-Safe Zeroization, Fault-Injection Validation, Watchdog Isolation.",
+    "sections": [
+      "Introduction",
+      "Threat Model and Failure Taxonomy",
+      "Runtime Enforcement Mechanisms",
+      "Formal Irreversibility Invariants",
+      "Failure Injection and Test Harness",
+      "Results",
+      "Discussion",
+      "Scope and Relation to Prior Work",
+      "Conclusion"
+    ],
+    "line_count": 651,
+    "word_count": 4049
+  },
+  "P19": {
+    "paper_id": "P19",
+    "paper_number": 19,
+    "title": "Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI",
+    "abstract": "The evaluation of edge AI systems under adversarial conditions requires a rigorous formalization of their defensive boundaries. While prior work established the architectural doctrine of irreversibility and its runtime enforcement mechanisms, the exact security boundaries, formal adversary definitions, and assumed trust models require explicit mathematical formulation. This paper formally defines the Threat Model, Information Flow boundaries, and Trusted Computing Base (TCB) for architecturally irreversible edge AI systems. We establish a tiered adversary classification algebra ($A_0$ to $A_5$) mapping observer capabilities to memory, network, and kernel domains. We formalize the system using a Non-Interference information flow model and express system state transitions using Metric Temporal Logic (MTL), demonstrating that high-sensitivity raw biometric data cannot propagate to persistent sinks under the defined assumptions. Furthermore, we explicitly demarcate the system's operational scope, validating defense against institutional root adversaries ($A_3$) while analyzing the collapse of invariants under kernel-level ($A_4$) and physical hardware compromises ($A_5$). By delineating the minimal TCB, we quantify the residual attack surface, including information-theoretic bounds on Model Inversion attacks. Finally, we formulate and justify four bounded security theorems: Pixel-Space Non-Reconstructability, Bounded Exposure Window ($\\Delta \\le 33$ms), Governance Non-Bypass, and Fail-Closed State Reachability, conditionally grounded on empirical runtime validation and mechanized TLA+ model checking. This work provides the formal security calculus necessary to evaluate privacy-by-architecture systems under rigorous adversarial scrutiny.",
+    "keywords": "Adversary Capability Algebra, Trusted Computing Base Minimization, Information-Flow Non-Interference, Temporal-Logic Verification, Bounded Security Assumptions, TLA+ State Constraints.",
+    "sections": [
+      "Introduction",
+      "Formal Adversary Classification Model",
+      "Information Flow and Non-Interference Model",
+      "State Transitions",
+      "Trusted Computing Base (TCB)",
+      "Comprehensive Threat Mitigation Mapping",
+      "Residual Risk \\& Information-Theoretic Bounds",
+      "Information-Flow Noninterference",
+      "Timing Channel Mitigation",
+      "Formal Security Theorems",
+      "Related Work",
+      "Conclusion",
+      "Temporal Logic Formalization of Invariants"
+    ],
+    "line_count": 601,
+    "word_count": 5798
+  },
+  "P20": {
+    "paper_id": "P20",
+    "paper_number": 20,
+    "title": "The ScholarMaster Architecture: A Unified Reference Model for Privacy-First Intelligent Campus Systems",
+    "abstract": "Current research in intelligent cyber-physical infrastructure frequently suffers from a fragmentation challenge: hardware efficiency, algorithmic accuracy, data privacy, and sociological trust are typically treated as isolated domains. This paper introduces Constraint-First Architectural Synthesis (CFAS) to define a unified reference architecture for privacy-centered edge intelligence. We construct a complete vertically layered stack---from thermal equilibrium in edge silicon to sociotechnical legitimacy constraints---and formalize the \\textbf{Canonical Invariant Namespace (INV-01 to INV-15)} that binds these layers together. By mapping the operational adversary model ($A_0$--$A_4$) and tracing the end-to-end lifecycle of a spatiotemporal event across the eight-layer boundary using formal sequence diagrams and schema-constrained semantic firewalls, this framework demonstrates how irreversible abstraction, computationally interposed governance, and visible privacy constraints converge. This paper establishes a formal doctrine for cross-layer operational integration, proving that privacy and deployment feasibility depend inherently on architecturally bounded computation.",
+    "keywords": "Constraint-First Architectural Synthesis, Cross-Layer Execution Contracts, Irreversible Abstraction Boundaries, Governance-Aware Deployment, Cyber-Physical Integration, Semantic Firewalls.",
+    "sections": [
+      "Introduction",
+      "Constraint-First Architectural Synthesis (CFAS)",
+      "The Threat Landscape and Adversary Model",
+      "The ScholarMaster Reference Stack",
+      "The Canonical Invariant Namespace",
+      "Inter-Stratum Execution Contracts",
+      "The Life of an Event: End-to-End Sequence",
+      "Physical Deployment Topologies",
+      "The Theorem-Implementation Lattice",
+      "Limitations",
+      "Paper-to-Layer Traceability",
+      "Conclusion"
+    ],
+    "line_count": 485,
+    "word_count": 3869
+  },
+  "P21": {
+    "paper_id": "P21",
+    "paper_number": 21,
+    "title": "Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity",
+    "abstract": "Automated compliance verification in cyber-physical environments is often performed using heuristic anomaly detection or probabilistic inference methods. While such approaches have proven effective in simple operating environments, they provide little theoretical guarantee for complex, contested, or distributed settings where adversaries or failures may simultaneously impact the system\u2019s state. This paper presents a formal mathematical framework for reasoning about spatiotemporal compliance and distributed integrity of cyber-physical institutions. Instead of relying on heuristics or purely statistical approaches, this paper proposes a mechanized axiomatic framework involving classical kinematics, event calculus, and measure-theoretic formalism. Entity presence is modeled over a finite zone topology equipped with a metric structure, from which compliance predicates are derived that admit Lebesgue-integrable duration bounds under explicitly stated noise assumptions. Sampling-theoretic limits are examined through a Nyquist-style detectability condition, and the decidability of the verification problem is established under finite zone and entity constraints. The model is then extended to distributed environments using vector clocks in order to analyze causal monotonicity across system shards. Finally, a game-theoretic adversarial formulation explores the theoretical limits of spoofing under physically constrained motion. Together these constructions clarify the logical conditions under which automated compliance verification remains sound, sampling-complete within defined limits, and computationally decidable.",
+    "keywords": "Spatiotemporal Axiomatization, Metric-Space Compliance Reasoning, Event-Calculus Persistence, Distributed Causal Integrity, PSPACE Decidability, Cyber-Physical Verification.",
+    "sections": [
+      "Introduction",
+      "Mathematical Preliminaries",
+      "Spatiotemporal System Model",
+      "Compliance Formalization",
+      "Core Theorems",
+      "Proof Deductions",
+      "Limitations",
+      "Related Work",
+      "Conclusion"
+    ],
+    "line_count": 457,
+    "word_count": 5635
+  },
+  "P22": {
+    "paper_id": "P22",
+    "paper_number": 22,
+    "title": "Perception Integrity Foundations: Evidential Uncertainty, Disagreement Dynamics, and Blur Bounds in Edge Vision",
+    "abstract": "The deployment of autonomous cyber-physical vision systems at the edge in real-world applications is limited by environmental non-stationarity and optical aberrations, often resulting in misclassification of OOD data by conventional embedded vision classifiers. We present the theoretical foundation and the experimental validation of Layer-1 visual perception integrity in the ScholarMaster framework. We define a composite perception risk function $R_p \\in [0,1]$ that combines Dirichlet parameterization of evidential deep learning, multi-branch spatial cross-agreement, and high-frequency blur bounds from the frequency domain. Our theoretical analysis demonstrates that the variance of the Dirichlet distribution is strictly bounded for all $k \\in \\{1,\\ldots,K\\}$ by $\\mathrm{Var}(p_k) \\le \\frac{1}{4(S + 1)} < \\frac{1}{4K}$ and monotonically decreasing under proportional scaling of the evidence. The proposed gated architecture achieves $\\text{AUROC} = 1.0000$ and $\\text{FPR95} = 0.0000$ on the 2,000 edge-inference benchmark examples of OOD perception from the ScholarMaster framework. With temperature scaling and Platt calibration, the $\\text{ECE}$ decreases by 90.2\\% from the baseline of 0.4218 to 0.0412, with the Brier score of 0.1793.",
+    "keywords": "Perception integrity, evidential deep learning, uncertainty quantification, edge vision, temperature scaling, blur bounds, out-of-distribution detection.",
+    "sections": [
+      "Introduction",
+      "Related Work \\& Analytical 6-Paradigm Taxonomy",
+      "Mathematical System Model \\& First-Principles Proofs",
+      "Empirical Evaluation \\& Results",
+      "Failure Boundaries \\& Cyber-Physical Safety Invariants",
+      "Conclusion"
+    ],
+    "line_count": 363,
+    "word_count": 4515
+  },
+  "P23": {
+    "paper_id": "P23",
+    "paper_number": 23,
+    "title": "Adaptive Trustworthy Edge Systems: Dynamic Risk-Driven Cascades and Real-Time SLA Bounds",
+    "abstract": "Deploying multi-stage deep learning pipelines on resource-constrained edge computing appliances introduces a fundamental conflict between operational throughput, energy dissipation, and high-stakes inference accuracy. Static edge deployment architectures either execute lightweight models that compromise verification accuracy during ambiguous scenes, or execute heavy deep ensembles continuously, causing severe thermal throttling, frame drops, and latency Service Level Agreement (SLA) violations. In this paper, we formulate, analyze, and empirically validate an Adaptive Risk-Driven Cascade Architecture for trustworthy edge vision. We formulate multi-objective edge inference as a constrained Pareto optimization problem that minimizes expected energy and latency subject to strict perceptual risk ceilings and sub-frame SLA bounds. We prove that the randomized continuum cascade policy exhibits a zero duality gap under convex risk-resource trade-offs via Fenchel-Rockafellar strong duality. To bound real-time queueing delays under stochastic streaming arrivals, we apply Pollaczek-Khinchine $M/G/1$ queueing analysis and derive closed-form heavy-traffic tail delay envelopes. Evaluated on 2,000 continuous video inferences on an edge compute platform, our adaptive cascade achieves an average throughput of $373.3\\text{ FPS}$ ($2.679\\text{ ms}$ mean latency), satisfying a strict $5.0\\text{ ms}$ sub-frame SLA at $P50 = 3.786\\text{ ms}$, $P95 = 4.075\\text{ ms}$, and $P99 = 4.556\\text{ ms}$. The dynamic cascade safely bypasses the heavy neural network on $48.0\\%$ of frames, reserving heavy verification for $52.0\\%$ of challenging frames, resulting in an active heavy duty cycle of only $8.1\\%$. We characterize architectural failure boundaries and formulate a deterministic graceful degradation protocol, proving that risk-driven dynamic routing provides Pareto-optimal resource allocation for safety-critical edge intelligence.",
+    "keywords": "Adaptive inference, model cascade, constrained optimization, queueing theory, edge computing, latency SLA, Pareto optimality, fail-closed systems.",
+    "sections": [
+      "Introduction",
+      "Related Work \\& Analytical 6-Paradigm Taxonomy",
+      "Constrained Optimization \\& Queueing Formulations",
+      "Empirical Evaluation \\& Performance Telemetry",
+      "Failure Boundaries \\& Overload Containment",
+      "Conclusion"
+    ],
+    "line_count": 351,
+    "word_count": 4676
+  },
+  "P24": {
+    "paper_id": "P24",
+    "paper_number": 24,
+    "title": "Generalized Cross-Modal Recovery under Compromised Primary Sensing",
+    "abstract": "Cyber-physical edge systems operating in unconstrained environments frequently encounter physical sensor degradation, optical occlusions, and adversarial tampering. While multi-modal sensory architectures incorporate complementary sensing streams (e.g., optical RGB, skeletal pose kinematics, and acoustic spectral features), conventional multi-modal fusion mechanisms employ static weighting matrices that catastrophically propagate noise from a compromised primary channel into the joint feature representation. In this paper, we present the information-theoretic formulation, mathematical analysis, and empirical verification of Layer-1 Generalized Cross-Modal Consensus Recovery for edge intelligence. We introduce a symmetric Jensen-Shannon Divergence ($\\mathrm{JSD}$) formulation that continuously measures inter-modality distribution discrepancy against a dynamic arithmetic mixture consensus distribution. We prove from first principles that the symmetric $\\mathrm{JSD}$ is strictly bounded in $[0, \\ln 2]$, derive Pinsker-type total variation inequality bounds ($\\frac{1}{2}\\|P - Q\\|_{TV}^2 \\le \\mathrm{JSD}(P \\parallel Q) \\le \\ln(2)\\|P - Q\\|_{TV}$), and analyze infinitesimal Fisher information metric geometry on the statistical probability simplex ($ds_{FR}^2 = 8 \\cdot \\mathrm{JSD} + \\mathcal{O}(\\|dP\\|^3)$). To resolve temporal latency mismatches across heterogeneous hardware sensors, we formalize an asynchronous multi-rate ring buffer synchronization mechanism aligning $30\\text{ FPS}$ RGB video, $100\\text{ Hz}$ IMU kinematics, and $15\\text{ FPS}$ acoustic spectral frames with software phase-locked loop (PLL) timestamp compensation. Evaluated across progressive visual degradation regimes ($0\\%$, $20\\%$, $50\\%$, and $80\\%$ synthetic sensory corruption), our dynamic consensus mechanism achieves a $100\\%$ ($1.0000$) state recovery rate under single-channel degradation. Under severe $80\\%$ visual corruption, where single-modality RGB accuracy collapses from $1.0000$ to $0.1867$, the dynamic trust weight of the corrupted optical channel automatically decays from $0.4000$ to $0.0500$, autonomously transferring decision authority to intact acoustic and skeletal channels ($0.4750$ each). We formalize multi-channel breakdown boundaries and prove that dynamic consensus guarantees continuous state survivability under single-modality sensory compromise.",
+    "keywords": "Cross-modal recovery, sensor fusion, Jensen-Shannon divergence, dynamic trust weighting, multi-rate synchronization, Fisher information metric, edge survivability.",
+    "sections": [
+      "Introduction",
+      "Related Work \\& Multi-Modal Fusion Taxonomy",
+      "Information-Theoretic JSD Consensus Formulation",
+      "Asynchronous Multi-Rate Synchronization Architecture",
+      "Empirical Degradation \\& Recovery Results",
+      "Failure Boundaries \\& Multi-Channel Breakdown",
+      "Conclusion"
+    ],
+    "line_count": 377,
+    "word_count": 4525
+  },
+  "P25": {
+    "paper_id": "P25",
+    "paper_number": 25,
+    "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+    "abstract": "Complex edge intelligence pipelines compose multiple sequential inference stages, cascading from low-level sensory ingestion to high-level policy enforcement. In unmitigated architectures, minor sensory perturbations at Layer 1 undergo non-linear amplification as they propagate downstream through deep biometric feature extractors, spatial tracking filters, and formal compliance state machines---a compounding failure phenomenon known as a Data Cascade. In this paper, we establish the systemic macro integration architecture of ScholarMaster and present a formal downstream error propagation analysis across its five canonical layers: Layer 1 (Perception Integrity), Layer 2 (Identity Recognition), Layer 3 (Context Tracking), Layer 4 (Compliance Logic), and Layer 5 (Administrative Decision). We provide a rigorous metric-geometry proof demonstrating that biometric nearest-neighbor classifiers in metric embedding spaces ($\\text{HNSW}$) exhibit step jump discontinuities along Voronoi cell facet boundaries. We formulate the Error Amplification Factor ($\\text{EAF} = E_{downstream} / \\Delta_{upstream}$) as a sensitivity condition number and derive composite Lipschitz chain rules under domain partitioning. Empirically validated on the ScholarMaster macro system benchmark, unprotected pipelines exhibit a mean downstream $\\text{EAF}$ of $0.9513$, reaching a peak localized $\\text{EAF}$ of $1.4220$ under $15\\%$ input noise, where single-layer optical errors trigger multi-stage policy violations. In contrast, under Layer-1 Perception Integrity gating, uncertified sensory inputs are intercepted and quarantined at the root ($\\mathrm{Lip}(f_{gate}|_{\\mathcal{X}_{quar}}) = 0$), preventing corrupted vector evaluation across Voronoi boundaries and achieving an $\\text{EAF}$ of $0.0000$ across all evaluated regimes. We formalize layer-wise error containment invariants, establish systemic boundary conditions, and prove that upstream perceptual gating is mathematically required for macro cyber-physical safety.",
+    "keywords": "System integration, error propagation, data cascades, fail-closed architecture, Voronoi cell discontinuity, Error Amplification Factor, Lipschitz chain rule, condition numbers, edge AI safety.",
+    "sections": [
+      "Introduction",
+      "Related Work \\& Systemic Safety Taxonomy",
+      "5-Layer Macro System Model \\& Geometric Proofs",
+      "Error Amplification Factor (EAF) \\& Lipschitz Chain Rules",
+      "Macro Empirical Results \\& Containment Analysis",
+      "Systemic Boundary Conditions \\& Architectural Invariants",
+      "Conclusion"
+    ],
+    "line_count": 370,
+    "word_count": 4638
+  }
+}

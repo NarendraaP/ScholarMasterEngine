@@ -1,0 +1,29 @@
+{
+  "audit_name": "Master Plan Correction Ledger",
+  "corrections_applied": [
+    {
+      "issue_id": "CORR-01",
+      "component": "docs/research_plan/ScholarMaster_Master_Paper_Plan.tex Section 6",
+      "finding": "Historical drafting shorthand 'M <= N' was previously described as a universal citation law.",
+      "correction": "Updated Section 6 and Appendix E to articulate the definitive Public Availability Rule: actual public availability determines citable status; internal research plan is not a citation source.",
+      "status": "RESOLVED"
+    },
+    {
+      "issue_id": "CORR-02",
+      "component": "docs/research_plan/ScholarMaster_Master_Paper_Plan.tex Section 7 & 10 Tables",
+      "finding": "Single-Owner and Implementation Boundary tables exceeded single page height.",
+      "correction": "Converted Table 3 and Table 4 to longtable environments to enable clean multi-page pagination.",
+      "status": "RESOLVED"
+    },
+    {
+      "issue_id": "CORR-03",
+      "component": "benchmarks/generate_master_paper_plan_latex.py",
+      "finding": "String slicing truncated LaTeX math mode delimiters.",
+      "correction": "Introduced safe_latex_truncate function preserving balanced math delimiters and complete LaTeX command tokens.",
+      "status": "RESOLVED"
+    }
+  ],
+  "manuscript_modifications_count": 0,
+  "benchmark_modifications_count": 0,
+  "verdict": "ALL_CORRECTIONS_AUDITED_AND_RESOLVED"
+}

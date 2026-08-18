@@ -1,0 +1,2177 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{pdflscape}
+\usepackage{microtype}
+\usepackage[hyphens]{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\do\_\do\-\do\.}
+\makeatother
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,calc}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black,
+    pdfauthor={ScholarMaster Engineering and Research Group},
+    pdftitle={ScholarMaster Research Series -- Master Research Plan, Paper Architecture, Publication Roadmap, and Scientific Ownership},
+    pdfsubject={Canonical P1-P25 Research Program Specification}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \textbf{ScholarMaster Research Series} \textbar\ Master Research Plan}
+\fancyhead[R]{\small \textbar\ P1--P25 Canonical Specification}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\titleformat{\section}{\Large\bfseries\color{blue!80!black}}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{blue!70!black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{black}}{\thesubsubsection}{1em}{}
+
+\tcbset{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    arc=2mm
+}
+
+\begin{document}
+
+% ==============================================================================
+% COVER PAGE & FRONT MATTER
+% ==============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\Huge \bfseries \color{blue!80!black} SCHOLARMASTER RESEARCH SERIES\par}
+    \vspace{0.8cm}
+    {\LARGE \bfseries Master Research Plan, Paper Architecture,\\ Publication Roadmap, and Scientific Ownership\par}
+    \vspace{0.6cm}
+    {\Large \textit{P1--P25 \textbar\ Human-Readable Research Program Specification}\par}
+    
+    \vspace{1.5cm}
+    \begin{tcolorbox}[colback=gray!10!white,colframe=gray!70!black,width=0.92\textwidth,center]
+        \centering
+        \textbf{AUTHORITATIVE HUMAN-READABLE RESEARCH PLAN}\\
+        \vspace{0.2cm}
+        \small
+        \textbf{Document Version}: 2.1 (Canonical Governance Ratification)\\
+        \textbf{Date}: August 2026\\
+        \textbf{Governance Standard}: SROS Version 2.1 \textbar\ SEOP Version 2.0 \textbar\ SROS-004 Single-Owner Law\\
+        \textbf{Curated by}: ScholarMaster Engineering \& Research Group
+    \end{tcolorbox}
+
+    \vspace{1.2cm}
+    \begin{tcolorbox}[colback=yellow!10!white,colframe=orange!80!black,width=0.92\textwidth,center]
+        \small \textbf{MANDATORY GOVERNANCE NOTICE}\\
+        \vspace{0.1cm}
+        \textit{``This document consolidates existing ScholarMaster planning and governance artifacts into a standalone, human-readable specification. It is an authoritative representation of the research plan and does not itself modify manuscript content or alter established experimental findings.''}
+    \end{tcolorbox}
+
+    \vfill
+    {\large \textbf{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+    Department of Computer Science and Engineering\\
+    Autonomous Edge Intelligence \& Trustworthy Systems Laboratory\par}
+    \vspace{1.0cm}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\listoffigures
+\listoftables
+\newpage
+\pagenumbering{arabic}
+
+% ==============================================================================
+% EXECUTIVE SUMMARY
+% ==============================================================================
+\section*{Executive Summary}
+\addcontentsline{toc}{section}{Executive Summary}
+
+The \textbf{ScholarMaster Research Series} represents a comprehensive, multi-disciplinary research program investigating the principles, architectures, algorithms, mathematical foundations, and empirical guarantees required to build privacy-preserving, fault-tolerant, and real-time edge intelligence systems. Modern cyber-physical deployments---such as academic campuses, transit terminals, and medical facilities---increasingly demand real-time automated situational awareness and compliance monitoring. However, edge deployments operate under severe resource constraints (thermal ceilings, memory bandwidth limits, intermittent power) and unconstrained open-world hazards (optical occlusions, sensor tampering, lens blur, acoustic reverberation).
+
+\paragraph{Scientific Motivation \& The Data Cascade Problem}
+Conventional machine learning systems are designed and benchmarked under the assumption of isolated component evaluation over clean, curated datasets. In multi-tier cyber-physical pipelines, however, sensory corruption does not stay isolated. A subtle optical defect (e.g., lens defocus blur or lighting dropout) shifts deep continuous feature embeddings (e.g., ArcFace) across high-dimensional hyperspheres. When these continuous embeddings cross discrete Voronoi cell boundaries in nearest-neighbor indexing structures (e.g., HNSW), they generate instantaneous discrete identity misclassifications. These misclassifications instantaneously corrupt spatial trajectory trackers (Kalman filters), spawn spurious event sequences in formal temporal logic compliance monitors, and commit falsified infraction records to immutable audit ledgers. This systemic, compounding error amplification phenomenon is designated as a \textit{Data Cascade}.
+
+\paragraph{Architectural Vision \& The 25-Paper Portfolio}
+To solve these systemic challenges, the ScholarMaster research program formalizes an 8-layer decoupled Onion macro architecture structured into five canonical runtime processing layers:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Layer 1 (Perception Integrity)}: Multi-branch evidential uncertainty, disagreement dynamics, and Laplacian blur gating that intercepts corrupted frames prior to vector search ($R_p \le 0.70$).
+    \item \textbf{Layer 2 (Identity Recognition)}: Sub-millisecond approximate nearest-neighbor vector retrieval over HNSW graphs with Linear Density Cluster Compensation.
+    \item \textbf{Layer 3 (Context Tracking)}: Multi-camera Bayesian kinematic filtering with physical transit velocity bounds ($v_i \le 5.0\text{ m/s}$).
+    \item \textbf{Layer 4 (Compliance Logic)}: Real-time spatiotemporal predicate evaluation via the ST-CSF interval temporal logic solver with hysteresis debouncing.
+    \item \textbf{Layer 5 (Administrative Decision \& Governance)}: Tamper-evident SHA-256 Merkle audit ledgers with logarithmic verification paths and symbolic glassmorphic situational UI dashboards.
+\end{enumerate}
+
+The complete research program is articulated across \textbf{25 dedicated research papers (P1--P25)}. Every paper addresses a mathematically and architecturally distinct research question, introduces exclusive algorithmic or theoretical contributions governed by the \textbf{SROS-004 Single-Owner Law}, and provides empirical validation derived from real-world edge hardware telemetry and master validation benchmarks.
+
+\paragraph{Portfolio Research Progression}
+The portfolio progresses systematically across seven distinct phases:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phase 1: Subsystem Sensing \& Perception Integrity Foundations} (P22, P5, P6, P3, P7)
+    \item \textbf{Phase 2: Dynamic Cascades, Reasoning \& Control Dispatch} (P23, P2, P4, P9)
+    \item \textbf{Phase 3: Cross-Modal Consensus, Stateful Execution \& Scheduling} (P24, P11, P12, P20)
+    \item \textbf{Phase 4: Cryptographic Trust, Privacy \& Threat Perimeters} (P8, P16, P19)
+    \item \textbf{Phase 5: Adaptation, Kinematics \& Validation Frameworks} (P13, P14, P10, P15)
+    \item \textbf{Phase 6: Ethics, Reference Architecture \& Chaos Engineering} (P17, P18)
+    \item \textbf{Phase 7: Formal Foundations, Macro Safety \& Ecosystem Synthesis} (P25, P21, P1)
+\end{itemize}
+
+\paragraph{Current Publication Status}
+As of August 2026, the portfolio maintains two strictly immutable published/accepted historical milestones:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper 5 (P5)}: \textbf{PUBLISHED} in \textit{Journal for Basic Sciences / IEEE Access} (vol. 26, no. 5, pp. 112--128, 2026).
+    \item \textbf{Paper 6 (P6)}: \textbf{ACCEPTED / IN PRESS} in \textit{ACM Transactions on Embedded Computing Systems (TECS) / IEEE Sensors Journal} (2026).
+    \item \textbf{Papers P1--P4 and P7--P25}: \textbf{UNPUBLISHED / PLANNED} research manuscripts ready for progressive submission following the 7-phase roadmap.
+\end{itemize}
+
+% ==============================================================================
+% SECTION 1: RESEARCH PROGRAM ARCHITECTURE
+% ==============================================================================
+\section{Research Program Architecture}
+
+\subsection{Progression Model: Foundations to System Synthesis}
+The ScholarMaster research program is constructed on a rigorous bottom-up progression model, ensuring that higher-level compliance, tracking, and governance systems rest upon verified mathematical and perceptual foundations. Figure~\ref{fig:portfolio_architecture} illustrates the structural hierarchy of the 25-paper portfolio.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.8cm,
+    layer_box/.style={rectangle, draw=blue!80!black, fill=blue!5!white, rounded corners=2mm, text width=0.92\textwidth, inner sep=6pt},
+    header_style/.style={font=\bfseries\color{blue!90!black}},
+    item_style/.style={font=\small}
+]
+
+\node[layer_box] (layer7) {
+    \textbf{Layer 7: Formal Foundations, Macro Safety \& Capstone Synthesis (Phase 7)}\\
+    \small P25 (Macro Error Propagation \& Voronoi Step Jump) \textbullet\ P21 (Formal Compliance Automata) \textbullet\ P1 (Macro Ecosystem Synthesis)
+};
+
+\node[layer_box, below=of layer7] (layer6) {
+    \textbf{Layer 6: Ethics, Governance Philosophy \& Chaos Hardening (Phase 6)}\\
+    \small P17 (Architectural Irreversibility \& Ethics Doctrine) \textbullet\ P18 (Runtime Supervisor \& Chaos Testing)
+};
+
+\node[layer_box, below=of layer6] (layer5) {
+    \textbf{Layer 5: Adaptation, Kinematic Simulation \& Situational UI (Phase 5)}\\
+    \small P13 (Acoustic Drift Adaptation) \textbullet\ P14 (Bayesian Trajectory Simulation) \textbullet\ P10 (Stress Validation) \textbullet\ P15 (Situational UI)
+};
+
+\node[layer_box, below=of layer5] (layer4) {
+    \textbf{Layer 4: Cryptographic Trust, Privacy \& Threat Perimeters (Phase 4)}\\
+    \small P8 (SHA-256 Merkle Audit Ledger) \textbullet\ P16 (Longitudinal Trust Study) \textbullet\ P19 (Physical Threat Perimeter \& TCB)
+};
+
+\node[layer_box, below=of layer4] (layer3) {
+    \textbf{Layer 3: Cross-Modal Consensus, Stateful Recovery \& Scheduling (Phase 3)}\\
+    \small P24 (Cross-Modal JSD Recovery) \textbullet\ P11 (Cold-Boot Recovery) \textbullet\ P12 (Sparse Federated Comm) \textbullet\ P20 (Power Scheduling)
+};
+
+\node[layer_box, below=of layer3] (layer2) {
+    \textbf{Layer 2: Dynamic Cascades, Reasoning \& Control Dispatch (Phase 2)}\\
+    \small P23 (Risk-Driven Adaptive Cascades) \textbullet\ P2 (Hierarchical H-FedAvg) \textbullet\ P4 (ST-CSF Compliance) \textbullet\ P9 (Kinematic Velocity Bounds)
+};
+
+\node[layer_box, below=of layer2] (layer1) {
+    \textbf{Layer 1: Subsystem Sensing, Perception Integrity \& Hardware Envelopes (Phase 1)}\\
+    \small P22 (Perception Integrity \& Evidential Uncertainty) \textbullet\ P5 (Thermal Power Scaling, \textbf{Published}) \textbullet\ P6 (Acoustic Sentinel, \textbf{Accepted}) \textbullet\ P3 (Zero-Persistence RAM) \textbullet\ P7 (HNSW Retrieval)
+};
+
+\draw[->, thick, blue!70!black] (layer1) -- (layer2);
+\draw[->, thick, blue!70!black] (layer2) -- (layer3);
+\draw[->, thick, blue!70!black] (layer3) -- (layer4);
+\draw[->, thick, blue!70!black] (layer4) -- (layer5);
+\draw[->, thick, blue!70!black] (layer5) -- (layer6);
+\draw[->, thick, blue!70!black] (layer6) -- (layer7);
+
+\end{tikzpicture}
+\caption{The 7-Stage Architectural Progression of the ScholarMaster Research Series (P1--P25).}
+\label{fig:portfolio_architecture}
+\end{figure}
+
+\subsection{Production Implementation vs. Benchmark and Theoretical Layers}
+A vital architectural principle enforced throughout ScholarMaster governance is the strict boundary separation between:
+\begin{enumerate}
+    \item \textbf{Production Runtime Codebase}: Implemented in \texttt{main.py}, \texttt{core/canonical\_layers.py}, \texttt{core/failure\_semantics.py}, \texttt{api/}, and \texttt{modules\_legacy/}. This includes the real-time 5-layer pipeline, ArcFace embedding inference, HNSW indexing, ST-CSF compliance engine, Merkle ledger hashing, volatile RAM memset zeroization, and Streamlit situational UI.
+    \item \textbf{Benchmark \& Validation Suites}: Implemented in \texttt{benchmarks/} and \texttt{tests/}. This includes the master validation suite (2,000 multi-modal evaluations), PLL theoretical clock-tracking simulation, 52,203-epoch Monte Carlo trajectory simulation engine, and synthetic noise generators.
+    \item \textbf{Theoretical \& Formal Specifications}: Mathematical proofs of JSD boundedness, Voronoi step jump discontinuity theorems, Fenchel-Rockafellar dual optimization formulations, and UPPAAL timed automata verification specifications.
+\end{enumerate}
+
+\subsection{Shared Infrastructure vs. Individually Owned Novelty}
+Under the \textbf{SROS-004 Single-Owner Law}, the entire portfolio shares a common engineering substrate (the 8-layer decoupled Onion architecture, zero-copy UMA memory layout, and standardized JSON/logging pipelines). However, \textbf{no two papers ever share the same scientific claim or primary contribution}. Each paper owns a unique, disjoint research question and experimental deliverable.
+
+
+% ==============================================================================
+% SECTION 2: MASTER P1–P25 PAPER MATRIX
+% ==============================================================================
+\section{Master P1--P25 Paper Matrix}
+
+Table~\ref{tab:master_paper_matrix} presents the complete, consolidated master specification for all 25 papers in the ScholarMaster research program, ordered by their authoritative Research-Plan Position (1 to 25).
+
+\begin{landscape}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\sloppy
+\begin{longtable}{>{\centering\sloppy\arraybackslash}p{0.7cm}>{\raggedright\sloppy\arraybackslash}p{3.6cm}>{\centering\sloppy\arraybackslash}p{1.0cm}>{\raggedright\sloppy\arraybackslash}p{2.3cm}>{\raggedright\sloppy\arraybackslash}p{3.9cm}>{\raggedright\sloppy\arraybackslash}p{3.6cm}>{\raggedright\sloppy\arraybackslash}p{2.4cm}>{\centering\sloppy\arraybackslash}p{2.3cm}}
+\caption{Master P1--P25 Research Portfolio Matrix (Ordered by Plan Position 1--25)} \label{tab:master_paper_matrix} \\
+\toprule
+\textbf{Pos} & \textbf{Paper ID \& Title} & \textbf{Phase} & \textbf{Research Category} & \textbf{Primary Research Question} & \textbf{Core Novelty / Contribution} & \textbf{Primary Evidence} & \textbf{Status} \\
+\midrule
+\endfirsthead
+
+\multicolumn{8}{c}{{\bfseries Table \thetable\ Continued from previous page}} \\
+\toprule
+\textbf{Pos} & \textbf{Paper ID \& Title} & \textbf{Phase} & \textbf{Research Category} & \textbf{Primary Research Question} & \textbf{Core Novelty / Contribution} & \textbf{Primary Evidence} & \textbf{Status} \\
+\midrule
+\endhead
+
+\bottomrule
+\multicolumn{8}{r}{{(Continued on next page)}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+1 & \textbf{P22}: Perception Integrity Foundations... & Phase 1 & Foundational Perception \& Trustworthy ML & How can multi-\allowbreak branch evidential uncertainty, Laplacian blur bounds, and feature dispersion quantify perception risk $R_p \in [0, 1]$ in real time ($<2\text{ms}$) to enforce fail-\allowbreak closed gating? & Layer-\allowbreak 1 Perception Integrity framework formulating composite evidential risk $R_p \in [0,1]$ via Dirichlet evidential uncertainty, multi-\allowbreak branch cosine disagreement, Laplacian blur bounds, and landmark dispersion. & 2,000-\allowbreak frame master validation suite across 5 degradation levels, proving zero false acceptances (FAR=0.0000) at... & \color{black!70}PLANNED \\ \midrule
+2 & \textbf{P5}: Memory-\allowbreak Bound Edge Efficiency Env... & Phase 1 & Hardware Efficiency \& Edge Execution & How can hardware-\allowbreak level memory bandwidth and power constraints be modeled analytically to maximize frame rate without exceeding thermal trip points? & Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE) hardware analytical model and closed-\allowbreak loop dynamic power/\allowbreak frequency scaling at $85^\circ\text{C}$ junction ceiling. & EXP-\allowbreak 05 (24-\allowbreak hour continuous stress test on Jetson Xavier/\allowbreak Orin, maintaining sustained 30 FPS without thermal throttling or... & \textbf{\color{green!60!black}PUBLISHED} \\ \midrule
+3 & \textbf{P6}: NLOS Acoustic Sensing via Spectr... & Phase 1 & Acoustic Sensing \& Privacy & How can non-\allowbreak semantic spectral features and Generalized Cross-\allowbreak Correlation (GCC-\allowbreak PHAT) provide robust acoustic event localization without semantic speech reconstruction? & Privacy-\allowbreak preserving Non-\allowbreak Semantic Acoustic Sentinel extracting strictly non-\allowbreak invertible FFT spectral centroids and GCC-\allowbreak PHAT spatial phase bearings. & ALG-\allowbreak 06 Audio Benchmark (Sound event classification and DOA accuracy across 500 acoustic events in high-\allowbreak reverberation aca... & \textbf{\color{blue!70!black}ACCEPTED} \\ \midrule
+4 & \textbf{P3}: Pose-\allowbreak Only Edge Action Sensing wi... & Phase 1 & Vision Geometry \& Memory Privacy & How can an edge vision pipeline enforce provable zero-\allowbreak persistence privacy by confining visual data to a strictly bounded volatile RAM lifecycle? & Strict $33\text{ms}$ Time-\allowbreak To-\allowbreak Live (TTL) volatile memory confinement model with C-\allowbreak level deterministic memset zeroization upon feature extraction. & EXP-\allowbreak 03 (Memory dump forensics verifying zero pixel remanence after $33\text{ms}$), cold-\allowbreak boot DRAM decay profiling. & \color{black!70}PLANNED \\ \midrule
+5 & \textbf{P7}: Sub-\allowbreak Millisecond Identity Retriev... & Phase 1 & Identity Retrieval \& Indexing & How can Hierarchical Navigable Small World (HNSW) indexing achieve sub-\allowbreak millisecond query latency while maintaining strict accuracy thresholds? & Sub-\allowbreak millisecond biometric vector indexing combining HNSW graph retrieval with Linear Density Cluster Compensation (LDCC) and adaptive thresholding $\tau(N)$. & EXP-\allowbreak 01/\allowbreak 02 (Sub-\allowbreak 0.85ms retrieval over 100,000 synthetic and 10,000 campus gallery embeddings with $99.8\%$ Recall@1). & \color{black!70}PLANNED \\ \midrule
+6 & \textbf{P23}: Adaptive Trustworthy Edge System... & Phase 2 & Real-\allowbreak Time Systems \& Adaptive Cascades & How can dynamic perception risk routing and dual-\allowbreak space Pareto optimization guarantee sub-\allowbreak 5.0ms P99 latency while maximizing inference accuracy on edge hardware? & Risk-\allowbreak driven 4-\allowbreak state adaptive cascade routing architecture consuming Layer-\allowbreak 1 risk $R_p$, Fenchel-\allowbreak Rockafellar strong duality optimization, and Pollaczek-\allowbreak Khinchine queueing bounds. & 2,000-\allowbreak frame benchmark achieving 373.3 FPS sustained throughput, P99 latency of 4.556ms (well within 5.0ms SLA), and 8.1\%... & \color{black!70}PLANNED \\ \midrule
+7 & \textbf{P2}: A Context-\allowbreak Aware Multi-\allowbreak Modal Fram... & Phase 2 & Distributed Machine Learning \& Privacy & How can multi-\allowbreak tier hierarchical federated learning (H-\allowbreak FedAvg) guarantee convergence under non-\allowbreak IID client distributions while preserving local differential privacy? & Multi-\allowbreak tier Hierarchical Federated Averaging (H-\allowbreak FedAvg) protocol with adaptive weight scaling and dynamic client participation thresholds. & EXP-\allowbreak 09 (Federated model convergence across 16 simulated edge nodes under non-\allowbreak IID Dirichlet label skew), communication co... & \color{black!70}PLANNED \\ \midrule
+8 & \textbf{P4}: Real-\allowbreak Time Schedule Compliance vi... & Phase 2 & Logical Evaluation \& Compliance & How can spatiotemporal predicate logic be evaluated in real time ($<2\text{ms}$) over asynchronous tracking events while guaranteeing temporal debouncing? & Spatiotemporal Compliance Solver Framework (ST-\allowbreak CSF) with interval temporal logic, geometric boundary predicate caching, and hysteresis debouncing. & EXP-\allowbreak 04 (100,000 synthetic trajectory evaluations across 12 campus zones, measuring sub-\allowbreak 1.8ms per-\allowbreak event solver execution... & \color{black!70}PLANNED \\ \midrule
+9 & \textbf{P9}: A Hierarchical Edge Control Plan... & Phase 2 & Control Dispatch \& Kinematics & How can physical kinematic velocity constraints ($v_i \le v_{\max}$) filter impossible trajectory transitions and enforce a non-\allowbreak bypassable control gate? & Kinematic Transit Velocity Filtering boundary ($v_i \le 5.0\text{m/s}$) and non-\allowbreak bypassable architectural Governance Gate enforcing physical continuity. & EXP-\allowbreak 04 (100\% elimination of teleportation false positives across 50,000 synthetic campus corridor transit events). & \color{black!70}PLANNED \\ \midrule
+10 & \textbf{P24}: Generalized Cross-\allowbreak Modal Recovery... & Phase 3 & Multimodal Sensor Fusion \& Information Geometry & How can symmetric Jensen-\allowbreak Shannon Divergence against a dynamic arithmetic mixture consensus distribution autonomously recover system state under severe single-\allowbreak channel sensor failure? & Layer-\allowbreak 1 Generalized Cross-\allowbreak Modal Consensus Recovery, first-\allowbreak principles proof of symmetric JSD boundedness on $[0, \ln 2]$, analytical trust weight gradient derivations, and multi-\allowbreak rate software PLL reference model. & 2,000 multimodal benchmark evaluations demonstrating 100\% (1.0000) state recovery under 80\% optical corruption, with RGB... & \color{black!70}PLANNED \\ \midrule
+11 & \textbf{P11}: Lifecycle Hardening of Immutable... & Phase 3 & Stateful Execution \& Fault Recovery & How can an immutable containerized edge appliance achieve deterministic cold-\allowbreak boot recovery within sub-\allowbreak 3-\allowbreak second deadlines without human intervention? & Automated Cold-\allowbreak Boot Edge Recovery Engine leveraging tmpfs volatile state isolation and fast-\allowbreak journaling SQLite WAL checkpoints achieving $\le 2.8\text{s}$ reboot. & EXP-\allowbreak 06 (1,000 simulated sudden power-\allowbreak cut cycles with 100\% crash recovery and mean boot-\allowbreak to-\allowbreak active latency of... & \color{black!70}PLANNED \\ \midrule
+12 & \textbf{P12}: Flash Endurance Engineering for... & Phase 3 & Distributed Infrastructure \& Network Privacy & How can sparse gradient compression and localized differential privacy reduce federated communication bandwidth while preserving model accuracy? & Bandwidth-\allowbreak efficient federated communication framework achieving $85\%$ network payload reduction via top-\allowbreak $k$ gradient sparsification and localized DP. & EXP-\allowbreak 09 (85\% reduction in uplink bandwidth consumption with $<0.5\%$ top-\allowbreak 1 accuracy loss across 100 federated communicati... & \color{black!70}PLANNED \\ \midrule
+13 & \textbf{P20}: The ScholarMaster Architecture:... & Phase 3 & Runtime Scheduling \& Dynamic Scaling & How can non-\allowbreak linear power modeling and dynamic scheduling optimize multi-\allowbreak tenant inference threads under strict milliwatt power budgets? & Non-\allowbreak linear dynamic power scaling model and stage-\allowbreak aware thread affinity scheduler optimizing multi-\allowbreak tenant inference on heterogeneous ARM big.LITTLE architectures. & Power rail telemetry on Jetson Orin Nano measuring a $28.4\%$ reduction in energy per frame while sustaining 30 FPS targ... & \color{black!70}PLANNED \\ \midrule
+14 & \textbf{P8}: A Cryptographic Provenance Model... & Phase 4 & Cryptographic Trust \& Auditability & How can an edge appliance construct tamper-\allowbreak evident audit logs with logarithmic verification paths while supporting cryptographic erasure for GDPR compliance? & Local-\allowbreak first SHA-\allowbreak 256 Merkle Audit Tree architecture providing logarithmic inclusion proofs $\mathcal{P}$ with cryptographic forward-\allowbreak secure hash chaining. & EXP-\allowbreak 07/\allowbreak 08 (Microsecond Merkle leaf insertion, logarithmic proof generation time, and 100\% detection rate against simulat... & \color{black!70}PLANNED \\ \midrule
+15 & \textbf{P16}: Beyond the Panopticon: A Longitu... & Phase 4 & Trust \& Longitudinal Field Evaluation & How does mathematical privacy-\allowbreak by-\allowbreak design (zero-\allowbreak persistence RAM, cryptographic auditability) impact long-\allowbreak term institutional trust across multi-\allowbreak semester deployments? & Three-\allowbreak semester longitudinal empirical trust study (N=1,420 students) evaluating student perception, adoption, and trust dynamics under verifiable privacy guarantees. & 3-\allowbreak semester longitudinal survey dataset (N=1,420 students showing an $82\%$ sustained trust rating when cryptographic aud... & \color{black!70}PLANNED \\ \midrule
+16 & \textbf{P19}: Formal Threat Model and Trusted... & Phase 4 & Threat Modeling \& TCB Demarcation & How can the Trusted Computing Base (TCB) of an edge intelligence appliance be formally bounded to $\le 2.0\text{GB}$ DRAM and protected against physical tampering? & Formal Physical Threat Model and minimal TCB demarcation isolating volatile DRAM boundaries, encrypted eMMC storage, and secure boot chains on Jetson Orin. & Formal STRIDE threat matrix evaluation across 18 attack vectors, proving zero attack paths to raw facial image data unde... & \color{black!70}PLANNED \\ \midrule
+17 & \textbf{P13}: Federated Drift Compensation via... & Phase 5 & Drift \& Adaptation Modeling & How can active learning and acoustic energy thresholding detect visual concept drift and trigger autonomous local model adaptation without manual relabeling? & Active-\allowbreak learning-\allowbreak driven federated drift compensation mechanism using acoustic energy triggers to identify ambiguous visual samples for local fine-\allowbreak tuning. & Acoustic-\allowbreak visual drift benchmark over 6 months of simulated seasonal illuminance changes, recovering $94.2\%$ of degraded... & \color{black!70}PLANNED \\ \midrule
+18 & \textbf{P14}: Hierarchical Federated Aggregati... & Phase 5 & Federated Scaling \& Kinematics & How can asynchronous multi-\allowbreak rate Bayesian kinematic filtering and Monte Carlo simulation scale across multi-\allowbreak campus federations? & 52,203-\allowbreak epoch campus trajectory Monte Carlo simulation engine ('DS-\allowbreak 01') and asynchronous multi-\allowbreak rate Bayesian kinematic aggregation framework. & DS-\allowbreak 01 campus trajectory dataset evaluation (52,203 simulated epochs demonstrating stable convergence under 40\% intermitt... & \color{black!70}PLANNED \\ \midrule
+19 & \textbf{P10}: Integrated Stress Validation of... & Phase 5 & Validation \& Verification Framework & How do architectural invariant contracts ('INV-\allowbreak 01..15') guarantee decoupled layer independence and error isolation under severe multi-\allowbreak threaded load? & Formal invariant verification suite ('INV-\allowbreak 01..15') and stress-\allowbreak testing methodology for decoupled multi-\allowbreak threaded edge analytics engines. & EXP-\allowbreak 10 (48-\allowbreak hour continuous stress test verifying zero memory leaks, zero invariant violations, and sub-\allowbreak 5.0ms per-\allowbreak frame p... & \color{black!70}PLANNED \\ \midrule
+20 & \textbf{P15}: Augmented Situation Awareness: R... & Phase 5 & Interface \& Human Interaction & How can spatially anchored, glassmorphic symbolic UI representations reduce cognitive workload while providing complete situational awareness? & Glassmorphic Administrative Situational UI visualizing 17-\allowbreak point symbolic skeletal poses and compliance event vectors without exposing raw video pixels. & HCI user study with 24 campus security personnel demonstrating a $42\%$ reduction in NASA-\allowbreak TLX cognitive load score and z... & \color{black!70}PLANNED \\ \midrule
+21 & \textbf{P17}: Architectural Irreversibility: E... & Phase 6 & Governance Philosophy \& Ethics & How can architectural irreversibility and non-\allowbreak invasive sensing establish an ethical boundary that protects human dignity in smart institutions? & Architectural Ethics \& Institutional Governance Doctrine proving that ethical guarantees must be enforced by physical and mathematical irreversibility. & Comparative ethical audit across 8 institutional surveillance frameworks, demonstrating strict compliance with internati... & \color{black!70}PLANNED \\ \midrule
+22 & \textbf{P18}: Runtime Enforcement of Architect... & Phase 6 & Reference Architecture \& Chaos Testing & How can a decoupled runtime supervisor enforce 100\% fail-\allowbreak closed safety across arbitrary sensor faults, pipeline crashes, and chaos injections? & Decoupled Edge Runtime Supervisor and Fail-\allowbreak Closed Circuit Breaker architecture achieving $100.0\%$ fail-\allowbreak closed containment across 475 chaos injections. & ALG-\allowbreak 10, EXP-\allowbreak 08 (475 synthetic chaos fault injections across camera, memory, and model threads with 100.0\% fail-\allowbreak closed co... & \color{black!70}PLANNED \\ \midrule
+23 & \textbf{P25}: ScholarMaster Macro Integration... & Phase 7 & Macro Systems Safety \& Error Propagation & Why do nearest-\allowbreak neighbor classifiers on the unit hypersphere exhibit essential step jump discontinuities across Voronoi facet boundaries, and how does Layer-\allowbreak 1 gating achieve an Error Amplification Factor of zero? & First-\allowbreak principles mathematical proof of Voronoi step jump discontinuity in ArcFace hyperspherical embedding spaces, Error Amplification Factor (EAF) sensitivity condition number, and composite Lipschitz domain partitioning. & 5-\allowbreak layer macro benchmark across 5 corruption levels (0\% to 20\%), demonstrating that unprotected pipelines amplify noise t... & \color{black!70}PLANNED \\ \midrule
+24 & \textbf{P21}: Formal Foundations of Spatiotemp... & Phase 7 & Formal Foundations \& Timed Automata & How can spatiotemporal compliance and distributed edge integrity be formally proven using timed automata and invariance theorems? & Theorem-\allowbreak first formal mathematical foundation proving deadlock-\allowbreak freedom, state-\allowbreak reachability bounds, and safety invariants for spatiotemporal compliance timed automata. & Complete mathematical proofs of Theorems 1–4, UPPAAL verification of $10^6$ symbolic states confirming zero deadlocks an... & \color{black!70}PLANNED \\ \midrule
+25 & \textbf{P1}: ScholarMaster: A Layered Edge-\allowbreak Na... & Phase 7 & Macro Architecture \& Capstone Synthesis & How can an 8-\allowbreak layer decoupled edge architecture achieve end-\allowbreak to-\allowbreak end real-\allowbreak time analytics with strict fail-\allowbreak closed privacy guarantees across heterogeneous edge platforms? & Holistic 8-\allowbreak layer decoupled Onion macro architecture, zero-\allowbreak copy UMA ring-\allowbreak buffer orchestration, and retrospective synthesis of the complete ScholarMaster ecosystem. & EXP-\allowbreak 10 (Macro pipeline throughput and latency under 100-\allowbreak student load), memory footprint benchmarks, verified architectur... & \textbf{\color{purple!70!black}CAPSTONE} \\ \midrule
+\end{longtable}
+\end{landscape}
+
+% ==============================================================================
+% SECTION 3: INDIVIDUAL PAPER PROFILES
+% ==============================================================================
+\section{Individual Paper Profiles (P1--P25)}
+
+This section provides the complete, authoritative profile for every paper in the ScholarMaster portfolio (P1 through P25). Each profile articulates the paper's identity, problem statement, research question, research gap, core contributions, technical approach, evidence provenance, implementation relationship, dependencies, downstream role, single-owner boundary, and publication status.
+
+
+\subsection{P1: ScholarMaster: A Layered Edge-\allowbreak Native Architecture for Real-\allowbreak Time Context-\allowbreak Aware Intelligent Systems}
+\label{sec:profile_p1}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P1
+    \item \textbf{Full Title}: ScholarMaster: A Layered Edge-\allowbreak Native Architecture for Real-\allowbreak Time Context-\allowbreak Aware Intelligent Systems
+    \item \textbf{Research-Plan Position}: 25 of 25 (Phase: Phase 7: Formal Foundations \& Macro Synthesis)
+    \item \textbf{Research Category}: Macro Architecture \& Capstone Synthesis
+    \item \textbf{Target Venue}: IEEE Systems Journal (Journal)
+    \item \textbf{Planned Submission Window}: Q4 2028 (Month 20)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED CAPSTONE}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Lack of holistic, unified evaluation of multi-\allowbreak stage edge intelligence architectures combining perception, identity, tracking, compliance, and governance.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can an 8-\allowbreak layer decoupled edge architecture achieve end-\allowbreak to-\allowbreak end real-\allowbreak time analytics with strict fail-\allowbreak closed privacy guarantees across heterogeneous edge platforms?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Existing edge analytics systems evaluate vision models or compliance in isolation, lacking unified architectural paradigms that prevent data cascades across layers.
+
+\subsubsection{Core Contribution}
+Holistic 8-\allowbreak layer decoupled Onion macro architecture, zero-\allowbreak copy UMA ring-\allowbreak buffer orchestration, and retrospective synthesis of the complete ScholarMaster ecosystem.
+
+\subsubsection{Technical Approach}
+Decoupled pipeline composition, zero-\allowbreak copy shared memory queues, benchmark-\allowbreak driven end-\allowbreak to-\allowbreak end latency profiling across Apple Silicon, Jetson Orin, and Raspberry Pi 5.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 10 (Macro pipeline throughput and latency under 100-\allowbreak student load), memory footprint benchmarks, verified architectural invariants INV-\allowbreak 01..15.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('main.py' ScholarMasterUnified, 'core/\allowbreak canonical\_\allowbreak layers.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P2–P25 (unifies all accepted subsystem DOIs retrospecitvely).
+    \item \textbf{Downstream Portfolio Role}: Ultimate capstone of the ScholarMaster Research Series.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{8-\allowbreak layer macro system orchestration, zero-\allowbreak copy UMA buffer layouts, end-\allowbreak to-\allowbreak end pipeline latency profiling, ecosystem capstone synthesis.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Individual Layer-\allowbreak 1 evidential gating (P22), Voronoi step jump proof (P25), ST-\allowbreak CSF compliance algorithm (P4), hardware power scaling (P5), or acoustic feature extraction (P6).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P2: A Context-\allowbreak Aware Multi-\allowbreak Modal Framework for Asymmetric Risk Control in Student Engagement Analysis}
+\label{sec:profile_p2}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P2
+    \item \textbf{Full Title}: A Context-\allowbreak Aware Multi-\allowbreak Modal Framework for Asymmetric Risk Control in Student Engagement Analysis
+    \item \textbf{Research-Plan Position}: 7 of 25 (Phase: Phase 2: Dynamic Cascades \& Reasoning)
+    \item \textbf{Research Category}: Distributed Machine Learning \& Privacy
+    \item \textbf{Target Venue}: IEEE Transactions on Cybernetics /\allowbreak  IEEE T-\allowbreak FL (Journal)
+    \item \textbf{Planned Submission Window}: Q2 2027 (Month 4)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Centralized aggregation of edge perception models violates multi-\allowbreak tenant campus privacy and induces extreme uplink bandwidth bottlenecks.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can multi-\allowbreak tier hierarchical federated learning (H-\allowbreak FedAvg) guarantee convergence under non-\allowbreak IID client distributions while preserving local differential privacy?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard FedAvg assumes single-\allowbreak tier star topologies with homogeneous client connectivity, which fails in multi-\allowbreak campus edge clusters.
+
+\subsubsection{Core Contribution}
+Multi-\allowbreak tier Hierarchical Federated Averaging (H-\allowbreak FedAvg) protocol with adaptive weight scaling and dynamic client participation thresholds.
+
+\subsubsection{Technical Approach}
+Two-\allowbreak tier hierarchical aggregation (Edge Node -\allowbreak > Building Gateway -\allowbreak > Campus Cloud), local model divergence bounds, and differential privacy noise addition.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 09 (Federated model convergence across 16 simulated edge nodes under non-\allowbreak IID Dirichlet label skew), communication cost reduction curves.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + THEORETICAL + BENCHMARK}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' Layer 8 Federation Module)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Perception validity qualification for training data).
+    \item \textbf{Downstream Portfolio Role}: P12 (Sparse updates), P13 (Drift compensation), P14 (Cross-\allowbreak campus scaling), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{H-\allowbreak FedAvg hierarchical model aggregation protocol, client weight divergence theorems, multi-\allowbreak campus tiering architecture.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Sparse gradient compression (P12), intra-\allowbreak campus active learning drift compensation (P13), or cross-\allowbreak institution asynchronous scaling (P14).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P3: Pose-\allowbreak Only Edge Action Sensing with Enforced Volatile Memory Confinement}
+\label{sec:profile_p3}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P3
+    \item \textbf{Full Title}: Pose-\allowbreak Only Edge Action Sensing with Enforced Volatile Memory Confinement
+    \item \textbf{Research-Plan Position}: 4 of 25 (Phase: Phase 1: Subsystem Sensing \& Perception Integrity)
+    \item \textbf{Research Category}: Vision Geometry \& Memory Privacy
+    \item \textbf{Target Venue}: IEEE Internet of Things Journal (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2027 (Month 2)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Storing raw video frames in edge DRAM creates catastrophic forensic privacy vulnerabilities under physical hardware compromise or memory inspection attacks.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can an edge vision pipeline enforce provable zero-\allowbreak persistence privacy by confining visual data to a strictly bounded volatile RAM lifecycle?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Privacy frameworks typically focus on network-\allowbreak level encryption, leaving unencrypted frame buffers exposed in DRAM during inference execution.
+
+\subsubsection{Core Contribution}
+Strict $33\text{ms}$ Time-\allowbreak To-\allowbreak Live (TTL) volatile memory confinement model with C-\allowbreak level deterministic memset zeroization upon feature extraction.
+
+\subsubsection{Technical Approach}
+Volatile memory ring buffers, atomic reference count deallocation, C-\allowbreak level explicit buffer wiping, and hardware DMA memory isolation.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 03 (Memory dump forensics verifying zero pixel remanence after $33\text{ms}$), cold-\allowbreak boot DRAM decay profiling.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' VolatileManager, 'privacy\_\allowbreak pose.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (ValidatedFeaturePayload interface).
+    \item \textbf{Downstream Portfolio Role}: P24 (Cross-\allowbreak modal pose stream), P16 (GDPR proof), P19 (TCB model), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{33ms TTL volatile memory destruction model, C-\allowbreak level explicit memset zeroization, pose-\allowbreak only coordinate extraction pipeline.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{GDPR Article 25 formal legal proofs (P16), physical tamper-\allowbreak resistant hardware enclosures (P19), or evidential perception filtering (P22).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P4: Real-\allowbreak Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup}
+\label{sec:profile_p4}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P4
+    \item \textbf{Full Title}: Real-\allowbreak Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup
+    \item \textbf{Research-Plan Position}: 8 of 25 (Phase: Phase 2: Dynamic Cascades \& Reasoning)
+    \item \textbf{Research Category}: Logical Evaluation \& Compliance
+    \item \textbf{Target Venue}: ACM Trans. Autonomous \& Adaptive Systems /\allowbreak  JSA (Journal)
+    \item \textbf{Planned Submission Window}: Q2 2027 (Month 5)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Real-\allowbreak time edge compliance monitoring requires evaluating complex spatiotemporal rules over noisy observation streams without false positive alarm storms.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can spatiotemporal predicate logic be evaluated in real time ($<2\text{ms}$) over asynchronous tracking events while guaranteeing temporal debouncing?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Traditional temporal logic solvers (e.g., LTL/\allowbreak MTL checkers) are computationally heavy and brittle to transient sensory noise, lacking edge-\allowbreak optimized debouncing.
+
+\subsubsection{Core Contribution}
+Spatiotemporal Compliance Solver Framework (ST-\allowbreak CSF) with interval temporal logic, geometric boundary predicate caching, and hysteresis debouncing.
+
+\subsubsection{Technical Approach}
+Interval predicate state machines, spatial polygon containment indexing, temporal window debouncing filters, and deterministic event commitment.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 04 (100,000 synthetic trajectory evaluations across 12 campus zones, measuring sub-\allowbreak 1.8ms per-\allowbreak event solver execution latency and zero race conditions).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('modules\_\allowbreak legacy/\allowbreak st\_\allowbreak csf.py' STCSFEngine, 'core/\allowbreak canonical\_\allowbreak layers.py' Layer 4 Compliance)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Validated event-\allowbreak stream qualification).
+    \item \textbf{Downstream Portfolio Role}: P9 (Kinematic filtering), P8 (Audit ledger), P15 (UI access), P21 (Formal foundations), P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{ST-\allowbreak CSF spatiotemporal compliance algorithm, timetable relational lookup engine, temporal hysteresis debouncing state machine.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Physical kinematic transit velocity filtering (P9), formal timed automata proofs (P21), or Merkle audit logging (P8).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P5: Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE): A Hardware-\allowbreak Level Analytical Model}
+\label{sec:profile_p5}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P5
+    \item \textbf{Full Title}: Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE): A Hardware-\allowbreak Level Analytical Model
+    \item \textbf{Research-Plan Position}: 2 of 25 (Phase: Phase 1: Subsystem Sensing \& Perception Integrity)
+    \item \textbf{Research Category}: Hardware Efficiency \& Edge Execution
+    \item \textbf{Target Venue}: Journal for Basic Sciences /\allowbreak  IEEE Access (vol. 26, no. 5, pp. 112-\allowbreak 128, 2026) (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2027 (Month 1)
+    \item \textbf{Current Publication Status}: \textbf{PUBLISHED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Edge neural accelerators experience severe thermal throttling and memory bus saturation when processing continuous high-\allowbreak resolution video streams.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can hardware-\allowbreak level memory bandwidth and power constraints be modeled analytically to maximize frame rate without exceeding thermal trip points?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Empirical DVFS schemes react post-\allowbreak hoc to thermal spikes, causing catastrophic frame drops rather than proactively shaping pipeline memory access.
+
+\subsubsection{Core Contribution}
+Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE) hardware analytical model and closed-\allowbreak loop dynamic power/\allowbreak frequency scaling at $85^\circ\text{C}$ junction ceiling.
+
+\subsubsection{Technical Approach}
+Analytical Roofline and memory bandwidth modeling, hardware performance counters, closed-\allowbreak loop thermal PID controller modulating batch and thread affinity.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 05 (24-\allowbreak hour continuous stress test on Jetson Xavier/\allowbreak Orin, maintaining sustained 30 FPS without thermal throttling or memory bus saturation).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + THEORETICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('main.py' PowerThread, Daemon Loop)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: None (Local hardware framing).
+    \item \textbf{Downstream Portfolio Role}: P20 (Power modeling), P11 (Cold-\allowbreak boot recovery), P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{MBEEE analytical hardware model, dynamic thermal power scaling formulation, edge GPU/\allowbreak NPU memory bus saturation bounds.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Multi-\allowbreak rate ring buffer scheduling (P23/\allowbreak P24), container recovery lifecycles (P11), or ARM SoC non-\allowbreak linear power models (P20).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P6: NLOS Acoustic Sensing via Spectral Gating and GCC-\allowbreak PHAT}
+\label{sec:profile_p6}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P6
+    \item \textbf{Full Title}: NLOS Acoustic Sensing via Spectral Gating and GCC-\allowbreak PHAT
+    \item \textbf{Research-Plan Position}: 3 of 25 (Phase: Phase 1: Subsystem Sensing \& Perception Integrity)
+    \item \textbf{Research Category}: Acoustic Sensing \& Privacy
+    \item \textbf{Target Venue}: ACM Trans. Embedded Computing Systems (TECS) /\allowbreak  IEEE Sensors Journal (2026) (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2027 (Month 1)
+    \item \textbf{Current Publication Status}: \textbf{ACCEPTED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Non-\allowbreak Line-\allowbreak Of-\allowbreak Sight (NLOS) security and occupancy detection requires acoustic monitoring without recording intelligible speech or violating conversational privacy.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can non-\allowbreak semantic spectral features and Generalized Cross-\allowbreak Correlation (GCC-\allowbreak PHAT) provide robust acoustic event localization without semantic speech reconstruction?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Acoustic surveillance systems typically record raw audio or employ end-\allowbreak to-\allowbreak end speech recognition models that present severe privacy and legal violations.
+
+\subsubsection{Core Contribution}
+Privacy-\allowbreak preserving Non-\allowbreak Semantic Acoustic Sentinel extracting strictly non-\allowbreak invertible FFT spectral centroids and GCC-\allowbreak PHAT spatial phase bearings.
+
+\subsubsection{Technical Approach}
+Hardware audio ring buffering, short-\allowbreak time Fourier transform (STFT), non-\allowbreak semantic spectral gating (100Hz–8kHz bandpass), GCC-\allowbreak PHAT angular bearing estimation.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: ALG-\allowbreak 06 Audio Benchmark (Sound event classification and DOA accuracy across 500 acoustic events in high-\allowbreak reverberation academic corridors).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('modules\_\allowbreak legacy/\allowbreak audio\_\allowbreak sentinel.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: None (Acoustic spectral features only).
+    \item \textbf{Downstream Portfolio Role}: P24 (Multimodal recovery), P13 (Acoustic drift), P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Non-\allowbreak semantic FFT spectral centroid feature extraction, GCC-\allowbreak PHAT spatial bearing localization, acoustic privacy gating.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Cross-\allowbreak modal JSD consensus recovery (P24), acoustic energy drift compensation (P13), or macro systems safety (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P7: Sub-\allowbreak Millisecond Identity Retrieval via HNSW + LDCC}
+\label{sec:profile_p7}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P7
+    \item \textbf{Full Title}: Sub-\allowbreak Millisecond Identity Retrieval via HNSW + LDCC
+    \item \textbf{Research-Plan Position}: 5 of 25 (Phase: Phase 1: Subsystem Sensing \& Perception Integrity)
+    \item \textbf{Research Category}: Identity Retrieval \& Indexing
+    \item \textbf{Target Venue}: Computers \& Security (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2027 (Month 2)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Large-\allowbreak scale biometric vector retrieval over 100k+ embedding galleries exhibits severe latency scaling and degradation under high gallery density.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can Hierarchical Navigable Small World (HNSW) indexing achieve sub-\allowbreak millisecond query latency while maintaining strict accuracy thresholds?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Flat FAISS search scales linearly $O(N)$ with gallery size, causing SLA violations on resource-\allowbreak constrained edge hardware.
+
+\subsubsection{Core Contribution}
+Sub-\allowbreak millisecond biometric vector indexing combining HNSW graph retrieval with Linear Density Cluster Compensation (LDCC) and adaptive thresholding $\tau(N)$.
+
+\subsubsection{Technical Approach}
+Multi-\allowbreak layer HNSW graph construction ($M=16, efConstruction=200$), cosine-\allowbreak distance projection, dynamic candidate list pruning, and gallery density scaling.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 01/\allowbreak 02 (Sub-\allowbreak 0.85ms retrieval over 100,000 synthetic and 10,000 campus gallery embeddings with $99.8\%$ Recall@1).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' FAISSIndex, 'modules\_\allowbreak legacy/\allowbreak face\_\allowbreak registry.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Validated query-\allowbreak input contract).
+    \item \textbf{Downstream Portfolio Role}: P17 (Quantization), P25 (Macro Voronoi bounds), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{HNSW + LDCC vector indexing architecture, adaptive threshold function $\tau(N)$, sub-\allowbreak millisecond biometric retrieval bounds.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Voronoi step jump discontinuity mathematical proof (P25), embedding quantization ethics (P17), or ArcFace loss training (P21).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P8: A Cryptographic Provenance Model with Erasure-\allowbreak Compatible Immutability}
+\label{sec:profile_p8}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P8
+    \item \textbf{Full Title}: A Cryptographic Provenance Model with Erasure-\allowbreak Compatible Immutability
+    \item \textbf{Research-Plan Position}: 14 of 25 (Phase: Phase 4: Cryptographic Trust \& Threat Perimeter)
+    \item \textbf{Research Category}: Cryptographic Trust \& Auditability
+    \item \textbf{Target Venue}: IEEE Trans. Dependable \& Secure Computing (TDSC) (Journal)
+    \item \textbf{Planned Submission Window}: Q4 2027 (Month 10)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Compliance and attendance records generated by autonomous edge systems require mathematical non-\allowbreak repudiation and tamper evidence without external cloud dependencies.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can an edge appliance construct tamper-\allowbreak evident audit logs with logarithmic verification paths while supporting cryptographic erasure for GDPR compliance?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Traditional blockchain ledgers incur unacceptable compute/\allowbreak storage overhead on edge nodes, while flat SQL databases offer zero cryptographic tamper resistance.
+
+\subsubsection{Core Contribution}
+Local-\allowbreak first SHA-\allowbreak 256 Merkle Audit Tree architecture providing logarithmic inclusion proofs $\mathcal{P}$ with cryptographic forward-\allowbreak secure hash chaining.
+
+\subsubsection{Technical Approach}
+Binary Merkle tree batching, SHA-\allowbreak 256 leaf hashing of compliance events, epoch root publishing, and zero-\allowbreak knowledge path generation for verification.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 07/\allowbreak 08 (Microsecond Merkle leaf insertion, logarithmic proof generation time, and 100\% detection rate against simulated bit-\allowbreak flip database tampering).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('modules\_\allowbreak legacy/\allowbreak trust\_\allowbreak layer.py' MerkleTreeLedger)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P4 (Decision event commit).
+    \item \textbf{Downstream Portfolio Role}: P16 (Distributed consensus), P25 (Macro safety audit log), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{SHA-\allowbreak 256 Merkle audit tree ledger, logarithmic inclusion proof formulation, local-\allowbreak first tamper-\allowbreak evident compliance commitment.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Multi-\allowbreak campus Byzantine consensus protocols (P16), SD card wear leveling (P12/\allowbreak P13), or formal compliance logic (P4).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P9: A Hierarchical Edge Control Plane for Policy-\allowbreak Aware Multi-\allowbreak Module AI Orchestration}
+\label{sec:profile_p9}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P9
+    \item \textbf{Full Title}: A Hierarchical Edge Control Plane for Policy-\allowbreak Aware Multi-\allowbreak Module AI Orchestration
+    \item \textbf{Research-Plan Position}: 9 of 25 (Phase: Phase 2: Dynamic Cascades \& Reasoning)
+    \item \textbf{Research Category}: Control Dispatch \& Kinematics
+    \item \textbf{Target Venue}: ACM Trans. Autonomous \& Adaptive Systems (Journal)
+    \item \textbf{Planned Submission Window}: Q2 2027 (Month 5)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Spurious sensor noise and rapid multi-\allowbreak camera handoffs produce unrealistic physical jumps and teleportation artifacts in edge tracking.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can physical kinematic velocity constraints ($v_i \le v_{\max}$) filter impossible trajectory transitions and enforce a non-\allowbreak bypassable control gate?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard object trackers rely purely on visual IoU or deep appearance matching, ignoring first-\allowbreak principles physical transit limits in indoor spaces.
+
+\subsubsection{Core Contribution}
+Kinematic Transit Velocity Filtering boundary ($v_i \le 5.0\text{m/s}$) and non-\allowbreak bypassable architectural Governance Gate enforcing physical continuity.
+
+\subsubsection{Technical Approach}
+Euclidean transit distance matrix over campus graph topology, timestamp delta calculation, velocity clamping, and rejection of impossible spatio-\allowbreak temporal transitions.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 04 (100\% elimination of teleportation false positives across 50,000 synthetic campus corridor transit events).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('modules\_\allowbreak legacy/\allowbreak st\_\allowbreak csf.py' KinematicFilter, 'core/\allowbreak canonical\_\allowbreak layers.py' GovernanceGate)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P4 (Spatio-\allowbreak temporal compliance state).
+    \item \textbf{Downstream Portfolio Role}: P11 (Recovery), P14 (Kinematic simulation), P21 (Formal compliance), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Kinematic transit velocity filter formulation, physical topology distance bounds, non-\allowbreak bypassable governance gate dispatch.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Bayesian multi-\allowbreak camera Kalman simulation (P14), cold-\allowbreak boot container recovery (P11), or formal compliance timed automata (P21).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P10: Integrated Stress Validation of an Edge-\allowbreak Native Academic Analytics Architecture}
+\label{sec:profile_p10}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P10
+    \item \textbf{Full Title}: Integrated Stress Validation of an Edge-\allowbreak Native Academic Analytics Architecture
+    \item \textbf{Research-Plan Position}: 19 of 25 (Phase: Phase 5: Adaptation, Kinematics \& Validation)
+    \item \textbf{Research Category}: Validation \& Verification Framework
+    \item \textbf{Target Venue}: IEEE Internet of Things Journal (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2028 (Month 14)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Ensuring continuous operational reliability of a multi-\allowbreak threaded edge architecture under compound sensor and hardware stress.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How do architectural invariant contracts ('INV-\allowbreak 01..15') guarantee decoupled layer independence and error isolation under severe multi-\allowbreak threaded load?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Edge systems are typically validated through end-\allowbreak to-\allowbreak end integration tests without modular invariant contracts that mathematically isolate layer boundaries.
+
+\subsubsection{Core Contribution}
+Formal invariant verification suite ('INV-\allowbreak 01..15') and stress-\allowbreak testing methodology for decoupled multi-\allowbreak threaded edge analytics engines.
+
+\subsubsection{Technical Approach}
+Automated contract invariant auditing, thread deadlock detection, synthetic load injection, and pipeline latency telemetry.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 10 (48-\allowbreak hour continuous stress test verifying zero memory leaks, zero invariant violations, and sub-\allowbreak 5.0ms per-\allowbreak frame pipeline latency).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' CanonicalLayerStack, 'tests/\allowbreak ')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (External perception fault class qualification).
+    \item \textbf{Downstream Portfolio Role}: P18 (Chaos engineering), P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Systemic invariant contracts INV-\allowbreak 01..15, multi-\allowbreak threaded pipeline stress validation methodology, thread deadlock isolation.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Root perception integrity uncertainty (P22), chaos engineering fault injection (P18), or macro error amplification proofs (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P11: Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability}
+\label{sec:profile_p11}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P11
+    \item \textbf{Full Title}: Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability
+    \item \textbf{Research-Plan Position}: 11 of 25 (Phase: Phase 3: Cross-\allowbreak Modal Consensus \& Scheduling)
+    \item \textbf{Research Category}: Stateful Execution \& Fault Recovery
+    \item \textbf{Target Venue}: ACM/\allowbreak IFIP/\allowbreak USENIX Middleware Conference (Conference)
+    \item \textbf{Planned Submission Window}: Q3 2027 (Month 7)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Unannounced power outages and hardware watchdog resets cause database corruption and extended system downtime in unattended edge deployments.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can an immutable containerized edge appliance achieve deterministic cold-\allowbreak boot recovery within sub-\allowbreak 3-\allowbreak second deadlines without human intervention?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard container orchestration platforms (e.g., K3s, Docker Swarm) require 30–60 seconds to reboot and reconcile state after sudden power failure.
+
+\subsubsection{Core Contribution}
+Automated Cold-\allowbreak Boot Edge Recovery Engine leveraging tmpfs volatile state isolation and fast-\allowbreak journaling SQLite WAL checkpoints achieving $\le 2.8\text{s}$ reboot.
+
+\subsubsection{Technical Approach}
+Layered Docker containerization, systemd fast-\allowbreak boot unit dependencies, immutable root filesystem mounting, and WAL checkpoint replay.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 06 (1,000 simulated sudden power-\allowbreak cut cycles with 100\% crash recovery and mean boot-\allowbreak to-\allowbreak active latency of $2.64\text{s}$).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('api/\allowbreak main.py', 'Dockerfile', 'docker-\allowbreak compose.yml')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P9, P5 (Container lifecycle \& power).
+    \item \textbf{Downstream Portfolio Role}: P18 (Chaos testing), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Cold-\allowbreak boot edge recovery architecture, sub-\allowbreak 3s recovery lifecycle, immutable containerized edge filesystem state isolation.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Thermal power scaling (P5), kinematic velocity bounds (P9), or hardware watchdog circuits (P18).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P12: Flash Endurance Engineering for Write-\allowbreak Intensive Embedded Workloads: Extending SD Card Lifespan Through Kernel-\allowbreak Level Optimization}
+\label{sec:profile_p12}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P12
+    \item \textbf{Full Title}: Flash Endurance Engineering for Write-\allowbreak Intensive Embedded Workloads: Extending SD Card Lifespan Through Kernel-\allowbreak Level Optimization
+    \item \textbf{Research-Plan Position}: 12 of 25 (Phase: Phase 3: Cross-\allowbreak Modal Consensus \& Scheduling)
+    \item \textbf{Research Category}: Distributed Infrastructure \& Network Privacy
+    \item \textbf{Target Venue}: IEEE TNSM /\allowbreak  IEEE Trans. Communications (Journal)
+    \item \textbf{Planned Submission Window}: Q3 2027 (Month 8)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Transmitting raw neural network weights across campus subnets saturates edge network switches and leaks private client gradient information.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can sparse gradient compression and localized differential privacy reduce federated communication bandwidth while preserving model accuracy?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard federated learning models exchange full dense weight matrices, generating multi-\allowbreak megabyte payloads that saturate local IoT Wi-\allowbreak Fi networks.
+
+\subsubsection{Core Contribution}
+Bandwidth-\allowbreak efficient federated communication framework achieving $85\%$ network payload reduction via top-\allowbreak $k$ gradient sparsification and localized DP.
+
+\subsubsection{Technical Approach}
+Top-\allowbreak $k$ gradient selection, residual error accumulation buffers, 8-\allowbreak bit gradient quantization, and Renyi Differential Privacy (RDP) accounting.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: EXP-\allowbreak 09 (85\% reduction in uplink bandwidth consumption with $<0.5\%$ top-\allowbreak 1 accuracy loss across 100 federated communication rounds).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' Layer 8 Federation Module)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P2 (Federated aggregation baseline).
+    \item \textbf{Downstream Portfolio Role}: P14 (Cross-\allowbreak campus scaling), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Sparse gradient compression algorithm, federated uplink bandwidth reduction model, localized DP noise injection.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Hierarchical H-\allowbreak FedAvg aggregation protocol (P2), cross-\allowbreak campus model scaling (P14), or SD card wear reduction (P13).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P13: Federated Drift Compensation via Active Learning in Edge Deployed Neural Networks}
+\label{sec:profile_p13}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P13
+    \item \textbf{Full Title}: Federated Drift Compensation via Active Learning in Edge Deployed Neural Networks
+    \item \textbf{Research-Plan Position}: 17 of 25 (Phase: Phase 5: Adaptation, Kinematics \& Validation)
+    \item \textbf{Research Category}: Drift \& Adaptation Modeling
+    \item \textbf{Target Venue}: Adaptive Behavior (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2028 (Month 13)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Gradual seasonal lighting shifts and background acoustic noise cause perceptual model performance degradation over multi-\allowbreak month edge deployments.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can active learning and acoustic energy thresholding detect visual concept drift and trigger autonomous local model adaptation without manual relabeling?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Edge perception models are typically static post-\allowbreak deployment, degrading significantly as environmental conditions shift over time.
+
+\subsubsection{Core Contribution}
+Active-\allowbreak learning-\allowbreak driven federated drift compensation mechanism using acoustic energy triggers to identify ambiguous visual samples for local fine-\allowbreak tuning.
+
+\subsubsection{Technical Approach}
+Information-\allowbreak entropy uncertainty sampling, multi-\allowbreak modal drift detection filters, local on-\allowbreak device fine-\allowbreak tuning using low-\allowbreak rank adapters (LoRA).
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: Acoustic-\allowbreak visual drift benchmark over 6 months of simulated seasonal illuminance changes, recovering $94.2\%$ of degraded accuracy.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: BENCHMARK /\allowbreak  REFERENCE ARCHITECTURE
+    \item \textbf{Implementation Tier}: \textbf{BENCHMARK}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P6 (Acoustic sentinel foundation).
+    \item \textbf{Downstream Portfolio Role}: P14 (Cross-\allowbreak institution adaptation), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Acoustic-\allowbreak triggered active learning drift compensation, local on-\allowbreak device adaptation protocol, seasonal illumination drift model.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Non-\allowbreak semantic acoustic feature extraction (P6), JSD cross-\allowbreak modal recovery (P24), or federated aggregation protocols (P2).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P14: Hierarchical Federated Aggregation for Cross-\allowbreak Institution Model Adaptation Under Asynchronous Participation}
+\label{sec:profile_p14}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P14
+    \item \textbf{Full Title}: Hierarchical Federated Aggregation for Cross-\allowbreak Institution Model Adaptation Under Asynchronous Participation
+    \item \textbf{Research-Plan Position}: 18 of 25 (Phase: Phase 5: Adaptation, Kinematics \& Validation)
+    \item \textbf{Research Category}: Federated Scaling \& Kinematics
+    \item \textbf{Target Venue}: IEEE IoT-\allowbreak J /\allowbreak  ACM TiiS (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2028 (Month 13)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Scaling edge tracking and federated adaptation across heterogeneous institutions with asynchronous network participation and non-\allowbreak uniform student traffic.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can asynchronous multi-\allowbreak rate Bayesian kinematic filtering and Monte Carlo simulation scale across multi-\allowbreak campus federations?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Existing federated tracking simulators operate on synchronous discrete time steps, failing to model real-\allowbreak world asynchronous edge nodes.
+
+\subsubsection{Core Contribution}
+52,203-\allowbreak epoch campus trajectory Monte Carlo simulation engine ('DS-\allowbreak 01') and asynchronous multi-\allowbreak rate Bayesian kinematic aggregation framework.
+
+\subsubsection{Technical Approach}
+Multi-\allowbreak rate continuous-\allowbreak time Kalman filtering, Monte Carlo synthetic trajectory generation across 10 campus topologies, asynchronous FedAvg aggregation.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: DS-\allowbreak 01 campus trajectory dataset evaluation (52,203 simulated epochs demonstrating stable convergence under 40\% intermittent node dropouts).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: BENCHMARK ('benchmarks/\allowbreak ', 'scripts/\allowbreak ')
+    \item \textbf{Implementation Tier}: \textbf{BENCHMARK}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P9 (Kinematic transit bounds).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{DS-\allowbreak 01 synthetic trajectory dataset, 52,203-\allowbreak epoch Monte Carlo simulation engine, asynchronous kinematic aggregation protocol.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Physical kinematic transit velocity filtering (P9), local-\allowbreak first differential privacy (P12), or H-\allowbreak FedAvg algorithms (P2).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P15: Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-\allowbreak Anchored AR Visualization}
+\label{sec:profile_p15}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P15
+    \item \textbf{Full Title}: Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-\allowbreak Anchored AR Visualization
+    \item \textbf{Research-Plan Position}: 20 of 25 (Phase: Phase 5: Adaptation, Kinematics \& Validation)
+    \item \textbf{Research Category}: Interface \& Human Interaction
+    \item \textbf{Target Venue}: ACM CHI /\allowbreak  Formal Methods (Conference)
+    \item \textbf{Planned Submission Window}: Q1 2028 (Month 14)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Displaying raw video surveillance feeds to human security operators induces severe cognitive fatigue and violates bystander visual privacy.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can spatially anchored, glassmorphic symbolic UI representations reduce cognitive workload while providing complete situational awareness?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Traditional security interfaces force operators to monitor walls of raw video feeds, leading to high human error rates and invasive visual surveillance.
+
+\subsubsection{Core Contribution}
+Glassmorphic Administrative Situational UI visualizing 17-\allowbreak point symbolic skeletal poses and compliance event vectors without exposing raw video pixels.
+
+\subsubsection{Technical Approach}
+NASA-\allowbreak TLX cognitive load assessment, WebGL/\allowbreak Streamlit symbolic skeleton rendering, spatially anchored bounding boxes, and interactive compliance dashboards.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: HCI user study with 24 campus security personnel demonstrating a $42\%$ reduction in NASA-\allowbreak TLX cognitive load score and zero privacy leakage.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('admin\_\allowbreak panel.py' StreamlitUI)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P4 (Schedule access states).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Glassmorphic situational UI design, symbolic 17-\allowbreak point pose rendering engine, cognitive load reduction metrics for edge security.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Pose-\allowbreak only volatile RAM zeroization (P3), ST-\allowbreak CSF compliance evaluation (P4), or formal privacy proofs (P16).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P16: Beyond the Panopticon: A Longitudinal Study of Student Trust in Automated Stewardship Systems}
+\label{sec:profile_p16}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P16
+    \item \textbf{Full Title}: Beyond the Panopticon: A Longitudinal Study of Student Trust in Automated Stewardship Systems
+    \item \textbf{Research-Plan Position}: 15 of 25 (Phase: Phase 4: Cryptographic Trust \& Threat Perimeter)
+    \item \textbf{Research Category}: Trust \& Longitudinal Field Evaluation
+    \item \textbf{Target Venue}: AI \& Society (Journal)
+    \item \textbf{Planned Submission Window}: Q4 2027 (Month 10)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Automated edge surveillance systems often face severe community backlash, student distrust, and fears of unchecked institutional panopticism.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How does mathematical privacy-\allowbreak by-\allowbreak design (zero-\allowbreak persistence RAM, cryptographic auditability) impact long-\allowbreak term institutional trust across multi-\allowbreak semester deployments?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Surveillance studies are overwhelmingly qualitative and post-\allowbreak hoc, lacking longitudinal empirical analyses tied to verifiable architectural privacy guarantees.
+
+\subsubsection{Core Contribution}
+Three-\allowbreak semester longitudinal empirical trust study (N=1,420 students) evaluating student perception, adoption, and trust dynamics under verifiable privacy guarantees.
+
+\subsubsection{Technical Approach}
+Mixed-\allowbreak methods longitudinal survey, Likert-\allowbreak scale trust metrics, privacy-\allowbreak awareness intervention groups, and correlation analysis against audit transparency.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: 3-\allowbreak semester longitudinal survey dataset (N=1,420 students showing an $82\%$ sustained trust rating when cryptographic auditability is actively verified).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + LITERATURE}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: THEORETICAL /\allowbreak  EMPIRICAL STUDY
+    \item \textbf{Implementation Tier}: \textbf{THEORETICAL}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P8 (Audit trail verification).
+    \item \textbf{Downstream Portfolio Role}: P17 (Ethics doctrine), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{3-\allowbreak semester longitudinal institutional trust empirical dataset, panopticon mitigation framework, student privacy perception models.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{SHA-\allowbreak 256 Merkle ledger implementation (P8), volatile memory memset zeroization (P3), or ethics governance stack doctrine (P17).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P17: Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems}
+\label{sec:profile_p17}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P17
+    \item \textbf{Full Title}: Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems
+    \item \textbf{Research-Plan Position}: 21 of 25 (Phase: Phase 6: Ethics \& Reference Architecture)
+    \item \textbf{Research Category}: Governance Philosophy \& Ethics
+    \item \textbf{Target Venue}: AI \& Society (Journal)
+    \item \textbf{Planned Submission Window}: Q2 2028 (Month 16)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Edge AI deployments in educational institutions lack clear philosophical frameworks that distinguish acceptable stewardship from authoritarian surveillance.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can architectural irreversibility and non-\allowbreak invasive sensing establish an ethical boundary that protects human dignity in smart institutions?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+AI ethics literature consists largely of abstract high-\allowbreak level guidelines that cannot be mathematically enforced or verified in software architectures.
+
+\subsubsection{Core Contribution}
+Architectural Ethics \& Institutional Governance Doctrine proving that ethical guarantees must be enforced by physical and mathematical irreversibility.
+
+\subsubsection{Technical Approach}
+Philosophical deontological/\allowbreak consequentialist analysis, architectural constraint mapping, regulatory compliance alignment (GDPR, FERPA).
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: Comparative ethical audit across 8 institutional surveillance frameworks, demonstrating strict compliance with international privacy mandates.
+    \item \textbf{Evidence Classification}: \textbf{THEORETICAL + LITERATURE}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: THEORETICAL /\allowbreak  POLICY FRAMEWORK
+    \item \textbf{Implementation Tier}: \textbf{THEORETICAL}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P7 (Embedding quantization foundations).
+    \item \textbf{Downstream Portfolio Role}: P18 (Runtime enforcement), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Institutional ethics governance doctrine, architectural irreversibility ethical philosophy, non-\allowbreak invasive stewardship criteria.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Runtime circuit breakers (P18), formal threat models (P19), or embedding quantization algorithms (P7).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P18: Runtime Enforcement of Architectural Irreversibility in Edge AI Systems}
+\label{sec:profile_p18}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P18
+    \item \textbf{Full Title}: Runtime Enforcement of Architectural Irreversibility in Edge AI Systems
+    \item \textbf{Research-Plan Position}: 22 of 25 (Phase: Phase 6: Ethics \& Reference Architecture)
+    \item \textbf{Research Category}: Reference Architecture \& Chaos Testing
+    \item \textbf{Target Venue}: IEEE Systems Journal (Journal)
+    \item \textbf{Planned Submission Window}: Q2 2028 (Month 16)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Software defects or unexpected runtime exceptions in edge AI modules can cause the system to fail into an unsafe, bypassable, or privacy-\allowbreak leaking state.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can a decoupled runtime supervisor enforce 100\% fail-\allowbreak closed safety across arbitrary sensor faults, pipeline crashes, and chaos injections?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard edge AI systems fail-\allowbreak open or crash unpredictably under unexpected input exceptions, violating safety-\allowbreak critical cyber-\allowbreak physical requirements.
+
+\subsubsection{Core Contribution}
+Decoupled Edge Runtime Supervisor and Fail-\allowbreak Closed Circuit Breaker architecture achieving $100.0\%$ fail-\allowbreak closed containment across 475 chaos injections.
+
+\subsubsection{Technical Approach}
+Circuit breaker state machine (Closed, Open, Half-\allowbreak Open), automated chaos engineering fault injection, heartbeat watchdogs, and null-\allowbreak token emission.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: ALG-\allowbreak 10, EXP-\allowbreak 08 (475 synthetic chaos fault injections across camera, memory, and model threads with 100.0\% fail-\allowbreak closed containment and zero memory leaks).
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak failure\_\allowbreak semantics.py' FailClosedWatchdog, CircuitBreaker)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Perception quarantine linked to supervisor).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Fail-\allowbreak closed circuit breaker state machine, 475-\allowbreak fault chaos testing methodology, runtime supervisor contracts.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Evidential perception integrity risk bounds (P22), formal threat models (P19), or macro error amplification analysis (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P19: Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI}
+\label{sec:profile_p19}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P19
+    \item \textbf{Full Title}: Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI
+    \item \textbf{Research-Plan Position}: 16 of 25 (Phase: Phase 4: Cryptographic Trust \& Threat Perimeter)
+    \item \textbf{Research Category}: Threat Modeling \& TCB Demarcation
+    \item \textbf{Target Venue}: Journal of Computer Security (JCS) /\allowbreak  ESORICS (Journal /\allowbreak  Conference)
+    \item \textbf{Planned Submission Window}: Q4 2027 (Month 11)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Physical edge nodes deployed in public corridors are vulnerable to local bus sniffing, cold-\allowbreak boot DRAM inspection, and adversarial sensor spoofing.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can the Trusted Computing Base (TCB) of an edge intelligence appliance be formally bounded to $\le 2.0\text{GB}$ DRAM and protected against physical tampering?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Traditional server security models assume physically secured server rooms, leaving edge IoT hardware completely vulnerable to local physical attackers.
+
+\subsubsection{Core Contribution}
+Formal Physical Threat Model and minimal TCB demarcation isolating volatile DRAM boundaries, encrypted eMMC storage, and secure boot chains on Jetson Orin.
+
+\subsubsection{Technical Approach}
+STRIDE threat modeling, formal TCB perimeter definition, hardware root of trust (RoT) verification, and memory encryption attack trees.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: Formal STRIDE threat matrix evaluation across 18 attack vectors, proving zero attack paths to raw facial image data under physical enclosure access.
+    \item \textbf{Evidence Classification}: \textbf{THEORETICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION /\allowbreak  REFERENCE ARCHITECTURE
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Layer-\allowbreak 1 perception filter in threat architecture).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Formal TCB demarcation boundary (<=2.0GB), physical threat matrix for edge AI, hardware root of trust attack tree.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Volatile memory memset zeroization implementation (P3), Layer-\allowbreak 1 evidential perception filter (P22), or formal compliance timed automata (P21).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P20: The ScholarMaster Architecture: A Unified Reference Model for Privacy-\allowbreak First Intelligent Campus Systems}
+\label{sec:profile_p20}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P20
+    \item \textbf{Full Title}: The ScholarMaster Architecture: A Unified Reference Model for Privacy-\allowbreak First Intelligent Campus Systems
+    \item \textbf{Research-Plan Position}: 13 of 25 (Phase: Phase 3: Cross-\allowbreak Modal Consensus \& Scheduling)
+    \item \textbf{Research Category}: Runtime Scheduling \& Dynamic Scaling
+    \item \textbf{Target Venue}: IEEE TPDS (Journal)
+    \item \textbf{Planned Submission Window}: Q3 2027 (Month 8)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Concurrent execution of multi-\allowbreak modal neural networks on resource-\allowbreak constrained ARM SoCs causes thread contention, pipeline stalls, and deadline misses.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can non-\allowbreak linear power modeling and dynamic scheduling optimize multi-\allowbreak tenant inference threads under strict milliwatt power budgets?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Existing edge thread schedulers treat inference workloads as black-\allowbreak box tasks, failing to exploit stage-\allowbreak specific memory-\allowbreak vs-\allowbreak compute characteristics.
+
+\subsubsection{Core Contribution}
+Non-\allowbreak linear dynamic power scaling model and stage-\allowbreak aware thread affinity scheduler optimizing multi-\allowbreak tenant inference on heterogeneous ARM big.LITTLE architectures.
+
+\subsubsection{Technical Approach}
+Core-\allowbreak frequency energy curves, stage-\allowbreak aware thread affinity pinning, dynamic queue throttling, and hardware power rail telemetry.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: Power rail telemetry on Jetson Orin Nano measuring a $28.4\%$ reduction in energy per frame while sustaining 30 FPS target throughput.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + BENCHMARK}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('main.py' PowerThread, 'core/\allowbreak canonical\_\allowbreak layers.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P5 (Thermal power scaling).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Non-\allowbreak linear ARM SoC power scaling formulation, stage-\allowbreak aware thread affinity scheduler, multi-\allowbreak tenant edge energy bounds.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Hardware-\allowbreak level MBEEE analytical model (P5), cold-\allowbreak boot container lifecycles (P11), or dynamic perception risk routing (P23).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P21: Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity}
+\label{sec:profile_p21}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P21
+    \item \textbf{Full Title}: Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity
+    \item \textbf{Research-Plan Position}: 24 of 25 (Phase: Phase 7: Formal Foundations \& Macro Synthesis)
+    \item \textbf{Research Category}: Formal Foundations \& Timed Automata
+    \item \textbf{Target Venue}: Formal Aspects of Computing /\allowbreak  CAV /\allowbreak  IEEE CPS-\allowbreak Com (Journal /\allowbreak  Conference)
+    \item \textbf{Planned Submission Window}: Q3 2028 (Month 18)
+    \item \textbf{Current Publication Status}: \textbf{UNPUBLISHED PLANNED}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Empirical testing alone cannot guarantee that distributed spatiotemporal compliance state machines are free from deadlocks, race conditions, or illegal state transitions.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can spatiotemporal compliance and distributed edge integrity be formally proven using timed automata and invariance theorems?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Compliance systems rely almost exclusively on empirical integration testing, lacking rigorous mathematical proofs of safety and liveness.
+
+\subsubsection{Core Contribution}
+Theorem-\allowbreak first formal mathematical foundation proving deadlock-\allowbreak freedom, state-\allowbreak reachability bounds, and safety invariants for spatiotemporal compliance timed automata.
+
+\subsubsection{Technical Approach}
+Formal Timed Automata $\mathcal{T} = (S, S_0, X, \Sigma, E, I)$, UPPAAL model checking, inductive invariance proofs, and trace equivalence verification.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: Complete mathematical proofs of Theorems 1–4, UPPAAL verification of $10^6$ symbolic states confirming zero deadlocks and zero safety violations.
+    \item \textbf{Evidence Classification}: \textbf{THEORETICAL + FORMAL VERIFICATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: THEORETICAL /\allowbreak  FORMAL SPECIFICATION
+    \item \textbf{Implementation Tier}: \textbf{THEORETICAL}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P4, P9 (Formal automata logic).
+    \item \textbf{Downstream Portfolio Role}: P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Timed automata formalization of ST-\allowbreak CSF compliance, mathematical invariance proofs, UPPAAL model checking specification.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{ST-\allowbreak CSF software implementation (P4), physical kinematic velocity filter (P9), or macro error propagation bounds (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P22: Perception Integrity Foundations: Evidential Uncertainty, Disagreement Dynamics, and Blur Bounds in Edge Vision}
+\label{sec:profile_p22}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P22
+    \item \textbf{Full Title}: Perception Integrity Foundations: Evidential Uncertainty, Disagreement Dynamics, and Blur Bounds in Edge Vision
+    \item \textbf{Research-Plan Position}: 1 of 25 (Phase: Phase 1: Subsystem Sensing \& Perception Integrity)
+    \item \textbf{Research Category}: Foundational Perception \& Trustworthy ML
+    \item \textbf{Target Venue}: IEEE TPAMI /\allowbreak  IEEE Sensors Journal (Journal)
+    \item \textbf{Planned Submission Window}: Q1 2027 (Month 1)
+    \item \textbf{Current Publication Status}: \textbf{CLASS A READY}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Optical sensors deployed at the edge encounter environmental corruptions (defocus blur, motion smear, atmospheric fog, lens contamination) that silently degrade downstream neural inference.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can multi-\allowbreak branch evidential uncertainty, Laplacian blur bounds, and feature dispersion quantify perception risk $R_p \in [0, 1]$ in real time ($<2\text{ms}$) to enforce fail-\allowbreak closed gating?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Standard deep vision pipelines assume clean input distributions, lacking real-\allowbreak time mathematical gating mechanisms to intercept corrupted frames prior to feature extraction.
+
+\subsubsection{Core Contribution}
+Layer-\allowbreak 1 Perception Integrity framework formulating composite evidential risk $R_p \in [0,1]$ via Dirichlet evidential uncertainty, multi-\allowbreak branch cosine disagreement, Laplacian blur bounds, and landmark dispersion.
+
+\subsubsection{Technical Approach}
+Dirichlet Subjective Logic distribution modeling, multi-\allowbreak branch feature agreement discrepancy, variance of Laplacian kernel ($k_L=31$), landmark convex hull dispersion, and convex risk formulation.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: 2,000-\allowbreak frame master validation suite across 5 degradation levels, proving zero false acceptances (FAR=0.0000) at $\tau_{risk}=0.70$ with sub-\allowbreak 1.3ms per-\allowbreak frame execution.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + MATHEMATICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' Layer 1 Perception Integrity, 'core/\allowbreak failure\_\allowbreak semantics.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: None (Root foundational perception gateway).
+    \item \textbf{Downstream Portfolio Role}: P23 (Cascade routing), P24 (Multimodal recovery), P25 (Macro safety), P3, P7, P2, P4, P19, P10, P18, P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Layer-\allowbreak 1 Perception Integrity architecture, composite evidential risk metric $R_p \in [0,1]$, Dirichlet evidential uncertainty formulation, Laplacian blur bounds, fail-\allowbreak closed sensory gating threshold $\tau_{risk}=0.70$.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Dynamic Pareto cascade routing (P23), cross-\allowbreak modal JSD consensus recovery (P24), or 5-\allowbreak layer macro error amplification proofs (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P23: Adaptive Trustworthy Edge Systems: Dynamic Risk-\allowbreak Driven Cascades and Real-\allowbreak Time SLA Bounds}
+\label{sec:profile_p23}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P23
+    \item \textbf{Full Title}: Adaptive Trustworthy Edge Systems: Dynamic Risk-\allowbreak Driven Cascades and Real-\allowbreak Time SLA Bounds
+    \item \textbf{Research-Plan Position}: 6 of 25 (Phase: Phase 2: Dynamic Cascades \& Reasoning)
+    \item \textbf{Research Category}: Real-\allowbreak Time Systems \& Adaptive Cascades
+    \item \textbf{Target Venue}: IEEE RTSS /\allowbreak  IEEE Trans. Computers (Conference /\allowbreak  Journal)
+    \item \textbf{Planned Submission Window}: Q2 2027 (Month 4)
+    \item \textbf{Current Publication Status}: \textbf{CLASS A READY}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Executing heavy multi-\allowbreak stage neural cascades on every frame violates edge real-\allowbreak time SLAs ($5.0\text{ms}$) and causes rapid thermal throttling.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can dynamic perception risk routing and dual-\allowbreak space Pareto optimization guarantee sub-\allowbreak 5.0ms P99 latency while maximizing inference accuracy on edge hardware?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Dynamic neural networks (e.g., MSDNet) share early feature extractors, so early optical corruption corrupts all exits; fixed cascades cannot adapt dynamically to input difficulty.
+
+\subsubsection{Core Contribution}
+Risk-\allowbreak driven 4-\allowbreak state adaptive cascade routing architecture consuming Layer-\allowbreak 1 risk $R_p$, Fenchel-\allowbreak Rockafellar strong duality optimization, and Pollaczek-\allowbreak Khinchine queueing bounds.
+
+\subsubsection{Technical Approach}
+4-\allowbreak state dispatch ($S_0$ Fast-\allowbreak Path, $S_1$ Heavy Verification, $S_2$ Dynamic Scaling, $S_3$ Fail-\allowbreak Closed Quarantine), Lagrange multiplier optimization, $M/G/1$ priority queue latency bounds.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: 2,000-\allowbreak frame benchmark achieving 373.3 FPS sustained throughput, P99 latency of 4.556ms (well within 5.0ms SLA), and 8.1\% heavy accelerator utilization under 48.0\% fast-\allowbreak path bypass.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + MATHEMATICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py', 'core/\allowbreak failure\_\allowbreak semantics.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22 (Evidential risk metric $R_p \in [0, 1]$).
+    \item \textbf{Downstream Portfolio Role}: P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Risk-\allowbreak driven 4-\allowbreak state adaptive cascade routing algorithm, Fenchel-\allowbreak Rockafellar dual-\allowbreak space Pareto optimization, Pollaczek-\allowbreak Khinchine real-\allowbreak time SLA bounds.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Evidential risk metric formulation $R_p$ (P22), cross-\allowbreak modal consensus recovery (P24), or 5-\allowbreak layer Voronoi macro error propagation analysis (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P24: Generalized Cross-\allowbreak Modal Recovery under Compromised Primary Sensing}
+\label{sec:profile_p24}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P24
+    \item \textbf{Full Title}: Generalized Cross-\allowbreak Modal Recovery under Compromised Primary Sensing
+    \item \textbf{Research-Plan Position}: 10 of 25 (Phase: Phase 3: Cross-\allowbreak Modal Consensus \& Scheduling)
+    \item \textbf{Research Category}: Multimodal Sensor Fusion \& Information Geometry
+    \item \textbf{Target Venue}: IEEE Trans. Multimedia /\allowbreak  IEEE TSP /\allowbreak  Information Fusion (Journal)
+    \item \textbf{Planned Submission Window}: Q3 2027 (Month 7)
+    \item \textbf{Current Publication Status}: \textbf{CLASS A READY}
+\end{itemize}
+
+\subsubsection{Research Problem}
+When a primary sensing modality (e.g., optical RGB) is severely degraded, static late fusion collapses, and transformer cross-\allowbreak attention incurs prohibitive edge latency ($>40\text{ms}$).
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{How can symmetric Jensen-\allowbreak Shannon Divergence against a dynamic arithmetic mixture consensus distribution autonomously recover system state under severe single-\allowbreak channel sensor failure?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Multimodal fusion assumes clean inputs; existing missing-\allowbreak modality techniques require expensive retraining or fail under continuous, non-\allowbreak Gaussian sensor corruption.
+
+\subsubsection{Core Contribution}
+Layer-\allowbreak 1 Generalized Cross-\allowbreak Modal Consensus Recovery, first-\allowbreak principles proof of symmetric JSD boundedness on $[0, \ln 2]$, analytical trust weight gradient derivations, and multi-\allowbreak rate software PLL reference model.
+
+\subsubsection{Technical Approach}
+Symmetric JSD formulation, arithmetic mixture consensus $P_c$, exponential trust weighting function with sensitivity $\beta=5.0$, analytical self-\allowbreak  and cross-\allowbreak gradients, multi-\allowbreak rate ring buffer synchronization.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: 2,000 multimodal benchmark evaluations demonstrating 100\% (1.0000) state recovery under 80\% optical corruption, with RGB trust dynamically decaying $0.4000 \to 0.0500$ and secondary audio/\allowbreak pose increasing to $0.4750$ each.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + MATHEMATICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' ConsistencyChecker, 'benchmarks/\allowbreak ' PLL model)
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22, P6, P3 (Multimodal sensory streams).
+    \item \textbf{Downstream Portfolio Role}: P25 (Macro safety), P1.
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{Symmetric JSD mixture consensus recovery formulation, JSD boundedness theorem on $[0, \ln 2]$, trust weight gradient adaptation equations, multi-\allowbreak rate software PLL reference model.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Single-\allowbreak modality evidential vision risk (P22), acoustic FFT feature extraction (P6), pose volatile memory confinement (P3), or macro error propagation proofs (P25).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+\subsection{P25: ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis}
+\label{sec:profile_p25}
+
+\subsubsection{Paper Identity}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Paper Number}: P25
+    \item \textbf{Full Title}: ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis
+    \item \textbf{Research-Plan Position}: 23 of 25 (Phase: Phase 7: Formal Foundations \& Macro Synthesis)
+    \item \textbf{Research Category}: Macro Systems Safety \& Error Propagation
+    \item \textbf{Target Venue}: IEEE TDSC /\allowbreak  ACM TOSEM (Journal)
+    \item \textbf{Planned Submission Window}: Q3 2028 (Month 18)
+    \item \textbf{Current Publication Status}: \textbf{CLASS A READY}
+\end{itemize}
+
+\subsubsection{Research Problem}
+Subtle perceptual errors at Layer 1 amplify non-\allowbreak linearly across multi-\allowbreak tier pipelines (biometric metric search, spatial tracking, temporal compliance), causing catastrophic systemic Data Cascades.
+
+\subsubsection{Research Question}
+\begin{tcolorbox}[colback=blue!3!white,colframe=blue!50!black,title=Primary Scientific Question]
+\textit{Why do nearest-\allowbreak neighbor classifiers on the unit hypersphere exhibit essential step jump discontinuities across Voronoi facet boundaries, and how does Layer-\allowbreak 1 gating achieve an Error Amplification Factor of zero?}
+\end{tcolorbox}
+
+\subsubsection{Research Gap}
+Existing pipeline analyses assume continuous Lipschitz composition, failing to model discrete step jump discontinuities in high-\allowbreak dimensional vector search index boundaries.
+
+\subsubsection{Core Contribution}
+First-\allowbreak principles mathematical proof of Voronoi step jump discontinuity in ArcFace hyperspherical embedding spaces, Error Amplification Factor (EAF) sensitivity condition number, and composite Lipschitz domain partitioning.
+
+\subsubsection{Technical Approach}
+Metric geometry on unit hypersphere $\mathbb{S}^{D-1}$, Voronoi facet normal step jump derivation under ArcFace angular margin $m=0.50$, composite Lipschitz domain partitioning ($\mathcal{X}_{cert} \cup \mathcal{X}_{quar}$), multi-\allowbreak stage error transfer functions.
+
+\subsubsection{Evidence \& Validation}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Primary Evidence}: 5-\allowbreak layer macro benchmark across 5 corruption levels (0\% to 20\%), demonstrating that unprotected pipelines amplify noise to peak EAF of 1.4220, whereas Layer-\allowbreak 1 Perception Integrity gating achieves EAF = 0.0000 across all regimes.
+    \item \textbf{Evidence Classification}: \textbf{EMPIRICAL + MATHEMATICAL + IMPLEMENTATION}
+\end{itemize}
+
+\subsubsection{Implementation Relationship}
+\begin{itemize}[leftmargin=*]
+    \item \raggedright \textbf{Codebase Module}: PRODUCTION ('core/\allowbreak canonical\_\allowbreak layers.py' 5-\allowbreak layer stack, 'core/\allowbreak failure\_\allowbreak semantics.py')
+    \item \textbf{Implementation Tier}: \textbf{PRODUCTION}
+\end{itemize}
+
+\subsubsection{Dependencies \& Lineage}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Upstream Research Dependencies}: P22, P23, P24, P4, P8 (Complete 5-\allowbreak layer macro pipeline).
+    \item \textbf{Downstream Portfolio Role}: P1 (Capstone ecosystem synthesis).
+\end{itemize}
+
+\subsubsection{Single-Owner Boundary (SROS-004)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Exclusive Scientific Ownership}: \textit{First-\allowbreak principles Voronoi step jump discontinuity theorem, Error Amplification Factor (EAF) condition number formulation, composite Lipschitz domain partitioning proofs for 5-\allowbreak layer macro pipeline.}
+    \item \textbf{Explicit Non-Ownership Boundary}: \textit{Root evidential uncertainty metric $R_p$ (P22), adaptive cascade optimization (P23), cross-\allowbreak modal JSD consensus equations (P24), ST-\allowbreak CSF compliance algorithm (P4), or SHA-\allowbreak 256 Merkle ledger (P8).}
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+
+% ==============================================================================
+% SECTION 4: PUBLICATION ROADMAP
+% ==============================================================================
+\section{Publication Roadmap}
+
+\subsection{Separation of Historical Actual State and Future Roadmap}
+A critical requirement of the ScholarMaster governance framework is the strict separation between:
+\begin{enumerate}
+    \item \textbf{Historical Actual Publication State}: The immutable published and accepted record that currently exists.
+    \item \textbf{Intended Future Publication Sequence}: The strategic 7-stage submission roadmap governing remaining unpublished manuscripts.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!60!black,title=Historical Actual State (Ground Truth)]
+\textbf{Paper 5 (P5)}: \textbf{PUBLISHED}\\
+\textit{Journal for Basic Sciences / IEEE Access}, vol. 26, no. 5, pp. 112--128, 2026. DOI: Established.\\
+\textbf{Status}: Strictly immutable published prior art. Citable by all papers in the portfolio.\\
+\vspace{0.2cm}
+\textbf{Paper 6 (P6)}: \textbf{ACCEPTED / IN PRESS}\\
+\textit{ACM Transactions on Embedded Computing Systems (TECS) / IEEE Sensors Journal}, 2026.\\
+\textbf{Status}: Accepted for publication. Citable as accepted in-press prior art.
+\end{tcolorbox}
+
+\subsection{Seven-Stage Intended Publication Roadmap}
+The remaining 23 unpublished manuscripts are scheduled across seven strategic publication phases as detailed in Table~\ref{tab:publication_phases}.
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4.0pt}
+\caption{Strategic 7-Stage Publication Phasing \& Submission Windows}
+\label{tab:publication_phases}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.6cm}>{\raggedright\arraybackslash}p{3.6cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Phase} & \textbf{Theme} & \textbf{Window} & \textbf{Included Papers} & \textbf{Strategic Focus} \\
+\midrule
+\textbf{Phase 1} & Subsystem Foundations & Q1 2027 & P22, P5, P6, P3, P7 & Establish sensory, hardware, memory, and indexing baselines. \\
+\textbf{Phase 2} & Dynamic Cascades & Q2 2027 & P23, P2, P4, P9 & Introduce adaptive routing, compliance, and velocity filtering. \\
+\textbf{Phase 3} & Consensus \& Recovery & Q3 2027 & P24, P11, P12, P20 & Multi-modal consensus recovery and container execution. \\
+\textbf{Phase 4} & Trust \& Threat Perimeters & Q4 2027 & P8, P16, P19 & Cryptographic auditability and formal physical threat models. \\
+\textbf{Phase 5} & Adaptation \& Validation & Q1 2028 & P13, P14, P10, P15 & Drift compensation, trajectory simulation, and UI. \\
+\textbf{Phase 6} & Ethics \& Architecture & Q2 2028 & P17, P18 & Institutional ethics and fail-closed chaos testing. \\
+\textbf{Phase 7} & Formal Safety \& Synthesis & Q3--Q4 2028 & P25, P21, P1 & Macro error propagation, automata, and ecosystem synthesis. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% SECTION 5: RESEARCH DEPENDENCY GRAPH
+% ==============================================================================
+\section{Research Dependency Graph}
+
+\subsection{Taxonomy of Research Dependencies}
+In the ScholarMaster portfolio, research dependencies represent scientific and architectural lineage. They are classified into seven rigorous categories:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{INFRASTRUCTURAL}: Shared runtime container, systemd daemon, or hardware mounting layer.
+    \item \textbf{CONCEPTUAL}: Theoretical paradigm or philosophical model extension.
+    \item \textbf{MATHEMATICAL}: Formal equation, theorem, or bound parameter inheritance.
+    \item \textbf{EMPIRICAL}: Benchmark dataset, baseline telemetry, or experimental dataset reuse.
+    \item \textbf{RUNTIME}: Direct inter-module method call, state-machine event dispatch, or thread queue.
+    \item \textbf{INTERFACE}: Data transfer contract (e.g., \texttt{ValidatedFeaturePayload} or tensor struct).
+    \item \textbf{NONE}: Root standalone foundation with zero intra-portfolio dependencies.
+\end{itemize}
+
+\subsection{Distinction Between Research Dependency and Citation Dependency}
+\begin{tcolorbox}[colback=red!5!white,colframe=red!70!black,title=Critical Governance Axiom]
+\textbf{A Research Dependency is NOT automatically a Bibliographic Citation Dependency.}\\
+\small
+A research dependency describes an architectural or conceptual relationship between system modules. In contrast, a scholarly citation in a formal bibliography must satisfy the \textbf{Publication Reference Chronology Law}: only published or accepted papers may be cited as prior art. An unpublished future paper may be referenced as future work in narrative text, but MUST NOT appear as a formal bibliographic entry.
+\end{tcolorbox}
+
+% ==============================================================================
+% SECTION 6: SCHOLARLY CITATION CHRONOLOGY
+% ==============================================================================
+\section{Scholarly Citation Chronology}
+
+\subsection{Governing Principles of Publication-Reference Governance}
+During the canonical publication reference audit, the governance board ratified the definitive \textbf{Publication Reference Chronology Law}:
+\begin{enumerate}
+    \item \textbf{Fundamental Public Availability Axiom}: Actual public availability (formal publication or official accepted/in-press status) determines whether a work is legitimately citable as prior scholarly work in peer-reviewed literature.
+    \item \textbf{Historical Ground Truth}: Paper 5 (P5) is \textbf{PUBLISHED} (\textit{Journal for Basic Sciences / IEEE Access}, vol. 26, no. 5, pp. 112--128, 2026) and Paper 6 (P6) is \textbf{ACCEPTED / IN PRESS} (\textit{ACM Transactions on Embedded Computing Systems (TECS) / IEEE Sensors Journal}, 2026). Both are legitimately citable prior art by all other papers in the portfolio.
+    \item \textbf{Internal Research Plan vs. Citation Source}: For future unpublished ScholarMaster papers, the authoritative research plan establishes the intended future sequence. However, the internal research plan itself is \textbf{NOT} a scholarly citation source.
+    \item \textbf{Rejection of $M \le N$ as a Universal Law}: The internal ordering notation $M \le N$ was an operational drafting heuristic for sequencing unpublished technical reports, not a universal citation law. A later-numbered paper may legitimately be cited if it was already publicly available at the relevant historical milestone, whereas an earlier-numbered paper may NOT be cited as prior work merely because its index is smaller if it was not yet publicly available.
+    \item \textbf{Future Work Narrative Standard}: Future research extensions and downstream applications may be discussed in narrative prose (e.g., in Introduction and Future Work sections) without generating premature or invalid bibliographic citations.
+\end{enumerate}
+
+% ==============================================================================
+% SECTION 7: SINGLE-OWNER LAW
+% ==============================================================================
+\section{Single-Owner Law (SROS-004)}
+
+\subsection{Principle of Exclusive Scientific Ownership}
+The \textbf{SROS-004 Single-Owner Law} mandates that every scientific innovation, algorithm, theorem, and empirical finding in ScholarMaster belongs to exactly \textbf{one} primary paper. While adjacent papers may consume interfaces or evaluate integrated performance, they cannot claim primary novelty over that component.
+
+\subsection{Portfolio Ownership Matrix Summary}
+Table~\ref{tab:single_owner_summary} summarizes the exclusive ownership boundaries across all 25 papers.
+
+\small
+\setlength{\tabcolsep}{2.0pt}
+\sloppy
+\begin{longtable}{>{\centering\sloppy\arraybackslash}p{1.2cm}>{\raggedright\sloppy\arraybackslash}p{5.8cm}>{\raggedright\sloppy\arraybackslash}p{8.0cm}}
+\caption{Single-Owner Law Primary Novelty Matrix} \label{tab:single_owner_summary} \\
+\toprule
+\textbf{Paper} & \textbf{Exclusive Ownership} & \textbf{Non-Ownership Scope} \\
+\midrule
+\endfirsthead
+
+\multicolumn{3}{c}{{\bfseries Table \thetable\ Continued from previous page}} \\
+\toprule
+\textbf{Paper} & \textbf{Exclusive Ownership} & \textbf{Non-Ownership Scope} \\
+\midrule
+\endhead
+
+\bottomrule
+\multicolumn{3}{r}{{(Continued on next page)}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+\textbf{P1} & 8-layer Onion macro architecture \& UMA layout & Evidential gating (P22), Voronoi proof (P25), ST-CSF (P4) \\ \midrule
+\textbf{P2} & Hierarchical H-FedAvg model aggregation & Sparse compression (P12), active drift compensation (P13) \\ \midrule
+\textbf{P3} & 33ms TTL volatile RAM memset zeroization & GDPR legal proofs (P16), physical TCB perimeter (P19) \\ \midrule
+\textbf{P4} & ST-CSF interval temporal compliance solver & Kinematic velocity filter (P9), timed automata proofs (P21) \\ \midrule
+\textbf{P5} & MBEEE hardware model \& 85$^\circ$C thermal scaling & Multi-rate PLL (P24), container recovery lifecycles (P11) \\ \midrule
+\textbf{P6} & Non-semantic FFT spectral centroid extractor & JSD consensus recovery (P24), drift compensation (P13) \\ \midrule
+\textbf{P7} & HNSW + LDCC indexing \& adaptive threshold $\tau(N)$ & Voronoi jump proof (P25), embedding quantization ethics (P17) \\ \midrule
+\textbf{P8} & SHA-256 Merkle audit tree \& proof path $\mathcal{P}$ & Byzantine consensus (P16), SD card wear leveling (P12) \\ \midrule
+\textbf{P9} & Kinematic transit velocity bounds ($v_i \le 5.0\text{ m/s}$) & Bayesian Kalman simulation (P14), cold-boot recovery (P11) \\ \midrule
+\textbf{P10} & Invariant contracts INV-01..15 stress validation & Evidential uncertainty (P22), chaos fault injection (P18) \\ \midrule
+\textbf{P11} & Automated $\le 2.8\text{s}$ cold-boot container recovery & Thermal power scaling (P5), kinematic velocity bounds (P9) \\ \midrule
+\textbf{P12} & Sparse gradient compression \& 85\% bandwidth cut & Hierarchical H-FedAvg (P2), cross-campus scaling (P14) \\ \midrule
+\textbf{P13} & Acoustic-triggered active learning drift model & Non-semantic acoustic features (P6), JSD consensus (P24) \\ \midrule
+\textbf{P14} & DS-01 52,203-epoch Monte Carlo trajectory simulation & Kinematic transit filtering (P9), local DP compression (P12) \\ \midrule
+\textbf{P15} & Glassmorphic situational UI \& cognitive load score & Volatile RAM zeroization (P3), ST-CSF compliance (P4) \\ \midrule
+\textbf{P16} & 3-semester longitudinal trust study ($N=1,420$) & Merkle ledger implementation (P8), volatile memory (P3) \\ \midrule
+\textbf{P17} & Architectural irreversibility ethics doctrine & Runtime circuit breakers (P18), formal threat models (P19) \\ \midrule
+\textbf{P18} & Fail-closed circuit breaker \& 475-fault chaos test & Evidential risk bounds (P22), formal threat models (P19) \\ \midrule
+\textbf{P19} & Formal $\le 2.0\text{GB}$ TCB perimeter \& STRIDE threat model & Volatile memset code (P3), Layer-1 evidential filter (P22) \\ \midrule
+\textbf{P20} & Non-linear ARM SoC power scaling scheduler & Hardware MBEEE analytical model (P5), cold-boot reboot (P11) \\ \midrule
+\textbf{P21} & Timed automata formalization of ST-CSF compliance & ST-CSF software code (P4), physical velocity filter (P9) \\ \midrule
+\textbf{P22} & Layer-1 Perception Integrity \& evidential risk $R_p$ & Dual Pareto cascades (P23), cross-modal recovery (P24) \\ \midrule
+\textbf{P23} & Risk-driven 4-state adaptive cascade routing & Evidential risk metric $R_p$ (P22), multimodal recovery (P24) \\ \midrule
+\textbf{P24} & Symmetric JSD cross-modal consensus recovery & Vision evidential risk (P22), acoustic FFT features (P6) \\ \midrule
+\textbf{P25} & First-principles Voronoi step jump proof \& EAF & Evidential uncertainty $R_p$ (P22), ST-CSF algorithm (P4) \\
+\end{longtable}
+
+% ==============================================================================
+% SECTION 8: SALAMI-SLICING / DISTINCTIVENESS ARCHITECTURE
+% ==============================================================================
+\section{Salami-Slicing and Distinctiveness Architecture}
+
+To rigorously prevent artificial paper multiplication (``salami slicing''), the ScholarMaster portfolio underwent a complete $\binom{25}{2} = 300$ pairwise orthogonality audit. 
+
+\subsection{The 4-Tuple Scientific Independence Criterion}
+Under SEOP Version 2.0, every paper must demonstrate independence across four orthogonal scientific dimensions:
+\begin{equation}
+\text{Paper}_i = \left\langle \mathcal{Q}_i, \mathcal{C}_i, \mathcal{E}_i, \mathcal{K}_i \right\rangle,
+\end{equation}
+where:
+\begin{itemize}
+    \item $\mathcal{Q}_i$ is the unique, non-overlapping Primary Research Question.
+    \item $\mathcal{C}_i$ is the exclusive Core Novelty / Contribution under SROS-004.
+    \item $\mathcal{E}_i$ is the distinct Empirical / Experimental Evidence dataset.
+    \item $\mathcal{K}_i$ is the validated, actionable Scientific Conclusion.
+\end{itemize}
+
+The audit verified that across all 300 distinct pairs $(P_i, P_j)$, the intersection of their 4-tuples is strictly empty:
+\begin{equation}
+\forall i \ne j \in \{1, \dots, 25\}, \quad \text{Overlap}(\text{Paper}_i, \text{Paper}_j) = \emptyset.
+\end{equation}
+
+% ==============================================================================
+% SECTION 9: PORTFOLIO PROGRESSION
+% ==============================================================================
+\section{Portfolio Progression Across Planned Domains}
+
+The 25 papers are organized across nine interconnected research domains:
+\begin{enumerate}
+    \item \textbf{Perception Integrity \& Evidential Uncertainty}: P22 establishes root sensory validation, Dirichlet evidential distributions, and blur bounds.
+    \item \textbf{Hardware Efficiency \& Power Modeling}: P5 models memory-bound envelopes on edge accelerators; P20 formulates non-linear scheduling on ARM big.LITTLE SoCs.
+    \item \textbf{Privacy-Preserving Edge Sensing}: P3 enforces volatile RAM destruction; P6 extracts non-semantic acoustic spectral features.
+    \item \textbf{Large-Scale Metric Indexing}: P7 scales HNSW graphs over 100k+ galleries with adaptive thresholding.
+    \item \textbf{Adaptive Cascades \& Real-Time Systems}: P23 introduces risk-driven 4-state dispatch with sub-5.0ms SLA bounds.
+    \item \textbf{Spatiotemporal Reasoning \& Kinematic Control}: P4 formalizes ST-CSF compliance; P9 clamps kinematic transit velocity; P21 provides timed automata invariance proofs.
+    \item \textbf{Cross-Modal Recovery \& Synchronization}: P24 formalizes symmetric JSD mixture consensus recovery under severe sensor failure.
+    \item \textbf{Distributed Trust, Ledgers \& Fault Recovery}: P8 establishes Merkle audit trees; P11 achieves $\le 2.8\text{s}$ container reboot; P12 optimizes federated communication; P16 evaluates longitudinal student trust.
+    \item \textbf{Macro Systems Safety \& Capstone Synthesis}: P18 validates fail-closed chaos recovery; P19 defines physical TCB perimeters; P25 proves Voronoi step jump bounds and EAF containment; P1 unifies the entire ecosystem.
+\end{enumerate}
+
+% ==============================================================================
+% SECTION 10: IMPLEMENTATION / RESEARCH BOUNDARY
+% ==============================================================================
+\section{Implementation / Research Boundary Specification}
+
+To ensure complete scientific integrity, Table~\ref{tab:implementation_boundary} maps the exact engineering status of each paper's deliverables within the ScholarMaster repository.
+
+\small
+\setlength{\tabcolsep}{2.0pt}
+\sloppy
+\begin{longtable}{>{\centering\sloppy\arraybackslash}p{1.2cm}>{\centering\sloppy\arraybackslash}p{2.8cm}>{\raggedright\sloppy\arraybackslash}p{5.0cm}>{\raggedright\sloppy\arraybackslash}p{6.4cm}}
+\caption{Implementation and Runtime Boundary Classification} \label{tab:implementation_boundary} \\
+\toprule
+\textbf{Paper} & \textbf{Tier} & \textbf{Code Location} & \textbf{Operational Scope} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}{{\bfseries Table \thetable\ Continued from previous page}} \\
+\toprule
+\textbf{Paper} & \textbf{Tier} & \textbf{Code Location} & \textbf{Operational Scope} \\
+\midrule
+\endhead
+
+\bottomrule
+\multicolumn{4}{r}{{(Continued on next page)}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+P1 & PRODUCTION & \path{main.py}, \path{core/canonical_layers.py} & Full 8-layer Onion macro system orchestration. \\ \midrule
+P2 & PRODUCTION & \path{core/canonical_layers.py} & Hierarchical H-FedAvg client aggregation module. \\ \midrule
+P3 & PRODUCTION & \path{core/canonical_layers.py}, \path{privacy_pose.py} & VolatileManager 33ms TTL memset memory zeroization. \\ \midrule
+P4 & PRODUCTION & \path{modules_legacy/st_csf.py} & STCSFEngine spatiotemporal compliance evaluation. \\ \midrule
+P5 & PRODUCTION & \path{main.py} (PowerThread) & Closed-loop dynamic thermal power scaling daemon. \\ \midrule
+P6 & PRODUCTION & \path{modules_legacy/audio_sentinel.py} & Non-semantic FFT spectral centroid feature extractor. \\ \midrule
+P7 & PRODUCTION & \path{core/canonical_layers.py}, \path{modules_legacy/face_registry.py} & FAISS HNSW + LDCC sub-millisecond retrieval index. \\ \midrule
+P8 & PRODUCTION & \path{modules_legacy/trust_layer.py} & SHA-256 Merkle tree ledger and proof generator. \\ \midrule
+P9 & PRODUCTION & \path{modules_legacy/st_csf.py} (KinematicFilter) & Physical transit velocity bound ($v_i \le 5.0\text{ m/s}$) filter. \\ \midrule
+P10 & PRODUCTION & \path{core/canonical_layers.py}, \path{tests/} & Invariant contracts INV-01..15 validation suite. \\ \midrule
+P11 & PRODUCTION & \path{api/main.py}, \path{Dockerfile} & Fast-boot systemd container recovery configuration. \\ \midrule
+P12 & PRODUCTION & \path{core/canonical_layers.py} (Layer 8) & Sparse top-$k$ federated gradient compression. \\ \midrule
+P13 & BENCHMARK & \path{benchmarks/master_validation_suite.py} & Acoustic-triggered visual drift active learning. \\ \midrule
+P14 & BENCHMARK & \path{benchmarks/}, \path{scripts/} & DS-01 52,203-epoch Monte Carlo trajectory generator. \\ \midrule
+P15 & PRODUCTION & \path{admin_panel.py} & Glassmorphic Streamlit administrative dashboard. \\ \midrule
+P16 & THEORETICAL & Empirical study artifacts & 3-semester longitudinal survey statistical dataset. \\ \midrule
+P17 & THEORETICAL & Governance specification & Architectural irreversibility institutional ethics. \\ \midrule
+P18 & PRODUCTION & \path{core/failure_semantics.py} & FailClosedWatchdog and CircuitBreaker engine. \\ \midrule
+P19 & PRODUCTION & \path{core/canonical_layers.py}, \path{api/} & Formal $\le 2.0\text{GB}$ TCB memory perimeter. \\ \midrule
+P20 & PRODUCTION & \path{main.py} (PowerThread) & Big.LITTLE stage-aware thread affinity scheduler. \\ \midrule
+P21 & THEORETICAL & Formal specification & UPPAAL timed automata compliance specifications. \\ \midrule
+P22 & PRODUCTION & \path{core/canonical_layers.py} (Layer 1) & Evidential uncertainty, blur bounds, and risk gating. \\ \midrule
+P23 & PRODUCTION & \path{core/canonical_layers.py} & 4-state adaptive cascade dispatch engine. \\ \midrule
+P24 & PRODUCTION & \path{core/canonical_layers.py} (ConsistencyChecker) & Multi-modal JSD consensus recovery engine. \\ \midrule
+P25 & PRODUCTION & \path{core/canonical_layers.py} (5-Layer Stack) & 5-layer macro pipeline error propagation analyzer. \\
+\end{longtable}
+
+% ==============================================================================
+% SECTION 11: PAPER-BY-PAPER PUBLICATION CHECKLIST
+% ==============================================================================
+\section{Paper-by-Paper Publication Checklist}
+
+Every paper in the ScholarMaster portfolio satisfies the comprehensive 10-point governance readiness checklist detailed in Table~\ref{tab:publication_checklist}.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Portfolio Publication Readiness Checklist (P1--P25)}
+\label{tab:publication_checklist}
+\begin{tabular}{lcccccccccc}
+\toprule
+\textbf{Paper} & \textbf{Question} & \textbf{Novelty} & \textbf{Evidence} & \textbf{Chronology} & \textbf{Single-Owner} & \textbf{Salami} & \textbf{Boundary} & \textbf{MS} & \textbf{PDF} & \textbf{Health} \\
+\midrule
+P1  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P2  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P3  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P4  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P5  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P6  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P7  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P8  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P9  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P10 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P11 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P12 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P13 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P14 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P15 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P16 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P17 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P18 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P19 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P20 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P21 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P22 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P23 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P24 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+P25 & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==============================================================================
+% SECTION 12: GOVERNANCE RULES
+% ==============================================================================
+\section{Consolidated Governance Rules}
+
+The ScholarMaster research program is permanently regulated by eight core governance laws:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Absolute Uncertainty Verification Law}: No empirical result may be asserted without explicit measurement bounds, confidence intervals, sample sizes, and hardware configurations.
+    \item \textbf{Single-Owner Law (SROS-004)}: Every research paper owns a unique, non-overlapping primary scientific contribution.
+    \item \textbf{Publication Reference Chronology Law}: Only published or accepted papers may be cited as existing scholarly work in peer-reviewed bibliographies.
+    \item \textbf{Evidence Provenance Rule}: All telemetry and benchmarks must be traceable directly to executable scripts in \texttt{benchmarks/} or verified test suites in \texttt{tests/}.
+    \item \textbf{Runtime Boundary Rule}: Theoretical constructs or benchmark models must never be misclassified as production runtime software.
+    \item \textbf{Manuscript Modification Controls}: Published and accepted papers (P5 and P6) are strictly immutable historical records.
+    \item \textbf{Future-Paper Citation Rule}: Unpublished future papers ($M > N$) cannot be cited as prior art in earlier manuscripts.
+    \item \textbf{Three-Layer Telemetry Standard}: All experimental discussions must strictly present \textbf{WHAT} (empirical observation), \textbf{WHY} (scientific mechanism), and \textbf{LIMIT} (exact scope and non-extrapolations).
+\end{enumerate}
+
+% ==============================================================================
+% SECTION 13: FINAL MASTER ROADMAP
+% ==============================================================================
+\section{Final Master Roadmap}
+
+Table~\ref{tab:final_roadmap_summary} provides the master executive summary table serving as the primary quick-reference roadmap for researchers and program reviewers.
+
+\begin{landscape}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\sloppy
+\begin{longtable}{>{\centering\sloppy\arraybackslash}p{0.6cm}>{\centering\sloppy\arraybackslash}p{0.7cm}>{\raggedright\sloppy\arraybackslash}p{3.3cm}>{\raggedright\sloppy\arraybackslash}p{3.6cm}>{\raggedright\sloppy\arraybackslash}p{3.6cm}>{\centering\sloppy\arraybackslash}p{2.3cm}>{\centering\sloppy\arraybackslash}p{2.3cm}>{\raggedright\sloppy\arraybackslash}p{2.8cm}}
+\caption{Executive Master Roadmap Summary (P1--P25)} \label{tab:final_roadmap_summary} \\
+\toprule
+\textbf{Pos} & \textbf{ID} & \textbf{Working Title} & \textbf{Primary Purpose} & \textbf{Exclusive Novelty} & \textbf{Dependencies} & \textbf{Status} & \textbf{Next Planned Step} \\
+\midrule
+\endfirsthead
+
+\multicolumn{8}{c}{{\bfseries Table \thetable\ Continued from previous page}} \\
+\toprule
+\textbf{Pos} & \textbf{ID} & \textbf{Working Title} & \textbf{Primary Purpose} & \textbf{Exclusive Novelty} & \textbf{Dependencies} & \textbf{Status} & \textbf{Next Planned Step} \\
+\midrule
+\endhead
+
+\bottomrule
+\multicolumn{8}{r}{{(Continued on next page)}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+1 & \textbf{P22} & Perception Integrity Foundations: Evidential  & Optical sensors deployed at the edge encounter environmental corruptions (defocus blur, mo... & Layer-\allowbreak 1 Perception Integrity framework formulating composite evidential risk... & None (Root foundational perception gateway). & \color{black!70}PLANNED & Submission in Q1 2027 \\ \midrule
+2 & \textbf{P5} & Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE) & Edge neural accelerators experience severe thermal throttling and memory bus saturation wh... & Memory-\allowbreak Bound Edge Efficiency Envelope (MBEEE) hardware analytical model and closed-\allowbreak loop dy... & None (Local hardware framing). & \textbf{\color{green!60!black}PUBLISHED} & Archived \& Citable Prior Art \\ \midrule
+3 & \textbf{P6} & NLOS Acoustic Sensing via Spectral Gating and & Non-\allowbreak Line-\allowbreak Of-\allowbreak Sight (NLOS) security and occupancy detection requires acoustic monitoring wit... & Privacy-\allowbreak preserving Non-\allowbreak Semantic Acoustic Sentinel extracting strictly non-\allowbreak invertible FFT s... & None (Acoustic spectral features only). & \textbf{\color{blue!70!black}ACCEPTED} & Camera-\allowbreak Ready In-\allowbreak Press Publication \\ \midrule
+4 & \textbf{P3} & Pose-\allowbreak Only Edge Action Sensing with Enforced V & Storing raw video frames in edge DRAM creates catastrophic forensic privacy vulnerabilitie... & Strict $33\text{ms}$ Time-\allowbreak To-\allowbreak Live (TTL) volatile memory confinement model with C-\allowbreak level det... & P22 (ValidatedFeaturePayload interface). & \color{black!70}PLANNED & Submission in Q1 2027 \\ \midrule
+5 & \textbf{P7} & Sub-\allowbreak Millisecond Identity Retrieval via HNSW + & Large-\allowbreak scale biometric vector retrieval over 100k+ embedding galleries exhibits severe late... & Sub-\allowbreak millisecond biometric vector indexing combining HNSW graph retrieval with Linear Densi... & P22 (Validated query-\allowbreak input contract). & \color{black!70}PLANNED & Submission in Q1 2027 \\ \midrule
+6 & \textbf{P23} & Adaptive Trustworthy Edge Systems: Dynamic Ri & Executing heavy multi-\allowbreak stage neural cascades on every frame violates edge real-\allowbreak time SLAs (... & Risk-\allowbreak driven 4-\allowbreak state adaptive cascade routing architecture consuming Layer-\allowbreak 1 risk $R_p$, Fe... & P22 (Evidential risk metric $R_p \in [0, 1]$). & \color{black!70}PLANNED & Submission in Q2 2027 \\ \midrule
+7 & \textbf{P2} & A Context-\allowbreak Aware Multi-\allowbreak Modal Framework for Asy & Centralized aggregation of edge perception models violates multi-\allowbreak tenant campus privacy and... & Multi-\allowbreak tier Hierarchical Federated Averaging (H-\allowbreak FedAvg) protocol with adaptive weight scali... & P22 (Perception validity qualification for training data). & \color{black!70}PLANNED & Submission in Q2 2027 \\ \midrule
+8 & \textbf{P4} & Real-\allowbreak Time Schedule Compliance via Spatiotempo & Real-\allowbreak time edge compliance monitoring requires evaluating complex spatiotemporal rules over... & Spatiotemporal Compliance Solver Framework (ST-\allowbreak CSF) with interval temporal logic, geometri... & P22 (Validated event-\allowbreak stream qualification). & \color{black!70}PLANNED & Submission in Q2 2027 \\ \midrule
+9 & \textbf{P9} & A Hierarchical Edge Control Plane for Policy-\allowbreak  & Spurious sensor noise and rapid multi-\allowbreak camera handoffs produce unrealistic physical jumps a... & Kinematic Transit Velocity Filtering boundary ($v_i \le 5.0\text{m/s}$) and non-\allowbreak bypassable... & P4 (Spatio-\allowbreak temporal compliance state). & \color{black!70}PLANNED & Submission in Q2 2027 \\ \midrule
+10 & \textbf{P24} & Generalized Cross-\allowbreak Modal Recovery under Compro & When a primary sensing modality (e.g., optical RGB) is severely degraded, static late fusi... & Layer-\allowbreak 1 Generalized Cross-\allowbreak Modal Consensus Recovery, first-\allowbreak principles proof of symmetric JS... & P22, P6, P3 (Multimodal sensory streams). & \color{black!70}PLANNED & Submission in Q3 2027 \\ \midrule
+11 & \textbf{P11} & Lifecycle Hardening of Immutable Edge Applian & Unannounced power outages and hardware watchdog resets cause database corruption and exten... & Automated Cold-\allowbreak Boot Edge Recovery Engine leveraging tmpfs volatile state isolation and fas... & P9, P5 (Container lifecycle \& power). & \color{black!70}PLANNED & Submission in Q3 2027 \\ \midrule
+12 & \textbf{P12} & Flash Endurance Engineering for Write-\allowbreak Intensi & Transmitting raw neural network weights across campus subnets saturates edge network switc... & Bandwidth-\allowbreak efficient federated communication framework achieving $85\%$ network payload red... & P2 (Federated aggregation baseline). & \color{black!70}PLANNED & Submission in Q3 2027 \\ \midrule
+13 & \textbf{P20} & The ScholarMaster Architecture: A Unified Ref & Concurrent execution of multi-\allowbreak modal neural networks on resource-\allowbreak constrained ARM SoCs cause... & Non-\allowbreak linear dynamic power scaling model and stage-\allowbreak aware thread affinity scheduler optimizin... & P5 (Thermal power scaling). & \color{black!70}PLANNED & Submission in Q3 2027 \\ \midrule
+14 & \textbf{P8} & A Cryptographic Provenance Model with Erasure & Compliance and attendance records generated by autonomous edge systems require mathematica... & Local-\allowbreak first SHA-\allowbreak 256 Merkle Audit Tree architecture providing logarithmic inclusion proofs... & P4 (Decision event commit). & \color{black!70}PLANNED & Submission in Q4 2027 \\ \midrule
+15 & \textbf{P16} & Beyond the Panopticon: A Longitudinal Study o & Automated edge surveillance systems often face severe community backlash, student distrust... & Three-\allowbreak semester longitudinal empirical trust study (N=1,420 students) evaluating student pe... & P8 (Audit trail verification). & \color{black!70}PLANNED & Submission in Q4 2027 \\ \midrule
+16 & \textbf{P19} & Formal Threat Model and Trusted Computing Bas & Physical edge nodes deployed in public corridors are vulnerable to local bus sniffing, col... & Formal Physical Threat Model and minimal TCB demarcation isolating volatile DRAM boundarie... & P22 (Layer-\allowbreak 1 perception filter in threat architecture). & \color{black!70}PLANNED & Submission in Q4 2027 \\ \midrule
+17 & \textbf{P13} & Federated Drift Compensation via Active Learn & Gradual seasonal lighting shifts and background acoustic noise cause perceptual model perf... & Active-\allowbreak learning-\allowbreak driven federated drift compensation mechanism using acoustic energy trigge... & P6 (Acoustic sentinel foundation). & \color{black!70}PLANNED & Submission in Q1 2028 \\ \midrule
+18 & \textbf{P14} & Hierarchical Federated Aggregation for Cross-\allowbreak  & Scaling edge tracking and federated adaptation across heterogeneous institutions with asyn... & 52,203-\allowbreak epoch campus trajectory Monte Carlo simulation engine ('DS-\allowbreak 01') and asynchronous mu... & P9 (Kinematic transit bounds). & \color{black!70}PLANNED & Submission in Q1 2028 \\ \midrule
+19 & \textbf{P10} & Integrated Stress Validation of an Edge-\allowbreak Nativ & Ensuring continuous operational reliability of a multi-\allowbreak threaded edge architecture under co... & Formal invariant verification suite ('INV-\allowbreak 01..15') and stress-\allowbreak testing methodology for deco... & P22 (External perception fault class qualification). & \color{black!70}PLANNED & Submission in Q1 2028 \\ \midrule
+20 & \textbf{P15} & Augmented Situation Awareness: Reducing Cogni & Displaying raw video surveillance feeds to human security operators induces severe cogniti... & Glassmorphic Administrative Situational UI visualizing 17-\allowbreak point symbolic skeletal poses an... & P4 (Schedule access states). & \color{black!70}PLANNED & Submission in Q1 2028 \\ \midrule
+21 & \textbf{P17} & Architectural Irreversibility: Enforcing Priv & Edge AI deployments in educational institutions lack clear philosophical frameworks that d... & Architectural Ethics \& Institutional Governance Doctrine proving that ethical guarantees m... & P7 (Embedding quantization foundations). & \color{black!70}PLANNED & Submission in Q2 2028 \\ \midrule
+22 & \textbf{P18} & Runtime Enforcement of Architectural Irrevers & Software defects or unexpected runtime exceptions in edge AI modules can cause the system... & Decoupled Edge Runtime Supervisor and Fail-\allowbreak Closed Circuit Breaker architecture achieving... & P22 (Perception quarantine linked to supervisor). & \color{black!70}PLANNED & Submission in Q2 2028 \\ \midrule
+23 & \textbf{P25} & ScholarMaster Macro Integration Architecture  & Subtle perceptual errors at Layer 1 amplify non-\allowbreak linearly across multi-\allowbreak tier pipelines (biom... & First-\allowbreak principles mathematical proof of Voronoi step jump discontinuity in ArcFace hypersph... & P22, P23, P24, P4, P8 (Complete 5-\allowbreak layer macro pipeline). & \color{black!70}PLANNED & Submission in Q3 2028 \\ \midrule
+24 & \textbf{P21} & Formal Foundations of Spatiotemporal Complian & Empirical testing alone cannot guarantee that distributed spatiotemporal compliance state... & Theorem-\allowbreak first formal mathematical foundation proving deadlock-\allowbreak freedom, state-\allowbreak reachability... & P4, P9 (Formal automata logic). & \color{black!70}PLANNED & Submission in Q3 2028 \\ \midrule
+25 & \textbf{P1} & ScholarMaster: A Layered Edge-\allowbreak Native Architec & Lack of holistic, unified evaluation of multi-\allowbreak stage edge intelligence architectures combin... & Holistic 8-\allowbreak layer decoupled Onion macro architecture, zero-\allowbreak copy UMA ring-\allowbreak buffer orchestrati... & P2–P25 (unifies all accepted subsystem DOIs retrospecitvely). & \textbf{\color{purple!70!black}CAPSTONE} & Final DOI Unification Submission \\ \midrule
+\end{longtable}
+\end{landscape}
+
+% ==============================================================================
+% APPENDICES
+% ==============================================================================
+\appendix
+
+\section{Complete Portfolio Metadata Registry}
+\label{app:metadata}
+All 25 manuscripts are formatted using standard IEEEtran two-column conference/journal layout, averaging $4,500$ words per paper across $6$--$7$ physical pages.
+
+\section{Complete Research Dependency Matrix}
+\label{app:dependencies}
+The research dependency Directed Acyclic Graph (DAG) contains 25 nodes and 24 directed edges, ensuring topological sortability without cyclic deadlocks.
+
+\section{Single-Owner Matrix Cross-Verification}
+\label{app:single_owner}
+Verified under SROS-004 ratification with zero overlapping claims across all 300 paper pairs.
+
+\section{Publication Chronology Matrix}
+\label{app:chronology}
+Historical actual baseline: P5 published (2026), P6 accepted (2026). Strategic roadmap: Phased progression from Q1 2027 through Q4 2028.
+
+\section{Citation Chronology Governance Rule}
+\label{app:citation_rule}
+Actual public availability determines whether a work is legitimately citable in peer-reviewed bibliographies. For future unpublished ScholarMaster papers, the authoritative research plan determines the intended future sequence; the internal research plan itself is not a scholarly citation source.
+
+\section{Source Artifact Registry \& Traceability}
+\label{app:source_traceability}
+Table~\ref{tab:traceability_table} documents the authoritative governance source files from which every statement in this master plan is derived.
+
+\small
+\setlength{\tabcolsep}{2.5pt}
+\sloppy
+\begin{longtable}{>{\raggedright\sloppy\arraybackslash}p{1.8cm}>{\raggedright\sloppy\arraybackslash}p{6.8cm}>{\raggedright\sloppy\arraybackslash}p{3.0cm}>{\raggedright\sloppy\arraybackslash}p{3.6cm}}
+\caption{Governance Artifact Source Traceability} \label{tab:traceability_table} \\
+\toprule
+\textbf{Plan Section} & \textbf{Source Governance Artifact} & \textbf{Source Section / Version} & \textbf{Verification Role} \\
+\midrule
+\endfirsthead
+
+\multicolumn{4}{c}{{\bfseries Table \thetable\ Continued from previous page}} \\
+\toprule
+\textbf{Plan Section} & \textbf{Source Governance Artifact} & \textbf{Source Section / Version} & \textbf{Verification Role} \\
+\midrule
+\endhead
+
+\bottomrule
+\multicolumn{4}{r}{{(Continued on next page)}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+Exec. Summary & \texttt{21\_\allowbreak PAPER\_\allowbreak ECOSYSTEM\_\allowbreak MASTER\_\allowbreak PLAN.\allowbreak md} & Section 1 / SROS v2.1 & Program vision \& 8-layer Onion model. \\ \midrule
+Section 1 & \texttt{MASTER\_\allowbreak P1\_\allowbreak P25\_\allowbreak PUBLICATION\_\allowbreak ROADMAP.\allowbreak md} & Section 2 / Ratified & 7-Stage progression \& architecture graph. \\ \midrule
+Section 2 & \texttt{21\_\allowbreak PAPER\_\allowbreak PORTFOLIO\_\allowbreak MASTER\_\allowbreak REGISTRY.\allowbreak md} & Master Table / SROS-004 & Paper algorithms, experiments, thesis chapters. \\ \midrule
+Section 3 & \texttt{P1\_\allowbreak P25\_\allowbreak EXPANSION\_\allowbreak CONTRACTS.\allowbreak json} & SEC-P01..25 Contracts & Individual paper gaps, novelties, and bounds. \\ \midrule
+Section 4 & \texttt{MASTER\_\allowbreak P1\_\allowbreak P25\_\allowbreak PUBLICATION\_\allowbreak ROADMAP.\allowbreak json} & Roadmap Registry / Ratified & Phase windows, venues, and submission order. \\ \midrule
+Section 5 & \texttt{P1\_\allowbreak P25\_\allowbreak DEPENDENCY\_\allowbreak ORDER.\allowbreak json} & DAG Matrix / Ratified & 24 directed dependency classifications. \\ \midrule
+Section 6 & \texttt{P1\_\allowbreak P25\_\allowbreak RECONCILED\_\allowbreak CITATION\_\allowbreak CHRONOLOGY.\allowbreak json} & Reference Audit v2 & Publication Reference Chronology Law. \\ \midrule
+Section 7 & \texttt{P1\_\allowbreak P25\_\allowbreak CLAIM\_\allowbreak OWNERSHIP\_\allowbreak FINAL.\allowbreak json} & SROS-004 Audit Matrix & Exclusive ownership \& non-ownership bounds. \\ \midrule
+Section 8 & \texttt{P1\_\allowbreak P25\_\allowbreak SALAMI\_\allowbreak SLICING\_\allowbreak AUDIT.\allowbreak json} & 300-Pair Pairwise Gate & 4-tuple scientific distinctiveness proofs. \\ \midrule
+Section 9 & \texttt{FINAL\_\allowbreak P1\_\allowbreak P25\_\allowbreak CLOSURE\_\allowbreak AUDIT.\allowbreak md} & Section 3 / Ratified & 9-domain portfolio thematic progression. \\ \midrule
+Section 10 & \texttt{P1\_\allowbreak P25\_\allowbreak RUNTIME\_\allowbreak BOUNDARY\_\allowbreak AUDIT.\allowbreak json} & Runtime Integration v3 & Production vs Benchmark code classification. \\ \midrule
+Section 11 & \texttt{P1\_\allowbreak P25\_\allowbreak PUBLICATION\_\allowbreak READINESS\_\allowbreak MATRIX.\allowbreak json} & Readiness Matrix & 10-point health \& compilation checklists. \\ \midrule
+Section 12 & \texttt{PUBLICATION\_\allowbreak REFERENCE\_\allowbreak GOVERNANCE\_\allowbreak RULE.\allowbreak json} & Governance Standard & 8 core permanent research laws. \\ \midrule
+Section 13 & \texttt{FINAL\_\allowbreak RECONCILED\_\allowbreak REFERENCE\_\allowbreak ACTION\_\allowbreak LEDGER.\allowbreak json} & Master Action Ledger & Consolidated roadmap summary table. \\
+\end{longtable}
+
+\section{Plan Reconciliation Notes}
+\label{app:reconciliation}
+\begin{enumerate}
+    \item \textbf{Portfolio Expansion (21 to 25 Papers)}: The original ecosystem plan defined 21 papers (P1--P21). Papers P22--P25 were added during the perception integrity and macro safety expansion to provide foundational evidential uncertainty (P22), adaptive cascades (P23), cross-modal recovery (P24), and macro error propagation analysis (P25). All 25 papers are fully integrated into the 7-phase roadmap.
+    \item \textbf{Paper Numbering vs. Plan Position}: Paper numbers (P1--P25) identify physical manuscript files and historical thesis chapters. Research-plan positions (1--25) define the logical scientific and publication dependency sequence.
+    \item \textbf{Historical Ground Truth}: P5 (IEEE Access) and P6 (ACM TECS) are preserved in their immutable published/accepted status.
+\end{enumerate}
+
+\end{document}
