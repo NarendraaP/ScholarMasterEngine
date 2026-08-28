@@ -1,0 +1,235 @@
+{
+  "paper_id": "P12",
+  "paper_num": 12,
+  "title": "Flash Endurance Engineering for Write-Intensive Embedded Workloads: Extending SD Card Lifespan Through Kernel-Level Optimization",
+  "abstract_snippet": "Low-cost flash has become the default storage medium for many embedded devices to date. Meanwhile, the endurance limits of flash memory have been a major reliability concern whenever such devices need to handle frequent writes, such as during intensive machine-learning workloads. Default linux filesystems generate a high number of small writes which are detrimental to flash storage that typically ...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "NAND Flash Mechanics and FTL Modeling",
+    "Problem Formulation",
+    "Optimization Architecture (Kernel \\& VFS)",
+    "Filesystem Architecture: F2FS vs Ext4",
+    "Experimental Methodology",
+    "Experimental Results",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Why Continuous Edge Telemetry Accelerates NAND Wear",
+    "Contributions and Subsystem Scope",
+    "The Physics of Wear and Page/Block Asymmetry",
+    "FTL Dynamics and Write Amplification",
+    "Mathematical Formulation of FTL Garbage Collection",
+    "Host-Side Write Serialization as FTL Control",
+    "NAND Lifespan Model",
+    "Baseline Workload Characterization",
+    "ZRAM Swap Compression",
+    "Page Cache State Machine and Dirty Ratio Tuning",
+    "I/O Scheduler Multiqueue Mechanics",
+    "The Ext4 Journaling Penalty (JBD2)",
+    "F2FS Architecture and the Wandering Tree Problem",
+    "Hot/Cold Separation and Crash Consistency",
+    "F2FS Mount Considerations",
+    "Write Volume Reduction",
+    "WAF Reduction and Confidence Intervals",
+    "Analytical Lifespan Projection",
+    "Filesystem Aging and GC Latency Spikes",
+    "Performance vs Endurance Tradeoff",
+    "Over-Provisioning Strategies for the Edge",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P12-PARA-01",
+      "text_snippet": "To address this reliability feature, this experiment was conducted to evaluate the storage characteristics of a representative 32Gb SD card. A set of coordinated kernel- and filesystem-level optimizations have been applied to reduce write amplification. With the help of such technologies as swap com...",
+      "char_count": 570
+    },
+    {
+      "paragraph_id": "P12-PARA-02",
+      "text_snippet": "When applied in the context of a JEDEC-endurance projection model, these reductions lead to a storage system lifetime projection that is three orders of magnitude higher than what was initially measured under the same JEDEC workload. Moreover, the optimized storage stack dramatically reduces tail-la...",
+      "char_count": 588
+    },
+    {
+      "paragraph_id": "P12-PARA-03",
+      "text_snippet": "The main argument of this paper is that host-side I/O shaping can greatly reduce write amplification and improve flash endurance in embedded edge systems . Edge computing systems often leverage cheap forms of flash storage as a way to reduce costs and make hardware replacements easier. One such exam...",
+      "char_count": 403
+    },
+    {
+      "paragraph_id": "P12-PARA-04",
+      "text_snippet": "In resource-constrained edge nodes operating with limited RAM, no UPS, and demanding continuous uptime, the interaction between OS write behavior and flash controller becomes the dominant durability factor b30 .",
+      "char_count": 211
+    },
+    {
+      "paragraph_id": "P12-PARA-05",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem performs flash-endurance optimization, host I/O shaping, and write-amplification reduction only. It does not orchestrate deployment infrastructure (Paper 20), validate runtime privacy enforcement (Paper 18), optimize federated adaptation (Paper 1...",
+      "char_count": 404
+    },
+    {
+      "paragraph_id": "P12-PARA-06",
+      "text_snippet": "Understanding the endurance limitations of SD cards requires examining the physical structure of NAND flash memory. This structure directly constrains write endurance.",
+      "char_count": 167
+    },
+    {
+      "paragraph_id": "P12-PARA-07",
+      "text_snippet": "Because pages cannot be overwritten, any change, however small, requires that the controller write new data to a different, erased page and then mark the original page as invalid.",
+      "char_count": 179
+    },
+    {
+      "paragraph_id": "P12-PARA-08",
+      "text_snippet": "At a physical level, wear occurs due to the continuous program/read cycles that put stress on the tunnel oxide in between the floating gate. The Fowler-Nordheim tunneling mechanism that occurs during the erase phase results in oxide degradation when program/erase cycles are applied repeatedly on the...",
+      "char_count": 696
+    },
+    {
+      "paragraph_id": "P12-PARA-09",
+      "text_snippet": "Because host operating systems interface with flash storage via logical block addressing, the Flash Translation Layer (FTL) is central to the locality of physical wear (mapping of logical writes to physical flash pages) b7 . Host operating systems perform logical writes at the sector granularity, wh...",
+      "char_count": 489
+    },
+    {
+      "paragraph_id": "P12-PARA-10",
+      "text_snippet": "This discrepancy is often the root cause of Write Amplification. In this scenario, numerous minor logical updates initiated by the host can lead to considerable block-level data rewrites inside the drive. Especially problematic are the cases when the FTL needs to perform an internal Read-Modify-Writ...",
+      "char_count": 645
+    },
+    {
+      "paragraph_id": "P12-PARA-11",
+      "text_snippet": "To prevent the system from halting during individual RMW cycles, modern FTLs attempt to write incoming data to fresh, pre-erased pages sequentially. Eventually, however, the controller exhausts its supply of empty blocks and must invoke background Garbage Collection (GC). The GC routine selects a \"v...",
+      "char_count": 439
+    },
+    {
+      "paragraph_id": "P12-PARA-12",
+      "text_snippet": "The algorithm\u2019s efficiency is entirely dictated by the FTL\u2019s choice heuristic as well as the available free space, which allows us to define an ideal (theoretical maximum) Write Amplification $WAF_{FTL $ given the spare space conditions and a certain GC algorithm. In particular, using Desnoyers\u2019 ana...",
+      "char_count": 580
+    },
+    {
+      "paragraph_id": "P12-PARA-13",
+      "text_snippet": "For commodity consumer-grade flash media, internal over-provisioning is typically low (often under $ 0.05$ b25 ). Under sustained random workloads, theoretical WAF escalates dramatically. In practice, aggregate WAF compounds across filesystem, FTL, and garbage-collection layers. For embedded edge pl...",
+      "char_count": 436
+    },
+    {
+      "paragraph_id": "P12-PARA-14",
+      "text_snippet": "Given the limited sophistication of many consumer SD controllers, the host operating system must often compensate for weak flash management behavior.",
+      "char_count": 149
+    },
+    {
+      "paragraph_id": "P12-PARA-15",
+      "text_snippet": "Let $ $ represent the arrival rate of small logical writes, and let $ _{flush $ denote the kernel\u2019s dirty-page flush interval. The effective write batch size $B_{eff $ approximates: equation B_{eff _{flush equation",
+      "char_count": 214
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P12-EQ-01",
+      "latex": "WAF_{FTL} \\approx \\frac{1 + \\alpha}{\\alpha}"
+    },
+    {
+      "equation_id": "P12-EQ-02",
+      "latex": "B_{eff} \\approx \\lambda \\cdot \\tau_{flush}"
+    },
+    {
+      "equation_id": "P12-EQ-03",
+      "latex": "L = \\frac{0.10 \\times (C \\times S)}{D \\times WAF_{total} \\times 365} \\label{eq:lifespan}"
+    },
+    {
+      "equation_id": "P12-EQ-04",
+      "latex": "L_{MLC} = \\frac{0.10 \\times 3000 \\times 32 \\text{ GB}}{0.8 \\text{ GB/day} \\times 2.1 \\times 365 \\text{ days}} \\approx 15.65 \\text{ years}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P12-TAB-01",
+      "caption": "Baseline Write Volume Breakdown (24-hour period)"
+    },
+    {
+      "table_id": "P12-TAB-02",
+      "caption": "Daily Write Volume Reduction"
+    },
+    {
+      "table_id": "P12-TAB-03",
+      "caption": "Write Amplification Factor (WAF)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P12-FIG-01",
+      "caption": "Projected SD Card Lifespan. Optimizations extend analytical lifespan by approximately $30\\times$ relative to baseline. Projections assume uniform wear-leveling and do not account for proprietary controller firmware variances or sudden component failure."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P12-REF-01",
+      "key": "b27",
+      "raw_citation": "J. Ousterhout and F. Douglis, ``Beating the I/O bottleneck: a case for log-structured file systems,'' Operating Systems Review , 1989."
+    },
+    {
+      "reference_id": "P12-REF-02",
+      "key": "b17",
+      "raw_citation": "M. Rosenblum and J. K. Ousterhout, ``The Design and Implementation of a Log-Structured File System,'' ACM Transactions on Computer Systems , vol. 10, no. 1, 1992."
+    },
+    {
+      "reference_id": "P12-REF-03",
+      "key": "b14",
+      "raw_citation": "P. R. Wilson et al., ``The Case for Compressed Caching in Virtual Memory Systems,'' USENIX ATC , 1999."
+    },
+    {
+      "reference_id": "P12-REF-04",
+      "key": "b19",
+      "raw_citation": "D. Woodhouse, ``JFFS: The Journalling Flash File System,'' Ottawa Linux Symposium , 2001."
+    },
+    {
+      "reference_id": "P12-REF-05",
+      "key": "b5",
+      "raw_citation": "R. Bez et al., ``Introduction to Flash Memory,'' Proceedings of the IEEE , vol. 91, no. 4, pp. 489--502, 2003."
+    },
+    {
+      "reference_id": "P12-REF-06",
+      "key": "b15",
+      "raw_citation": "J. Axboe, ``Linux Block IO: Present and Future,'' Ottawa Linux Symposium , pp. 51--61, 2004."
+    },
+    {
+      "reference_id": "P12-REF-07",
+      "key": "b20",
+      "raw_citation": "V. Prabhakaran et al., ``Analysis and Evolution of Journaling File Systems,'' USENIX ATC , 2005."
+    },
+    {
+      "reference_id": "P12-REF-08",
+      "key": "b11",
+      "raw_citation": "N. Agrawal et al., ``Design Tradeoffs for SSD Performance,'' USENIX ATC , pp. 57--70, 2008."
+    },
+    {
+      "reference_id": "P12-REF-09",
+      "key": "b10",
+      "raw_citation": "F. Chen et al., ``Understanding intrinsic characteristics and system implications of flash memory based solid state drives,'' in Proc. ACM SIGMETRICS , 2009."
+    },
+    {
+      "reference_id": "P12-REF-10",
+      "key": "b9",
+      "raw_citation": "X.-Y. Hu et al., ``Write amplification analysis in flash-based solid state drives,'' in Proc. SYSTOR , 2009."
+    },
+    {
+      "reference_id": "P12-REF-11",
+      "key": "b12",
+      "raw_citation": "JEDEC Solid State Technology Association, ``Solid-State Drive (SSD) Requirements and Endurance Test Method (JESD218),'' 2010."
+    },
+    {
+      "reference_id": "P12-REF-12",
+      "key": "b7",
+      "raw_citation": "J. Kim et al., ``A Survey on Flash Translation Layer,'' IEEE Transactions on Consumer Electronics , 2010."
+    },
+    {
+      "reference_id": "P12-REF-13",
+      "key": "b21",
+      "raw_citation": "H. Kim et al., ``Revisiting storage for smartphones,'' in Proc. USENIX FAST , 2012."
+    },
+    {
+      "reference_id": "P12-REF-14",
+      "key": "b22",
+      "raw_citation": "C. Min et al., ``SFS: Random write considered harmful in solid state drives,'' in Proc. USENIX FAST , 2012."
+    },
+    {
+      "reference_id": "P12-REF-15",
+      "key": "b6",
+      "raw_citation": "L. M. Grupp et al., ``The Bleak Future of NAND Flash Memory,'' USENIX FAST , pp. 2--2, 2012."
+    }
+  ]
+}

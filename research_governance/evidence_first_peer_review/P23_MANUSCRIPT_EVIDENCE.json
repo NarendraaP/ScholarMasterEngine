@@ -1,0 +1,263 @@
+{
+  "paper_id": "P23",
+  "paper_num": 23,
+  "title": "Adaptive Trustworthy Edge Systems: Dynamic Risk-Driven Cascades and Real-Time SLA Bounds",
+  "abstract_snippet": "Deploying multi-stage deep learning pipelines on resource-constrained edge computing appliances introduces a fundamental conflict between operational throughput, energy dissipation, and high-stakes inference accuracy. Static edge deployment architectures either execute lightweight models that compromise verification accuracy during ambiguous scenes, or execute heavy deep ensembles continuously, ca...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work \\& Analytical 6-Paradigm Taxonomy",
+    "Constrained Optimization \\& Queueing Formulations",
+    "Empirical Evaluation \\& Performance Telemetry",
+    "Failure Boundaries \\& Overload Containment",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Dynamic Neural Networks \\& Multi-Branch Architectures",
+    "Early-Exit Inference Frameworks",
+    "Confidence- \\& Entropy-Gated Model Cascades",
+    "Selective Prediction \\& Rejection Options",
+    "Speculative Execution \\& Cascade Decoding",
+    "Resource-Aware Edge Schedulers \\& DVFS Schedulers",
+    "Policy Space \\& Multi-Objective Program",
+    "Lagrangian Dual \\& Zero Duality Gap",
+    "Pollaczek-Khinchine $M/G/1$ Queueing Latency Bounds",
+    "Normalized Energy-Delay Product (EDP) Analysis",
+    "Experimental Methodology",
+    "Empirical Results \\& Latency Percentiles",
+    "Deep Interpretation of Empirical Results (3-Layer Standard)",
+    "Formal State Transition \\& Admission Control",
+    "Graceful Degradation Protocol"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P23-PARA-01",
+      "text_snippet": "Under these severe operating boundaries, static deployment strategies suffer from a fundamental architectural dilemma: enumerate Lightweight Deployment : Compact neural backbones (e.g., MobileNetV2 sandler2018mobilenetv2 or ShuffleNet zhang2018shufflenet ) achieve high throughput ($>700 FPS $) and l...",
+      "char_count": 1047
+    },
+    {
+      "paragraph_id": "P23-PARA-02",
+      "text_snippet": "Hardware-level mitigations, such as DVFS clock scaling, cannot resolve this dilemma in streaming real-time vision because frequency transitions incur millisecond-scale latency penalties and fail to eliminate memory bus bottlenecks. Furthermore, traditional heuristic software cascades rely on uncalib...",
+      "char_count": 461
+    },
+    {
+      "paragraph_id": "P23-PARA-03",
+      "text_snippet": "To resolve this challenge, this paper establishes the theoretical foundations, algorithmic design, and empirical validation of an Adaptive Risk-Driven Cascade Architecture for edge computing. By consuming the Layer 1 Perception Risk metric $R_p [0,1]$ formulated in kumar2026scholar22 which bundles t...",
+      "char_count": 756
+    },
+    {
+      "paragraph_id": "P23-PARA-04",
+      "text_snippet": "Specifically, this paper makes four core contributions: enumerate Constrained Pareto Optimization \\& Strong Duality : We formulate edge multi-objective inference as a constrained optimization problem over the continuum functional space of randomized routing policies $ = \\{ : X [0, 1]\\ $. We prove th...",
+      "char_count": 1619
+    },
+    {
+      "paragraph_id": "P23-PARA-05",
+      "text_snippet": "Let $r \\{0, 1\\ $ denote the binary routing decision variable, where $r( x )=0$ routes input $ x $ exclusively to $M_1$, and $r( x )=1$ triggers sequential execution of $M_1$ followed by verification on $M_2$. We define the continuum randomized policy space $ $ as the set of all Lebesgue-measurable f...",
+      "char_count": 667
+    },
+    {
+      "paragraph_id": "P23-PARA-06",
+      "text_snippet": "Under policy $ $, the expected per-frame computational energy functional $ E ( )$ and expected execution latency functional $ L _{lat ( )$ are given by: align E ( ) &= E _{ x D \\\\ &= E_1 + E_2 E _{ x D [ ( x )], \\\\ L _{lat ( ) &= E _{ x D \\\\ &= L_1 + L_2 E _{ x D [ ( x )]. align",
+      "char_count": 279
+    },
+    {
+      "paragraph_id": "P23-PARA-07",
+      "text_snippet": "Let $ R _{task ( x ; r( x )) [0, 1]$ denote the downstream task loss (e.g., classification error or biometric mismatch risk) under routing decision $r( x )$. The expected task risk functional is: equation R _{task ( ) = E _{ x D , equation where $ R _1( x )$ is the error of model $M_1$ alone and $ R...",
+      "char_count": 515
+    },
+    {
+      "paragraph_id": "P23-PARA-08",
+      "text_snippet": "We formulate the edge multi-objective resource allocation problem as a constrained functional optimization program: align _{ & E ( ), eq:opt_obj \\\\ subject to & L _{lat ( ) L_{SLA , eq:opt_lat \\\\ & R _{task ( ) _{risk , eq:opt_risk align where $L_{SLA = 5.0 ms $ represents the hard Service Level Agr...",
+      "char_count": 385
+    },
+    {
+      "paragraph_id": "P23-PARA-09",
+      "text_snippet": "Under Slater's condition, the interior of the feasible region is non-empty. For an edge system where $L_1 < L_{SLA $, the randomized combination policy $ _0( x ) = (0, 1)$ achieves $ L _{lat ( _0) = L_1 + L_2$. Choosing $ < (L_{SLA - L_1) / L_2$ guarantees $ L _{lat ( _0) < L_{SLA $, while sufficien...",
+      "char_count": 359
+    },
+    {
+      "paragraph_id": "P23-PARA-10",
+      "text_snippet": "Because the primal program is a convex minimization over a convex set with continuous functionals satisfying Slater's condition, the Fenchel-Rockafellar Duality Theorem rockafellar1970convex applies directly. The optimal dual value is attained, strong duality holds, and the duality gap is zero. proo...",
+      "char_count": 301
+    },
+    {
+      "paragraph_id": "P23-PARA-11",
+      "text_snippet": "In the operational runtime, the continuous randomized optimal policy $ ^*( x )$ is realized as a deterministic 4-state operational dispatch policy parameterized by calibrated perception risk thresholds ($ _{accept =0.45, _{degrade =0.70, _{delegate =0.85$): equation Decision ( x ) = cases ACCEPT , &...",
+      "char_count": 434
+    },
+    {
+      "paragraph_id": "P23-PARA-12",
+      "text_snippet": "The server utilization factor is defined as $ = E [S] = (L_1 + r L_2)$. System stability requires $ < 1.0$, imposing the fundamental arrival rate ceiling $ < 1 {L_1 + r L_2 $.",
+      "char_count": 175
+    },
+    {
+      "paragraph_id": "P23-PARA-13",
+      "text_snippet": "By the classical Pollaczek-Khinchine formula for $M/G/1$ queues kleinrock1975queueing , the mean waiting time in the ingestion buffer $W_q$ is: equation W_q = E [S^2] {2(1 - ) = ( L_1^2 + 2 r L_1 L_2 + r L_2^2 ) {2(1 - (L_1 + r L_2)) . equation The total expected system response time is $T_{sys = W_...",
+      "char_count": 311
+    },
+    {
+      "paragraph_id": "P23-PARA-14",
+      "text_snippet": "Proposition 1 proves that minimizing $ EDP $ under task risk constraints forces the optimal operating point to reside exactly on the boundary of the risk constraint $ R _{task ( r ) = _{risk $, maximizing fast-path bypass without sacrificing safety.",
+      "char_count": 249
+    },
+    {
+      "paragraph_id": "P23-PARA-15",
+      "text_snippet": "Across these regimes, we evaluate three representative architectural configurations: (1)~ Static Primary , which continuously executes the lightweight primary model ($M_1$, MobileNetV2-based backbone); (2)~ Static Heavy , which continuously executes the full 3-model deep verification ensemble ($M_2$...",
+      "char_count": 520
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P23-THE-01",
+      "type": "THEOREM",
+      "statement": "[Zero Duality Gap in Continuum Edge Cascades] \\label{thm:zero_duality_gap} Let the policy space $\\Pi = \\{\\pi: \\mathcal{X} \\to [0, 1]\\}$ be the convex set of measurable functions on $\\mathcal{X}$. Assume that: \\begin{enumerate} \\item The objective functional $\\mathcal{E}(\\pi)$ and latency functional ..."
+    },
+    {
+      "theorem_id": "P23-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[Monotonicity of Energy-Delay Product] The normalized Energy-Delay Product $\\mathrm{EDP}(\\bar{r})$ is strictly monotonically increasing and strictly convex with respect to the heavy model invocation rate $\\bar{r} \\in [0, 1]$: \\begin{align} \\frac{\\partial \\mathrm{EDP}}{\\partial \\bar{r}} &= E_1 L_2 + ..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P23-EQ-01",
+      "latex": "\\Pi = \\left\\{ \\pi: \\mathcal{X} \\to [0, 1] \\mid \\pi \\text{ is measurable with respect to } \\mathcal{D} \\right\\}."
+    },
+    {
+      "equation_id": "P23-EQ-02",
+      "latex": "\\mathcal{E}(\\pi) &= \\mathbb{E}_{\\mathbf{x} \\sim \\mathcal{D}} \\left[ (1 - \\pi(\\mathbf{x})) E_1 + \\pi(\\mathbf{x}) (E_1 + E_2) \\right] \\nonumber \\\\ &= E_1 + E_2 \\cdot \\mathbb{E}_{\\mathbf{x} \\sim \\mathcal{D}} [\\pi(\\mathbf{x})], \\\\ \\mathcal{L}_{lat}(\\pi) ..."
+    },
+    {
+      "equation_id": "P23-EQ-03",
+      "latex": "\\mathcal{R}_{task}(\\pi) = \\mathbb{E}_{\\mathbf{x} \\sim \\mathcal{D}} \\left[ (1 - \\pi(\\mathbf{x})) \\mathcal{R}_1(\\mathbf{x}) + \\pi(\\mathbf{x}) \\mathcal{R}_{1+2}(\\mathbf{x}) \\right],"
+    },
+    {
+      "equation_id": "P23-EQ-04",
+      "latex": "\\min_{\\pi \\in \\Pi} \\quad &\\mathcal{E}(\\pi), \\label{eq:opt_obj} \\\\ \\text{subject to} \\quad &\\mathcal{L}_{lat}(\\pi) \\le L_{SLA}, \\label{eq:opt_lat} \\\\ &\\mathcal{R}_{task}(\\pi) \\le \\epsilon_{risk}, \\label{eq:opt_risk}"
+    },
+    {
+      "equation_id": "P23-EQ-05",
+      "latex": "\\min_{\\pi \\in \\Pi} \\max_{\\lambda \\ge 0, \\mu \\ge 0} \\mathcal{L}(\\pi, \\lambda, \\mu) = \\max_{\\lambda \\ge 0, \\mu \\ge 0} \\min_{\\pi \\in \\Pi} \\mathcal{L}(\\pi, \\lambda, \\mu),"
+    },
+    {
+      "equation_id": "P23-EQ-06",
+      "latex": "\\begin{split} \\mathcal{L}(\\pi, \\lambda, \\mu) = &\\,\\mathcal{E}(\\pi) + \\lambda \\left( \\mathcal{L}_{lat}(\\pi) - L_{SLA} \\right) \\\\ &+ \\mu \\left( \\mathcal{R}_{task}(\\pi) - \\epsilon_{risk} \\right). \\end{split}"
+    },
+    {
+      "equation_id": "P23-EQ-07",
+      "latex": "\\mathrm{Decision}(\\mathbf{x}) = \\begin{cases} \\mathtt{ACCEPT}, & R_p(\\mathbf{x}) \\le 0.45, \\\\ \\mathtt{DEGRADE}, & 0.45 < R_p(\\mathbf{x}) \\le 0.70, \\\\ \\mathtt{DELEGATE}, & 0.70 < R_p(\\mathbf{x}) \\le 0.85, \\\\ \\mathtt{HALT}, & R_p(\\mathbf{x}) > 0.85. \\e..."
+    },
+    {
+      "equation_id": "P23-EQ-08",
+      "latex": "\\mathbb{E}[S] &= (1 - \\bar{r}) L_1 + \\bar{r} (L_1 + L_2) = L_1 + \\bar{r} L_2, \\\\ \\mathbb{E}[S^2] &= (1 - \\bar{r}) L_1^2 + \\bar{r} (L_1 + L_2)^2,"
+    },
+    {
+      "equation_id": "P23-EQ-09",
+      "latex": "W_q = \\frac{\\lambda \\mathbb{E}[S^2]}{2(1 - \\rho)} = \\frac{\\lambda \\left( L_1^2 + 2 \\bar{r} L_1 L_2 + \\bar{r} L_2^2 \\right)}{2(1 - \\lambda (L_1 + \\bar{r} L_2))}."
+    },
+    {
+      "equation_id": "P23-EQ-10",
+      "latex": "W_q^{G/G/1} \\approx \\left( \\frac{C_a^2 + C_s^2}{2} \\right) \\frac{\\rho}{1 - \\rho} \\mathbb{E}[S],"
+    },
+    {
+      "equation_id": "P23-EQ-11",
+      "latex": "\\mathbb{P}(W_q > t) \\approx \\exp\\left( -\\frac{2(1 - \\rho) t}{\\lambda \\mathrm{Var}(S) / \\mathbb{E}[S] + \\mathbb{E}[S]} \\right), \\quad \\forall t \\ge 0."
+    },
+    {
+      "equation_id": "P23-EQ-12",
+      "latex": "\\mathrm{EDP}(\\bar{r}) &= \\mathcal{E}(\\bar{r}) \\cdot \\mathcal{L}_{lat}(\\bar{r}) \\nonumber \\\\ &= \\left( E_1 + \\bar{r} E_2 \\right) \\cdot \\left( L_1 + \\bar{r} L_2 \\right) \\nonumber \\\\ &= E_1 L_1 + \\bar{r} (E_1 L_2 + E_2 L_1) + \\bar{r}^2 E_2 L_2."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P23-TAB-01",
+      "caption": "Comparative 6-Paradigm Taxonomy of Edge Inference and Dynamic Model Cascading Paradigms"
+    },
+    {
+      "table_id": "P23-TAB-02",
+      "caption": "Empirical Performance Telemetry Across Inference Architectures (2,000 Frames)"
+    },
+    {
+      "table_id": "P23-TAB-03",
+      "caption": "Empirical Routing Breakdown Across Visual Risk Regimes"
+    }
+  ],
+  "figures_inventory": [],
+  "references_inventory": [
+    {
+      "reference_id": "P23-REF-01",
+      "key": "satyanarayanan2017emergence",
+      "raw_citation": "M. Satyanarayanan, ``The emergence of edge computing,'' Computer , vol. 50, no. 1, pp. 30--39, 2017."
+    },
+    {
+      "reference_id": "P23-REF-02",
+      "key": "chen2019deep",
+      "raw_citation": "J. Chen and X. Ran, ``Deep learning with edge computing: A review,'' Proc. IEEE , vol. 107, no. 8, pp. 1655--1674, 2019."
+    },
+    {
+      "reference_id": "P23-REF-03",
+      "key": "canziani2016analysis",
+      "raw_citation": "A. Canziani, A. Paszke, and E. Culurciello, ``An analysis of deep neural network models for practical applications,'' arXiv preprint arXiv:1605.07678 , 2016."
+    },
+    {
+      "reference_id": "P23-REF-04",
+      "key": "sandler2018mobilenetv2",
+      "raw_citation": "M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L. C. Chen, ``MobileNetV2: Inverted residuals and linear bottlenecks,'' in Proc. CVPR , 2018, pp. 4510--4520."
+    },
+    {
+      "reference_id": "P23-REF-05",
+      "key": "zhang2018shufflenet",
+      "raw_citation": "X. Zhang, X. Zhou, M. Lin, and J. Sun, ``ShuffleNet: An extremely efficient convolutional neural network for mobile devices,'' in Proc. CVPR , 2018, pp. 6848--6856."
+    },
+    {
+      "reference_id": "P23-REF-06",
+      "key": "he2016deep",
+      "raw_citation": "K. He, X. Zhang, S. Ren, and J. Sun, ``Deep residual learning for image recognition,'' in Proc. CVPR , 2016, pp. 770--778."
+    },
+    {
+      "reference_id": "P23-REF-07",
+      "key": "vaswani2017attention",
+      "raw_citation": "A. Vaswani et al., ``Attention is all you need,'' in Proc. NeurIPS , 2017, pp. 5998--6008."
+    },
+    {
+      "reference_id": "P23-REF-08",
+      "key": "han2021dynamic",
+      "raw_citation": "Y. Han et al., ``Dynamic neural networks: A survey,'' IEEE Trans. Pattern Anal. Mach. Intell. , vol. 44, no. 11, pp. 7436--7456, 2021."
+    },
+    {
+      "reference_id": "P23-REF-09",
+      "key": "huang2017multi",
+      "raw_citation": "G. Huang, D. Chen, T. Li, F. Wu, L. van der Maaten, and K. Weinberger, ``Multi-scale dense networks for resource constrained object categorization,'' in Proc. ICLR , 2017."
+    },
+    {
+      "reference_id": "P23-REF-10",
+      "key": "teerapittayanon2016branchynet",
+      "raw_citation": "S. Teerapittayanon, B. McDanel, and H. T. Kung, ``BranchyNet: Fast inference via early exiting from deep neural networks,'' in Proc. ICPR , 2016, pp. 2464--2469."
+    },
+    {
+      "reference_id": "P23-REF-11",
+      "key": "kaya2019shallow",
+      "raw_citation": "Y. Kaya, S. Hong, and T. Dumitras, ``Shallow-deep networks: Understanding and mitigating negative overthinking in deep neural networks,'' in Proc. ICML , 2019, pp. 3301--3310."
+    },
+    {
+      "reference_id": "P23-REF-12",
+      "key": "hendrycks2019benchmarking",
+      "raw_citation": "D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in Proc. ICLR , 2019."
+    },
+    {
+      "reference_id": "P23-REF-13",
+      "key": "viola2001rapid",
+      "raw_citation": "P. Viola and M. Jones, ``Rapid object detection using a boosted cascade of simple features,'' in Proc. CVPR , 2001, pp. 511--518."
+    },
+    {
+      "reference_id": "P23-REF-14",
+      "key": "bolukbasi2017adaptive",
+      "raw_citation": "T. Bolukbasi, J. Wang, O. Dekel, and V. Saligrama, ``Adaptive neural networks for efficient inference,'' in Proc. ICML , 2017, pp. 527--536."
+    },
+    {
+      "reference_id": "P23-REF-15",
+      "key": "wang2018skipnet",
+      "raw_citation": "X. Wang, F. Yu, Z. Y. Dou, T. Darrell, and J. E. Gonzalez, ``SkipNet: Learning dynamic routing in convolutional networks,'' in Proc. ECCV , 2018, pp. 409--424."
+    }
+  ]
+}

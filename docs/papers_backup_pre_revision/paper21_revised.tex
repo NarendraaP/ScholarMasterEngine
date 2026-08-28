@@ -1,0 +1,457 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{mathtools}
+
+% -- THEOREM ENVIRONMENTS --
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{axiom}{Axiom}
+
+% -- CUSTOM MATH OPERATORS --
+\newcommand{\E}{\mathcal{E}} % Entities
+\newcommand{\Z}{\mathcal{Z}} % Zones
+\newcommand{\T}{\mathcal{T}} % Time
+\newcommand{\Sstate}{\mathcal{S}} % System State
+\newcommand{\fail}{\bot} % Failure state
+\newcommand{\Auth}{\mathcal{A}} % Authorized Set
+\newcommand{\Tr}{\Gamma} % Trajectory
+\newcommand{\Roles}{\mathcal{R}} % Roles
+
+% --- COMPRESSION: Standard IEEE Spacing ---
+\setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt}
+\renewcommand{\baselinestretch}{1.0} 
+
+\begin{document}
+
+\title{Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity}
+
+\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
+\IEEEauthorblockA{\textit{Principal}\\
+\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+Seetharampuram, Narsapur, Andhra Pradesh, India}
+}
+
+\maketitle
+
+\begin{abstract}
+Automated compliance verification in cyber-physical environments is often performed using heuristic anomaly detection or probabilistic inference methods. While such approaches have proven effective in simple operating environments, they provide little theoretical guarantee for complex, contested, or distributed settings where adversaries or failures may simultaneously impact the system’s state. This paper presents a formal mathematical framework for reasoning about spatiotemporal compliance and distributed integrity of cyber-physical institutions. Instead of relying on heuristics or purely statistical approaches, this paper proposes a mechanized axiomatic framework involving classical kinematics, event calculus, and measure-theoretic formalism. Entity presence is modeled over a finite zone topology equipped with a metric structure, from which compliance predicates are derived that admit Lebesgue-integrable duration bounds under explicitly stated noise assumptions. Sampling-theoretic limits are examined through a Nyquist-style detectability condition, and the decidability of the verification problem is established under finite zone and entity constraints. The model is then extended to distributed environments using vector clocks in order to analyze causal monotonicity across system shards. Finally, a game-theoretic adversarial formulation explores the theoretical limits of spoofing under physically constrained motion. Together these constructions clarify the logical conditions under which automated compliance verification remains sound, sampling-complete within defined limits, and computationally decidable.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Spatiotemporal Axiomatization, Metric-Space Compliance Reasoning, Event-Calculus Persistence, Distributed Causal Integrity, PSPACE Decidability, Cyber-Physical Verification.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring. 
+
+\subsection{Research Gap and Motivation}
+Existing implementations predominantly rely on heuristic anomaly detection \cite{b1} or probabilistic inference techniques. While these approaches demonstrate high empirical accuracy under typical operating conditions, they lack explicit continuous-state persistence semantics, mathematically bounded observability guarantees, and distributed causal-integrity reasoning. Empirical accuracy does not imply logical consistency; heuristic anomaly detection cannot establish formal verification guarantees when confronted with adversarial manipulation, network partitions, or physically impossible observation sequences. Formalizing distributed cyber-physical compliance requires mathematically explicit constraints, as existing systems rarely characterize their decidability boundaries or causal monotonicity requirements formally.
+
+\subsection{Contributions}
+This paper builds a formal mathematical framework dedicated to the task of spatio-temporal compliance verification and distributed integrity reasoning. This module is a purely verification component within the larger ScholarMaster architecture. The system performs no run-time privacy enforcement, governance orchestration, federated learning, or deployment synthesis. 
+
+The main contribution of this work is the proposal of the unified verification approach and the subsequent development of the supporting mathematical infrastructure. The key elements are (1) the axiomatization based on classical kinematics and Event Calculus for specifying persistence semantics, (2) measure-theoretic compliance predicates, (3) sampling-based verification theory, and (4) automata-theoretic classification based on decidable fragments, (5) vector-clock consistency preservation, and (6) the application of adversarial game theory as a boundary condition test.
+
+% ==========================================
+% II. MATHEMATICAL PRELIMINARIES
+% ==========================================
+\section{Mathematical Preliminaries}
+
+Reliable compliance verification requires more than empirical performance metrics. In cyber-physical environments governed by safety or regulatory constraints, the verification logic itself must possess internally consistent mathematical semantics. 
+
+\subsection{Formal Assumption Model}
+To ensure the mathematical models remain operationally grounded and explicitly bounded, the verification framework is built upon the following structured assumptions:
+\begin{itemize}
+    \item \textbf{A1: Finite Zone Topology:} The spatial environment is a closed, discrete set of finite regions.
+    \item \textbf{A2: Bounded Entity Velocity:} Physical motion is bounded by a universal maximum kinematic velocity ($V_{max}$).
+    \item \textbf{A3: Uniform Sampling Interval:} Digital observations occur at continuous, discrete, and uniform time steps ($\Delta t$).
+    \item \textbf{A4: Bounded Sensor Noise:} Observational uncertainty is geometrically bounded within a known Chebyshev radius ($\eta$).
+    \item \textbf{A5: Reliable Causal Timestamp Ordering:} Distributed events can be causally ordered using vector clocks, acknowledging that partitions may delay message delivery but will not silently invert causality.
+    \item \textbf{A6: Finite Entity Cardinality:} The number of tracked physical objects is strictly bounded ($N < \infty$).
+    \item \textbf{A7: Piecewise-Continuous Motion:} Physical trajectories cannot exhibit discontinuous teleportation across spatial boundaries.
+    \item \textbf{A8: Rational Adversarial Objective Behavior:} Adversarial actors attempt to maximize a defined utility function while remaining bound by physical kinematics.
+\end{itemize}
+
+These assumptions motivate the choice of the mathematical machinery below; before introducing behavioral axioms, we briefly describe the topological, metric, and temporal spaces over which the system is defined, following spatial logics in \cite{b16}.
+
+\begin{definition}[Entity and Role Spaces]
+Let $\E = \{ \epsilon_1, \epsilon_2, \dots, \epsilon_N \}$ be the finite set of identifiable entities within the system domain. Let $\Roles = \{ \rho_1, \rho_2, \dots, \rho_K \}$ be the set of institutional roles. The mapping $\Lambda: \E \to 2^\Roles \setminus \{\emptyset\}$ assigns one or more roles to entities, dictating their spatial and temporal authorization policies.
+\end{definition}
+
+\begin{definition}[Topological Zone Space and $\sigma$-Algebras]
+Let $\Z = \{ z_1, z_2, \dots, z_M \}$ be the finite set of disjoint fundamental spatial zones. To reason about spatial hierarchies, we define the campus topology as a $\sigma$-algebra over $\Z$. Let $\Z^*$ be the power set of $\Z$. A composite zone $\zeta \in \Z^*$ is a measurable subset of the topology. Since $\Z$ is finite, the Borel $\sigma$-algebra coincides exactly with the power set $\Z^*$.
+\end{definition}
+
+\begin{definition}[Metric Space of Zones and Cauchy Completion]
+We define a metric $d_\Z: \Z \times \Z \to \mathbb{R}_{\ge 0}$ representing the minimal traversable physical path distance (not merely Euclidean linear distance) between the centroids of two zones. The space $(\Z, d_\Z)$ satisfies the properties of a formal metric space:
+\begin{enumerate}
+    \item $d_\Z(z_i, z_j) \ge 0$ (Non-negativity)
+    \item $d_\Z(z_i, z_j) = 0 \iff z_i = z_j$ (Identity of indiscernibles)
+    \item $d_\Z(z_i, z_j) = d_\Z(z_j, z_i)$ (Symmetry)
+    \item $d_\Z(z_i, z_k) \le d_\Z(z_i, z_j) + d_\Z(z_j, z_k)$ (Triangle inequality)
+\end{enumerate}
+We assume the space $(\Z, d_\Z)$ is complete, meaning every Cauchy sequence of zones converges to a limit point within the physical boundaries of the system domain (i.e., the physical embedding is closed and bounded). This formally precludes discontinuities mapping to undefined space.
+\end{definition}
+
+\begin{definition}[Temporal Domain]
+Let $\T \subseteq \mathbb{R}_{\ge 0}$ represent the continuous time domain. In discrete-time evaluations, we restrict this to $\T_{\Delta} = \{ k\Delta t \mid k \in \mathbb{N} \}$ for some uniform strictly positive sampling interval $\Delta t > 0$.
+\end{definition}
+
+\begin{definition}[Spatiotemporal Trajectory]
+The true physical path of an entity $\epsilon$ is defined as a continuous mapping $\Tr_\epsilon: \T \to \Z$. At any precise instant $t \in \T$, the physical location of the entity is exactly and unambiguously $\Tr_\epsilon(t)$.
+\end{definition}
+
+% ==========================================
+% III. SPATIOTEMPORAL SYSTEM MODEL
+% ==========================================
+\section{Spatiotemporal System Model}
+
+Having defined the underlying mathematical spaces, we now construct the formal spatiotemporal system model.
+
+\subsection{Absorbing Failure State}
+
+\begin{definition}[Absorbing Failure State]
+We define $\fail$ as the absorbing failure state of the verification system. Upon detection of any axiom violation---including kinematic discontinuities ($\neg Continuous(\epsilon, t_1, t_2)$), spatial exclusivity violations, or topological adjacency failures---the system transitions irrevocably to $\fail$:
+\begin{equation}
+\delta_{trans}(q, \sigma) = \fail \quad \text{if } \sigma \text{ violates Axiom 1, 2, or 3}
+\end{equation}
+The state $\fail$ is a sink: $\forall \sigma \in \Sigma: \delta_{trans}(\fail, \sigma) = \fail$. Recovery from $\fail$ requires an external system reset. This formalizes the fail-closed property: no sequence of subsequent observations can restore the system from a detected inconsistency without explicit intervention.
+\end{definition}
+
+\subsection{Spatiotemporal Axiomatics}
+The system model is based on a set of fundamental physical constraints from classical kinematics. In practice, these constraints are used as sanity checks for the digital observation stream - if a predicted state violates them, it is assumed that either the sensors are faulty or that the data is spoofed \cite{b18}.
+
+\begin{axiom}[Spatial Exclusivity]
+An entity cannot occupy disjoint zones simultaneously in classical mechanics. Let $At(\epsilon, z, t)$ be a boolean predicate denoting $\Tr_\epsilon(t) = z$.
+\begin{equation}
+\forall \epsilon \in \E, \forall t \in \T, \forall z_i, z_j \in \Z: 
+\end{equation}
+\begin{equation*}
+(At(\epsilon, z_i, t) \land At(\epsilon, z_j, t)) \implies z_i = z_j
+\end{equation*}
+\end{axiom}
+
+\begin{axiom}[Kinematic Continuity]
+Physical objects which possess mass cannot be accelerated beyond a certain maximum speed. There is a universal positive real constant $V_{max} \in \mathbb{R}_{>0}$ such that for every possible transition of any entity $\epsilon$ from $z_i$ at time $t_1$ to $z_j$ at time $t_2$ ($t_2 > t_1$) the following holds:
+\begin{equation}
+\frac{d_\Z(z_i, z_j)}{t_2 - t_1} \le V_{max}
+\end{equation}
+Digital state transitions that violate this inequality are termed Logical Discontinuities ($\neg Continuous(\epsilon, t_1, t_2)$) and should be rejected by the verification logic. In particular, the discretization represents transitions that evaluate at zone boundaries rather than continuous position values as approximated by the zone-centroid method. (See Section II for an overview of the zone-centroid method.)
+\end{axiom}
+
+\begin{axiom}[Topological Adjacency]
+Let $G = (\Z, E_{adj})$ be the physical connectivity graph of the environment with passable physical barriers as edges $E_{adj}$. Then, a transition $(z_i \to z_j)$ without any zone detection events in between is admissible iff $(z_i, z_j) \in E_{adj}$ or $z_i = z_j$.
+\end{axiom}
+
+\subsection{Event Calculus \& State Persistence}
+
+
+
+Distributed sensing infrastructures generate discrete point-in-time observations rather than continuous analog trajectories (a consequence of practical sensor sampling). To reason about compliance over continuous time, the verification logic requires explicit persistence semantics to bridge the gaps between samples. Without this formalization, continuous verification becomes impossible. We therefore extend Kowalski and Sergot's Event Calculus \cite{b2, b19} to the spatiotemporal domain specifically to resolve the Frame Problem (how state persists between observations) and the Ramification Problem (how verified movement implies proven absence elsewhere). This provides the necessary logical tissue connecting isolated digital snapshots into verifiable physical trajectories.
+
+Let $f$ represent a fluent (a dynamic property that holds over time), specifically the location fluent $Location(\epsilon, z)$. Let $e$ be a discrete digital sensor observation event.
+
+\begin{definition}[Initiation and Termination]
+An event $e$ occurring at time $t_1$ initiates the fluent $Location(\epsilon, z_1)$ if the sensor explicitly observes entity $\epsilon$ in zone $z_1$. An event $e'$ at time $t_2$ terminates the fluent $Location(\epsilon, z_1)$ if and only if it explicitly initiates $Location(\epsilon, z_2)$ where $z_1 \neq z_2$.
+\begin{align}
+Initiates(e, Location(\epsilon, z), t) \\
+Terminates(e, Location(\epsilon, z), t) 
+\end{align}
+\end{definition}
+
+Bridging the temporal gap between discrete sensor events requires asserting an explicit Axiom of Inertia.
+
+\begin{axiom}[Spatiotemporal Inertia]
+A location fluent $f$ persists indefinitely until explicitly terminated by a valid, kinematically contiguous event. We define a fluent as clipped if it is terminated within a temporal window:
+\begin{align}
+Clipped(t_1, f, t_3) \iff \exists e', t_2 : \nonumber \\
+Terminates(e', f, t_2) \land (t_1 < t_2 < t_3)
+\end{align}
+\end{axiom}
+
+\begin{definition}[Continuous State Holding]
+A fluent holds at a continuous time $t$ if it was initiated at some prior time $t_1 < t$, and was not clipped between $t_1$ and $t$.
+\begin{equation}
+\begin{aligned}
+HoldsAt&(Location(\epsilon, z), t) \iff \exists e, t_1 : \\
+& Initiates(e, Location(\epsilon, z), t_1) \land (t_1 < t) \\
+& \land \neg Clipped(t_1, Location(\epsilon, z), t)
+\end{aligned}
+\end{equation}
+\end{definition}
+
+% ==========================================
+% III. COMPLIANCE FORMALIZATION
+% ==========================================
+\section{Compliance Formalization}
+
+\subsection{Measure-Theoretic Schedule Formalism}
+Institutional schedules define the spatial and temporal permissions governing entity behavior. Once Event Calculus reconstructs a continuous trajectory from discrete observations, the system must evaluate whether that continuous state history satisfies the schedule constraints. To rigorously integrate compliance across arbitrary temporal intervals independently of any specific database implementation, we map the continuous physical trajectories onto abstract logical constraints and employ measure theory. Measure-theoretic integration resolves the limitation of evaluating compliance merely at instantaneous points in time.
+
+\begin{definition}[Authorized State Set]
+An institutional schedule is defined as a mathematical mapping $\Auth: \E \times \T \to \Z^*$, which assigns every entity at any given continuous time $t$ a valid topological sub-manifold of permitted zones. 
+\end{definition}
+
+\begin{definition}[Instantaneous Compliance Predicate]
+The Boolean compliance function $\Phi_{comp}$ for an entity $\epsilon$ at exact time $t$ evaluates to True (1) if and only if the entity's continuous physical location is a subset of the authorized state set.
+\begin{equation}
+\Phi_{comp}(\epsilon, t) = \begin{cases} 
+1 & \text{if } HoldsAt(Location(\epsilon, z), t) \\
+  & \qquad \implies z \in \Auth(\epsilon, t) \\
+0 & \text{otherwise} 
+\end{cases}
+\end{equation}
+\end{definition}
+
+Compliance evaluated only at discrete sampling instants provides an incomplete description of system behavior. An entity may appear compliant at two observation times while temporarily violating constraints between them. To capture this continuous behavior we represent compliance over a scheduled interval $E=[T_{start},T_{end}]$ using Lebesgue measure theory \cite{b12,b20}.
+
+\begin{definition}[Lebesgue Measure of Compliance]
+Let $\mu$ denote the standard Lebesgue measure on $\mathbb{R}$. The total compliant duration for an entity $\epsilon$ over schedule block $E$ is the measure of the set of times where the compliance predicate holds:
+\begin{equation}
+C_{dur}(\epsilon, E) = \mu(\{ t \in E \mid \Phi_{comp}(\epsilon, t) = 1 \})
+\end{equation}
+\end{definition}
+
+\begin{definition}[Strict Compliance]
+Strict compliance $C_{strict}$ dictates that the mathematically integrated compliant duration exactly equals the total continuous duration of the scheduled event:
+\begin{equation}
+C_{strict}(\epsilon, E) \iff C_{dur}(\epsilon, E) = \mu(E)
+\end{equation}
+Fractional compliance, utilized for generating penalty metrics or statistical engagement scores, is defined as the continuous ratio $C_{frac} = C_{dur} / \mu(E)$.
+\end{definition}
+
+\subsection{State Deviation and Metric Space}
+
+In practice, sensor observations inevitably contain bounded measurement noise. A formal system must demonstrate that its compliance deductions remain valid despite bounded errors in digital observation. Let a global system state at time $t$, denoted $S_t$, be the mapping $S_t: \E \to \Z$. The set of all possible system states is $\Sstate = \Z^\E$.
+
+\begin{definition}[Chebyshev State Deviation Metric]
+We define the global state deviation metric $||S_t - W_t||_\infty$ as the Chebyshev distance ($L_\infty$ norm) over all entities:
+\begin{equation}
+||S_t - W_t||_\infty := \max_{\epsilon \in \E} d_\Z(L_{S_t}(\epsilon), L_{W_t}(\epsilon))
+\end{equation}
+where $L_{S_t}(\epsilon)$ is the location of entity $\epsilon$ in the digital system state $S_t$, and $L_{W_t}(\epsilon)$ is the location in the true physical world state $W_t$. The $L_\infty$ norm isolates and measures the worst-case geometric deviation of any single entity in the set, rather than an averaged error.
+\end{definition}
+
+\begin{definition}[Robust Compliance Predicate]
+A compliance predicate $P: \Sstate \to \{0, 1\}$ is formally Robust with topological safety margin $\delta$ if:
+\begin{equation}
+\forall S, S' \in \Sstate: ||S - S'||_\infty \le \delta \implies P(S) = P(S')
+\end{equation}
+Perturbations in spatial detection falling within the safety margin $\delta$ do not alter the logical outcome of the predicate.
+\end{definition}
+
+\subsection{Adversarial Boundary-Condition Analysis (MDP formulation)}
+
+This section introduces an adversarial formulation not as a universal cybersecurity guarantee, but specifically as a theoretical boundary-condition analysis. To formally stress-test the compliance model and explore the limits of spoof-resistance, we evaluate resilience against active manipulation by modeling the interaction as a strategic decision process (Markov Decision Process) \cite{b10, b21}. This formulation is strictly an extension layer testing the stability of our kinematic verification.
+
+Let the MDP be defined by the tuple $\langle \mathcal{Q}, A, \mathcal{P}, R, \gamma \rangle$:
+\begin{itemize}
+    \item \textbf{States ($\mathcal{Q}$):} The product space of physical entity locations and digital system state.
+    \item \textbf{Actions ($A$):} The adversary $\mathcal{A}$ chooses to inject forged observation vectors $O'_{t}$ into the data stream. The action space is $A(q) = \Z$.
+    \item \textbf{Transition Probabilities ($\mathcal{P}$):} Deterministic. If $O'_{t}$ passes kinematic bounds, the system state updates.
+    \item \textbf{Reward ($R$):} The aim of $\mathcal{A}$ is to ensure that $\Phi_{comp}(\epsilon, t) = 1$ (appear compliant) while the true state $W_t \notin \Auth(\epsilon, t)$ (remains non-compliant). Let the immediate reward function $R(q, a)$ be:
+    \begin{equation}
+    R = \begin{cases} 
+    +1 & \text{if spoof succeeds without anomaly} \\
+    - C & \text{if spoof triggers Kinematic anomaly} \\
+    0 & \text{otherwise} 
+    \end{cases}
+    \end{equation}
+    The parameter $C \gg 1$ is a sufficiently large penalty reflecting the cost of detection.
+    \item \textbf{Discount Factor ($\gamma$):} $\gamma \in (0, 1)$, reflecting the time value of sustained spoofing.
+\end{itemize}
+
+% ==========================================
+% IV. CORE THEOREMS
+% ==========================================
+\section{Core Theorems}
+
+The formal framework yields several structural properties governing the behavior of the verification system.
+
+\begin{theorem}[State Continuity Resolution]
+Under the assumptions of Event Calculus and Axiom 1, the mapping of discrete valid sensor events to $HoldsAt$ intervals results in a continuous non-overlapping spatiotemporal trajectory $\Gamma_\epsilon$ over $\T$.
+\end{theorem}
+
+\begin{theorem}[Bounded Forward Reachability]
+A physical entity which was placed at location $z_0$ at moment $t_0$ may occupy any location in the region of space, which is defined by a spatial ball with radius $R = V_{max}\Delta t$ around $z_0$ at the moment $t_0+\Delta t$:
+\begin{equation}
+Reach_{fwd}(\epsilon, t_0, \Delta t) = \{ z \in \Z \mid d_\Z(z_0, z) \le V_{max} \Delta t \}
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Borel Measurability of Compliance]
+Because the trajectory $\Tr_\epsilon$ constructed by Event Calculus is piecewise-constant, the set of times $\{ t \in E \mid \Phi_{comp}(\epsilon, t) = 1 \}$ is a finite union of intervals, rendering the compliance set Borel-measurable and enabling Lebesgue integration.
+\end{theorem}
+
+The following theorem formalizes the intuition that bounded sensor noise does not alter compliance evaluation when adequate safety margins are enforced.
+
+\begin{theorem}[Soundness of Verification]
+Let $B_\eta(W_t) = \{ S_t \in \Sstate \mid ||S_t - W_t||_\infty \le \eta \}$ be the error ball bounded by maximum theoretical sensor noise $\eta$. If the maximum sensor error $\eta$ is strictly less than the authorized safety margin $\delta$ ($\eta < \delta$), and the observation model provides $O_t \in B_\eta(W_t)$, then the digital compliance verification evaluated by the system is sound with respect to the physical world.
+\end{theorem}
+
+\begin{theorem}[Completeness Boundary \& Nyquist Limits]
+Let $\Psi_T: (\T \to \Sstate) \to (\mathbb{Z} \to \Sstate)$ be the sampling operator with uniform temporal period $T$. A discrete spatiotemporal compliance system may fail to detect certain violations if the uniform sampling frequency $f_s = 1/T$ satisfies the inequality:
+\begin{equation}
+f_s < \frac{2 \cdot V_{max}}{L_{min}}
+\end{equation}
+where $L_{min} = \min_{(z_i, z_j) \in E_{adj}} d_\Z(z_i, z_j)$.
+\textit{This bound establishes a sampling-theoretic necessary condition under a worst-case rectangular traversal abstraction, where an entity transverses the minimal dimension of an unauthorized zone at maximal velocity. The rectangular pulse abstraction represents a worst-case geometric traversal and may over-approximate practical violation profiles.}
+\end{theorem}
+
+\begin{theorem}[Decidability and PSPACE-Completeness]
+Under the assumptions of (1) Discrete Time steps $\Delta t$, (2) a Finite Zone set $|\Z| < \infty$, and (3) a Finite Entity set $|\E| < \infty$, the problem reduces to reachability in a finite-state transition system, placing it within PSPACE under classical complexity assumptions. We do not claim tightness of this bound.
+\end{theorem}
+
+\begin{theorem}[Distributed Integrity Preservation]
+Let $V_i$ be the vector clock at distributed shard $i$. The spatial and kinematic axioms defined earlier are globally preserved during an entity's migration from shard $\mathcal{H}_a$ to $\mathcal{H}_b$ if and only if the handover protocol $\Pi$ is strictly \textbf{Atomic} and causally \textbf{Monotonic}. We note that vector clocks capture logical causality, not actual time. Therefore, network partitions are expected to introduce imprecision and uncertainty into the system, and causal monotonicity should be treated as an operational constraint, not an inherent property.
+\end{theorem}
+
+\begin{theorem}[Equilibrium of Spoofing]
+Assume that the system satisfies the Completeness Boundary (Theorem 5). Given the reward structure and the sampling completeness assumptions, the optimal policy $\pi^*$ converges towards physical compliance. Note that this equilibrium assumes rational adversaries that correctly estimate $V_{max}$; irrational adversaries or those that engage in exploratory behaviors might attempt to exploit dominated strategies.
+\end{theorem}
+
+% ==========================================
+% V. PROOF DEDUCTIONS
+% ==========================================
+\section{Proof Deductions}
+
+We now provide formal proof sketches supporting the principal theorems introduced in the preceding section.
+
+\begin{proof}[Proof of Theorem 1 (State Continuity Resolution)]
+By definition of $Terminates$ (Definition 5), the beginning of a new location fluent immediately clips the previous one. Since the time domain $\T$ is monotonically increasing and no two fluents can be initiated for the same entity at the same time due to Axiom 1 (Spatial Exclusivity), the intervals $[t_i, t_{i+1})$ are mutually exclusive and collectively exhaustive over the entity’s lifespan. The $HoldsAt$ definition appropriately captures this digital-to-analog mapping.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 2 (Bounded Forward Reachability)]
+The proof is by contradiction. Assume that there exists some topological location $z_k \in Reach_{fwd}(\epsilon, t_0, \Delta t)$ such that $d_\Z(z_0, z_k) > V_{max} \Delta t$. Then, in order to reach it from $z_0$ during the interval of $\Delta t$, the entity would have to travel at average velocity $v = d_\Z(z_0, z_k) / \Delta t > V_{max}$. But this contradicts Axiom 2 (Kinematic Continuity). Therefore, no such $z_k$ can exist in the physically reachable set of states at a future time $t_0 + \Delta t$, which bounds the future state space of the entity, proving the theorem.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 3 (Borel Measurability)]
+By Theorem 1, the event calculus produces intervals of continuous state holding. Since the authorized set $\Auth(\epsilon, t)$ is defined over $\Z^*$, $\Phi_{comp}$ evaluated over any finite interval $E$ as a boolean step function has a pre-image of $\{1\}$, which is a finite union of intervals. Since intervals generate the Borel $\sigma$-algebra $\mathcal{B}(\mathbb{R})$, the set is Borel-measurable, establishing the premise for application of the Lebesgue measure $\mu$ in Definition 8 \cite{b20}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 4 (Soundness of Verification)]
+Let $P$ be a Robust Compliance Predicate (Definition 11) with margin $\delta$. Assume that digital verification system observes state $O_t$ and evaluates $P(O_t) = 1$ (compliant). By the definition of our sensor error model, the actual physical world state $W_t$ is such that the Chebyshev distance $||O_t - W_t||_\infty \le \eta$. We are given by assumption $\eta < \delta$. Transitivity implies $||O_t - W_t||_\infty < \delta$. By the definition of robustness (Equation 10), for all pairs of topological states that are within distance less than $\delta$, the predicate $P$ has the same truth value. We suppose that $P(O_t) = P(W_t)$, and since $P(O_t) = 1$, $P(W_t) = 1$. The logical assertion of compliance is mapped to the physical assertion of compliance for the digital twin under consideration, which is justified by the bounded-error hypotheses.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 5 (Completeness Boundary)]
+Let $L_{min} = \min d_\Z(z_i, z_j)$ be the shortest physical distance across any traversable unauthorized zone in the adjacency graph $G$. The minimum continuous time $\tau$ required for an entity traveling at maximum physical speed $V_{max}$ to fully traverse $L_{min}$ is calculated as $\tau = L_{min} / V_{max}$. We can model the physical violation as a continuous query which takes the form of a rectangular pulse of width $\tau$ as $\Pi(t)$. By convolving this pulse with the discrete-time sampler we can avoid aliasing and thus, to satisfy the Nyquist–Shannon sampling theorem \cite{b4}, it is sufficient to choose the sampling period $T$ to satisfy $T \le \tau / 2$. Substituting $\tau$, the minimum required sampling frequency $f_s = 1/T$ must be $f_s \ge 2 / \tau = 2 \cdot V_{max} / L_{min}$. If $f_s$ falls below this derived bound, a trajectory $\Tr_\epsilon$ can enter and exit an unauthorized zone entirely between discrete sampling ticks $k\Delta t$ and $(k+1)\Delta t$. The violation becomes mathematically unobservable.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 6 (Decidability and PSPACE)]
+We reduce the problem by constructing a deterministic Finite State Automaton $A = (Q, \Sigma, \delta_{trans}, q_0, F)$ \cite{b5}. The state space is the set of all possible entity distributions $Q = \Z^{|\E|}$. Since $\Z$ and $\E$ are strictly finite sets, $Q$ is strictly finite ($|Q| = M^N$). The alphabet $\Sigma$ is the set of input observation vectors at time $t$. The transition function $\delta_{trans}: Q \times \Sigma \to Q \cup \{\fail\}$ is defined as valid iff it satisfies Axiom 2 (Kinematic Continuity) and Axiom 3 (Topological Adjacency). If it violates these physical constraints, it transitions to the absorbing fail state $\fail$. The Accept States $F$ represent the subset of $Q$ where $\forall \epsilon \in \E, \Phi_{comp}(\epsilon, t) = 1$. Because the state space $Q$ is finite, determining if a sequence of observations belongs to the regular language accepted by $F$ is an instance of the FSA Reachability problem. Reachability in a finite state graph is strictly decidable. By Savitch's Theorem \cite{b7}, NPSPACE = PSPACE. The non-deterministic algorithm to verify reachability requires storing only the current state vector of size $|\E|$ and a step counter, executing safely in polynomial space \cite{b23}. Membership in the compliance language can, in principle, be decided within polynomial space under classical complexity assumptions.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 7 (Distributed Integrity Preservation)]
+We proceed by demonstrating that the violation of either property leads to a contradiction of our foundational axioms across the distributed shards. Let $V_i$ be the Lamport vector clock at distributed shard $i$ \cite{b8}. We rely on the *happens-before* relation ($\to$) where an event $a \to b$ iff $V(a) < V(b)$.
+
+\textit{Part 1: Necessity of Atomicity.} 
+Assume the handover protocol $\Pi$ is not atomic. During entity migration, the state transfer is either duplicated or partially committed leading to the post-migration system state in which entity $\epsilon$ is simultaneously registered in both $\mathcal{H}_a$ and $\mathcal{H}_b$ \cite{b24}. In this case, $\exists z_i \in \mathcal{H}_a, z_j \in \mathcal{H}_b$ ($z_i \neq z_j$) such that $At(\epsilon, z_i, t) \land At(\epsilon, z_j, t)$ is True at the same global time $t$. This violates Axiom 1 (Spatial Exclusivity). Strict Atomicity is therefore imposed to prevent this violation.
+
+\textit{Part 2: Necessity of Monotonicity.}
+Assume $\Pi$ is atomic but not monotonic. During the transfer of state from $\mathcal{H}_a$ to $\mathcal{H}_b$, asynchronous network message delays cause the logical timestamp of the entity to regress relative to the partial causal ordering \cite{b25}. Non-monotonicity is implied by a causal inverted time ordering of events, $V(e_{arrive}) < V(e_{depart})$. The verification logic tests the kinematic constraint over the interval. A negative causal interval renders the derivative of the velocity undefined or negative, contracting the physical space-time geometry described by Axiom 2. To satisfy $v \le V_{max}$ with a physical distance $d_\Z > 0$, the causal time has to run in the $e_{depart} \to e_{arrive}$ direction; any reverse ordering is a violation of Axiom 2.
+\end{proof}
+
+\begin{proof}[Proof of Theorem 8 (Equilibrium of Spoofing)]
+According to the Bellman Optimality Equation \cite{b10}, the expected value of the adversary’s state under policy $\pi$ satisfies $V^*(q) = \max_a (R(q, a) + \gamma \sum_{q'} P(q'|q,a)V^*(q'))$. To achieve an instantaneous reward $R = +1$, the adversary $\mathcal{A}$ must inject an observation $O'_{t} \in \Auth$. If the adversary is physically non-compliant, its true historical location $W_{t-\Delta t}$ is physically located outside of $\Auth$. To inject a compliant state, the false observation must first bridge the physical gap $d_\Z(O'_{t}, W_{t-\Delta t})$. If this distance is larger than $V_{max} \cdot \Delta t$, the injected observation is inconsistent with Axiom 2, resulting in a penalty of $R = -C$. Selecting $C$ large enough to dominate the future discounted rewards (i.e., $C > \frac{1}{1-\gamma}$) renders the expected value of $V^*(q)$ strictly negative. Since $f_s$ captures all transients (Theorem 5), the adversary cannot "wait" for the time window to pass, as such a discontinuous jump would produce a measurable absence. Consequently, the spoofed trajectory is permanently tied to the physics-based kinematics of the actual vehicle. Any deviation from physical compliance results in a strictly negative expected utility, which in turn drives the optimal policy $\pi^*$ towards physical compliance \cite{b11, b21}.
+\end{proof}
+
+% ==========================================
+% VI. LIMITATIONS
+% ==========================================
+\section{Limitations}
+The formal theorems established in this framework are bounded by several methodological and theoretical constraints:
+\begin{itemize}
+    \item \textbf{State-Space Explosion:} While theoretically decidable (PSPACE), the exponential growth of the finite-state automaton representing multi-entity zone transitions renders direct enumeration computationally intractable for high-density campus topologies.
+    \item \textbf{Bounded Sampling Assumptions:} The Nyquist-style completeness threshold (Theorem 5) relies on uniform continuous sampling; asynchronous sensor dropout or adversarial jamming fundamentally breaks the observability requirements.
+    \item \textbf{Idealized Kinematic Models:} The representation of motion bounds physical transitions by a universal scalar $V_{max}$, abstracting over complex biological movement geometries and non-linear acceleration.
+    \item \textbf{Theorem-Prover Absence:} The formal deductions are structured as mathematical pen-and-paper proofs rather than machine-verified theorems in Isabelle/HOL or Coq, introducing potential risk of manual logical omissions.
+    \item \textbf{Distributed Synchronization Uncertainty:} The preservation of distributed integrity (Theorem 7) requires strict causal monotonicity (vector clocks), creating unbounded processing delays when network partitions prevent synchronization across shards.
+\end{itemize}
+
+\subsection{Mechanized Verification Feasibility}
+The formal deductions presented in this work are mathematically structured but currently rely on manual pen-and-paper proofs. Mechanized verification using theorem provers such as Coq or Isabelle/HOL, executable verification via TLA+, or SMT-backed invariant checking has not yet been undertaken. While the finite-state reachability of our model implies that automated model-checking is feasible, translating the continuous measure-theoretic properties into a mechanized proof assistant remains a critical direction for future work to eliminate the risk of manual logical omissions and further improve formal confidence.
+
+\section{Related Work}
+
+The formal verification of spatiotemporal properties in cyber-physical systems has been addressed through several complementary traditions. Alur and Dill's timed automata \cite{b26} provide a foundational framework for reasoning about real-time systems with clock constraints, and their decidability results for reachability problems parallel the decidability analysis presented here. However, timed automata are typically applied to control-theoretic systems with continuous dynamics, whereas the present framework operates over discrete zone topologies with kinematic bounds.
+
+Signal Temporal Logic (STL) and Metric Temporal Logic (MTL) \cite{b27} provide expressive specification languages for continuous-time properties, including quantitative robustness semantics. The compliance predicates developed in this work share the spirit of STL robustness but are grounded in Lebesgue measure theory rather than signal distance metrics, and are specifically tailored to institutional schedule adherence rather than continuous signal monitoring.
+
+Runtime verification \cite{b28} provides techniques for monitoring system executions against formal specifications. The sampling completeness analysis (Theorem 5) tackles a critical issue in the context of runtime verification, namely detectability of violations under limited observation rates. The Nyquist-style bound reported here extends previous works on monitorability \cite{b27} by giving a concrete value related to physical kinematics.
+
+Within the CPS security problem domain, Cardenaş et al. \cite{b18} present threat models for cyber-physical systems that are useful in the development of our adversarial formulation. In particular, our MDP-based spoofing analysis (Theorem 8) builds on related work by considering an adversary that is modeled within a game-theoretic physical kinematic state and action space.
+
+The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2} and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8} and Mattern's vector time formalism \cite{b25} to establish causal monotonicity requirements for cross-shard entity migration.
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\section{Conclusion}
+This paper demonstrates that cyber-physical compliance verification can transcend heuristic anomaly detection through explicit mathematical formalization. By anchoring observations in metric-space kinematics, resolving persistence via Event Calculus, and bounding observability through sampling-theoretic theorems, we establish a decidable and causally monotonic framework for distributed verification. Within the ScholarMaster architecture, this framework operates exclusively as the formal spatiotemporal verification and distributed integrity subsystem---establishing theoretical verification bounds without governing runtime privacy-enforcement mechanisms, federated optimization, or standalone deployment-topology orchestration.
+
+\begin{thebibliography}{00}
+
+\bibitem{b12} H. Lebesgue, \textit{Intégrale, longueur, aire}. Annali di Matematica Pura et Applicata, 1902.
+
+\bibitem{b4} C. E. Shannon, "Communication in the Presence of Noise," \textit{Proceedings of the IRE}, vol. 37, no. 1, pp. 10-21, 1949.
+
+\bibitem{b11} J. Nash, "Non-cooperative games," \textit{Annals of Mathematics}, vol. 54, no. 2, pp. 286-295, 1951.
+
+\bibitem{b10} R. Bellman, "A Markovian Decision Process," \textit{Journal of Mathematics and Mechanics}, vol. 6, pp. 679-684, 1957.
+
+\bibitem{b7} W. J. Savitch, "Relationships between nondeterministic and deterministic tape complexities," \textit{Journal of Computer and System Sciences}, vol. 4, no. 2, pp. 177-192, 1970.
+
+\bibitem{b8} L. Lamport, "Time, clocks, and the ordering of events in a distributed system," \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558-565, 1978.
+
+\bibitem{b5} E. M. Clarke and E. A. Emerson, "Design and synthesis of synchronization skeletons using branching-time temporal logic," \textit{Logic of Programs}, pp. 52-71, 1981.
+
+\bibitem{b24} L. Lamport, R. Shostak, and M. Pease, "The Byzantine Generals Problem," \textit{ACM Transactions on Programming Languages and Systems}, vol. 4, no. 3, pp. 382-401, 1982.
+
+\bibitem{b6} J. F. Allen, "Maintaining knowledge about temporal intervals," \textit{Communications of the ACM}, vol. 26, no. 11, pp. 832-843, 1983.
+
+\bibitem{b3} K. M. Chandy and L. Lamport, "Distributed Snapshots: Determining Global States of Distributed Systems," \textit{ACM Transactions on Computer Systems}, vol. 3, no. 1, pp. 63-75, 1985.
+
+\bibitem{b2} R. Kowalski and M. Sergot, "A logic-based calculus of events," \textit{New Generation Computing}, vol. 4, no. 1, pp. 67-95, 1986.
+
+\bibitem{b20} W. Rudin, \textit{Real and Complex Analysis}, McGraw-Hill, 3rd edition, 1987.
+
+\bibitem{b13} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56-66.
+
+\bibitem{b25} F. Mattern, "Virtual time and global states of distributed systems," \textit{Parallel and Distributed Algorithms}, pp. 215-226, 1989.
+
+\bibitem{b14} R. Alur, T. A. Henzinger, and E. D. Sontag, "Hybrid Automata: An Algorithmic Approach to the Specification and Verification of Hybrid Systems," \textit{Hybrid Systems}, 1993.
+
+\bibitem{b22} C. H. Papadimitriou, \textit{Computational Complexity}, Addison-Wesley, 1994.
+
+\bibitem{b26} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
+
+\bibitem{b19} M. Shanahan, "The Event Calculus Explained," \textit{Artificial Intelligence Today}, Springer, 1999.
+
+\bibitem{b23} O. Burkart, M. Caucal, F. Moller, and B. Steffen, "Verification on infinite structures," \textit{Handbook of Process Algebra}, 2001.
+
+\bibitem{b29} K. Havelund and G. Roşu, "Synthesizing monitors for safety properties," in \textit{Proc. TACAS}, Springer, 2002, pp. 342-356.
+
+\bibitem{b9} S. Gilbert and N. Lynch, "Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services," \textit{ACM SIGACT News}, vol. 33, no. 2, pp. 51-59, 2002.
+
+\bibitem{b27} O. Maler and D. Nickovic, "Monitoring temporal properties of continuous signals," in \textit{Proc. FORMATS/FTRTFT}, Springer, 2004, pp. 152-166.
+
+\bibitem{b16} M. Aiello, I. Pratt-Hartmann, and J. van Benthem, \textit{Handbook of Spatial Logics}, Springer, 2007.
+
+\bibitem{b18} A. A. Cardenas, S. Amin, and S. Sastry, "Secure control: Towards survivable cyber-physical systems," \textit{The 28th International Conference on Distributed Computing Systems Workshops}, IEEE, 2008.
+
+\bibitem{b1} V. Chandola, A. Banerjee, and V. Kumar, "Anomaly detection: A survey," \textit{ACM Computing Surveys (CSUR)}, vol. 41, no. 3, pp. 1-58, 2009.
+
+\bibitem{b28} M. Leucker and C. Schallhart, "A brief account of runtime verification," \textit{Journal of Logic and Algebraic Programming}, vol. 78, no. 5, pp. 293-303, 2009.
+
+\bibitem{b21} T. Alpcan and T. Basar, \textit{Network Security: A Decision and Game-Theoretic Approach}, Cambridge University Press, 2010.
+
+\end{thebibliography}
+
+\end{document}

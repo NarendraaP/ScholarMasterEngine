@@ -1,0 +1,111 @@
+{
+  "graph_name": "ScholarMaster Research Plan Graph (Conceptual & Functional Architecture)",
+  "description": "Models conceptual, methodological, and functional dataflow dependencies. A planned paper may depend on another planned paper.",
+  "nodes": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10",
+    "P11",
+    "P12",
+    "P13",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24",
+    "P25"
+  ],
+  "edges": [
+    {
+      "source": "P1",
+      "target": "P2",
+      "type": "DATAFLOW_DEPENDENCY",
+      "desc": "Cascade Context Ingestion"
+    },
+    {
+      "source": "P1",
+      "target": "P3",
+      "type": "FUNCTIONAL_DEPENDENCY",
+      "desc": "Volatile Memory Buffer Confinement"
+    },
+    {
+      "source": "P1",
+      "target": "P4",
+      "type": "FUNCTIONAL_DEPENDENCY",
+      "desc": "Relational Predicate Ingestion"
+    },
+    {
+      "source": "P1",
+      "target": "P5",
+      "type": "ARCHITECTURAL_DEPENDENCY",
+      "desc": "MBEEE Edge Envelope Profiling"
+    },
+    {
+      "source": "P5",
+      "target": "P7",
+      "type": "HARDWARE_DEPENDENCY",
+      "desc": "Zero-Copy Ingestion to HNSW Index"
+    },
+    {
+      "source": "P6",
+      "target": "P2",
+      "type": "SENSOR_DEPENDENCY",
+      "desc": "NLOS Acoustic Prior Ingestion"
+    },
+    {
+      "source": "P9",
+      "target": "P10",
+      "type": "CONTROL_DEPENDENCY",
+      "desc": "Rate Governance to Acceleration Pipeline"
+    },
+    {
+      "source": "P11",
+      "target": "P12",
+      "type": "SYSTEM_DEPENDENCY",
+      "desc": "Immutable OS Base to Fault Containment"
+    },
+    {
+      "source": "P13",
+      "target": "P14",
+      "type": "LEARNING_DEPENDENCY",
+      "desc": "Local Active Drift to Hierarchical Aggregation"
+    },
+    {
+      "source": "P15",
+      "target": "P4",
+      "type": "INTERFACE_DEPENDENCY",
+      "desc": "AR HUD Spatial Anchoring to Timetable"
+    },
+    {
+      "source": "P20",
+      "target": "P1",
+      "type": "REFERENCE_DEPENDENCY",
+      "desc": "CFAS Synthesis to 4-Stratum Implementation"
+    },
+    {
+      "source": "P22",
+      "target": "P24",
+      "type": "METHODOLOGICAL_DEPENDENCY",
+      "desc": "Dirichlet Evidential Uncertainty to JSD Fusion"
+    },
+    {
+      "source": "P23",
+      "target": "P19",
+      "type": "HARDWARE_DEPENDENCY",
+      "desc": "Dynamic Precision Budgets to Thermal Throttling"
+    }
+  ]
+}

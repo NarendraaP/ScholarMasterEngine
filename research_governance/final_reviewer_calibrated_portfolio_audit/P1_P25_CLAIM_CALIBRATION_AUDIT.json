@@ -1,0 +1,227 @@
+{
+  "P1": {
+    "paper_id": "P1",
+    "major_claim": "Real-time edge-native processing with zero raw data persistence.",
+    "evidence_provided": "Microbenchmark latencies <= 28.4ms and POSIX shared memory volatile lifetime <= 33ms.",
+    "evidence_type": "EMPIRICAL_PROTOTYPE",
+    "valid_scope": "Single-node edge appliance prototype under controlled laboratory campus feeds.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Ensure all references to 'zero persistence' are strictly bounded by INV-01 software reference scope (not hardware cold-boot DRAM erasure, as formalized in Appendix R)."
+  },
+  "P2": {
+    "paper_id": "P2",
+    "major_claim": "Eliminates false negatives in safety-critical student engagement tracking.",
+    "evidence_provided": "Asymmetric loss reduces false negatives by 73.4% on 1,420 test sessions.",
+    "evidence_type": "EMPIRICAL_BENCHMARK",
+    "valid_scope": "Evaluated on multi-modal engagement dataset with cost parameter lambda = 10.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Reframe 'eliminates false negatives' to 'significantly reduces safety-critical false negatives under asymmetric risk constraints'."
+  },
+  "P3": {
+    "paper_id": "P3",
+    "major_claim": "Pose-only skeletal extraction renders identity reconstruction impossible.",
+    "evidence_provided": "34-keypoint coordinate stream with raw frame destruction within 33ms.",
+    "evidence_type": "EMPIRICAL_IMPLEMENTATION",
+    "valid_scope": "Spatial 2D coordinate representation under bounded YOLOv8-pose keypoints.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Scope non-reconstructability to structural keypoint underdetermination; acknowledge theoretical limits of kinematic temporal identification (Appendix R7)."
+  },
+  "P4": {
+    "paper_id": "P4",
+    "major_claim": "Guaranteed zero transient false transitions in schedule adherence.",
+    "evidence_provided": "Spatial debounce hysteresis filter with tau = 5.0s over 10,000 synthetic test paths.",
+    "evidence_type": "SIMULATED_BENCHMARK",
+    "valid_scope": "Deterministic spatiotemporal compliance evaluation under standard pedestrian speeds.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Reframe 'guaranteed zero false transitions' to 'suppresses transient jitter-induced transitions for entity velocities <= 5.0 m/s'."
+  },
+  "P5": {
+    "paper_id": "P5",
+    "major_claim": "Accurately predicts unified memory performance envelope under 85 deg C thermal limits.",
+    "evidence_provided": "Empirical profiling across Jetson Orin Nano, Xavier NX, and RPi4 with <8% error.",
+    "evidence_type": "EMPIRICAL_HARDWARE",
+    "valid_scope": "UMA architectures executing convolutional and transformer vision backbones.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are precisely scoped and empirically verified on physical silicon (Published)."
+  },
+  "P6": {
+    "paper_id": "P6",
+    "major_claim": "Detects NLOS acoustic anomalies and estimates spatial bearing without semantic audio storage.",
+    "evidence_provided": "Logarithmic spectral gating + GCC-PHAT on physical 4-mic array and synthetic RIRs.",
+    "evidence_type": "EMPIRICAL_HARDWARE",
+    "valid_scope": "Reverberant indoor corridors with signal-to-noise ratio > 6 dB.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are well-calibrated; ensure boundary against speech recognition is maintained (Accepted)."
+  },
+  "P7": {
+    "paper_id": "P7",
+    "major_claim": "Sub-millisecond biometric vector retrieval for 100k+ galleries on edge devices.",
+    "evidence_provided": "0.84ms average query latency on ARM Cortex-A72 with top-1 recall > 96.5%.",
+    "evidence_type": "EMPIRICAL_BENCHMARK",
+    "valid_scope": "100k open-set synthetic gallery + 5k campus identity feature vectors.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are well-supported by 100k benchmark; clarify memory footprint requirements (approx. 380MB RAM)."
+  },
+  "P8": {
+    "paper_id": "P8",
+    "major_claim": "Provides immutable tamper-evident provenance while enabling GDPR right-to-be-forgotten.",
+    "evidence_provided": "SHA-256 Merkle tree root logging and PISK cryptographic key destruction.",
+    "evidence_type": "CRYPTOGRAPHIC_FORMAL",
+    "valid_scope": "Local storage subsystem under declared TCB assumptions.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are well-calibrated to cryptographic key erasure semantics."
+  },
+  "P9": {
+    "paper_id": "P9",
+    "major_claim": "Reduces inference energy and compute by >40% with zero missed tracking events.",
+    "evidence_provided": "Kinematic-coupled IRG benchmark on hallway pedestrian video feeds.",
+    "evidence_type": "EMPIRICAL_SIMULATION",
+    "valid_scope": "Indoor corridors with pedestrian transit speeds bounded by 5.0 m/s.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Clarify that the 40% compute saving applies to typical intermittent pedestrian traffic rather than continuous packed crowds."
+  },
+  "P10": {
+    "paper_id": "P10",
+    "major_claim": "Validates system resilience and zero memory leakage over 168 hours of compound stress.",
+    "evidence_provided": "168-hour continuous execution telemetry under synchronized chaos fault injection.",
+    "evidence_type": "EMPIRICAL_STRESS",
+    "valid_scope": "Multi-device physical edge testbed under laboratory stress conditions.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-supported by empirical telemetry; clarify recovery latencies under specific fault combinations."
+  },
+  "P11": {
+    "paper_id": "P11",
+    "major_claim": "Guarantees sub-2.8s cold-boot recovery and immunity to power cut corruption.",
+    "evidence_provided": "1,000 automated power-cut cycles with read-only OverlayFS rootfs.",
+    "evidence_type": "EMPIRICAL_HARDWARE",
+    "valid_scope": "Embedded Linux appliances utilizing industrial-grade SD cards and hardware watchdog.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Reframe 'guarantees immunity' to 'demonstrates zero filesystem corruption across 1,000 power-cut test cycles under OverlayFS'."
+  },
+  "P12": {
+    "paper_id": "P12",
+    "major_claim": "Extends embedded flash memory lifespan from months to over 5 years under heavy logging.",
+    "evidence_provided": "WAF reduction from 12.4 to 2.1 measured over 1.8 TB continuous write stress.",
+    "evidence_type": "EMPIRICAL_SYSTEMS",
+    "valid_scope": "Industrial Class 10 / UHS-I MicroSD storage with F2FS and ZRAM.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-supported by 1.8 TB physical write benchmark; clarify write workload profile."
+  },
+  "P13": {
+    "paper_id": "P13",
+    "major_claim": "Achieves active learning drift compensation with <5% sample labeling overhead.",
+    "evidence_provided": "Simulation on multi-session educational audio-visual benchmark feeds.",
+    "evidence_type": "SIMULATED_BENCHMARK",
+    "valid_scope": "Multi-session drift scenarios with acoustic anomaly triggers.",
+    "claim_calibration_status": "MAJOR_REFRAMING",
+    "required_reframing_action": "Tone down claims of 'universal drift compensation'; scope explicitly to acoustic-correlated visual domain shifts."
+  },
+  "P14": {
+    "paper_id": "P14",
+    "major_claim": "Guarantees fast convergence in cross-institution federated learning under asynchronous participation.",
+    "evidence_provided": "10-node simulated cross-campus federated testbed with heterogeneous data distributions.",
+    "evidence_type": "SIMULATED_BENCHMARK",
+    "valid_scope": "Multi-tier hierarchical federated learning with polynomial staleness dampening.",
+    "claim_calibration_status": "MAJOR_REFRAMING",
+    "required_reframing_action": "Reframe convergence guarantee to asymptotic convergence under bounded delay assumptions tau_max <= 50."
+  },
+  "P15": {
+    "paper_id": "P15",
+    "major_claim": "Reduces operator cognitive load by >25% and improves incident response time.",
+    "evidence_provided": "N=24 participant within-subjects user study with NASA-TLX cognitive workload metrics.",
+    "evidence_type": "EMPIRICAL_HUMAN_STUDY",
+    "valid_scope": "Trained security personnel in simulated campus incident handling.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-grounded in empirical user study data; include explicit Cohen's d effect size values."
+  },
+  "P16": {
+    "paper_id": "P16",
+    "major_claim": "Longitudinal empirical proof that visible architectural abstraction fosters student trust.",
+    "evidence_provided": "N=540 student longitudinal field study spanning 3 academic semesters (16 weeks).",
+    "evidence_type": "EMPIRICAL_LONGITUDINAL",
+    "valid_scope": "Undergraduate student cohort in active educational facilities.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are well-supported by statistical structural equation modeling across 540 participants."
+  },
+  "P17": {
+    "paper_id": "P17",
+    "major_claim": "Establishes capability elimination as a necessary architectural doctrine for ethical AI.",
+    "evidence_provided": "Comparative architectural case analysis and normative philosophical deduction.",
+    "evidence_type": "THEORETICAL_DOCTRINE",
+    "valid_scope": "Governance and architectural philosophy for cyber-physical sensing.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are correctly framed as an ethical and architectural doctrine."
+  },
+  "P18": {
+    "paper_id": "P18",
+    "major_claim": "Continuous runtime enforcement guarantees zero data leakage during software crash or fault.",
+    "evidence_provided": "475 automated fault injection experiments verifying FailClosedWatchdog circuit breaker.",
+    "evidence_type": "EMPIRICAL_RUNTIME",
+    "valid_scope": "Software runtime execution environment under simulated faults.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-supported by 475 fault tests; keep TCB assumptions clearly stated."
+  },
+  "P19": {
+    "paper_id": "P19",
+    "major_claim": "Formal proof of information-flow non-interference and bounded residual risk for edge AI.",
+    "evidence_provided": "Deductive proofs in Metric Temporal Logic (MTL) and STRIDE adversary algebra A0-A5.",
+    "evidence_type": "FORMAL_THEORETICAL",
+    "valid_scope": "Formal TCB model bounded by <= 2.0GB volatile memory perimeter.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are mathematically rigorous and precisely scoped to declared TCB assumptions."
+  },
+  "P20": {
+    "paper_id": "P20",
+    "major_claim": "Provides a comprehensive unified reference model for privacy-first intelligent campus systems.",
+    "evidence_provided": "Constraint-First Architectural Synthesis (CFAS) and 1-to-1 traceability lattice.",
+    "evidence_type": "REFERENCE_MODEL",
+    "valid_scope": "ScholarMaster reference architecture and canonical invariant namespace.",
+    "claim_calibration_status": "MINOR_REFRAMING",
+    "required_reframing_action": "Explicitly position as a reference architecture specification to distinguish clearly from P1 execution details."
+  },
+  "P21": {
+    "paper_id": "P21",
+    "major_claim": "Mathematical proof of spatiotemporal compliance and distributed event consistency.",
+    "evidence_provided": "13 formal theorems with complete lemma deductions in event calculus.",
+    "evidence_type": "FORMAL_MATHEMATICAL",
+    "valid_scope": "Event calculus framework with Lebesgue-integrable duration bounds.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are pure mathematical deductions with complete proof derivations."
+  },
+  "P22": {
+    "paper_id": "P22",
+    "major_claim": "Dirichlet evidential deep learning and blur bounds prevent root perception data cascades.",
+    "evidence_provided": "Synthetic blur sweeps with Platt temperature scaling achieving ECE = 0.0412.",
+    "evidence_type": "EMPIRICAL_THEORETICAL",
+    "valid_scope": "Root optical sensory ingestion in unconstrained edge environments.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-calibrated; explicitly distinguish synthetic blur sweeps from physical lens motion blur."
+  },
+  "P23": {
+    "paper_id": "P23",
+    "major_claim": "Dual convex optimization guarantees sub-5.0ms SLA compliance in dynamic neural cascades.",
+    "evidence_provided": "Fenchel-Rockafellar duality and M/G/1 queueing delay verification on edge runtime telemetry.",
+    "evidence_type": "EMPIRICAL_OPTIMIZATION",
+    "valid_scope": "Multi-stage dynamic neural network cascade dispatch under resource constraints.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-grounded in convex optimization proofs and runtime telemetry."
+  },
+  "P24": {
+    "paper_id": "P24",
+    "major_claim": "Information-theoretic JSD mixture consensus recovers decision integrity under sensor blinding.",
+    "evidence_provided": "Closed-form JSD mixture formulation and multi-modal sensory failover benchmarks.",
+    "evidence_type": "EMPIRICAL_THEORETICAL",
+    "valid_scope": "Multi-modal cyber-physical edge appliances with optical and acoustic channels.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims well-supported; clarify multi-rate PLL timestamp synchronization assumptions."
+  },
+  "P25": {
+    "paper_id": "P25",
+    "major_claim": "First-principles geometric proof that Voronoi step jump boundaries contain error cascades.",
+    "evidence_provided": "Voronoi step jump theorem proof and 52,203-epoch Monte Carlo macro pipeline error simulation.",
+    "evidence_type": "FORMAL_THEORETICAL_EMPIRICAL",
+    "valid_scope": "Multi-stage cascaded neural pipelines with non-smooth decision boundaries.",
+    "claim_calibration_status": "WELL_CALIBRATED",
+    "required_reframing_action": "Claims are mathematically proven and empirically verified on the macro pipeline model."
+  }
+}

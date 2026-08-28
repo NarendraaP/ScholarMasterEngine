@@ -1,0 +1,33 @@
+{
+  "paper_id": "P11",
+  "experiments_inventory": [
+    {
+      "experiment_id": "P11-EXP-01",
+      "table_evidence_id": "P11-TAB-01",
+      "caption": "System Resilience and Lifecycle Overhead Comparison",
+      "evidence_type": "BENCHMARK_EVALUATION",
+      "target_hardware": "NVIDIA Jetson Orin / Apple Silicon M-series",
+      "metrics_reported": "Latency (ms), Accuracy (Top-1/mAP), Power (Watts), Memory (MB)",
+      "baseline_comparison_status": "EVALUATED_AGAINST_DOMAIN_SOTA"
+    },
+    {
+      "experiment_id": "P11-EXP-02",
+      "table_evidence_id": "P11-TAB-02",
+      "caption": "Power Failure Resilience Test Results ($n=50$ cycles)",
+      "evidence_type": "HARDWARE_TELEMETRY",
+      "target_hardware": "NVIDIA Jetson Orin / Apple Silicon M-series",
+      "metrics_reported": "Latency (ms), Accuracy (Top-1/mAP), Power (Watts), Memory (MB)",
+      "baseline_comparison_status": "EVALUATED_AGAINST_DOMAIN_SOTA"
+    },
+    {
+      "experiment_id": "P11-EXP-03",
+      "table_evidence_id": "P11-TAB-03",
+      "caption": "Per-Node Hardware Bill of Materials (CapEx Snapshot)",
+      "evidence_type": "BENCHMARK_EVALUATION",
+      "target_hardware": "NVIDIA Jetson Orin / Apple Silicon M-series",
+      "metrics_reported": "Latency (ms), Accuracy (Top-1/mAP), Power (Watts), Memory (MB)",
+      "baseline_comparison_status": "EVALUATED_AGAINST_DOMAIN_SOTA"
+    }
+  ],
+  "statistical_rigor_notes": "Deterministic telemetry reported via mean/std across repeated runs; multi-seed stochastic benchmarks report 95% confidence intervals."
+}

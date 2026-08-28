@@ -1,0 +1,228 @@
+{
+  "paper_id": "P01",
+  "paper_num": 1,
+  "title": "ScholarMaster: A Layered Edge-Native Architecture for Real-Time Context-Aware Intelligent Systems",
+  "abstract_snippet": "Modern intelligent systems are increasingly required to operate under stringent real-time, privacy, and resource constraints, particularly at the edge. While recent advances in individual subsystems such as perception, inference, and control have contributed to improved performance at the component level, the lack of architectural principles has typically resulted in tightly coupled monolithic sys...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Architectural Paradigms",
+    "Boundary Invariants and Formalisms",
+    "The ScholarMaster Reference Model: A 4-Stratum Architecture",
+    "Cross-Layer Consistency and the Research Ecosystem",
+    "Example Operational Trace: Attendance Validation",
+    "Architectural Hazards of Cross-Layer Leakage",
+    "Operational and System-Level Properties",
+    "Lifecycle Stability and Upgrade Semantics",
+    "Institutional Deployment and Multi-Tenant Realities",
+    "Certification and Regulatory Implications",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Operational Fragility in End-to-End Intelligent Systems",
+    "Subsystem Scope and Canonical Separation",
+    "Abstraction Admissibility",
+    "Edge-Native Memory Confinement",
+    "Deterministic Composition",
+    "Constraint-First Architectural Synthesis (CFAS)",
+    "Schema-Constrained Semantic Firewalls",
+    "Failure Containment and Propagation",
+    "Operational Auditability",
+    "Architectural Scope and Economic Tradeoffs",
+    "Failed Design Alternatives",
+    "Hard Architectural Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P01-PARA-01",
+      "text_snippet": "A system\u2019s degree of decomposition is a fundamental property in architectural synthesis - ScholarMaster takes this to be a given. By synthesizing results of a multi-paper research agenda, this paper proposes an edge-native framework that isolates the context-aware pipeline into focused domains: sens...",
+      "char_count": 390
+    },
+    {
+      "paragraph_id": "P01-PARA-02",
+      "text_snippet": "By ensuring strict abstraction admissibility between these stages, the architecture greatly limits cross-layer leakage. This, in turn, allows for an overall design that is modular by construction. By building on previous results in independently verifiable sub-systems, we proceed to demonstrate the ...",
+      "char_count": 476
+    },
+    {
+      "paragraph_id": "P01-PARA-03",
+      "text_snippet": "The central thesis of this paper is that architectural boundary invariants can enable decomposition to be a verifiable systems property for edge-native intelligent systems. This manuscript is exclusively a systems-architecture paper, focusing on investigating edge-native structural composition, and ...",
+      "char_count": 374
+    },
+    {
+      "paragraph_id": "P01-PARA-04",
+      "text_snippet": "Over the course of developing the ScholarMaster subsystem ecosystem, these architectural failure patterns became apparent b2, b13, b16 : enumerate End-to-End Monoliths: Optimization pressures favor direct, opaque coupling. While performant in static benchmarks, these pipelines proved brittle under i...",
+      "char_count": 596
+    },
+    {
+      "paragraph_id": "P01-PARA-05",
+      "text_snippet": "The ScholarMaster architecture has been defined through the insight that decomposition must be made obligatory. The present paper attempts to capture the architectural knowledge generated within the research program by synthesizing separately established approaches and formalisms into a reference ar...",
+      "char_count": 311
+    },
+    {
+      "paragraph_id": "P01-PARA-06",
+      "text_snippet": "End-to-end monolithic pipelines b7 are widespread because of their Simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is respo...",
+      "char_count": 435
+    },
+    {
+      "paragraph_id": "P01-PARA-07",
+      "text_snippet": "Cloud-native microservice architectures b4, b14 address this coupling through network-level decomposition, but introduce a different failure mode. In edge environments, serialization and network transit overhead produces temporal jitter that undermines the determinism required for cyber-physical syn...",
+      "char_count": 524
+    },
+    {
+      "paragraph_id": "P01-PARA-08",
+      "text_snippet": "Event driven distributed pipelines b8 address both scalability and modularity concerns to some extent, but introduce the notion of synchronization drift: different elements operating on inconsistent temporal snapshots of the system state diverge in their logical state; unless explicitly mediated, th...",
+      "char_count": 396
+    },
+    {
+      "paragraph_id": "P01-PARA-09",
+      "text_snippet": "A commonality of these approaches in this regard is that in none of them is considered a decomposition boundary as an architecturally mandated invariant. Rather, boundaries are viewed as implementation conveniences that can be violated with little or no penalty. In practice, this perspective has pro...",
+      "char_count": 914
+    },
+    {
+      "paragraph_id": "P01-PARA-10",
+      "text_snippet": "Figure fig:layers visualizes the required abstraction contracts and illustrates the architectural hazards of bypassing them.",
+      "char_count": 124
+    },
+    {
+      "paragraph_id": "P01-PARA-11",
+      "text_snippet": "The process starts with the Sensing Layer that extracts the raw geometric occupancy abstractions (bounding boxes, skeletal points) from the visual and acoustic streams. Note that the Sensing Layer has no awareness of ''who'' is present or ''why'' - it provides stateless physical coordinates.",
+      "char_count": 292
+    },
+    {
+      "paragraph_id": "P01-PARA-12",
+      "text_snippet": "These abstractions are funneled into the Probabilistic Interpretation Layer, where they are anchored to temporal priors in order to define bounded confidence states. This layer defines the probability of existence and defines away noise in favor of persistence.",
+      "char_count": 261
+    },
+    {
+      "paragraph_id": "P01-PARA-13",
+      "text_snippet": "The resulting probability state is then fed into the next component, the Logical Evaluation Layer, which evaluates institution-specific predicates (e.g., time thresholds or allowed schedules). The Control Layer only proceeds to perform an operation (e.g., update a ledger or allow access) if the pred...",
+      "char_count": 337
+    },
+    {
+      "paragraph_id": "P01-PARA-14",
+      "text_snippet": "At no point do we ever allow the control layer to observe raw sensor tensors, or the sensing layer to understand institutional policy semantics. If an action is challenged, an auditor can reconstitute the precise logical predicate and associated probability that led to it, without having to watch a ...",
+      "char_count": 322
+    },
+    {
+      "paragraph_id": "P01-PARA-15",
+      "text_snippet": "Across the subsystem studies, a consistent pattern emerged: the most operationally significant failures in edge-intelligent systems rarely originated from algorithmic weakness within a single layer. Rather, they traced back to uncontrolled information flow across layer boundaries b10 .",
+      "char_count": 286
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P01-EQ-01",
+      "latex": "L_i : X_i \\to X_{i+1}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P01-TAB-01",
+      "caption": "Architectural Paradigm Comparison"
+    },
+    {
+      "table_id": "P01-TAB-02",
+      "caption": "Subsystem Ownership Mapping"
+    },
+    {
+      "table_id": "P01-TAB-03",
+      "caption": "Examples of Forbidden Cross-Layer Behaviors"
+    },
+    {
+      "table_id": "P01-TAB-04",
+      "caption": "System Property Comparison"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P01-FIG-01",
+      "caption": "The ScholarMaster Layered Architecture. Allowed interfaces mandate progressive abstraction (left). Lateral or skip-level communication is explicitly forbidden to prevent cross-layer leakage (right)."
+    },
+    {
+      "figure_id": "P01-FIG-02",
+      "caption": "The ScholarMaster Research Ecosystem Map. The architecture decouples system responsibility into four independently verifiable layers (Physics, Logic, Verification, Governance). Here, we see how the system enforces a set of boundaries that allows the absence of uncontrolled cross-layer interactions."
+    },
+    {
+      "figure_id": "P01-FIG-03",
+      "caption": "Failure Propagation Comparison. While monolithic systems allow sensor glitches to corrupt global logic, ScholarMaster's boundary invariants force failures to undergo structural containment and safe probabilistic degradation."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P01-REF-01",
+      "key": "b12",
+      "raw_citation": "D. L. Parnas, \"On the criteria to be used in decomposing systems into modules,\" Communications of the ACM , vol. 15, no. 12, pp. 1053-1058, 1972."
+    },
+    {
+      "reference_id": "P01-REF-02",
+      "key": "b10",
+      "raw_citation": "A. Avizienis, J. Laprie, B. Randell, and C. Landwehr, \"Basic concepts and taxonomy of dependable and secure computing,\" IEEE Transactions on Dependable and Secure Computing , vol. 1, no. 1, pp. 11-33, 2004."
+    },
+    {
+      "reference_id": "P01-REF-03",
+      "key": "b8",
+      "raw_citation": "P. Th. Eugster, P. A. Felber, R. Guerraoui, and A.-M. Kermarrec, \"The many faces of publish/subscribe,\" ACM Computing Surveys , vol. 35, no. 2, pp. 114-131, 2003."
+    },
+    {
+      "reference_id": "P01-REF-04",
+      "key": "b9",
+      "raw_citation": "M. Quigley et al., \"ROS: an open-source Robot Operating System,\" in ICRA workshop on open source software , 2009."
+    },
+    {
+      "reference_id": "P01-REF-05",
+      "key": "b21",
+      "raw_citation": "N. G. Leveson, Engineering a Safer World: Systems Thinking Applied to Safety . MIT Press, 2011."
+    },
+    {
+      "reference_id": "P01-REF-06",
+      "key": "b6",
+      "raw_citation": "H. Kopetz, Real-Time Systems: Design Principles for Distributed Embedded Applications . Springer Science \\& Business Media, 2011."
+    },
+    {
+      "reference_id": "P01-REF-07",
+      "key": "b16",
+      "raw_citation": "F. Bonomi, R. Milito, J. Zhu, and S. Addepalli, \"Fog computing and its role in the internet of things,\" in Proceedings of the first edition of the MCC workshop on Mobile cloud computing , 2012, pp. 13-16."
+    },
+    {
+      "reference_id": "P01-REF-08",
+      "key": "b20",
+      "raw_citation": "L. Bass, P. Clements, and R. Kazman, Software Architecture in Practice , 3rd ed. Addison-Wesley Professional, 2012."
+    },
+    {
+      "reference_id": "P01-REF-09",
+      "key": "b15",
+      "raw_citation": "J. A. Stankovic, \"Research directions for the internet of things,\" IEEE Internet of Things Journal , vol. 1, no. 1, pp. 3-9, 2014."
+    },
+    {
+      "reference_id": "P01-REF-10",
+      "key": "b14",
+      "raw_citation": "S. Newman, Building Microservices: Designing Fine-Grained Systems . O'Reilly Media, Inc., 2015."
+    },
+    {
+      "reference_id": "P01-REF-11",
+      "key": "b17",
+      "raw_citation": "D. Sculley et al., \"Hidden technical debt in machine learning systems,\" in Advances in neural information processing systems , vol. 28, 2015."
+    },
+    {
+      "reference_id": "P01-REF-12",
+      "key": "b5",
+      "raw_citation": "E. A. Lee, \"The Past, Present and Future of Cyber-Physical Systems: A Focus on Models,\" Sensors , vol. 15, no. 3, pp. 4837-4869, 2015."
+    },
+    {
+      "reference_id": "P01-REF-13",
+      "key": "b3",
+      "raw_citation": "W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, \"Edge Computing: Vision and Challenges,\" IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637-646, 2016."
+    },
+    {
+      "reference_id": "P01-REF-14",
+      "key": "b7",
+      "raw_citation": "M. Bojarski et al., \"End to end learning for self-driving cars,\" arXiv preprint arXiv:1604.07316 , 2016."
+    },
+    {
+      "reference_id": "P01-REF-15",
+      "key": "b11",
+      "raw_citation": "P. Voigt and A. von dem Bussche, The EU General Data Protection Regulation (GDPR): A Practical Guide . Springer International Publishing, 2017."
+    }
+  ]
+}

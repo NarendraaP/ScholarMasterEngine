@@ -87,7 +87,7 @@ Adversary Capability Algebra, Trusted Computing Base Minimization, Information-F
 Many privacy-preserving AI systems claim robust protection without formally defining the scope of the adversary. Literature frequently blurs the distinction between user-space application compromise and institutional root compromise, often omitting explicit Trusted Computing Base (TCB) assumptions. Security claims are mathematically meaningless without bounded adversary assumptions. Empirical runtime behavior alone cannot establish formal privacy guarantees; architectural privacy requires explicit trust formalization. Without defined information-flow constraints, edge-AI systems cannot rigorously differentiate between benign operational exposure and catastrophic privacy leakage.
 
 \subsection{The Security Framing Gap}
-To mitigate systemic privacy risks, defensive frameworks based on \textit{Architectural Irreversibility} \cite{b25_irrev} have been proposed and validated through runtime enforcement \cite{b26_runtime}. However, architectural intent is insufficient without a mathematically defined boundary of trust \cite{b1}. If an architecture claims to destroy raw biometric data within $33$ms, does that property hold against an institutional root administrator or a compromised OS kernel?
+To mitigate systemic privacy risks, defensive frameworks based on \textit{Architectural Irreversibility} \cite{b1} have been proposed and validated through runtime enforcement \cite{b30_cps}. However, architectural intent is insufficient without a mathematically defined boundary of trust \cite{b1}. If an architecture claims to destroy raw biometric data within $33$ms, does that property hold against an institutional root administrator or a compromised OS kernel?
 
 The dominant thesis of this paper is that \textbf{bounded privacy guarantees require explicit adversary and TCB formalization}. This paper bridges the security framing gap by providing the formal threat model, information-flow constraints, and trust assumptions under which irreversible edge analytics are valid. Within the ScholarMaster architecture, this subsystem defines adversary boundaries, TCB assumptions, information-flow constraints, and temporal security invariants only. It does not implement runtime crash handlers (Paper 18), define federated optimization (Paper 14), synthesize deployment architecture (Paper 20), derive spatiotemporal trajectory logic (Paper 21), or construct sociological trust models (Paper 16).
 
@@ -108,7 +108,7 @@ By defining these bounds, we align the evaluation of the system with established
 % II. FORMAL ADVERSARY MODEL
 % ==========================================
 \section{Formal Adversary Classification Model}
-To analyze system resilience, we must first formalize the capabilities of the attacker. We adapt standard threat modeling \cite{b2} and extend it for cyber-physical edge nodes. This formal classification extends the architectural threat overview presented in prior reference architecture work \cite{b27_arch} by introducing mathematical capability tuples, explicit bounding assumptions, and TCB-grounded proof conditions.
+To analyze system resilience, we must first formalize the capabilities of the attacker. We adapt standard threat modeling \cite{b2} and extend it for cyber-physical edge nodes. This formal classification extends the architectural threat overview presented in prior reference architecture work \cite{b6} by introducing mathematical capability tuples, explicit bounding assumptions, and TCB-grounded proof conditions.
 
 
 
@@ -223,7 +223,7 @@ The only permissible flow from $\mathcal{D}_{High} \to \mathcal{D}_{Low}$ is thr
 \begin{equation}
 F_{irreversible}: \mathbb{R}^{H \times W \times 3} \to \mathbb{R}^{d_{meta}}
 \end{equation}
-Where $H \times W \times 3$ represents the continuous high-fidelity pixel space, and $d_{meta}$ represents the discrete low-dimensional semantic space (e.g., boolean engagement flags or zone coordinates). The mathematical non-reconstructability of this transformation---including the degree-of-freedom collapse, non-injectivity, and conditional entropy analysis---has been established in prior foundational work \cite{b25_irrev, b28_pose}. For the purposes of this security analysis, we note that $F_{irreversible}$ is a many-to-one surjective mapping with immense entropy loss, and the flow preserves Non-Interference with respect to precise identity reconstruction \cite{b23}.
+Where $H \times W \times 3$ represents the continuous high-fidelity pixel space, and $d_{meta}$ represents the discrete low-dimensional semantic space (e.g., boolean engagement flags or zone coordinates). The mathematical non-reconstructability of this transformation---including the degree-of-freedom collapse, non-injectivity, and conditional entropy analysis---has been established in prior foundational work \cite{b8, b11}. For the purposes of this security analysis, we note that $F_{irreversible}$ is a many-to-one surjective mapping with immense entropy loss, and the flow preserves Non-Interference with respect to precise identity reconstruction \cite{b23}.
 
 % ==========================================
 % IV. STATE TRANSITIONS
@@ -369,7 +369,7 @@ While generative models (e.g., GANs) can hallucinate a \textit{statistically pla
 \subsection{Membership Inference Attacks (MIA)}
 If the system participates in Federated Learning to update models, it transmits gradient updates $\nabla \theta$. Membership Inference Attacks \cite{b5} seek to determine if a specific data point $x$ was in the training batch by observing changes in $\theta$. Secret extraction via memorized gradients \cite{b21} is a known risk in high-capacity networks.
 
-We acknowledge MIA as an inherent residual risk in distributed AI. Under $A_0$-$A_3$ adversaries, the exposure is limited to distributional leakage rather than direct data extraction. Formal mitigation relies on implementing Differential Privacy (DP) \cite{b14, b22}, which bounds the adversary's capability by a privacy budget $\epsilon$. The mathematical formalization of the DP mechanism, including sensitivity analysis and noise injection protocols for the federated learning context, is addressed in companion work on intra-campus federated learning \cite{b29_fl}. While DP is an architectural option, its mathematical enforcement is orthogonal to the local runtime irreversibility guaranteed by the TCB.
+We acknowledge MIA as an inherent residual risk in distributed AI. Under $A_0$-$A_3$ adversaries, the exposure is limited to distributional leakage rather than direct data extraction. Formal mitigation relies on implementing Differential Privacy (DP) \cite{b14, b22}, which bounds the adversary's capability by a privacy budget $\epsilon$. The mathematical formalization of the DP mechanism, including sensitivity analysis and noise injection protocols for the federated learning context, is addressed in companion work on intra-campus federated learning \cite{b14, b22}. While DP is an architectural option, its mathematical enforcement is orthogonal to the local runtime irreversibility guaranteed by the TCB.
 
 % ==========================================
 % VIII. INFORMATION-FLOW NONINTERFERENCE
@@ -431,7 +431,7 @@ The formal proofs provided below map logical constraints to system states. It is
 Under adversary constraints $A_0$ through $A_3$ and foundational assumptions ($A_{HW}, A_{PHYS}, A_{SPEC}$), pixel-space reconstruction from post-boundary representations is architecturally underdetermined and mathematically non-unique.
 \end{theorem}
 \begin{proof}
-Follows directly from the Non-Interference property (Equation 2) under adversary constraints $A_0$ through $A_3$ and intact TCB assumptions. The full Shannon entropy derivation, degree-of-freedom collapse, and formal non-injectivity proof of the transformation function $F_{irreversible}$ are established in prior foundational work \cite{b28_pose}. Under the defined threat model, no residual side-channel copies of the raw matrix $X$ persist in memory to bypass this mathematical bound.
+Follows directly from the Non-Interference property (Equation 2) under adversary constraints $A_0$ through $A_3$ and intact TCB assumptions. The full Shannon entropy derivation, degree-of-freedom collapse, and formal non-injectivity proof of the transformation function $F_{irreversible}$ are established in prior foundational work \cite{b11}. Under the defined threat model, no residual side-channel copies of the raw matrix $X$ persist in memory to bypass this mathematical bound.
 \end{proof}
 
 \begin{theorem}[Probabilistic Noninterference]
@@ -584,18 +584,6 @@ To computationally verify the consistency of the state machine defined by these 
 
 \bibitem{b21} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security}, 2019.
 
-\bibitem{b28_pose} S. S. Kumar, ``Privacy-Preserving Skeletal Abstraction for Identity-Free Behavioral Analytics,'' in \textit{Proc. IEEE CVPR Workshops}, 2025.
-
-\bibitem{b25_irrev} S. S. Kumar, ``Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems,'' in \textit{Proc. IEEE Int. Conf. Edge Computing}, 2026.
-
-\bibitem{b26_runtime} S. S. Kumar, ``Runtime Enforcement of Architectural Irreversibility in Edge AI Systems,'' in \textit{Proc. IEEE Int. Conf. CPS}, 2026.
-
-\bibitem{b27_arch} S. S. Kumar, ``A Unified Privacy-First Reference Architecture for Edge-Based Intelligent Campus Systems,'' in \textit{Proc. IEEE IoT-J}, 2026.
-
-\bibitem{b29_fl} S. S. Kumar, ``Intra-Campus Federated Learning for Temporal Drift Compensation in Privacy-Preserving Edge AI,'' in \textit{Proc. IEEE ICML Workshops}, 2026.
-
-\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar24} S.~Suresh~Kumar, ``Generalized cross-modal recovery under compromised sensing,'' \emph{ScholarMaster Technical Report Series}, Paper 24, 2026.
 \end{thebibliography}
 
 \end{document}

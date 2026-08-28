@@ -1,0 +1,239 @@
+{
+  "paper_id": "P13",
+  "paper_num": 13,
+  "title": "Federated Drift Compensation via Active Learning in Edge Deployed Neural Networks",
+  "abstract_snippet": "Edge-deployed neural networks frequently operate in an evolving physical domain, where slow and subtle shifts in the environment alter the properties of the sensor stream statistics. Thus, distributions of incoming observations change with time, which significantly impacts the prediction accuracy of models trained only on historical data. While centralized model retraining procedures address this ...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Problem Formulation \\& Data Abstraction",
+    "Label-Efficient Drift Adaptation Framework",
+    "Stability Constraints under Noisy Obfuscation",
+    "Empirical Evaluation",
+    "Discussion \\& Limitations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Drift Adaptation Problem Under Label Scarcity",
+    "Contributions and Subsystem Scope",
+    "Concept Drift in Streaming Machine Learning",
+    "Active Learning and Bayesian Uncertainty Estimation",
+    "Federated Continual Learning and Privacy-Preserving Optimization",
+    "Temporal Non-IID Evolution",
+    "Isolated Data Abstraction",
+    "Epistemic Uncertainty and Mutual Information",
+    "Monte Carlo Dropout Integration",
+    "Noise Amplification in High-Dimensional Spaces",
+    "Layer Freezing as a Stability-Preservation Principle",
+    "Experimental Setup and Baseline Methods",
+    "Drift Profiles and Recovery Efficacy",
+    "Ablation: Freezing Geometry under Privacy Noise",
+    "Ablation: Active Learning Query Threshold ($\\tau_{\\mathrm{MI",
+    "Scientific Implications",
+    "Limitations and Failure Boundaries"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P13-PARA-01",
+      "text_snippet": "In order to resolve the stated problem, the paper presents an active learning based drift compensation framework that is localized and relies on the acquisition function of Bayesian Active Learning by Disagreement (BALD). The latter selects informative training samples from the out-of-distribution d...",
+      "char_count": 526
+    },
+    {
+      "paragraph_id": "P13-PARA-02",
+      "text_snippet": "The extensive simulations of environment brightness decay, demography drift, and physical occlusions performed on the five edge nodes confirm the effectiveness of the proposed approach. In particular, our active learning sample selection mechanism managed to recover 79.6\\% of the observed temporal d...",
+      "char_count": 657
+    },
+    {
+      "paragraph_id": "P13-PARA-03",
+      "text_snippet": "The dominant thesis of this paper is that epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints . The Edge AI systems are inherently developed to operate in a self-sustaining environment that is constantly changing b1 . Contrary...",
+      "char_count": 634
+    },
+    {
+      "paragraph_id": "P13-PARA-04",
+      "text_snippet": "In practical deployments, temporal distribution shifts manifest across three operationally distinct vectors: itemize High-Frequency Covariate Shift (Lighting/Weather): Daily or seasonal changes in illumination can cause significant distortions in the coordinate distribution. Such distortions reduce ...",
+      "char_count": 1053
+    },
+    {
+      "paragraph_id": "P13-PARA-05",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem performs uncertainty-guided drift adaptation, sparse-label acquisition, and federated adaptation stabilization only. It does not optimize hierarchical aggregation (Paper 14), synthesize deployment architecture (Paper 20), validate runtime enforce...",
+      "char_count": 416
+    },
+    {
+      "paragraph_id": "P13-PARA-06",
+      "text_snippet": "Gal and Ghahramani b21 proved that deep neural networks with dropout applied at test time act as approximate variational inference in Bayesian Neural Networks (BNNs). The resulting Bayesian Active Learning by Disagreement (BALD) framework b25 measures the mutual information between model predictions...",
+      "char_count": 577
+    },
+    {
+      "paragraph_id": "P13-PARA-07",
+      "text_snippet": "To orient the active learning algorithms correctly, we formally define the boundary limits of localized distribution drift over time.",
+      "char_count": 133
+    },
+    {
+      "paragraph_id": "P13-PARA-08",
+      "text_snippet": "We express the degree of inter-temporal drift at a single location using the Wasserstein metric $W_1$. The distribution diverges significantly over a time delay $ t$ such that: equation aligned W_1(P_i^{(t_1) , P_i^{(t_1 + t) ) &= _{ (P, Q) _{ X Y \\|z - z'\\| \\, d (z, z') \\\\ &> _{ drift aligned equat...",
+      "char_count": 303
+    },
+    {
+      "paragraph_id": "P13-PARA-09",
+      "text_snippet": "When evaluating the overarching system, this translates to compounding non-IID properties. The system architecture must reconcile both the temporal shift occurring locally within node $i$, and the generalized non-IID distribution divergence occurring spatially between node $i$ and node $j$, without ...",
+      "char_count": 341
+    },
+    {
+      "paragraph_id": "P13-PARA-10",
+      "text_snippet": "When drift shifts $P_i^{(t+1) $ beyond predictable radii, classification networks must retrain. Given the strict labeling limits imposed by operators, the node must actively rank incoming vectors by their relative information gain and selectively query only those mapping to uncharted domain space.",
+      "char_count": 298
+    },
+    {
+      "paragraph_id": "P13-PARA-11",
+      "text_snippet": "Instead, we employ Bayesian Active Learning by Disagreement (BALD). By placing a prior $p(w)$ over the internal weights, BALD seeks to query input vectors $x$ which maximize the mutual information $ I $ between predictions $y$ and the hidden model parameters $w$: equation I (y; w | x, D _{old ) = H ...",
+      "char_count": 361
+    },
+    {
+      "paragraph_id": "P13-PARA-12",
+      "text_snippet": "In this equation: itemize The first term, $ H (y|x)$, is the overall predictive uncertainty of the distribution given the current data context. The second term, $ E [ H ]$, represents the expected confidence of the individual sampled network parameters. itemize",
+      "char_count": 261
+    },
+    {
+      "paragraph_id": "P13-PARA-13",
+      "text_snippet": "Subtracting expected internal entropy from the global predictive entropy elegantly strips away Aleatoric noise. High mutual information signifies that individual parameter states are extremely confident in their predictions, but violently disagree with one another regarding the specific class. This ...",
+      "char_count": 450
+    },
+    {
+      "paragraph_id": "P13-PARA-14",
+      "text_snippet": "For an input $ x _t$, the node is executed $K$ times, producing independent stochastic forward passes, ultimately yielding a sample distribution $ \\{ y ^{(1) , , y ^{(K) \\ $. Crucially, this distribution only provides approximate uncertainty guarantees - the dropout distribution is in fact a variati...",
+      "char_count": 477
+    },
+    {
+      "paragraph_id": "P13-PARA-15",
+      "text_snippet": "Algorithm alg:mc_bald details how this directly translates into an on-device sample acquisition engine.",
+      "char_count": 103
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P13-THE-01",
+      "type": "THEOREM",
+      "statement": "[Stationary Variance Bound under DP Active Learning] Let $f(w)$ be an $L$-smooth, $\\mu$-strongly convex loss function. If full network parameters ($d \\approx 11 \\times 10^6$) are updated with local batch size $|\\mathcal{B}_{\\mathrm{train}}|$, the expected asymptotic distance from the optimal paramet..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P13-EQ-01",
+      "latex": "\\begin{aligned} W_1(P_i^{(t_1)}, P_i^{(t_1 + \\Delta t)}) &= \\inf_{\\gamma \\in \\Gamma(P, Q)} \\int_{\\mathcal{X} \\times \\mathcal{Y}} \\|z - z'\\| \\, d\\gamma(z, z') \\\\ &> \\tau_{\\mathrm{drift}} \\end{aligned}"
+    },
+    {
+      "equation_id": "P13-EQ-02",
+      "latex": "\\mathbb{I}(y; w | x, \\mathcal{D}_{old}) = \\mathbb{H}(y|x, \\mathcal{D}_{old}) - \\mathbb{E}_{w \\sim p(w|\\mathcal{D}_{old})}[\\mathbb{H}(y|x, w)]"
+    },
+    {
+      "equation_id": "P13-EQ-03",
+      "latex": "\\begin{aligned} \\mathbb{E}\\left[\\|w_T - w^*\\|^2\\right] &\\le (1 - \\eta \\mu)^T \\|w_0 - w^*\\|^2 \\\\ &\\quad + \\frac{\\eta}{\\mu} \\left( \\frac{L^2 \\sigma_g^2}{|\\mathcal{B}_{\\mathrm{train}}|} + \\frac{d \\cdot \\sigma^2 C_{\\mathrm{clip}}^2}{|\\mathcal{B}_{\\mathrm..."
+    },
+    {
+      "equation_id": "P13-EQ-04",
+      "latex": "\\|w_{t+1} - w^*\\|^2 &= \\|w_t - \\eta \\tilde{\\mathbf{g}}_t - w^*\\|^2 \\notag \\\\ &= \\|w_t - w^*\\|^2 - 2\\eta \\langle \\tilde{\\mathbf{g}}_t, w_t - w^* \\rangle + \\eta^2 \\|\\tilde{\\mathbf{g}}_t\\|^2."
+    },
+    {
+      "equation_id": "P13-EQ-05",
+      "latex": "\\mathbb{E}\\left[\\|w_{t+1} - w^*\\|^2\\right] &\\le (1 - \\eta \\mu) \\mathbb{E}\\left[\\|w_t - w^*\\|^2\\right] \\notag \\\\ &\\quad + \\eta^2 \\left( \\frac{\\sigma_g^2}{|\\mathcal{B}_{\\mathrm{train}}|} + \\frac{d \\sigma^2 C_{\\mathrm{clip}}^2}{|\\mathcal{B}_{\\mathrm{tra..."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P13-TAB-01",
+      "caption": "Comparative Drift Adaptation Performance Across Methods"
+    },
+    {
+      "table_id": "P13-TAB-02",
+      "caption": "Ablation: Trajectory Stability vs. Freezing Geometry under DP Noise"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P13-FIG-01",
+      "caption": "Cross-Node Convergence Trajectory under 15\\% Annotation Budget. The proposed BALD-guided framework outpaces uniform random and Softmax entropy sampling, converging to 93.0\\% global accuracy."
+    },
+    {
+      "figure_id": "P13-FIG-02",
+      "caption": "Sensitivity Analysis for BALD Threshold $\\tau_{\\mathrm{MI"
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P13-REF-01",
+      "key": "b1",
+      "raw_citation": "W. Y. B. Lim et al., ``Federated Learning in Mobile Edge Networks: A Comprehensive Survey,'' IEEE Communications Surveys \\& Tutorials , vol. 22, no. 3, pp. 2031--2063, 2020."
+    },
+    {
+      "reference_id": "P13-REF-02",
+      "key": "b3",
+      "raw_citation": "W. Shi et al., ``Edge Computing: Vision and Challenges,'' IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637--646, 2016."
+    },
+    {
+      "reference_id": "P13-REF-03",
+      "key": "b28",
+      "raw_citation": "J. Gama et al., ``A survey on concept drift adaptation,'' ACM Computing Surveys , vol. 46, no. 4, pp. 1--37, 2014."
+    },
+    {
+      "reference_id": "P13-REF-04",
+      "key": "b2",
+      "raw_citation": "J. Lu et al., ``Learning Under Concept Drift: A Review,'' IEEE Transactions on Knowledge and Data Engineering , vol. 31, no. 12, pp. 2346--2363, 2018."
+    },
+    {
+      "reference_id": "P13-REF-05",
+      "key": "b7",
+      "raw_citation": "Z. Zhao et al., ``Federated Learning with Non-IID Data,'' Neurocomputing , vol. 465, pp. 465--475, 2021."
+    },
+    {
+      "reference_id": "P13-REF-06",
+      "key": "b10",
+      "raw_citation": "J. Zhang et al., ``Concept Drift in Edge AI: A Comprehensive Survey,'' IEEE Transactions on Neural Networks and Learning Systems , vol. 36, no. 2, pp. 842--859, 2025."
+    },
+    {
+      "reference_id": "P13-REF-07",
+      "key": "b29",
+      "raw_citation": "Q. Yang et al., ``Federated machine learning: Concept and applications,'' ACM Transactions on Intelligent Systems and Technology , vol. 10, no. 2, pp. 1--19, 2019."
+    },
+    {
+      "reference_id": "P13-REF-08",
+      "key": "b35",
+      "raw_citation": "S. Wang et al., ``Adaptive federated learning in resource constrained edge computing systems,'' IEEE Journal on Selected Areas in Communications , vol. 37, no. 6, pp. 1205--1221, 2019."
+    },
+    {
+      "reference_id": "P13-REF-09",
+      "key": "b19",
+      "raw_citation": "B. Settles, ``Active Learning Literature Survey,'' University of Wisconsin-Madison , Computer Sciences Technical Report 1648, 2009."
+    },
+    {
+      "reference_id": "P13-REF-10",
+      "key": "b11",
+      "raw_citation": "D. Miller et al., ``Human-in-the-Loop Active Learning under Operator Fatigue: A Cognitive Load Analysis,'' ACM Transactions on Interactive Intelligent Systems , vol. 14, no. 1, pp. 1--28, 2024."
+    },
+    {
+      "reference_id": "P13-REF-11",
+      "key": "b12",
+      "raw_citation": "D. H. Lee, ``Pseudo-label: The simple and efficient semi-supervised learning method for deep neural networks,'' in ICML Workshop on Challenges in Representation Learning , 2013."
+    },
+    {
+      "reference_id": "P13-REF-12",
+      "key": "b13",
+      "raw_citation": "X. Yu et al., ``Federated Continual Learning under Concept Drift: Mitigating Confirmation Bias,'' IEEE Transactions on Pattern Analysis and Machine Intelligence , vol. 46, no. 5, pp. 3102--3118, 2024."
+    },
+    {
+      "reference_id": "P13-REF-13",
+      "key": "b14",
+      "raw_citation": "M. Mohri et al., ``Agnostic Federated Learning,'' in Proceedings of the International Conference on Machine Learning (ICML) , pp. 4615--4625, 2019."
+    },
+    {
+      "reference_id": "P13-REF-14",
+      "key": "b8",
+      "raw_citation": "M. S. Hossain et al., ``Edge Computing in IoT: A Review,'' IEEE Internet of Things Journal , vol. 6, no. 5, pp. 7820--7834, 2019."
+    },
+    {
+      "reference_id": "P13-REF-15",
+      "key": "b15",
+      "raw_citation": "S. Suresh Kumar et al., ``Memory-Bound Edge Efficiency Envelope: An Analytical Model,'' IEEE Access , vol. 14, pp. 11204--11218, 2026."
+    }
+  ]
+}

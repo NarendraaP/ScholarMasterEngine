@@ -1,0 +1,330 @@
+{
+  "P1": {
+    "paper_id": "P1",
+    "current_baselines": [
+      "Monolithic single-process edge pipeline",
+      "Cloud-streaming video analytics (DeepEye/VideoEdge)"
+    ],
+    "expected_baseline_class": "Classical pipeline vs decoupled layer architecture",
+    "missing_important_baselines": [
+      "Modern edge microservice orchestrators (K3s/EdgeX)"
+    ],
+    "baseline_status": "ADEQUATE_BASELINES"
+  },
+  "P2": {
+    "paper_id": "P2",
+    "current_baselines": [
+      "Standard symmetric cross-entropy loss",
+      "Static confidence thresholding"
+    ],
+    "expected_baseline_class": "Cost-sensitive machine learning baselines",
+    "missing_important_baselines": [
+      "Cost-sensitive GBDT / Focal Loss"
+    ],
+    "baseline_status": "ADEQUATE_BASELINES"
+  },
+  "P3": {
+    "paper_id": "P3",
+    "current_baselines": [
+      "Raw video frame retention",
+      "Pixel-level Gaussian blurring",
+      "Face bounding-box anonymization"
+    ],
+    "expected_baseline_class": "Traditional visual anonymization methods",
+    "missing_important_baselines": [
+      "Optical flow abstraction",
+      "Generative adversarial anonymization"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P4": {
+    "paper_id": "P4",
+    "current_baselines": [
+      "Point-in-time thresholding",
+      "Naive SQL polling queries",
+      "Stateless rule checking"
+    ],
+    "expected_baseline_class": "Complex Event Processing (CEP) baselines",
+    "missing_important_baselines": [
+      "Esper / Apache Flink streaming CEP engine"
+    ],
+    "baseline_status": "ADEQUATE_BASELINES"
+  },
+  "P5": {
+    "paper_id": "P5",
+    "current_baselines": [
+      "Standard Williams Roofline model",
+      "Static frequency DVFS scheduler",
+      "Unconstrained GPU execution"
+    ],
+    "expected_baseline_class": "Hardware Roofline and thermal models",
+    "missing_important_baselines": [
+      "NVIDIA Jetson power-mode dynamic governors"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P6": {
+    "paper_id": "P6",
+    "current_baselines": [
+      "Raw amplitude thresholding",
+      "Continuous speech-to-text (Whisper/Vosk)",
+      "Standard GCC-PHAT without spectral gating"
+    ],
+    "expected_baseline_class": "Classical acoustic anomaly detection and localization",
+    "missing_important_baselines": [
+      "Modern deep audio classifiers (AST/YamNet) with privacy penalty"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P7": {
+    "paper_id": "P7",
+    "current_baselines": [
+      "Exact Linear Scan (k-NN)",
+      "FAISS IVF-PQ",
+      "Vanilla HNSW (M=16)",
+      "Annoy"
+    ],
+    "expected_baseline_class": "State-of-the-art approximate nearest neighbor indices",
+    "missing_important_baselines": [
+      "Google ScaNN",
+      "HNSW with product quantization (HNSW-PQ)"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P8": {
+    "paper_id": "P8",
+    "current_baselines": [
+      "Append-only flat log files",
+      "Centralized cloud audit logging",
+      "Standard Merkle DAG without key shredding"
+    ],
+    "expected_baseline_class": "Tamper-evident logging and blockchain baselines",
+    "missing_important_baselines": [
+      "Certificate Transparency log models"
+    ],
+    "baseline_status": "ADEQUATE_BASELINES"
+  },
+  "P9": {
+    "paper_id": "P9",
+    "current_baselines": [
+      "Fixed 30 FPS continuous inference",
+      "Uniform periodic frame sampling (1 FPS)",
+      "Naive motion-triggered wake-up"
+    ],
+    "expected_baseline_class": "Dynamic inference scheduling frameworks",
+    "missing_important_baselines": [
+      "VideoStorm (NSDI)",
+      "Chameleon (SIGCOMM)"
+    ],
+    "baseline_status": "BASELINE_GAP"
+  },
+  "P10": {
+    "paper_id": "P10",
+    "current_baselines": [
+      "Unstressed baseline execution",
+      "Isolated single-fault injection",
+      "Standard 24-hour soak test"
+    ],
+    "expected_baseline_class": "System reliability and chaos injection baselines",
+    "missing_important_baselines": [
+      "Standard Linux stress-ng standalone benchmark"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P11": {
+    "paper_id": "P11",
+    "current_baselines": [
+      "Default mutable ext4 filesystem",
+      "Standard single-partition boot",
+      "Manual crash recovery"
+    ],
+    "expected_baseline_class": "Embedded Linux robust update frameworks",
+    "missing_important_baselines": [
+      "RAUC / Mender A/B update engines"
+    ],
+    "baseline_status": "BASELINE_GAP"
+  },
+  "P12": {
+    "paper_id": "P12",
+    "current_baselines": [
+      "Default ext4 filesystem",
+      "Synchronous write mode (O_SYNC)",
+      "Standard ramdisk caching without dirty ratio tuning"
+    ],
+    "expected_baseline_class": "Flash filesystem and write caching configurations",
+    "missing_important_baselines": [
+      "Btrfs with zstd compression"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P13": {
+    "paper_id": "P13",
+    "current_baselines": [
+      "Standard FedAvg without active learning",
+      "Random sample selection",
+      "Margin-based uncertainty sampling"
+    ],
+    "expected_baseline_class": "Streaming active learning and federated drift methods",
+    "missing_important_baselines": [
+      "Streaming Hoeffding Trees (VFDT)",
+      "DDM / EDDM drift detectors"
+    ],
+    "baseline_status": "BASELINE_GAP"
+  },
+  "P14": {
+    "paper_id": "P14",
+    "current_baselines": [
+      "Flat FedAvg",
+      "FedProx (mu = 0.01)",
+      "HierFAVG (hierarchical FedAvg)",
+      "Local SGD"
+    ],
+    "expected_baseline_class": "Hierarchical and asynchronous federated learning baselines",
+    "missing_important_baselines": [
+      "FedAsync",
+      "Aso-Fed"
+    ],
+    "baseline_status": "BASELINE_GAP"
+  },
+  "P15": {
+    "paper_id": "P15",
+    "current_baselines": [
+      "Traditional 2D multi-monitor CCTV dashboard",
+      "Mobile handheld tablet alert feed",
+      "Audio-only dispatch radio"
+    ],
+    "expected_baseline_class": "Classical physical security user interfaces",
+    "missing_important_baselines": [
+      "Standard split-screen GIS security dispatch interface"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P16": {
+    "paper_id": "P16",
+    "current_baselines": [
+      "Opaque closed-circuit surveillance",
+      "Policy-only promised privacy",
+      "Opt-out tracking systems"
+    ],
+    "expected_baseline_class": "Surveillance vs transparent stewardship baselines",
+    "missing_important_baselines": [
+      "Explicit consent-gated biometric tracking"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P17": {
+    "paper_id": "P17",
+    "current_baselines": [
+      "Policy-based compliance frameworks / Heuristic anomaly detection"
+    ],
+    "expected_baseline_class": "Theoretical comparative paradigms",
+    "missing_important_baselines": [
+      "N/A (Theoretical paper)"
+    ],
+    "baseline_status": "NOT_APPLICABLE"
+  },
+  "P18": {
+    "paper_id": "P18",
+    "current_baselines": [
+      "Standard try-except error handling",
+      "Fail-open error logging",
+      "Kernel cgroup process termination"
+    ],
+    "expected_baseline_class": "Runtime fault containment and recovery mechanisms",
+    "missing_important_baselines": [
+      "Software transactional memory (STM) rollback"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P19": {
+    "paper_id": "P19",
+    "current_baselines": [
+      "Traditional monolithic TCB",
+      "Hypervisor-based isolation",
+      "Containerized microservices"
+    ],
+    "expected_baseline_class": "Formal security threat models",
+    "missing_important_baselines": [
+      "Hardware enclave models (ARM TrustZone / Intel SGX)"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P20": {
+    "paper_id": "P20",
+    "current_baselines": [
+      "Ad-hoc multi-sensor architectures",
+      "NIST Cyber-Physical Framework",
+      "Open Edge Computing Model"
+    ],
+    "expected_baseline_class": "Reference architecture frameworks",
+    "missing_important_baselines": [
+      "EdgeX Foundry reference architecture"
+    ],
+    "baseline_status": "ADEQUATE_BASELINES"
+  },
+  "P21": {
+    "paper_id": "P21",
+    "current_baselines": [
+      "Policy-based compliance frameworks / Heuristic anomaly detection"
+    ],
+    "expected_baseline_class": "Theoretical comparative paradigms",
+    "missing_important_baselines": [
+      "N/A (Theoretical paper)"
+    ],
+    "baseline_status": "NOT_APPLICABLE"
+  },
+  "P22": {
+    "paper_id": "P22",
+    "current_baselines": [
+      "Standard Softmax confidence",
+      "Monte Carlo Dropout",
+      "Ensemble Deep Learning",
+      "Laplacian blur variance alone"
+    ],
+    "expected_baseline_class": "State-of-the-art uncertainty estimation and OOD detection",
+    "missing_important_baselines": [
+      "Deep Evidential Regression (Amini et al.)"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P23": {
+    "paper_id": "P23",
+    "current_baselines": [
+      "Static single-model inference",
+      "Fixed confidence threshold cascade",
+      "Random model routing"
+    ],
+    "expected_baseline_class": "Dynamic neural network cascade baselines",
+    "missing_important_baselines": [
+      "BranchyNet early exit",
+      "BlockDrop adaptive routing"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P24": {
+    "paper_id": "P24",
+    "current_baselines": [
+      "Single-modality optical only",
+      "Static equal-weight fusion",
+      "Kalman filter multi-modal tracking"
+    ],
+    "expected_baseline_class": "Multi-sensor fusion and recovery algorithms",
+    "missing_important_baselines": [
+      "Transformer-based cross-attention fusion"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  },
+  "P25": {
+    "paper_id": "P25",
+    "current_baselines": [
+      "Independent stage error propagation (Gaussian noise model)",
+      "Unbounded linear Lipschitz propagation",
+      "End-to-end black-box sensitivity"
+    ],
+    "expected_baseline_class": "Multi-stage pipeline error analysis models",
+    "missing_important_baselines": [
+      "Taylor expansion bounding"
+    ],
+    "baseline_status": "STRONG_BASELINES"
+  }
+}

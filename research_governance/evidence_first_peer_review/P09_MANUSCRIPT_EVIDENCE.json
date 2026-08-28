@@ -1,0 +1,281 @@
+{
+  "paper_id": "P09",
+  "paper_num": 9,
+  "title": "A Hierarchical Edge Control Plane for Policy-Aware Multi-Module AI Orchestration",
+  "abstract_snippet": "Edge deployments of multi-model AI perception pipelines face orchestration challenges that are largely independent of individual model accuracy. Dynamic coordination of heterogeneous inference pipelines subject to shared latency, computational, and policy constraints presents a control theory challenge. The tight coupling of such systems can create cascading fault conditions in the perception pipe...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Problem Statement",
+    "Hierarchical Control Plane Abstraction",
+    "Compute Justification Model",
+    "Failure Containment Design",
+    "Policy-Aware Scheduler",
+    "Validation via Fault Injection",
+    "Experimental Results",
+    "Discussion \\& Limitations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Architectural Fragility in Flat Multi-Model Pipelines",
+    "Contributions and Subsystem Scope",
+    "Edge Video Analytics and Dynamic Pipeline Adaptation",
+    "Edge Multi-Model Orchestration and Microservice Systems",
+    "Policy-Aware Inference Governance and Privacy Gating",
+    "The Compute Allocation Problem",
+    "Supervisory Automaton Formalization",
+    "Typed Context Vectors as Coordination Boundaries",
+    "Layer Isolation Factor (LIF)",
+    "Scheduling Formalism and IRG",
+    "Kinematic-Coupled Inference Rate Bounding",
+    "Lyapunov Stability of the PID Inference Governor",
+    "Ethical Compute Utilization (ECU) and Context Duty Cycle",
+    "Failure Mode Analysis",
+    "Abstract State Transitions for Graceful Degradation",
+    "Operational Budgets",
+    "Session Boundary Enforcement",
+    "Comparative Evaluation against SOTA Video Analytics Baselines",
+    "Ablation: Kinematic Rate Filter vs. Token Bucket Rate Limiting",
+    "Inference Suppression Statistics by Module",
+    "Module Activation Timeline",
+    "Scientific Implications",
+    "Limitations and Failure Boundaries"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P09-PARA-01",
+      "text_snippet": "To deal with this orchestration problem, this work proposes a hierarchical control-plane abstraction for policy-aware coordination of multi-module AI workloads at the edge. The paper describes a layered execution environment, including Perception, Reasoning, and Governance, with limited cross-layer ...",
+      "char_count": 587
+    },
+    {
+      "paragraph_id": "P09-PARA-02",
+      "text_snippet": "System resilience is evaluated via fault injection that exposes particular orchestrator to deterministic failure scenarios including module timeouts, memory pressure, and routing perturbations. To assess orchestration behavior independently from downstream model accuracy, we introduce four policy-aw...",
+      "char_count": 601
+    },
+    {
+      "paragraph_id": "P09-PARA-03",
+      "text_snippet": "The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems often feature multiple domainspecific AI modules hosted at the edge, ru...",
+      "char_count": 553
+    },
+    {
+      "paragraph_id": "P09-PARA-04",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem takes care of the activation of other modules, controls their orchestration logic, and only these three things. It does not assess survivability envelopes (Paper 10), optimize flash memory durability (Paper 12), optimize federated adaptation (Pap...",
+      "char_count": 412
+    },
+    {
+      "paragraph_id": "P09-PARA-05",
+      "text_snippet": "Coordinating heterogeneous AI modules inside a single edge deployment introduces several competing architectural requirements: enumerate Boundary Confinement: High-fidelity perception data (like raw video frames) must remain confined to lower abstraction layers to limit unnecessary exposure to upper...",
+      "char_count": 619
+    },
+    {
+      "paragraph_id": "P09-PARA-06",
+      "text_snippet": "Architectures that favours one of the dimension heavily may neglect others. The proposed hierarchical design attempt to alleviate constraint of these dimension by being explicit through layering and policy driven activation of modules.",
+      "char_count": 235
+    },
+    {
+      "paragraph_id": "P09-PARA-07",
+      "text_snippet": "A naive edge deployment might execute face detection, pose estimation, and ASR continuously at 30 frames per second for the full hour, consuming: equation C_{naive = 60 60 30 = 108,000 inference cycles equation",
+      "char_count": 210
+    },
+    {
+      "paragraph_id": "P09-PARA-08",
+      "text_snippet": "However, heavy compute is actually only operationally justified during the attendance phase (10 minutes) and the active Q\\&A session (15 minutes). The justified cycle count is significantly lower: equation C_{justified = (10 + 15) 60 30 = 45,000 inference cycles equation",
+      "char_count": 271
+    },
+    {
+      "paragraph_id": "P09-PARA-09",
+      "text_snippet": "Consider that the naive algorithm would spend about 63000 cycles scanning the input where there is no valid data. Our algorithm effectively removes this overhead and only scans those parts of the input which are needed for processing according to the operational policy.",
+      "char_count": 270
+    },
+    {
+      "paragraph_id": "P09-PARA-10",
+      "text_snippet": "To address the aforementioned orchestration constraints we propose to consider a layered execution environment that supervises module activation. The logical control abstraction is formalized as a supervisory automaton governing module activation. These logical divisions operate within the broader r...",
+      "char_count": 390
+    },
+    {
+      "paragraph_id": "P09-PARA-11",
+      "text_snippet": "We define a governance activation function that outputs the active module set $A(t) M$: equation A(t) = f(P(t), H(M), B_{remaining ) equation",
+      "char_count": 141
+    },
+    {
+      "paragraph_id": "P09-PARA-12",
+      "text_snippet": "This establishes a formal state machine in which module activation is resolved deterministically based on the current policy phase, the hardware's health, and operational limits b26 . To prevent race-induced nondeterminism during asynchronous health updates, the function $f$ is deterministic and sid...",
+      "char_count": 404
+    },
+    {
+      "paragraph_id": "P09-PARA-13",
+      "text_snippet": "The Logical Control Abstraction separates responsibilities vertically. Raw perception data is restricted entirely to the lowest logical boundary, ensuring that Governance only processes aggregated statistics.",
+      "char_count": 208
+    },
+    {
+      "paragraph_id": "P09-PARA-14",
+      "text_snippet": "Continuous use of all perceptual modules rarely takes place in instruction, as the Compute Justification Model highlights by stating that allocations are made according to policy context rather than energy considerations alone. The Governance layer allows individual modules to operate according to a...",
+      "char_count": 424
+    },
+    {
+      "paragraph_id": "P09-PARA-15",
+      "text_snippet": "Based on this abstraction, the Inference Suppression Ratio (ISR) quantifies the algorithmic compute savings: equation ISR = 1 - _t C_{exec (t) { _t C_{sched (t) equation ISR reflects the proportion of scheduled compute that is intentionally suppressed under policy control. While higher ISR values in...",
+      "char_count": 437
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P09-THE-01",
+      "type": "THEOREM",
+      "statement": "[Kinematic-Coupled Sampling Bound] Let physical subjects move with bounded maximum transit velocity $v_{\\max} = 5.0\\text{ m/s}$ within an observed optical detection corridor of depth $\\Delta x$. To guarantee that no subject traverses the critical interaction zone undetected (zero state transition lo..."
+    },
+    {
+      "theorem_id": "P09-THE-02",
+      "type": "THEOREM",
+      "statement": "[Lyapunov Stability of Rate Governor] Let the inference error be $e(t) = q(t) - q_{\\text{ref}}$, where $q_{\\text{ref}}$ is the target buffer setpoint. With control law $u(t) = K_p e(t) + K_i \\int_0^t e(\\tau) d\\tau + K_d \\frac{de(t)}{dt}$, the candidate Lyapunov function $V(e, \\dot{e}) = \\frac{1}{2} ..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P09-EQ-01",
+      "latex": "C_{naive} = 60 \\times 60 \\times 30 = 108,000 \\text{ inference cycles}"
+    },
+    {
+      "equation_id": "P09-EQ-02",
+      "latex": "C_{justified} = (10 + 15) \\times 60 \\times 30 = 45,000 \\text{ inference cycles}"
+    },
+    {
+      "equation_id": "P09-EQ-03",
+      "latex": "A(t) = f(P(t), H(M), B_{remaining})"
+    },
+    {
+      "equation_id": "P09-EQ-04",
+      "latex": "\\vec{C}_{Perc \\to Reas} = \\{(event\\_type, zone, timestamp)\\}"
+    },
+    {
+      "equation_id": "P09-EQ-05",
+      "latex": "LIF = \\frac{\\text{Failures Contained in Origin Layer}}{\\text{Total Module Failures}} \\times 100\\%"
+    },
+    {
+      "equation_id": "P09-EQ-06",
+      "latex": "C_{exec}(t) = C_{sched}(t) \\cdot J(t)"
+    },
+    {
+      "equation_id": "P09-EQ-07",
+      "latex": "ISR = 1 - \\frac{\\sum_t C_{exec}(t)}{\\sum_t C_{sched}(t)}"
+    },
+    {
+      "equation_id": "P09-EQ-08",
+      "latex": "T_s^* \\le \\frac{\\Delta x}{2 v_{\\max}}. \\label{eq:kinematic_bound}"
+    },
+    {
+      "equation_id": "P09-EQ-09",
+      "latex": "\\dot{V} = e \\dot{e} + \\left(\\int e\\right) e + \\dot{e} \\left(-\\frac{K_d}{m} \\dot{e} - \\frac{K_p}{m} e - \\frac{K_i}{m} \\int e\\right)."
+    },
+    {
+      "equation_id": "P09-EQ-10",
+      "latex": "ECU = \\frac{\\text{Inference Cycles with Valid } J(t)}{\\text{Total Executed Cycles}} \\times 100\\%."
+    },
+    {
+      "equation_id": "P09-EQ-11",
+      "latex": "B_{module}(day) \\leq B_{max} = 100 \\text{ activations/day}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P09-TAB-01",
+      "caption": "Failure Mode Analysis and Mitigation"
+    },
+    {
+      "table_id": "P09-TAB-02",
+      "caption": "System-Level Performance Comparison Against SOTA Video Analytics Baselines"
+    },
+    {
+      "table_id": "P09-TAB-03",
+      "caption": "Ablation: Tracking Retention vs. Movement Velocity ($v_{\\max"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P09-FIG-01",
+      "caption": "Inference Suppression Ratio (ISR) by module: Heavy Vision suppressed 72\\% of scheduled cycles; ASR 85\\%; Lightweight Pose only 12\\%."
+    },
+    {
+      "figure_id": "P09-FIG-02",
+      "caption": "Module activation timeline: All modules active during attendance (0-10 min), lightweight pose mode (10-40 min), interactive Q\\&A mode (40-55 min), and complete sensing suppression during dismissal (55-60 min)."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P09-REF-01",
+      "key": "b18",
+      "raw_citation": "A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' IEEE Transactions on Dependable and Secure Computing , vol. 1, no. 1, pp. 11--33, 2004."
+    },
+    {
+      "reference_id": "P09-REF-02",
+      "key": "b28",
+      "raw_citation": "P. Alvaro et al., ``Lineage-driven Fault Injection,'' in Proceedings of the ACM SIGMOD International Conference on Management of Data , pp. 331--346, 2015."
+    },
+    {
+      "reference_id": "P09-REF-03",
+      "key": "b10",
+      "raw_citation": "M. Abadi et al., ``TensorFlow: A System for Large-Scale Machine Learning,'' in USENIX Symposium on Operating Systems Design and Implementation (OSDI) , pp. 265--283, 2016."
+    },
+    {
+      "reference_id": "P09-REF-04",
+      "key": "b11",
+      "raw_citation": "W. Shi et al., ``Edge Computing: Vision and Challenges,'' IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637--646, 2016."
+    },
+    {
+      "reference_id": "P09-REF-05",
+      "key": "b4",
+      "raw_citation": "European Parliament, ``Regulation (EU) 2016/679 (GDPR),'' Official Journal of the European Union , L119, 2016."
+    },
+    {
+      "reference_id": "P09-REF-06",
+      "key": "b6",
+      "raw_citation": "M. Chiang and T. Zhang, ``Fog and IoT: An Overview of Research Opportunities,'' IEEE Internet of Things Journal , vol. 3, no. 6, pp. 854--864, 2016."
+    },
+    {
+      "reference_id": "P09-REF-07",
+      "key": "b7",
+      "raw_citation": "D. McDuff et al., ``AFFDEX SDK: A Cross-Platform Real-Time Multi-Face Expression Recognition Toolkit,'' in ACM CHI Extended Abstracts , pp. 3723--3726, 2016."
+    },
+    {
+      "reference_id": "P09-REF-08",
+      "key": "b17",
+      "raw_citation": "N. Dragoni et al., ``Microservices: Yesterday, Today, and Tomorrow,'' in Present and Ulterior Software Engineering , Springer, pp. 195--216, 2017."
+    },
+    {
+      "reference_id": "P09-REF-09",
+      "key": "b23",
+      "raw_citation": "Y. Kang et al., ``Neurosurgeon: Collaborative Intelligence Between the Cloud and Edge Microcloud,'' in ACM ASPLOS , pp. 615--629, 2017."
+    },
+    {
+      "reference_id": "P09-REF-10",
+      "key": "b8",
+      "raw_citation": "B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' in AISTATS , pp. 1273--1282, 2017."
+    },
+    {
+      "reference_id": "P09-REF-11",
+      "key": "b33",
+      "raw_citation": "H. Zhang et al., ``Live Video Analytics at Scale with Approximation and Delay-Tolerance,'' in USENIX Symposium on Networked Systems Design and Implementation (NSDI) , pp. 377--392, 2017."
+    },
+    {
+      "reference_id": "P09-REF-12",
+      "key": "b34",
+      "raw_citation": "J. Jiang et al., ``Chameleon: Scalable Adaptation of Video Analytics,'' in ACM SIGCOMM , pp. 253--266, 2018."
+    },
+    {
+      "reference_id": "P09-REF-13",
+      "key": "b21",
+      "raw_citation": "A. H. Jiang et al., ``Mainstream: Dynamic Stem-Sharing for Multi-Tenant Video Processing,'' in USENIX ATC , pp. 29--42, 2018."
+    },
+    {
+      "reference_id": "P09-REF-14",
+      "key": "b26",
+      "raw_citation": "M. Nardelli et al., ``Elastic Stream Processing for Distributed Environments,'' IEEE Internet Computing , vol. 22, no. 1, pp. 54--58, 2018."
+    },
+    {
+      "reference_id": "P09-REF-15",
+      "key": "b20",
+      "raw_citation": "Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' Proceedings of the IEEE , vol. 107, no. 8, pp. 1738--1762, 2019."
+    }
+  ]
+}

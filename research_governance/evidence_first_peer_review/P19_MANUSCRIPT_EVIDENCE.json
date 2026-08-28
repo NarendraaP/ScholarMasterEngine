@@ -1,0 +1,295 @@
+{
+  "paper_id": "P19",
+  "paper_num": 19,
+  "title": "Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI\n\\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \\& Technology (Autonomous), as part of academic research activities.",
+  "abstract_snippet": "The evaluation of edge AI systems under adversarial conditions requires a rigorous formalization of their defensive boundaries. While prior work established the architectural doctrine of irreversibility and its runtime enforcement mechanisms, the exact security boundaries, formal adversary definitions, and assumed trust models require explicit mathematical formulation. This paper formally defines ...",
+  "pdf_total_pages": 8,
+  "sections_inventory": [
+    "Introduction",
+    "Formal Adversary Classification Model",
+    "Information Flow and Non-Interference Model",
+    "State Transitions",
+    "Trusted Computing Base (TCB)",
+    "Comprehensive Threat Mitigation Mapping",
+    "Residual Risk \\& Information-Theoretic Bounds",
+    "Information-Flow Noninterference",
+    "Timing Channel Mitigation",
+    "Formal Security Theorems",
+    "Related Work",
+    "Conclusion",
+    "Temporal Logic Formalization of Invariants"
+  ],
+  "subsections_inventory": [
+    "Threat-Model Ambiguity in Privacy-Preserving AI",
+    "The Security Framing Gap",
+    "Scope and Formal Dependency Hierarchy",
+    "Formal Threat Model Assumptions",
+    "$A_0$: Passive Observer",
+    "$A_1$: User-Space Local Adversary",
+    "$A_2$: Remote Network Adversary",
+    "$A_3$: Institutional Administrator (Root)",
+    "$A_4$: Kernel-Level Adversary (Out of Scope)",
+    "$A_5$: Physical / Hardware Adversary (Out of Scope)",
+    "Security Domains and State Indistinguishability",
+    "Formal Threat Model Equation",
+    "Information Funneling and Dimensionality Reduction",
+    "Formal State Space Definition",
+    "Explicit TCB Formalization",
+    "Kernel Dependency Assumptions",
+    "Excluded from the TCB: Minimizing Attack Surface",
+    "Model Inversion (MI) Bounds",
+    "Membership Inference Attacks (MIA)",
+    "Domain Partition",
+    "Two-Trace Equivalence",
+    "Termination-Insensitive Property",
+    "TLA+ Model Checking and State Bounds",
+    "Execution Model",
+    "Isochronal Constraints",
+    "Leakage Claim",
+    "Empirical Grounding",
+    "Limitations and Operational Realism",
+    "MTL Property 1: Bounded Temporal Exposure",
+    "MTL Property 2: Governance Non-Bypass",
+    "MTL Property 3: Watchdog Fail-Closed Liveness",
+    "TLA+ Model Checking Verification"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P19-PARA-01",
+      "text_snippet": "The dominant thesis of this paper is that bounded privacy guarantees require explicit adversary and TCB formalization . This paper bridges the security framing gap by providing the formal threat model, information-flow constraints, and trust assumptions under which irreversible edge analytics are va...",
+      "char_count": 722
+    },
+    {
+      "paragraph_id": "P19-PARA-02",
+      "text_snippet": "By defining these bounds, we align the evaluation of the system with established principles of formal secure systems design and model checking b10 .",
+      "char_count": 148
+    },
+    {
+      "paragraph_id": "P19-PARA-03",
+      "text_snippet": "Let an Adversary $A$ be defined by a tuple of capabilities: equation A = O , M , E equation where: itemize $ O $ is the set of observable states (network packets, memory regions, file systems). $ M $ is the set of modifiable states (packet injection, memory writing, file alteration). $ E $ is the ex...",
+      "char_count": 396
+    },
+    {
+      "paragraph_id": "P19-PARA-04",
+      "text_snippet": "We formalize a tiered hierarchy of adversaries to precisely bound the limits of the architectural claims.",
+      "char_count": 105
+    },
+    {
+      "paragraph_id": "P19-PARA-05",
+      "text_snippet": "These assumptions do not weaken the proofs; rather, they mathematically bound the adversary model, explicitly shifting physical and microarchitectural extraction outside the formal scope to preserve the structural integrity of the software-architectural proofs.",
+      "char_count": 261
+    },
+    {
+      "paragraph_id": "P19-PARA-06",
+      "text_snippet": "Let $S$ be the set of all possible system states. We define an observation function $obs_{L (s)$ which yields the state of $ D _{Low $ in system state $s$. Two states $s_1$ and $s_2$ are indistinguishable to an $A_3$ adversary inspecting persistent storage if $obs_{L (s_1) = obs_{L (s_2)$, denoted a...",
+      "char_count": 320
+    },
+    {
+      "paragraph_id": "P19-PARA-07",
+      "text_snippet": "Let $ S = TCB, U , A_i $ represent the runtime system, where $TCB$ is the trusted computing base and $ U $ represents untrusted architectural components (e.g., neural network weights, UI). Let $X_{t < t_{now - $ represent raw biometric data existing prior to the configured TTL threshold $ $.",
+      "char_count": 292
+    },
+    {
+      "paragraph_id": "P19-PARA-08",
+      "text_snippet": "The system's fundamental security claim holds if and only if: equation A_i \\{A_0, A_1, A_2, A_3\\ : compromise(A_i) intact(TCB) extract(X_{t < t_{now - ) equation",
+      "char_count": 161
+    },
+    {
+      "paragraph_id": "P19-PARA-09",
+      "text_snippet": "This equation mathematically asserts that as long as the adversary's capability is bounded by $A_3$ and the TCB remains unviolated (no kernel compromise), retrospective extraction of raw data is strictly impossible.",
+      "char_count": 215
+    },
+    {
+      "paragraph_id": "P19-PARA-10",
+      "text_snippet": "We define the following predicates over a data buffer $b M_{high $: itemize $Alloc(b)$: Buffer $b$ is allocated in volatile memory. $Raw(b)$: Buffer $b$ contains high-fidelity raw biometric data. $Zeroed(b)$: Buffer $b$ has been securely overwritten with zeros. $Emit(b)$: The contents of buffer $b$ ...",
+      "char_count": 396
+    },
+    {
+      "paragraph_id": "P19-PARA-11",
+      "text_snippet": "In addition to the kernel, the TCB inherently includes the Compiler Toolchain Trust (mitigating the classic Thompson \"Trusting Trust\" attack) and the C Standard Library and Dynamic Loader , which must faithfully execute explicit zeroization requests before returning pages to the OS.",
+      "char_count": 283
+    },
+    {
+      "paragraph_id": "P19-PARA-12",
+      "text_snippet": "While generative models (e.g., GANs) can hallucinate a statistically plausible prior face that generates embedding $Y$, exact historical reconstruction becomes operationally infeasible under the defined threat model. Because the TCB strictly destroys the raw data, the architectural removal of auxili...",
+      "char_count": 377
+    },
+    {
+      "paragraph_id": "P19-PARA-13",
+      "text_snippet": "We acknowledge MIA as an inherent residual risk in distributed AI. Under $A_0$-$A_3$ adversaries, the exposure is limited to distributional leakage rather than direct data extraction. Formal mitigation relies on implementing Differential Privacy (DP) b14, b22 , which bounds the adversary's capabilit...",
+      "char_count": 690
+    },
+    {
+      "paragraph_id": "P19-PARA-14",
+      "text_snippet": "To rigorously prove the separation of biometric data from persistent sinks, we evaluate the architecture using formal Information-Flow Noninterference.",
+      "char_count": 151
+    },
+    {
+      "paragraph_id": "P19-PARA-15",
+      "text_snippet": "The formalization of security boundaries for computing systems has a long tradition. The Trusted Computing Base concept was established by the DoD Orange Book b3 , and the lattice model of secure information flow by Denning b12 provides the theoretical foundation for the domain partitioning used her...",
+      "char_count": 447
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P19-THE-01",
+      "type": "THEOREM",
+      "statement": "[Bounded Pixel-Space Non-Reconstructability] Under adversary constraints $A_0$ through $A_3$ and foundational assumptions ($A_{HW}, A_{PHYS}, A_{SPEC}$), pixel-space reconstruction from post-boundary representations is architecturally underdetermined and mathematically non-unique."
+    },
+    {
+      "theorem_id": "P19-THE-02",
+      "type": "THEOREM",
+      "statement": "[Probabilistic Noninterference] If the abstraction function is many-to-one over identity space and no stochastic process is conditioned on raw frame entropy, then the framework satisfies probabilistic noninterference under adversaries $A_0$ through $A_3$."
+    },
+    {
+      "theorem_id": "P19-THE-03",
+      "type": "THEOREM",
+      "statement": "[Bounded Temporal Exposure] Raw biometric data exposure to an active $A_3$ (Root) adversary intercepting live memory via OS-level debuggers is strictly bounded by the configured TTL parameter $\\Delta$ (e.g., $\\Delta \\le 33$ms)."
+    },
+    {
+      "theorem_id": "P19-THE-04",
+      "type": "THEOREM",
+      "statement": "[Governance Token Non-Bypass] Under attacker classes $A_0$ through $A_3$, no post-boundary payload can be emitted to an external sink without the inclusion of a governance approval token evaluated and validated by a TCB-resident module."
+    },
+    {
+      "theorem_id": "P19-THE-05",
+      "type": "THEOREM",
+      "statement": "[Fail-Closed State Reachability] Under non-kernel operational failure conditions (Process Crash, Network Partition, OOM, Power Loss), the system deterministically reaches a secure HALT or DEGRADED state where all privacy invariants are preserved."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P19-EQ-01",
+      "latex": "A = \\langle \\mathcal{O}, \\mathcal{M}, \\mathcal{E} \\rangle"
+    },
+    {
+      "equation_id": "P19-EQ-02",
+      "latex": "\\forall A_i \\in \\{A_0, A_1, A_2, A_3\\} : compromise(A_i) \\land intact(TCB) \\implies \\neg extract(X_{t < t_{now} - \\Delta})"
+    },
+    {
+      "equation_id": "P19-EQ-03",
+      "latex": "F_{irreversible}: \\mathbb{R}^{H \\times W \\times 3} \\to \\mathbb{R}^{d_{meta}}"
+    },
+    {
+      "equation_id": "P19-EQ-04",
+      "latex": "s = \\langle M_{high}, M_{low}, \\mathcal{P}, Net, Mode \\rangle"
+    },
+    {
+      "equation_id": "P19-EQ-05",
+      "latex": "TCB = \\{ C_{boot}, C_{kernel}, C_{alloc}, C_{sched}, C_{gov} \\}"
+    },
+    {
+      "equation_id": "P19-EQ-06",
+      "latex": "\\forall c \\in TCB : Trusted(c) \\quad \\land \\quad \\exists u \\in \\mathcal{U} : \\neg Trusted(u)"
+    },
+    {
+      "equation_id": "P19-EQ-07",
+      "latex": "H(X | Y) = H(X) - I(X;Y)"
+    },
+    {
+      "equation_id": "P19-EQ-08",
+      "latex": "\\forall tr_1, tr_2 \\in Traces : tr_1 \\sim_L tr_2 \\implies obs_L(tr_1) = obs_L(tr_2)"
+    },
+    {
+      "equation_id": "P19-EQ-09",
+      "latex": "\\square \\left( (Alloc(b) \\land Raw(b)) \\implies \\Diamond_{\\le \\Delta_{TTL}} Zeroed(b) \\right)"
+    },
+    {
+      "equation_id": "P19-EQ-10",
+      "latex": "\\square \\left( Emit(b) \\implies Gov(b) \\right)"
+    },
+    {
+      "equation_id": "P19-EQ-11",
+      "latex": "\\square \\left( Timeout(b) \\implies \\Diamond_{\\le \\epsilon} (Mode = HALT) \\right)"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P19-TAB-01",
+      "caption": "Formal Threat Mitigation Matrix mapping Adversary capabilities to specific Architectural Countermeasures."
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P19-FIG-01",
+      "caption": "Demarcation of the Trusted Computing Base. The security of the privacy invariants depends strictly on the components within the TCB. Neural network weights and UI elements are explicitly untrusted."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P19-REF-01",
+      "key": "b1",
+      "raw_citation": "J. H. Saltzer and M. D. Schroeder, \"The protection of information in computer systems,\" Proceedings of the IEEE , vol. 63, no. 9, pp. 1278--1308, 1975."
+    },
+    {
+      "reference_id": "P19-REF-02",
+      "key": "b12",
+      "raw_citation": "D. E. Denning, \"A lattice model of secure information flow,\" Communications of the ACM , vol. 19, no. 5, pp. 236-243, 1976."
+    },
+    {
+      "reference_id": "P19-REF-03",
+      "key": "b13",
+      "raw_citation": "A. Pnueli, \"The temporal logic of programs,\" in 18th Annual Symposium on Foundations of Computer Science (SFCS) , 1977."
+    },
+    {
+      "reference_id": "P19-REF-04",
+      "key": "b8",
+      "raw_citation": "J. A. Goguen and J. Meseguer, \"Security Policies and Security Models,\" in IEEE S\\&P , 1982."
+    },
+    {
+      "reference_id": "P19-REF-05",
+      "key": "b2",
+      "raw_citation": "D. Dolev and A. Yao, \"On the security of public key protocols,\" IEEE Transactions on Information Theory , vol. 29, no. 2, pp. 198--208, 1983."
+    },
+    {
+      "reference_id": "P19-REF-06",
+      "key": "b3",
+      "raw_citation": "T. C. B. Department of Defense, \"Trusted Computer System Evaluation Criteria (Orange Book),\" DoD 5200.28-STD , 1985."
+    },
+    {
+      "reference_id": "P19-REF-07",
+      "key": "b9",
+      "raw_citation": "R. Koymans, \"Specifying real-time properties with metric temporal logic,\" Real-Time Systems , vol. 2, no. 4, pp. 255-299, 1990."
+    },
+    {
+      "reference_id": "P19-REF-08",
+      "key": "b20",
+      "raw_citation": "R. Alur and D. L. Dill, \"A theory of timed automata,\" Theoretical Computer Science , vol. 126, no. 2, pp. 183-235, 1994."
+    },
+    {
+      "reference_id": "P19-REF-09",
+      "key": "b10",
+      "raw_citation": "E. M. Clarke, O. Grumberg, and D. A. Peled, Model Checking . MIT Press, 1999."
+    },
+    {
+      "reference_id": "P19-REF-10",
+      "key": "b11",
+      "raw_citation": "A. Sabelfeld and A. C. Myers, \"Language-based information-flow security,\" IEEE JSAC , vol. 21, no. 1, pp. 5-19, 2003."
+    },
+    {
+      "reference_id": "P19-REF-11",
+      "key": "b14",
+      "raw_citation": "C. Dwork, \"Differential Privacy,\" in ICALP , Springer, 2006."
+    },
+    {
+      "reference_id": "P19-REF-12",
+      "key": "b30_cps",
+      "raw_citation": "A. A. Cardenas, S. Amin, and S. Sastry, ``Secure control: Towards survivable cyber-physical systems,'' in The 28th Int. Conf. on Distributed Computing Systems Workshops , IEEE, 2008."
+    },
+    {
+      "reference_id": "P19-REF-13",
+      "key": "b4",
+      "raw_citation": "J. A. Halderman et al., \"Lest we remember: cold boot attacks on encryption keys,\" in USENIX Security Symposium , 2008."
+    },
+    {
+      "reference_id": "P19-REF-14",
+      "key": "b19_row",
+      "raw_citation": "Y. Kim et al., \"Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors,\" ISCA , 2014."
+    },
+    {
+      "reference_id": "P19-REF-15",
+      "key": "b23",
+      "raw_citation": "M. Fredrikson et al., \"Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures,\" in CCS , 2015."
+    }
+  ]
+}

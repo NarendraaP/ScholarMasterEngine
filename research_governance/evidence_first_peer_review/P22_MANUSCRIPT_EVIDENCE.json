@@ -1,0 +1,240 @@
+{
+  "paper_id": "P22",
+  "paper_num": 22,
+  "title": "Perception Integrity Foundations: Evidential Uncertainty, Disagreement Dynamics, and Blur Bounds in Edge Vision",
+  "abstract_snippet": "The deployment of autonomous cyber-physical vision systems at the edge in real-world applications is limited by environmental non-stationarity and optical aberrations, often resulting in misclassification of OOD data by conventional embedded vision classifiers. We present the theoretical foundation and the experimental validation of Layer-1 visual perception integrity in the ScholarMaster framewor...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work \\& Analytical 6-Paradigm Taxonomy",
+    "Mathematical System Model \\& First-Principles Proofs",
+    "Empirical Evaluation \\& Results",
+    "Failure Boundaries \\& Cyber-Physical Safety Invariants",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Uncertainty Quantification \\& Edge Computational Limits",
+    "Probability Calibration, OOD Detection \\& Physical Blur Filtering",
+    "Dirichlet Evidential Formulation \\& Beta Marginals",
+    "First-Principles Proof of Evidence Variance Bounds",
+    "Frequency-Domain Optical Blur \\& Keypoint Kinematics",
+    "Composite Perception Risk Function \\& Lipschitz Bounds",
+    "Experimental Methodology",
+    "Quantitative Results \\& Calibration Telemetry",
+    "Deep Interpretation of Results (3-Layer Standard)",
+    "Physical Failure Boundaries",
+    "Formal Fail-Closed State Transition Invariant",
+    "Layer-1 to Layer-2 Architectural Interface"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P22-PARA-01",
+      "text_snippet": "In multi-tier cyber-physical cascades such as the 5-layer ScholarMaster architecture comprising Perception Integrity (Layer 1), Biometric Identity (Layer 2), Kinematic Tracking (Layer 3), Temporal Compliance (Layer 4), and Ledger Commits (Layer 5), this kind of semantic blindness engenders catastrop...",
+      "char_count": 1092
+    },
+    {
+      "paragraph_id": "P22-PARA-02",
+      "text_snippet": "A critical systems gap exists at the intersection of machine learning reliability subfields: enumerate Softmax Overconfidence under Distributional Shift : High softmax confidence does not imply predictive correctness when test inputs diverge from training distributions hendrycks2016baseline . Calibr...",
+      "char_count": 1195
+    },
+    {
+      "paragraph_id": "P22-PARA-03",
+      "text_snippet": "To resolve this challenge, this paper establishes the theoretical foundations, algorithmic implementation, and empirical verification of Layer-1 Perception Integrity in ScholarMaster. Specifically, we make four core contributions: enumerate First-Principles Dirichlet Variance Bounds : We derive clos...",
+      "char_count": 1325
+    },
+    {
+      "paragraph_id": "P22-PARA-04",
+      "text_snippet": "While Deep Ensembles and MC-Dropout provide reliable uncertainty estimates, they both come at a hefty computational cost. An ensemble of $M = 5$ models needs $5 $ more FLOPs and memory than the baseline ($18.2 ms $ latency), while MC-Dropout with $N = 20$ passes has $28.5 ms $ latency. In streaming ...",
+      "char_count": 656
+    },
+    {
+      "paragraph_id": "P22-PARA-05",
+      "text_snippet": "To overcome the multi-pass bottleneck, Sensoy et al. sensoy2018evidential formulated Evidential Deep Learning (EDL), mapping network activations to non-negative evidence vectors that parameterize a Dirichlet prior over class multinomials in a single forward pass. Malinin and Gales malinin2018predict...",
+      "char_count": 643
+    },
+    {
+      "paragraph_id": "P22-PARA-06",
+      "text_snippet": "For out-of-distribution (OOD) detection, Hendrycks and Gimpel hendrycks2016baseline proposed a method called Maximum Softmax Probability. On the contrary, ODIN was introduced by Liang et al. liang2017enhancing that makes use of input perturbation, while Liu et al. liu2020energy suggested the energy-...",
+      "char_count": 540
+    },
+    {
+      "paragraph_id": "P22-PARA-07",
+      "text_snippet": "In parallel, classical computer vision utilizes spatial and frequency-domain image quality metrics pech2000diatom, pertuz2013analysis, dodge2016understanding . The Modified Laplacian Energy ($E_{lap $) computes high-frequency second-order spatial derivatives to quantify edge sharpness, while Fourier...",
+      "char_count": 653
+    },
+    {
+      "paragraph_id": "P22-PARA-08",
+      "text_snippet": "The probability density function of the Dirichlet distribution parameterized by $ = ( _1, , _K)$ is: align Dir ( p ) &= 1 { B ( ) _{k=1 ^K p_k^{ _k - 1 , \\\\ B ( ) &= _{k=1 ^K ( _k) { (S) , align where $ ( )$ is the gamma function. Integrating out all probability coordinates $p_{j k $ across the simp...",
+      "char_count": 840
+    },
+    {
+      "paragraph_id": "P22-PARA-09",
+      "text_snippet": "For spatial pose kinematics, keypoint temporal dispersion across consecutive video frames measures physical instability and tracking jitter: equation D( k ) = 1 {J _{j=1 ^J \\| k _j(t) - k _j(t-1)\\|_2 (1 - c_j(t)), equation where $ k _j(t) R ^2$ represents the 2D coordinate of landmark $j \\{1, , J\\ $...",
+      "char_count": 640
+    },
+    {
+      "paragraph_id": "P22-PARA-10",
+      "text_snippet": "When $R_p( x ) > _{risk $ ($ _{risk =0.70$), Layer 1 triggers a deterministic Fail-Closed Interception ($ $), preventing contaminated frames from entering downstream modules.",
+      "char_count": 174
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P22-THE-01",
+      "type": "THEOREM",
+      "statement": "[Dirichlet Evidence Variance Upper Bound] \\label{thm:dirichlet_variance} For a $K$-class Dirichlet distribution with concentration parameters $\\boldsymbol{\\alpha} = (\\alpha_1, \\dots, \\alpha_K)$ and Dirichlet strength $S = \\sum_{k=1}^K \\alpha_k$, the variance of any individual class probability $p_k$..."
+    },
+    {
+      "theorem_id": "P22-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[Monotonic Evidence Contraction under Uniform Scaling] \\label{prop:uniform_scaling} Let $\\boldsymbol{\\alpha}_0 = (\\alpha_{0,1}, \\dots, \\alpha_{0,K})$ be a fixed base concentration vector with base strength $S_0 = \\sum \\alpha_{0,k}$. Under proportional evidence scaling $\\boldsymbol{\\alpha}(c) = c \\bo..."
+    },
+    {
+      "theorem_id": "P22-PRO-03",
+      "type": "PROPOSITION",
+      "statement": "[Lipschitz Continuity of Composite Perception Risk] Let the component feature extractors satisfy Lipschitz conditions with constants $L_u, L_d, L_b, L_k$ with respect to the input metric $\\|\\mathbf{x}_1 - \\mathbf{x}_2\\|$. Then the composite perception risk function $R_p$ is Lipschitz continuous: \\be..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P22-EQ-01",
+      "latex": "\\sigma(\\mathbf{z})_k = \\frac{\\exp(z_k)}{\\sum_{j=1}^K \\exp(z_j)}."
+    },
+    {
+      "equation_id": "P22-EQ-02",
+      "latex": "\\begin{split} \\sigma(\\mathbf{z} + c \\mathbf{1})_k &= \\frac{\\exp(z_k + c)}{\\sum_{j=1}^K \\exp(z_j + c)} \\\\ &= \\frac{e^c \\exp(z_k)}{e^c \\sum_{j=1}^K \\exp(z_j)} = \\sigma(\\mathbf{z})_k, \\end{split}"
+    },
+    {
+      "equation_id": "P22-EQ-03",
+      "latex": "E(\\mathbf{x}; T) = -T \\cdot \\ln \\sum_{k=1}^K \\exp(z_k / T)."
+    },
+    {
+      "equation_id": "P22-EQ-04",
+      "latex": "\\alpha_k = e_k + 1, \\quad \\forall k \\in \\{1, \\dots, K\\}."
+    },
+    {
+      "equation_id": "P22-EQ-05",
+      "latex": "\\mathrm{Dir}(\\mathbf{p} \\mid \\boldsymbol{\\alpha}) &= \\frac{1}{\\mathrm{B}(\\boldsymbol{\\alpha})} \\prod_{k=1}^K p_k^{\\alpha_k - 1}, \\\\ \\mathrm{B}(\\boldsymbol{\\alpha}) &= \\frac{\\prod_{k=1}^K \\Gamma(\\alpha_k)}{\\Gamma(S)},"
+    },
+    {
+      "equation_id": "P22-EQ-06",
+      "latex": "p_k \\sim \\mathrm{Beta}(\\alpha_k, S - \\alpha_k)."
+    },
+    {
+      "equation_id": "P22-EQ-07",
+      "latex": "\\hat{p}_k = \\frac{\\alpha_k}{S}, \\quad b_k = \\frac{e_k}{S}, \\quad u = \\frac{K}{S}, \\quad \\sum_{k=1}^K b_k + u = 1.0."
+    },
+    {
+      "equation_id": "P22-EQ-08",
+      "latex": "\\mathrm{Var}(p_k) = \\frac{\\alpha_k (S - \\alpha_k)}{S^2 (S + 1)} \\le \\frac{1}{4(S + 1)} < \\frac{1}{4K}."
+    },
+    {
+      "equation_id": "P22-EQ-09",
+      "latex": "\\mathrm{Var}(p_k) = \\frac{a b}{(a + b)^2 (a + b + 1)} = \\frac{\\alpha_k(S - \\alpha_k)}{S^2(S + 1)}."
+    },
+    {
+      "equation_id": "P22-EQ-10",
+      "latex": "\\mathrm{Var}(p_k) = \\frac{S^2 z(1 - z)}{S^2(S + 1)} = \\frac{z(1 - z)}{S + 1} \\le \\frac{1}{4(S + 1)}."
+    },
+    {
+      "equation_id": "P22-EQ-11",
+      "latex": "\\mathrm{Var}(p_k) \\le \\frac{1}{4(S + 1)} < \\frac{1}{4K}."
+    },
+    {
+      "equation_id": "P22-EQ-12",
+      "latex": "\\mathrm{Var}(p_k; c) = \\frac{z_k(1 - z_k)}{c S_0 + 1}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P22-TAB-01",
+      "caption": "Comparative 6-Paradigm Taxonomy of Uncertainty Quantification and Perception Integrity Approaches"
+    },
+    {
+      "table_id": "P22-TAB-02",
+      "caption": "Quantitative Perception Integrity and Calibration Telemetry"
+    },
+    {
+      "table_id": "P22-TAB-03",
+      "caption": "Composite Perception Risk Telemetry Across Evaluated Corruption Regimes"
+    }
+  ],
+  "figures_inventory": [],
+  "references_inventory": [
+    {
+      "reference_id": "P22-REF-01",
+      "key": "hendrycks2019benchmarking",
+      "raw_citation": "D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in Proc. ICLR , 2019."
+    },
+    {
+      "reference_id": "P22-REF-02",
+      "key": "dodge2016understanding",
+      "raw_citation": "S. Dodge and L. Karam, ``Understanding how image quality affects deep neural networks,'' in Proc. QoMEX , 2016, pp. 1--6."
+    },
+    {
+      "reference_id": "P22-REF-03",
+      "key": "guo2017calibration",
+      "raw_citation": "C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, ``On calibration of modern neural networks,'' in Proc. ICML , 2017, pp. 1321--1330."
+    },
+    {
+      "reference_id": "P22-REF-04",
+      "key": "nguyen2015deep",
+      "raw_citation": "A. Nguyen, J. Yosinski, and J. Clune, ``Deep neural networks are easily fooled: High confidence predictions for unrecognizable images,'' in Proc. CVPR , 2015, pp. 427--436."
+    },
+    {
+      "reference_id": "P22-REF-05",
+      "key": "der2009aleatory",
+      "raw_citation": "A. Der Kiureghian and O. Ditlevsen, ``Aleatory or epistemic? Does it matter?'' Structural Safety , vol. 31, no. 2, pp. 105--112, 2009."
+    },
+    {
+      "reference_id": "P22-REF-06",
+      "key": "malinin2018predictive",
+      "raw_citation": "A. Malinin and M. Gales, ``Predictive uncertainty estimation via prior networks,'' in Proc. NeurIPS , 2018, pp. 7047--7058."
+    },
+    {
+      "reference_id": "P22-REF-07",
+      "key": "deng2019arcface",
+      "raw_citation": "J. Deng, J. Guo, N. Xue, and S. Zafeiriou, ``ArcFace: Additive angular margin loss for deep face recognition,'' in Proc. CVPR , 2019, pp. 4690--4699."
+    },
+    {
+      "reference_id": "P22-REF-08",
+      "key": "malkov2018efficient",
+      "raw_citation": "Y. A. Malkov and D. A. Yashunin, ``Efficient and robust approximate nearest neighbors using Hierarchical Navigable Small World graphs,'' IEEE Trans. Pattern Anal. Mach. Intell. , vol. 42, no. 4, pp. 824--836, 2018."
+    },
+    {
+      "reference_id": "P22-REF-09",
+      "key": "pnueli1977temporal",
+      "raw_citation": "A. Pnueli, ``The temporal logic of programs,'' in Proc. FOCS , 1977, pp. 46--57."
+    },
+    {
+      "reference_id": "P22-REF-10",
+      "key": "sambasivan2021everyone",
+      "raw_citation": "N. Sambasivan, S. Kapania, H. Highfill, D. Akrong, P. Paritosh, and L. M. Aroyo, ```Everyone wants to do the model work, not the data work': Data Cascades in high-stakes AI,'' in Proc. CHI , 2021, pp. 1--15."
+    },
+    {
+      "reference_id": "P22-REF-11",
+      "key": "blundell2015weight",
+      "raw_citation": "C. Blundell, J. Cornebise, K. Kavukcuoglu, and D. Wierstra, ``Weight uncertainty in neural network,'' in Proc. ICML , 2015, pp. 1613--1622."
+    },
+    {
+      "reference_id": "P22-REF-12",
+      "key": "neal1995bayesian",
+      "raw_citation": "R. M. Neal, Bayesian Learning for Neural Networks , Springer, 1995."
+    },
+    {
+      "reference_id": "P22-REF-13",
+      "key": "gal2016dropout",
+      "raw_citation": "Y. Gal and Z. Ghahramani, ``Dropout as a bayesian approximation: Representing model uncertainty in deep learning,'' in Proc. ICML , 2016, pp. 1050--1059."
+    },
+    {
+      "reference_id": "P22-REF-14",
+      "key": "lakshminarayanan2017simple",
+      "raw_citation": "B. Lakshminarayanan, A. Pritzel, and C. Blundell, ``Simple and scalable predictive uncertainty estimation using deep ensembles,'' in Proc. NeurIPS , 2017, pp. 6402--6413."
+    },
+    {
+      "reference_id": "P22-REF-15",
+      "key": "sandler2018mobilenetv2",
+      "raw_citation": "M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L. C. Chen, ``MobileNetV2: Inverted residuals and linear bottlenecks,'' in Proc. CVPR , 2018, pp. 4510--4520."
+    }
+  ]
+}

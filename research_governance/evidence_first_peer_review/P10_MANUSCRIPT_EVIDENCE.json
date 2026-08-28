@@ -1,0 +1,243 @@
+{
+  "paper_id": "P10",
+  "paper_num": 10,
+  "title": "Integrated Stress Validation of an Edge-Native Academic Analytics Architecture",
+  "abstract_snippet": "Most academic edge-native analytics solutions take the form of a monolithic stack that combines perception pipelines with policy enforcement functions and privacy preserving inference and cryptographic auditing capabilities. While these systems are typically designed and evaluated in isolation, the interactions between these sub-systems are dictated by shared resource constraints. Under compound s...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "The System Under Test (SUT)",
+    "Integrated Stress Matrix (ISM)",
+    "Experimental Stress Configuration",
+    "Comparative Failure Analysis",
+    "Thermal Behavior Under Compound Load",
+    "Resource Contention Profiling",
+    "Retrieval Consistency Under Stress",
+    "Survivability Under Network Degradation",
+    "168-Hour Burn-In Evaluation",
+    "Bounded Degradation Model",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Why Isolated Benchmarks Fail to Predict Deployment Survivability",
+    "Contributions and Subsystem Scope",
+    "Subsystem Interaction Interfaces",
+    "Threat Model",
+    "Survivability Function",
+    "Stress Interaction Regimes",
+    "Registry Simulation",
+    "Frame Injection",
+    "Network Instability and Thermal Stress",
+    "Retrieval Gap Formalization",
+    "Observed Metrics Under Integrated Stress",
+    "Partial Packet Loss (Up to 30\\%)",
+    "Full Network Partition and Post-Partition Recovery",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P10-PARA-01",
+      "text_snippet": "This study evaluates the survivability of an integrated edge-native academic analytics architecture operating under compound deployment stress. Rather than emphasizing individual module performance, we introduce an Integrated Stress Matrix (ISM) to represent compound deployment pressure using a mult...",
+      "char_count": 383
+    },
+    {
+      "paragraph_id": "P10-PARA-02",
+      "text_snippet": "Evaluation measures survivability as the joint preservation of real-time destruction deadlines ($ 33$ ms) and open-set retrieval consistency ($ 99\\%$). Under simultaneous stress\u2014including 30 FPS ingestion, a 100,000-identity registry, 20\\% unknown injection, 35$^ $C ambient conditions, and induced p...",
+      "char_count": 445
+    },
+    {
+      "paragraph_id": "P10-PARA-03",
+      "text_snippet": "The evaluation shows that subsystem co-design improves deployment survivability: it contains latency amplification and enforces bounded degradation when operational envelopes are exceeded. When operated beyond safe regions, it bounds the degree of degradation, limiting the loss of availability befor...",
+      "char_count": 354
+    },
+    {
+      "paragraph_id": "P10-PARA-04",
+      "text_snippet": "The primary thesis of this work is that systems co-designed at the subsystem level provide significantly greater survivability under compounded operational stress than do non-integrated approaches. Edge-informed architectures are typically composed of processing chains in which perceptual, policy, p...",
+      "char_count": 379
+    },
+    {
+      "paragraph_id": "P10-PARA-05",
+      "text_snippet": "Cloud mediated systems alleviate local resource constraints but add a variable network to the system which becomes a critical part of the system b4, b21 . Packet retransmissions, jitter amplification, and temporary partitions add tail-latency costs that exceed real-time constraints. Conversely, naiv...",
+      "char_count": 441
+    },
+    {
+      "paragraph_id": "P10-PARA-06",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem evaluates survivability boundaries, measures compound stress interaction, and validates bounded degradation only. It does not harden immutable lifecycle deployment (Paper 11), optimize flash endurance (Paper 12), optimize federated adaptation (Pa...",
+      "char_count": 411
+    },
+    {
+      "paragraph_id": "P10-PARA-07",
+      "text_snippet": "The evaluated architecture is treated as a pre-defined System Under Test (SUT) established in the preceding architectural layers of this series. The study evaluates the integrated behavior of four abstracted subsystems: Perception, Policy Enforcement, Memory Isolation, and Audit Verification.",
+      "char_count": 293
+    },
+    {
+      "paragraph_id": "P10-PARA-08",
+      "text_snippet": "We do not propose or modify the design of these modules; instead, we evaluate their cross-subsystem interaction effects under shared resource constraints. The critical question is how their concurrent execution on a shared hardware platform affects system-wide latency and privacy preservation when s...",
+      "char_count": 339
+    },
+    {
+      "paragraph_id": "P10-PARA-09",
+      "text_snippet": "Assessing integrated edge architectures requires consideration of compound operational pressures which are rarely simulated in single-variable benchmarking b26 . Workload scale, injection of unknown subjects, network instability, and thermal pressure are often found together in practice. Evaluation ...",
+      "char_count": 521
+    },
+    {
+      "paragraph_id": "P10-PARA-10",
+      "text_snippet": "To model compound deployment pressure, we define the Integrated Stress Matrix (ISM) as a multidimensional stress vector: equation S = \\{ _{fps , N_{registry , _{unknown , _{net , T_{ambient \\ equation Where: itemize $ _{fps $ \u2014 sustained frame ingestion rate (throughput stress) $N_{registry $ \u2014 acti...",
+      "char_count": 584
+    },
+    {
+      "paragraph_id": "P10-PARA-11",
+      "text_snippet": "Each dimension independently impacts the behavior of the various subsystems. Moreover, the interactions between dimensions can have nonlinearly compounding impacts on degradation. Increasing $N_{registry $ increases the depth of traversal in the ANN; increasing $ _{unknown $ increases the length of ...",
+      "char_count": 869
+    },
+    {
+      "paragraph_id": "P10-PARA-12",
+      "text_snippet": "Real-time destruction deadline constraint: equation L_{p99.9 < 33 ms equation Retrieval consistency threshold: equation C_{retrieval > 99\\% equation",
+      "char_count": 148
+    },
+    {
+      "paragraph_id": "P10-PARA-13",
+      "text_snippet": "Formally: equation (S) = 1 \\{ L_{p99.9 (S) < 33 ms C_{retrieval (S) > 99\\% \\ equation",
+      "char_count": 85
+    },
+    {
+      "paragraph_id": "P10-PARA-14",
+      "text_snippet": "While $ (S)$ is a binary function that determines the formal acceptance or rejection of survivability, it is clear that in practice the survivability degree decreases smoothly towards the threshold, and not abruptly: Survivability processes are generally characterized by controlled degradation under...",
+      "char_count": 507
+    },
+    {
+      "paragraph_id": "P10-PARA-15",
+      "text_snippet": "The test setup was deliberately designed to include multiple deployment stress factors, as opposed to testing the performance characteristics of one variable at a time. The testbed hardware consisted of an ARM Cortex-class SoC, 8 GB of unified memory, and an NPU accelerator. Swap was turned off ( vm...",
+      "char_count": 400
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P10-EQ-01",
+      "latex": "S = \\{ \\lambda_{fps}, N_{registry}, \\rho_{unknown}, \\tau_{net}, T_{ambient} \\}"
+    },
+    {
+      "equation_id": "P10-EQ-02",
+      "latex": "L_{p99.9} < 33\\text{ ms}"
+    },
+    {
+      "equation_id": "P10-EQ-03",
+      "latex": "C_{retrieval} > 99\\%"
+    },
+    {
+      "equation_id": "P10-EQ-04",
+      "latex": "\\Phi(S) = \\mathbb{1} \\{ L_{p99.9}(S) < 33\\text{ ms} \\land C_{retrieval}(S) > 99\\% \\}"
+    },
+    {
+      "equation_id": "P10-EQ-05",
+      "latex": "G = L_{p99.9} - L_{deadline}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P10-TAB-01",
+      "caption": "Integrated Stress Matrix Configuration"
+    },
+    {
+      "table_id": "P10-TAB-02",
+      "caption": "System Failure Points Under Integrated Stress"
+    },
+    {
+      "table_id": "P10-TAB-03",
+      "caption": "168-Hour Burn-In Reliability Metrics"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P10-FIG-01",
+      "caption": "CPU Time Allocation per Frame. The auxiliary modules are highly optimized, ensuring the pipeline clears the 33ms real-time destruction deadline even under stress overhead."
+    },
+    {
+      "figure_id": "P10-FIG-02",
+      "caption": "Retrieval Consistency vs. Network Packet Loss."
+    },
+    {
+      "figure_id": "P10-FIG-03",
+      "caption": "Memory Stability Analysis."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P10-REF-01",
+      "key": "b11",
+      "raw_citation": "J. A. Halderman et al., ``Lest We Remember: Cold Boot Attacks on Encryption Keys,'' USENIX Security , 2008."
+    },
+    {
+      "reference_id": "P10-REF-02",
+      "key": "b10",
+      "raw_citation": "Q. Zhang, L. Cheng, and R. Boutaba, ``Cloud computing: state-of-the-art and research challenges,'' J. Internet Serv. Appl. , 2010."
+    },
+    {
+      "reference_id": "P10-REF-03",
+      "key": "b15",
+      "raw_citation": "European Parliament, ``Regulation (EU) 2016/679 (General Data Protection Regulation),'' Official Journal of the European Union , 2016."
+    },
+    {
+      "reference_id": "P10-REF-04",
+      "key": "b2",
+      "raw_citation": "K. He et al., ``Deep Residual Learning for Image Recognition,'' CVPR , 2016."
+    },
+    {
+      "reference_id": "P10-REF-05",
+      "key": "b32",
+      "raw_citation": "M. Abadi et al., ``Deep Learning with Differential Privacy,'' ACM CCS , 2016."
+    },
+    {
+      "reference_id": "P10-REF-06",
+      "key": "b5",
+      "raw_citation": "W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, ``Edge Computing: Vision and Challenges,'' IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637-646, 2016."
+    },
+    {
+      "reference_id": "P10-REF-07",
+      "key": "b21",
+      "raw_citation": "Y. Mao, C. You, J. Zhang, K. Huang, and K. B. Letaief, ``A Survey on Mobile Edge Computing: The Communication Perspective,'' IEEE Communications Surveys \\& Tutorials , vol. 19, no. 4, pp. 2322-2358, 2017."
+    },
+    {
+      "reference_id": "P10-REF-08",
+      "key": "b4",
+      "raw_citation": "M. Satyanarayanan, ``The Emergence of Edge Computing,'' Computer , vol. 50, no. 1, pp. 30-39, 2017."
+    },
+    {
+      "reference_id": "P10-REF-09",
+      "key": "b14",
+      "raw_citation": "R. Roman, J. Lopez, and M. Mambo, ``Mobile Edge Computing, Fog et al.: A Survey and Analysis of Security Threats and Challenges,'' Future Generation Computer Systems , vol. 78, pp. 680-698, 2018."
+    },
+    {
+      "reference_id": "P10-REF-10",
+      "key": "b26",
+      "raw_citation": "P. Patel et al., ``EdgeBench: Benchmarking Edge Computing Platforms,'' IEEE/ACM Symposium on Edge Computing , 2018."
+    },
+    {
+      "reference_id": "P10-REF-11",
+      "key": "b1",
+      "raw_citation": "J. Deng, J. Guo, N. Xue, and S. Zafeiriou, ``ArcFace: Additive angular margin loss for deep face recognition,'' CVPR , 2019."
+    },
+    {
+      "reference_id": "P10-REF-12",
+      "key": "b18",
+      "raw_citation": "S. Mittal, ``A Survey on Optimized Implementation of Deep Learning Models on the NVIDIA Jetson Platform,'' Journal of Systems Architecture , 2019."
+    },
+    {
+      "reference_id": "P10-REF-13",
+      "key": "b12",
+      "raw_citation": "N. Min-Allah and S. Alrashed, ``Smart campus: A sketch,'' Sustainable Cities and Society , vol. 59, p. 102231, 2020."
+    },
+    {
+      "reference_id": "P10-REF-14",
+      "key": "b22",
+      "raw_citation": "X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' IEEE Communications Surveys \\& Tutorials , vol. 22, no. 2, pp. 869-904, 2020."
+    },
+    {
+      "reference_id": "P10-REF-15",
+      "key": "b28",
+      "raw_citation": "G. Ananthanarayanan et al., ``REACT: Streaming Video Analytics On The Edge With Asynchronous Cloud Support,'' ACM/IEEE Symposium on Edge Computing , 2023."
+    }
+  ]
+}

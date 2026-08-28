@@ -1,0 +1,241 @@
+{
+  "paper_id": "P11",
+  "paper_num": 11,
+  "title": "Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability",
+  "abstract_snippet": "Edge-based academic installations are typically unmonitored embedded appliances that are placed in an environment where infrastructure resources are limited. The ability to operate in these conditions is mainly related to the degree of reliability of the operating system and updates rather than the accuracy of the applications. Mostly because the devices need to function reliably under varying loa...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Failure-State Taxonomy and Related Work",
+    "Appliance Invariance Model",
+    "Reliability Engineering",
+    "OTA Updates \\& Fleet Management",
+    "Operational Configuration Policies",
+    "Network \\& Data Resilience",
+    "Defense-in-Depth Security Architecture",
+    "Full-Stack Observability Pipeline",
+    "Fleet Lifecycle Validation",
+    "Deployment Economics (BOM)",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Operational Fragility of Mutable Edge Hosts",
+    "Contributions and Subsystem Scope",
+    "Embedded OTA Frameworks and Lifecycle Hardening",
+    "Embedded Reliability and Filesystems",
+    "Formal Invariance and Power-Loss Recovery Theorems",
+    "Immutability Layer Diagram",
+    "Process Supervision",
+    "Hardware Watchdog Timer (WDT) Integration",
+    "Read-Only Filesystem (OverlayFS) Mechanics",
+    "RAM-Disk Exhaustion Mitigation",
+    "Deterministic Cutover Formalization",
+    "Zero-Touch Provisioning (ZTP) Sequence",
+    "Mutual TLS (mTLS) \\& Secure Boot",
+    "Metrics Schema and Local Buffering",
+    "Comparative Evaluation against Industrial OTA Baselines",
+    "Power Failure Recovery Validation ($n=50$ Cycles)",
+    "Poisoned OTA Rollback and Watchdog Verification",
+    "Limitations and Failure Boundaries"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P11-PARA-01",
+      "text_snippet": "This study presents an invariable edge deployment architecture targeting the enhanced resilience to corruption and self-healing capabilities in the presence of power and network supply fluctuations. We propose an Appliance Invariance Model that utilizes a read-only OverlayFS rootfs, thus isolating a...",
+      "char_count": 596
+    },
+    {
+      "paragraph_id": "P11-PARA-02",
+      "text_snippet": "A controlled testbed subject to frequent hard power cycles and update failures shows reliable reboots and automated recovery. The resulting system shows the potential improvements in the reliability of distributed academic embedded appliances to be gained by disciplined operating-system immutability...",
+      "char_count": 342
+    },
+    {
+      "paragraph_id": "P11-PARA-03",
+      "text_snippet": "The author submits that the primary thesis is that the development of non-modifiable appliances significantly contributes to optimal functioning under unstable supply voltages. Upon the initial deployment in abandoned environments, such devices\u2019 functioning is predominantly determined by the underly...",
+      "char_count": 414
+    },
+    {
+      "paragraph_id": "P11-PARA-04",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem enforces immutable lifecycle behavior, hardens OTA recovery, and stabilizes unattended appliance deployment only. It does not optimize flash endurance (Paper 12), validate runtime enforcement semantics (Paper 18), optimize federated adaptation (P...",
+      "char_count": 410
+    },
+    {
+      "paragraph_id": "P11-PARA-05",
+      "text_snippet": "To analyze deployment reliability systematically, we categorize the primary failure classes encountered in unattended edge appliances: itemize Power-Loss Corruption: Unclean shutdowns mid-write causing OS unbootability (addressed via Appliance Invariance and OverlayFS). Kernel Deadlock / Scheduler E...",
+      "char_count": 781
+    },
+    {
+      "paragraph_id": "P11-PARA-06",
+      "text_snippet": "The proposed deployment model treats the edge node as an immutable appliance rather than a mutable Linux host. All host packages, kernel modules, and system services reside in an immutable lower directory ($H_0$), while application models and pipeline configurations run inside containerized layers (...",
+      "char_count": 305
+    },
+    {
+      "paragraph_id": "P11-PARA-07",
+      "text_snippet": "This architectural decoupling ensures that the environment running the inference code is reproducible across fleet nodes provisioned from identical base images, standardizing deployment configurations and eliminating deployment friction.",
+      "char_count": 237
+    },
+    {
+      "paragraph_id": "P11-PARA-08",
+      "text_snippet": "System reliability emerges from the interaction of several complementary mechanisms implemented at the operating-system level.",
+      "char_count": 126
+    },
+    {
+      "paragraph_id": "P11-PARA-09",
+      "text_snippet": "[Service] Type=simple Restart=always RestartSec=3 User=root # OOM Score: Protect Host Docker Daemon OOMScoreAdjust=-1000 ExecStart=/usr/bin/docker-compose -f /opt/deploy.yml up # Watchdog Integration WatchdogSec=15s",
+      "char_count": 215
+    },
+    {
+      "paragraph_id": "P11-PARA-10",
+      "text_snippet": "[Install] WantedBy=multi-user.target lstlisting fig:systemd figure",
+      "char_count": 66
+    },
+    {
+      "paragraph_id": "P11-PARA-11",
+      "text_snippet": "Software-level process supervision alone cannot recover from all classes of runtime failure. To address this, we enable the hardware Watchdog Timers (WDT) integrated into commodity ARM-based edge compute modules to provide hardware-level liveness enforcement for appliance survivability b15 . The wat...",
+      "char_count": 489
+    },
+    {
+      "paragraph_id": "P11-PARA-12",
+      "text_snippet": "Filesystem immutability is implemented using the OverlayFS union filesystem provided by the Linux kernel. To substantially reduce the likelihood of storage corruption during rolling blackouts, the root filesystem is mounted as read-only using OverlayFS.",
+      "char_count": 253
+    },
+    {
+      "paragraph_id": "P11-PARA-13",
+      "text_snippet": "The physical storage acts as the immutable Lower Directory. A volatile tmpfs (RAM disk) is mounted as the Upper Directory. The operating system interacts with the Merged View. All system writes (logs, temp files, state changes) are seamlessly intercepted by the Linux kernel and written exclusively t...",
+      "char_count": 324
+    },
+    {
+      "paragraph_id": "P11-PARA-14",
+      "text_snippet": "Under this configuration, abrupt power removal destroys only the volatile UpperDir residing in RAM. Because persistent storage is mounted read-only during normal operation, boot-sector and base OS corruption events were not observed during evaluated power-cycle tests. OverlayFS isolation confines vo...",
+      "char_count": 682
+    },
+    {
+      "paragraph_id": "P11-PARA-15",
+      "text_snippet": "Maintaining a distributed fleet of edge appliances requires deterministic and failure-tolerant update mechanisms. Deploying updated neural network weights, system dependencies, or application logic across a fleet requires fail-safe OTA mechanisms b18 . We implement a Blue/Green deployment state mach...",
+      "char_count": 654
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P11-THE-01",
+      "type": "THEOREM",
+      "statement": "[Power-Cut State Recovery Invariance] Under the read-only OverlayFS mount predicate $\\forall t, \\frac{d H(t)}{dt} = 0$, if an unannounced power loss occurs at arbitrary time $t_{\\mathrm{fail}}$, the post-reboot state $\\mathcal{S}(t_{\\mathrm{reboot}})$ strictly satisfies: \\begin{equation} H(t_{\\mathr..."
+    },
+    {
+      "theorem_id": "P11-LEM-02",
+      "type": "LEMMA",
+      "statement": "[Bounded Rollback Liveness under Poisoned OTA] Let an incoming container image $C_{\\mathrm{Green}}$ contain a fatal initialization bug (segfault or timeout). With pre-flight verification timeout $T_{\\mathrm{pre}} \\le 60\\text{ s}$, the supervisor state machine guarantees automatic reversion to prior ..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P11-EQ-01",
+      "latex": "H(t_{\\mathrm{reboot}}) = H_0 \\quad \\text{and} \\quad V(t_{\\mathrm{reboot}}) = V_0, \\label{eq:power_invariance}"
+    },
+    {
+      "equation_id": "P11-EQ-02",
+      "latex": "\\Phi(w) \\in V(t), \\quad \\forall w \\in W(t)."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P11-TAB-01",
+      "caption": "System Resilience and Lifecycle Overhead Comparison"
+    },
+    {
+      "table_id": "P11-TAB-02",
+      "caption": "Power Failure Resilience Test Results ($n=50$ cycles)"
+    },
+    {
+      "table_id": "P11-TAB-03",
+      "caption": "Per-Node Hardware Bill of Materials (CapEx Snapshot)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P11-FIG-01",
+      "caption": "Appliance Invariance Architecture. The persistent lower layer ($H_0$) is never written to during normal operation. All runtime modifications are made either in the volatile UpperDir (RAM) or within versioned container layers. Upon power-down, only the volatile layers are lost."
+    },
+    {
+      "figure_id": "P11-FIG-02",
+      "caption": "Figure"
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P11-REF-01",
+      "key": "b21",
+      "raw_citation": "C. Mohan et al., ``ARIES: a transaction recovery method supporting fine-granularity locking and partial rollbacks using write-ahead logging,'' ACM Transactions on Database Systems , vol. 17, no. 1, pp. 94--162, 1992."
+    },
+    {
+      "reference_id": "P11-REF-02",
+      "key": "b19",
+      "raw_citation": "P. England et al., ``A Trusted Open Platform,'' IEEE Computer , vol. 36, no. 7, pp. 55--62, 2003."
+    },
+    {
+      "reference_id": "P11-REF-03",
+      "key": "b16",
+      "raw_citation": "A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' IEEE Transactions on Dependable and Secure Computing , vol. 1, no. 1, pp. 11--33, 2004."
+    },
+    {
+      "reference_id": "P11-REF-04",
+      "key": "b14",
+      "raw_citation": "A. Mathur et al., ``The new ext4 filesystem: current status and future plans,'' in Proceedings of the Linux Symposium , pp. 21--33, 2007."
+    },
+    {
+      "reference_id": "P11-REF-05",
+      "key": "b23",
+      "raw_citation": "T. Dierks and E. Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.2,'' RFC 5246 , 2008."
+    },
+    {
+      "reference_id": "P11-REF-06",
+      "key": "b15",
+      "raw_citation": "J. Koopman, Better Embedded System Software . Drumnadrochit Education, 2010."
+    },
+    {
+      "reference_id": "P11-REF-07",
+      "key": "b12",
+      "raw_citation": "H. Zheng et al., ``Understanding the Robustness of SSDs under Power Fault,'' in USENIX Conference on File and Storage Technologies (FAST) , pp. 271--284, 2013."
+    },
+    {
+      "reference_id": "P11-REF-08",
+      "key": "b8",
+      "raw_citation": "D. Merkel, ``Docker: Lightweight Linux Containers for Consistent Development and Deployment,'' Linux Journal , 2014."
+    },
+    {
+      "reference_id": "P11-REF-09",
+      "key": "b10",
+      "raw_citation": "C. Boettiger, ``An introduction to Docker for reproducible research,'' ACM SIGOPS Operating Systems Review , vol. 49, no. 1, pp. 71--79, 2015."
+    },
+    {
+      "reference_id": "P11-REF-10",
+      "key": "b13",
+      "raw_citation": "J. Lee et al., ``F2FS: A New File System for Flash Storage,'' in USENIX FAST , pp. 273--286, 2015."
+    },
+    {
+      "reference_id": "P11-REF-11",
+      "key": "b5",
+      "raw_citation": "D. Sculley et al., ``Hidden Technical Debt in Machine Learning Systems,'' in NeurIPS , pp. 2503--2511, 2015."
+    },
+    {
+      "reference_id": "P11-REF-12",
+      "key": "b18",
+      "raw_citation": "S. Kuppusamy et al., ``Diplomat: Using Delegations to Protect Community Repositories,'' in USENIX NSDI , pp. 567--581, 2016."
+    },
+    {
+      "reference_id": "P11-REF-13",
+      "key": "b2",
+      "raw_citation": "W. Shi et al., ``Edge Computing: Vision and Challenges,'' IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637--646, 2016."
+    },
+    {
+      "reference_id": "P11-REF-14",
+      "key": "b9",
+      "raw_citation": "B. Burns et al., ``Borg, Omega, and Kubernetes,'' Communications of the ACM , vol. 59, no. 5, pp. 50--57, 2016."
+    },
+    {
+      "reference_id": "P11-REF-15",
+      "key": "b1",
+      "raw_citation": "M. Satyanarayanan, ``The Emergence of Edge Computing,'' IEEE Computer , vol. 50, no. 1, pp. 30--39, 2017."
+    }
+  ]
+}

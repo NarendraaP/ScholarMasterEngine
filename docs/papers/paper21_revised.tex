@@ -368,7 +368,7 @@ According to the Bellman Optimality Equation \cite{b10}, the expected value of t
 \section{Limitations}
 The formal theorems established in this framework are bounded by several methodological and theoretical constraints:
 \begin{itemize}
-    \item \textbf{State-Space Explosion:} While theoretically decidable (PSPACE), the exponential growth of the finite-state automaton representing multi-entity zone transitions renders direct enumeration computationally intractable for high-density campus topologies.
+    \item \textbf{State-Space Explosion & Discrete Approximation:} While continuous spatio-temporal compliance is PSPACE-complete in the general continuous case (Theorem 6), practical real-time execution on edge appliances is achieved by discretizing time and evaluating bounded-horizon temporal predicates (e.g., polynomial-time $O(1)$ amortized PCVF debounce lookups). Characterizing the exact formal conservatism gap between continuous metric interval semantics and discrete debounced sampling remains an open problem.
     \item \textbf{Bounded Sampling Assumptions:} The Nyquist-style completeness threshold (Theorem 5) relies on uniform continuous sampling; asynchronous sensor dropout or adversarial jamming fundamentally breaks the observability requirements.
     \item \textbf{Idealized Kinematic Models:} The representation of motion bounds physical transitions by a universal scalar $V_{max}$, abstracting over complex biological movement geometries and non-linear acceleration.
     \item \textbf{Theorem-Prover Absence:} The formal deductions are structured as mathematical pen-and-paper proofs rather than machine-verified theorems in Isabelle/HOL or Coq, introducing potential risk of manual logical omissions.

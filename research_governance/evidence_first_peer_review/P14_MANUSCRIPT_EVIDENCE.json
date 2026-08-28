@@ -1,0 +1,268 @@
+{
+  "paper_id": "P14",
+  "paper_num": 14,
+  "title": "Hierarchical Federated Aggregation for Cross-Institution Model Adaptation Under Asynchronous Participation",
+  "abstract_snippet": "Distributed machine-learning systems that span multiple institutions often face the challenge of domain heterogeneity that limits the prediction performance of a model learned by any single institution. The differences in environments and populations between institutions produce persistent shifts in the data distribution that cannot be easily captured through classical approaches that operate on t...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "The Hierarchical Federated Setting",
+    "Asynchronous Optimal Objective",
+    "Lightweight Privacy Perturbation Layer",
+    "Algorithmic Optimization Characteristics",
+    "Empirical Evaluation",
+    "Discussion \\& Limitations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Structural Limitations of Flat Federated Aggregation",
+    "Contributions and Subsystem Scope",
+    "Federated Optimization under Statistical Heterogeneity",
+    "Asynchronous Distributed and Federated Optimization",
+    "Hierarchical Federated Learning Architectures",
+    "Hierarchical Aggregation Tiering",
+    "Dual-Level Non-IID Divergence Architecture",
+    "Hierarchical Empirical Risk Minimization",
+    "Multi-Tier Algebra Update Schedule",
+    "Polynomial Staleness Dampening Factor",
+    "Asynchronous Hierarchical Convergence Analysis",
+    "Emulation Infrastructure",
+    "Generalization Against Distribution Collapse and Baseline Comparisons",
+    "Algorithmic Dampening Ablation Validation ($\\gamma$)",
+    "Dropout Robustness Evaluation",
+    "Scientific Implications",
+    "Limitations and Failure Boundaries"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P14-PARA-01",
+      "text_snippet": "This study presents Hierarchical Federated Averaging (H-FedAvg) as a multi-tiered distributed learning formulation allowing for a hierarchical aggregation setting and large asynchronous participation gaps. In doing so, the algorithm explicitly models dual-level Non-IID data divergence (structural co...",
+      "char_count": 681
+    },
+    {
+      "paragraph_id": "P14-PARA-02",
+      "text_snippet": "In multi-domain experiments the framework achieves 4.8 absolute percent increase in average cross-domain F1-score over isolated local training baselines. With simulated temporal delay and up to 50\\% institutional node dropout the asynchronous optimization process demonstrates emprical robustness wit...",
+      "char_count": 333
+    },
+    {
+      "paragraph_id": "P14-PARA-03",
+      "text_snippet": "The results show that with mathematics, hierarchical aggregation is able to eliminate cross domain drift. It isolates the variance of the internal domains and retains the optimization bounds even when the updates arrive very asynchronously as may happen with different organizations. abstract",
+      "char_count": 292
+    },
+    {
+      "paragraph_id": "P14-PARA-04",
+      "text_snippet": "The main idea of this paper is that hierarchical aggregation helps reduce instability in optimization with asynchronous and dual-level Non-IID participation . Machine learning models in different independent institutions experience performance degradation when applied in different institutions than ...",
+      "char_count": 493
+    },
+    {
+      "paragraph_id": "P14-PARA-05",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem manages hierarchical aggregation, asynchronous convergence, and distributed optimization stabilization only. It does not define deployment architecture (Paper 20), perform runtime orchestration (Paper 18), model institutional trust (Paper 16), de...",
+      "char_count": 400
+    },
+    {
+      "paragraph_id": "P14-PARA-06",
+      "text_snippet": "We proceed to formalize the hierarchical federated setting systematically designed to accommodate multi-institute data divergence.",
+      "char_count": 130
+    },
+    {
+      "paragraph_id": "P14-PARA-07",
+      "text_snippet": "The integrated global dataset is mathematically treated as virtually partitioned. The global geometry is never physically aggregated into a persistent continuous array b28 : equation D _{ global = _{i=1 ^{M _{j=1 ^{N_i D _{i,j equation",
+      "char_count": 235
+    },
+    {
+      "paragraph_id": "P14-PARA-08",
+      "text_snippet": "Using $ 0.5$, certain domains completely lack entries for particular classes. The combined impact of both intra-silo covariate shift and inter-silo label imbalance increases optimization variance significantly compared to a single Non-IID topology b5 .",
+      "char_count": 252
+    },
+    {
+      "paragraph_id": "P14-PARA-09",
+      "text_snippet": "Minimizing the hierarchical federation structure is a large-scale optimization of an empirical risk function. To ensure that the entire optimization process is not hampered by a few institutional failures at once, our proposed algorithm inherently assumes and estimates asynchronous arrival distribut...",
+      "char_count": 316
+    },
+    {
+      "paragraph_id": "P14-PARA-10",
+      "text_snippet": "The intermediate objective explicitly calculated for the domain aggregator $C_i$, currently hosting $n_i = _j n_{i,j $ localized composite samples, is simply the precise size-weighted sum bounding its edge risks: equation F_i(w) = _{j=1 ^{N_i n_{i,j {n_i F_{i,j (w) equation",
+      "char_count": 274
+    },
+    {
+      "paragraph_id": "P14-PARA-11",
+      "text_snippet": "The overarching global optimization objective tracking $n = _i n_i$ total combined samples establishes optimal global parameters $w^*$ minimizing total aggregate loss: equation _{w R ^d F(w) = _{i=1 ^{M n_i {n F_i(w) + {2 \\|w\\|^2 equation where the added penalty structural component $ {2 \\|w\\|^2$ es...",
+      "char_count": 586
+    },
+    {
+      "paragraph_id": "P14-PARA-12",
+      "text_snippet": "Upon final validation of these tightly integrated localized iterations, the highest algorithmic level structurally accommodates inherently hostile asynchronous arrival windows. Any composite update transmitted structurally from domain $i$ merges steadily into the continuous global model state exactl...",
+      "char_count": 346
+    },
+    {
+      "paragraph_id": "P14-PARA-13",
+      "text_snippet": "When aggregators reconnect following extended communication delays, injecting stale gradients without moderation forces global parameters toward abandoned local minima. Asynchronous participation in institutional environment often cannot be avoided due to maintenance issues, bandwidth constraints, o...",
+      "char_count": 454
+    },
+    {
+      "paragraph_id": "P14-PARA-14",
+      "text_snippet": "We scale integration momentum proportionally to staleness $ _i$ using a polynomial decay function: equation ( _i) = 1 {(1 + _i)^ equation where $ > 0$ controls penalty severity, enforcing: equation _{ _i ( _i) = 0 equation",
+      "char_count": 222
+    },
+    {
+      "paragraph_id": "P14-PARA-15",
+      "text_snippet": "The polynomial form is deliberately chosen over exponential decay. Exponential decay would sharply reduce the contribution of very infrequent but structurally important gradients from distant and delayed edges. Polynomial moderation retains delayed institutional intelligence in the system because cr...",
+      "char_count": 588
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P14-THE-01",
+      "type": "THEOREM",
+      "statement": "[Asymptotic Convergence under Bounded Staleness] Under Assumption 1, with polynomial dampening $\\alpha(\\tau) = (1 + \\tau)^{-\\gamma}$ ($\\gamma \\in (0, 1]$), global learning rate $\\eta_{\\text{global}} \\le \\frac{1}{2 L (1 + \\tau_{\\max})^\\gamma}$, and total global aggregation steps $T$, the minimum expe..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P14-EQ-01",
+      "latex": "\\mathcal{D}_{\\text{global}} = \\bigcup_{i=1}^{M} \\bigcup_{j=1}^{N_i} \\mathcal{D}_{i,j}"
+    },
+    {
+      "equation_id": "P14-EQ-02",
+      "latex": "P_{e_{i,1}}(x) \\neq P_{e_{i,2}}(x) \\quad \\text{while} \\quad P(y|x) \\text{ remains largely shared}"
+    },
+    {
+      "equation_id": "P14-EQ-03",
+      "latex": "\\mathbf{p}^i \\sim \\text{Dir}(\\beta \\mathbf{p})"
+    },
+    {
+      "equation_id": "P14-EQ-04",
+      "latex": "F_{i,j}(w) = \\frac{1}{n_{i,j}} \\sum_{(x,y) \\in \\mathcal{D}_{i,j}} \\ell(f(x; w), y)"
+    },
+    {
+      "equation_id": "P14-EQ-05",
+      "latex": "F_i(w) = \\sum_{j=1}^{N_i} \\frac{n_{i,j}}{n_i} F_{i,j}(w)"
+    },
+    {
+      "equation_id": "P14-EQ-06",
+      "latex": "\\min_{w \\in \\mathbb{R}^d} F(w) = \\sum_{i=1}^{M} \\frac{n_i}{n} F_i(w) + \\frac{\\lambda}{2}\\|w\\|^2"
+    },
+    {
+      "equation_id": "P14-EQ-07",
+      "latex": "w_{i,j}^{(k+1)} = w_{i,j}^{(k)} - \\eta_{\\text{local}} \\nabla F_{i,j}(w_{i,j}^{(k)}; \\xi)"
+    },
+    {
+      "equation_id": "P14-EQ-08",
+      "latex": "\\Delta w_i^t = \\sum_{j=1}^{N_i} \\frac{n_{i,j}}{n_i} \\Delta w_{i,j}^t"
+    },
+    {
+      "equation_id": "P14-EQ-09",
+      "latex": "\\alpha(\\tau_i) = \\frac{1}{(1 + \\tau_i)^\\gamma}"
+    },
+    {
+      "equation_id": "P14-EQ-10",
+      "latex": "\\lim_{\\tau_i \\to \\infty} \\alpha(\\tau_i) = 0"
+    },
+    {
+      "equation_id": "P14-EQ-11",
+      "latex": "w^{t+1} = w^t + \\eta_{\\text{global}} \\cdot \\alpha(\\tau_i) \\cdot \\Delta w_i^t"
+    },
+    {
+      "equation_id": "P14-EQ-12",
+      "latex": "\\begin{aligned} \\min_{t \\in [T]} \\mathbb{E}\\left[\\|\\nabla F(w^t)\\|^2\\right] &\\le \\frac{2(F(w^0) - F^*)}{\\eta_{\\text{global}} \\sum_{t=0}^{T-1} \\alpha(\\tau_t)} \\\\ &\\quad + \\frac{L \\eta_{\\text{global}} \\sigma_{\\text{eff}}^2 \\sum_{t=0}^{T-1} \\alpha^2(\\ta..."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P14-TAB-01",
+      "caption": "Federated Evaluation Divergence Topologies"
+    },
+    {
+      "table_id": "P14-TAB-02",
+      "caption": "Cross-Domain Generalization and Baseline Comparison Matrix"
+    },
+    {
+      "table_id": "P14-TAB-03",
+      "caption": "Decay Metric Stabilization Limits ($\\gamma$ scaling)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P14-FIG-01",
+      "caption": "Model Performance vs. Node Dropout Ratio. Under heavy churn, hierarchical aggregation bounds variance through local consensus, whereas flat aggregation collapses rapidly."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P14-REF-01",
+      "key": "b1",
+      "raw_citation": "B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' in Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS) , pp. 1273--1282, 2017."
+    },
+    {
+      "reference_id": "P14-REF-02",
+      "key": "b5",
+      "raw_citation": "Y. Zhao et al., ``Federated Learning with Non-IID Data,'' Neurocomputing , vol. 465, pp. 465--475, 2021."
+    },
+    {
+      "reference_id": "P14-REF-03",
+      "key": "b7",
+      "raw_citation": "T. Li et al., ``Federated learning: Challenges, methods, and future directions,'' IEEE Signal Processing Magazine , vol. 37, no. 3, pp. 50--60, 2020."
+    },
+    {
+      "reference_id": "P14-REF-04",
+      "key": "b15",
+      "raw_citation": "T. Li et al., ``Federated Optimization in Heterogeneous Networks,'' in Proceedings of Machine Learning and Systems (MLSys) , vol. 2, pp. 429--450, 2020."
+    },
+    {
+      "reference_id": "P14-REF-05",
+      "key": "b16",
+      "raw_citation": "S. P. Karimireddy et al., ``SCAFFOLD: Stochastic Controlled Averaging for Federated Learning,'' in Proceedings of the International Conference on Machine Learning (ICML) , pp. 5132--5143, 2020."
+    },
+    {
+      "reference_id": "P14-REF-06",
+      "key": "b33",
+      "raw_citation": "J. Wang et al., ``Tackling the objective inconsistency problem in heterogeneous federated optimization,'' in Advances in Neural Information Processing Systems (NeurIPS) , vol. 33, pp. 7611--7623, 2020."
+    },
+    {
+      "reference_id": "P14-REF-07",
+      "key": "b17",
+      "raw_citation": "B. Recht et al., ``Hogwild!: A Lock-Free Approach to Parallelizing Stochastic Gradient Descent,'' in Advances in Neural Information Processing Systems (NeurIPS) , pp. 693--701, 2011."
+    },
+    {
+      "reference_id": "P14-REF-08",
+      "key": "b26",
+      "raw_citation": "X. Lian et al., ``Asynchronous Decentralized Parallel Stochastic Gradient Descent,'' in Proceedings of the International Conference on Machine Learning (ICML) , pp. 3043--3052, 2018."
+    },
+    {
+      "reference_id": "P14-REF-09",
+      "key": "b4",
+      "raw_citation": "C. Xie et al., ``Asynchronous Federated Optimization,'' IEEE Transactions on Knowledge and Data Engineering , vol. 35, no. 4, pp. 3841--3854, 2023."
+    },
+    {
+      "reference_id": "P14-REF-10",
+      "key": "b35",
+      "raw_citation": "Y. Chen et al., ``Asynchronous online federated learning for edge devices with non-IID data,'' IEEE Journal on Selected Areas in Communications , vol. 38, no. 6, pp. 1264--1277, 2020."
+    },
+    {
+      "reference_id": "P14-REF-11",
+      "key": "b36",
+      "raw_citation": "J. Nguyen et al., ``Federated Learning with Buffered Asynchronous Aggregation,'' in Proceedings of the International Conference on Artificial Intelligence and Statistics (AISTATS) , pp. 3581--3607, 2022."
+    },
+    {
+      "reference_id": "P14-REF-12",
+      "key": "b37",
+      "raw_citation": "S. Dutta et al., ``Slow and Stale Gradients Can Win the Race: Delay-Adaptive Distributed SGD,'' IEEE Transactions on Parallel and Distributed Systems , vol. 35, no. 1, pp. 112--126, 2024."
+    },
+    {
+      "reference_id": "P14-REF-13",
+      "key": "b30",
+      "raw_citation": "L. Liu et al., ``Client-Edge-Cloud Hierarchical Federated Learning,'' in Proceedings of the IEEE International Conference on Communications (ICC) , pp. 1--6, 2020."
+    },
+    {
+      "reference_id": "P14-REF-14",
+      "key": "b31",
+      "raw_citation": "M. S. H. Abad et al., ``Hierarchical Federated Learning Across Heterogeneous Cellular Networks,'' in Proceedings of the IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) , pp. 8866--8870, 2020."
+    },
+    {
+      "reference_id": "P14-REF-15",
+      "key": "b38",
+      "raw_citation": "S. Wang et al., ``Hierarchical Federated Learning Across Subnetworks: Convergence and Latency Trade-Offs,'' in IEEE INFOCOM , pp. 1021--1030, 2020."
+    }
+  ]
+}

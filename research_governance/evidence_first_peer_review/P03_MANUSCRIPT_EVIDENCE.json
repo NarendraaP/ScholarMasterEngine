@@ -1,0 +1,282 @@
+{
+  "paper_id": "P03",
+  "paper_num": 3,
+  "title": "Pose-Only Edge Action Sensing with Enforced Volatile Memory Confinement",
+  "abstract_snippet": "Real-time vision pipelines often process full RGB frames, even though downstream inference uses only geometric information. This design choice results in unnecessary high-resolution biometric texture in intermediate computations. Though the final decision logic utilizes only sparse spatial structure, the processing of RGB frames still has to deal with high-resolution biometric texture.\n\nThis work ...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Sensing Constraints and Threat Modeling",
+    "Signal Processing Methodology",
+    "Memory-Aware Sensing Constraints",
+    "Algorithm Design",
+    "Experimental Evaluation",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Representational Excess in Conventional Vision Pipelines",
+    "Subsystem Scope and Canonical Separation",
+    "Geometric Abstraction and Volatile Confinement",
+    "Topological and Geometric Sensing",
+    "Lightweight Pose Estimation for Edge Deployment",
+    "Head Pose Estimation Without Texture",
+    "Signal Isolation Objective",
+    "Adversary Model and Operating Assumptions",
+    "Formal Volatile Confinement Window",
+    "One-Way Pipeline Structure",
+    "Topological Event Formalization",
+    "Rank-Based Projection and Structural Underdetermination",
+    "Perspective-n-Point (PnP) Orientation Estimation",
+    "Confidence-Adaptive Kalman Filtering",
+    "OS-Level Page Locking",
+    "Secure Zeroization and Compiler Behavior",
+    "Dataset and Evaluation Conditions",
+    "Geometric Event Detection Performance",
+    "Latency Decomposition and Confinement Verification",
+    "Signal Stabilization Ablation Study",
+    "Residual Behavioral Signatures",
+    "Geometric Sufficiency for Event Inference",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P03-PARA-01",
+      "text_snippet": "This work introduces a pose-only sensing architecture for inference at the very edge under strictly bounded volatile memory constraints. Instead of storing texture-rich RGB matrices for subsequent perceptual processing, the perception layer (a) extracts sparser skeletal coordinates and (b) reuses th...",
+      "char_count": 815
+    },
+    {
+      "paragraph_id": "P03-PARA-02",
+      "text_snippet": "Across 1,200 labeled kinematic events, the perception layer achieves 97.4\\% detection accuracy (Precision: 0.98 $ $ 0.01, Recall: 0.96 $ $ 0.02) while operating at under 33 ms end-to-end latency. These results suggest that geometric edge analytics can be made to operate within strictly limited expos...",
+      "char_count": 453
+    },
+    {
+      "paragraph_id": "P03-PARA-03",
+      "text_snippet": "The main thesis of this paper is that the problem of persistent exposure of biometrics can be solved by introducing a bounded volatile-memory confinement with sparse geometric projection, so that privacy violations are minimized in the context of visual inferences at the edge. This paper addresses t...",
+      "char_count": 482
+    },
+    {
+      "paragraph_id": "P03-PARA-04",
+      "text_snippet": "This approach is structurally different to post-hoc protection mechanisms, such as blinding, masking, or addition of noise b3, b4 , which act on retained data. Here, exposure is reduced by limiting lifetime rather than by post-processing obfuscation; zeroization bounds the risk of persistence, and o...",
+      "char_count": 384
+    },
+    {
+      "paragraph_id": "P03-PARA-05",
+      "text_snippet": "The core technical elements include: itemize A formally bounded volatile memory window enforced through OS-level mechanisms. A rank-based dimensionality analysis demonstrating structural underdetermination of the pose projection. A rule-based geometric event classifier stabilized via confidence-adap...",
+      "char_count": 371
+    },
+    {
+      "paragraph_id": "P03-PARA-06",
+      "text_snippet": "Although active depth sensors do have the advantages listed above, they also have several significant limitations. Most notably, these sensors are often expensive, power-hungry, and have a limited useful range, making them impractical in many contexts (such as lecture halls or on trains). The method...",
+      "char_count": 482
+    },
+    {
+      "paragraph_id": "P03-PARA-07",
+      "text_snippet": "Ryoo et al. b2 showed results of activity recognition from extremely low resolution imagery (e.g. 16$ $12). While this involves loss of high-level facial features, the matrix of lower resolution is still a matrix, still open to upsampling by generative algorithms. Recent progress in GANs and diffusi...",
+      "char_count": 572
+    },
+    {
+      "paragraph_id": "P03-PARA-08",
+      "text_snippet": "Most of the prior work focuses on the improvement of the accuracy of detection (e.g. mAP on COCO b11 ). In contrast, we shift the attention to system-level containment: the pose network is viewed as a projection operator, whose output is used as geometry information, while its input buffer is deallo...",
+      "char_count": 455
+    },
+    {
+      "paragraph_id": "P03-PARA-09",
+      "text_snippet": "Instead, we formulate the problem in the classical Perspective-n-Point (PnP) b15, b16 formulation. In particular, we utilize sparse 2D landmarks projected onto a generic 3D cranial model to reconstruct the 6-DoF orientation, which does not require analysis of facial texture, thus complying with the ...",
+      "char_count": 328
+    },
+    {
+      "paragraph_id": "P03-PARA-10",
+      "text_snippet": "The perception pipeline introduced here enforces a deliberate separation (isolating spatial topology from textural features). The pose estimator acts as a compressive transformation, allowing only low-frequency spatial topology (joint coordinates) to pass downstream. High-frequency components\u2014skin t...",
+      "char_count": 543
+    },
+    {
+      "paragraph_id": "P03-PARA-11",
+      "text_snippet": "The following assumptions define the Trusted Computing Base (TCB): enumerate No active Direct Memory Access (DMA) interception during live processing b20 . No physical cold-boot attack against system RAM b19 . No kernel-level compromise capable of intercepting memory allocations at the microsecond s...",
+      "char_count": 339
+    },
+    {
+      "paragraph_id": "P03-PARA-12",
+      "text_snippet": "Under these assumptions, the dominant risk shifts from live interception to retrospective harvesting. The mitigation strategy therefore focuses on ensuring that raw optical data never persist beyond a tightly bounded processing window. Dimensionality reduction also helps constrain inversion risk by ...",
+      "char_count": 341
+    },
+    {
+      "paragraph_id": "P03-PARA-13",
+      "text_snippet": "The existence interval of the raw frame is therefore: equation T_{capture < t < T_{wipe equation The volatile exposure duration is defined as: equation T_{volatile = T_{wipe - T_{capture equation To prevent queue accumulation or swap-induced persistence, the pipeline constrains: equation T_{volatile...",
+      "char_count": 700
+    },
+    {
+      "paragraph_id": "P03-PARA-14",
+      "text_snippet": "From an architectural perspective, the sensing pipeline enforces a strict one-way projection boundary, elevating vectorization as an architectural irreversibility boundary rather than merely a preprocessing stage. Raw optical data flows through a volatile region, undergoes vectorization, and is expl...",
+      "char_count": 635
+    },
+    {
+      "paragraph_id": "P03-PARA-15",
+      "text_snippet": "There are no feedback paths or secondary buffers capable of reintroducing raw pixels into downstream components. This structural isolation prevents the reconstitution of texture-space information.",
+      "char_count": 196
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P03-THE-01",
+      "type": "THEOREM",
+      "statement": "[Information-Theoretic Reconstruction Irreversibility] Let an RGB frame $F \\in \\mathbb{R}^{H \\times W \\times 3}$ with $N = 3HW$ continuous degrees of freedom be projected onto $K=17$ two-dimensional keypoint coordinate vector $V \\in \\mathbb{R}^{34}$. For any adversary given $V$, the preimage solutio..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P03-EQ-01",
+      "latex": "T_{capture} < t < T_{wipe}"
+    },
+    {
+      "equation_id": "P03-EQ-02",
+      "latex": "\\Delta T_{volatile} = T_{wipe} - T_{capture}"
+    },
+    {
+      "equation_id": "P03-EQ-03",
+      "latex": "\\Delta T_{volatile} \\le 33ms"
+    },
+    {
+      "equation_id": "P03-EQ-04",
+      "latex": "W_R = [x_{16}, y_{16}], \\quad E_R = [x_{8}, y_{8}]"
+    },
+    {
+      "equation_id": "P03-EQ-05",
+      "latex": "\\text{Valid}(W_R) = \\mathbb{I}(c_{16} > \\tau_c)"
+    },
+    {
+      "equation_id": "P03-EQ-06",
+      "latex": "D_{shoulder} = \\sqrt{(x_6 - x_5)^2 + (y_6 - y_5)^2}"
+    },
+    {
+      "equation_id": "P03-EQ-07",
+      "latex": "H_{event}(t) = \\mathbb{I}(y_{W_R} < y_{E_R} - \\alpha D_{shoulder})"
+    },
+    {
+      "equation_id": "P03-EQ-08",
+      "latex": "f: \\mathbb{R}^{37632} \\rightarrow \\mathbb{R}^{34}"
+    },
+    {
+      "equation_id": "P03-EQ-09",
+      "latex": "\\text{Rank}(J_f) \\le 34"
+    },
+    {
+      "equation_id": "P03-EQ-10",
+      "latex": "\\dim(\\ker(f)) \\ge 37,598"
+    },
+    {
+      "equation_id": "P03-EQ-11",
+      "latex": "\\lambda \\begin{bmatrix} u \\\\ v \\\\ 1 \\end{bmatrix} = K [R | t] \\begin{bmatrix} X \\\\ Y \\\\ Z \\\\ 1 \\end{bmatrix}"
+    },
+    {
+      "equation_id": "P03-EQ-12",
+      "latex": "\\min_{R, t} \\sum_{i=1}^{n} || u_i - \\hat{u}_i ||^2"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P03-TAB-01",
+      "caption": "Geometric Detection Performance Metrics ($N=1,200$)"
+    },
+    {
+      "table_id": "P03-TAB-02",
+      "caption": "Latency Decomposition (Edge SoC)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P03-FIG-01",
+      "caption": "The Sensing Pipeline. Data flows horizontally through the volatile layer where it is vectorized and explicitly wiped. Only abstract coordinate data descends to the persistent evaluation layer."
+    },
+    {
+      "figure_id": "P03-FIG-02",
+      "caption": "Sparse 17-keypoint skeletal abstraction. Raw RGB frame buffer is zero-overwritten immediately following vectorization, strictly preventing biometric retention."
+    },
+    {
+      "figure_id": "P03-FIG-03",
+      "caption": "Figure"
+    },
+    {
+      "figure_id": "P03-FIG-04",
+      "caption": "Real-time monitoring telemetry indicating $\\sim$31 FPS inference throughput, deterministic volatile memory zeroization, and zero persistent pixel retention."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P03-REF-01",
+      "key": "b7",
+      "raw_citation": "C. Lugaresi et al., \"MediaPipe: A framework for building perception pipelines,\" arXiv:1906.08172 , 2019."
+    },
+    {
+      "reference_id": "P03-REF-02",
+      "key": "b17",
+      "raw_citation": "R. E. Kalman, \"A New Approach to Linear Filtering and Prediction Problems,\" Journal of Basic Engineering , 1960."
+    },
+    {
+      "reference_id": "P03-REF-03",
+      "key": "b22",
+      "raw_citation": "S. Garfinkel and a. shelat, \"Remembrance of Data Passed: A Study of Disk Sanitization Practices,\" IEEE Security \\& Privacy , 2003."
+    },
+    {
+      "reference_id": "P03-REF-04",
+      "key": "b21",
+      "raw_citation": "J. Chow et al., \"Shredding Your Garbage: Reducing Data Lifetime Through Secure Deallocation,\" USENIX Security , 2005."
+    },
+    {
+      "reference_id": "P03-REF-05",
+      "key": "b8",
+      "raw_citation": "V. Bazarevsky et al., \"Blazepose: On-device real-time body pose tracking,\" arXiv:2006.10204 , 2020."
+    },
+    {
+      "reference_id": "P03-REF-06",
+      "key": "b19",
+      "raw_citation": "J. Halderman et al., \"Lest We Remember: Cold Boot Attacks on Encryption Keys,\" USENIX Security , 2008."
+    },
+    {
+      "reference_id": "P03-REF-07",
+      "key": "b13",
+      "raw_citation": "E. Murphy-Chutorian and M. M. Trivedi, \"Head Pose Estimation in Computer Vision: A Survey,\" IEEE TPAMI , 2009."
+    },
+    {
+      "reference_id": "P03-REF-08",
+      "key": "b16",
+      "raw_citation": "V. Lepetit et al., \"EPnP: An Accurate O(n) Solution to the PnP Problem,\" IJCV , vol. 81, no. 2, pp. 155-166, 2009."
+    },
+    {
+      "reference_id": "P03-REF-09",
+      "key": "b20",
+      "raw_citation": "M. Tehranipoor and F. Koushanfar, \"A Survey of Hardware Trojan Taxonomy and Detection,\" IEEE Design \\& Test of Computers , 2010."
+    },
+    {
+      "reference_id": "P03-REF-10",
+      "key": "b5",
+      "raw_citation": "J. Shotton et al., \"Real-time human pose recognition in parts from single depth images,\" Proc. IEEE CVPR , 2011."
+    },
+    {
+      "reference_id": "P03-REF-11",
+      "key": "b15",
+      "raw_citation": "X. P. Burgos-Artizzu et al., \"Robust face landmark estimation under occlusion,\" Proc. IEEE ICCV , 2013."
+    },
+    {
+      "reference_id": "P03-REF-12",
+      "key": "b1",
+      "raw_citation": "J. Whitehill et al., \"The Faces of Engagement: Automatic Recognition of Student Engagement,\" IEEE Trans. Affective Computing , vol. 5, no. 1, pp. 86-98, 2014."
+    },
+    {
+      "reference_id": "P03-REF-13",
+      "key": "b11",
+      "raw_citation": "T. Y. Lin et al., \"Microsoft COCO: Common objects in context,\" ECCV , 2014."
+    },
+    {
+      "reference_id": "P03-REF-14",
+      "key": "b18",
+      "raw_citation": "M. Fredrikson et al., \"Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures,\" Proc. ACM CCS , 2015."
+    },
+    {
+      "reference_id": "P03-REF-15",
+      "key": "b4",
+      "raw_citation": "F. Brunton and H. Nissenbaum, Obfuscation: A user's guide for privacy and protest . MIT Press, 2015."
+    }
+  ]
+}

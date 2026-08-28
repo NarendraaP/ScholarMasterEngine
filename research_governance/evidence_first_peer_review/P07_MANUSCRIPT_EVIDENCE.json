@@ -1,0 +1,256 @@
+{
+  "paper_id": "P07",
+  "paper_num": 7,
+  "title": "Sub-Millisecond Identity Retrieval via HNSW + LDCC",
+  "abstract_snippet": "Institutional identity resolution is a practical systems engineering problem: large embedding registries require efficient querying to ensure continuous video surveillance streaming. Deep neural networks are typically used to produce embeddings, but similarity searches over massive galleries become a bottleneck. Video identification systems implemented today often resort to processing on remote cl...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Retrieval Bottleneck at Institutional Scale",
+    "Embedding Geometry Assumptions",
+    "Graph-Based Index Construction",
+    "Local Density Consistency Criterion (LDCC)",
+    "Experimental Evaluation",
+    "Deployment and Data Handling",
+    "Discussion",
+    "Limitations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Hidden Retrieval Bottleneck in Edge Identification",
+    "Retrieval Latency Budget as a Streaming Constraint",
+    "Subsystem Scope and Canonical Separation",
+    "Reproducibility",
+    "Precision Optimization",
+    "Index Maintenance Strategy",
+    "Evaluation Setup",
+    "Latency Scaling",
+    "Operational Accuracy vs. Retrieval Cost",
+    "Stability Under Continuous Load",
+    "Hyperparameter and Component Analysis"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P07-PARA-01",
+      "text_snippet": "This work studies the possibility of institutional-scale identity retrieval with latencies compatible with real-time performance on embedded hardware. We introduce a retrieval subsystem with log-scale search time based on Hierarchical Navigable Small World indexing. We propose a Local Density Consis...",
+      "char_count": 462
+    },
+    {
+      "paragraph_id": "P07-PARA-02",
+      "text_snippet": "Our edge hardware benchmarks show that the mean retrieval latency stays under one millisecond across a 100K identity database. Meanwhile, open set tests show that the system maintains a 99.8\\% unknown rejection rate while keeping queue sizes stable and throughput over 30FPS. By constraining approxim...",
+      "char_count": 456
+    },
+    {
+      "paragraph_id": "P07-PARA-03",
+      "text_snippet": "The dominant thesis of this paper is that graph-based ANN retrieval combined with neighborhood-consistency validation enables bounded-latency institutional-scale identity resolution on edge hardware . Real-time identity verification at an institutional scale introduces a practical systems constraint...",
+      "char_count": 566
+    },
+    {
+      "paragraph_id": "P07-PARA-04",
+      "text_snippet": "The biometric retrieval behavior undergoes a significant transformation when moving from tens of thousands to a hundred thousand identities. This work studies such a regime, which is in between the low scales of a few thousand identities and the web-scale billions b1, b8 . A standard system, which u...",
+      "char_count": 536
+    },
+    {
+      "paragraph_id": "P07-PARA-05",
+      "text_snippet": "While cloud-based inference offers powerful recognition capabilities, its deployment for continuous video streams is ill-advised. The round-trip time of embeddings or frames over institutional networks introduces unacceptable delays. Authors report latencies of several hundreds of milliseconds to se...",
+      "char_count": 539
+    },
+    {
+      "paragraph_id": "P07-PARA-06",
+      "text_snippet": "Most biometric literature emphasizes embedding discrimination performance, reporting high benchmark accuracy on static datasets such as LFW or MegaFace. However, the operational cost of retrieval is frequently omitted. When the gallery size grows beyond 10,000 identities, exhaustive cosine compariso...",
+      "char_count": 352
+    },
+    {
+      "paragraph_id": "P07-PARA-07",
+      "text_snippet": "For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms---far exceeding the available latenc...",
+      "char_count": 412
+    },
+    {
+      "paragraph_id": "P07-PARA-08",
+      "text_snippet": "Table tab:sota_constraints summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed retrieva...",
+      "char_count": 390
+    },
+    {
+      "paragraph_id": "P07-PARA-09",
+      "text_snippet": "We assume that the deep feature embeddings provided to the retrieval layer exhibit margin-induced compactness. Retrieval performance benefits from embeddings exhibiting margin-induced compactness because feature overlap between identities can otherwise increase false acceptance rates when operating ...",
+      "char_count": 331
+    },
+    {
+      "paragraph_id": "P07-PARA-10",
+      "text_snippet": "By relying on externally provided embeddings that enforce an angular margin penalty in hyperspherical space b5 , the retrieval layer benefits from tightly clustered intra-class samples and wide inter-class separation. The margin-induced compactness is particularly important for distance-based retrie...",
+      "char_count": 541
+    },
+    {
+      "paragraph_id": "P07-PARA-11",
+      "text_snippet": "To address the retrieval bottleneck introduced by large galleries, the proposed retrieval layer employs Hierarchical Navigable Small World (HNSW) indexing. Scalability is determined by the graph traversal structure, not the approximate search algorithm. HNSW builds a multi-layer proximity graph base...",
+      "char_count": 524
+    },
+    {
+      "paragraph_id": "P07-PARA-12",
+      "text_snippet": "Search starts at the top sparse layer and proceeds greedily towards the closer nodes and deeper layers until it converges b7 . Since graph navigation is stable, and brute force and trees collapse, search complexity has a logarithmic nature: equation T(N) = a (N) + b equation This structure allows ef...",
+      "char_count": 635
+    },
+    {
+      "paragraph_id": "P07-PARA-13",
+      "text_snippet": "Figure fig:arch illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. An optional downstream smoothing mechanism (external) smooths predictions across conse...",
+      "char_count": 340
+    },
+    {
+      "paragraph_id": "P07-PARA-14",
+      "text_snippet": "Because public data sets with 100k labeled identities under open-set protocols are limited, we used artificial hypersphere-distributed vectors to stress test retrieval scaling. While providing a controlled baseline for indexing evaluation, real-world embedding clusters are not distributed uniformly....",
+      "char_count": 547
+    },
+    {
+      "paragraph_id": "P07-PARA-15",
+      "text_snippet": "The comparative evaluation (Table tab:baseline_collapse ) shows to what extent the approaches are limited by their ability to process a single query fast enough. The Linear method is too slow for a 55 ms retrieval budget. The KD-Tree approach is too slow for high-dimensional data. The IVF-Flat metho...",
+      "char_count": 561
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P07-THE-01",
+      "type": "THEOREM",
+      "statement": "[Logarithmic Latency Scaling of HNSW Indexing] Let $N$ deep feature vectors $v \\in \\mathbb{S}^{d-1}$ be indexed in an HNSW graph with maximum degree $M$ and scaling parameter $m_L = 1/\\ln(M)$. The average greedy routing step complexity to find the nearest neighbor candidate is bounded by $\\mathcal{O..."
+    },
+    {
+      "theorem_id": "P07-THE-02",
+      "type": "THEOREM",
+      "statement": "[LDCC Open-Set Unknown Rejection Bound] Let query $q \\notin \\mathcal{G}$ be an out-of-gallery unknown probe falling in a sparse inter-class region. If the neighborhood variance $\\sigma_k^2(q) = \\frac{1}{k}\\sum_{i=1}^k \\|v_i - \\bar{v}\\|^2 \\ge \\epsilon$, LDCC deterministically rejects $q$ as $\\mathtt{..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P07-EQ-01",
+      "latex": "T_{total} = T_{detect} + T_{align} + T_{embed} + T_{retrieve}"
+    },
+    {
+      "equation_id": "P07-EQ-02",
+      "latex": "T(N) = a \\log(N) + b"
+    },
+    {
+      "equation_id": "P07-EQ-03",
+      "latex": "v_{fp16} = \\text{cast}_{fp16}(v_{fp32})"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P07-TAB-01",
+      "caption": "State-of-the-Art Under Institutional Constraints"
+    },
+    {
+      "table_id": "P07-TAB-02",
+      "caption": "Latency Scaling Behavior"
+    },
+    {
+      "table_id": "P07-TAB-03",
+      "caption": "Operational Accuracy vs Retrieval Cost"
+    },
+    {
+      "table_id": "P07-TAB-04",
+      "caption": "Latency Comparison Across Frameworks"
+    },
+    {
+      "table_id": "P07-TAB-05",
+      "caption": "Index Performance Metrics (N=100,000)"
+    },
+    {
+      "table_id": "P07-TAB-06",
+      "caption": "ROC Analysis for Threshold Selection"
+    },
+    {
+      "table_id": "P07-TAB-07",
+      "caption": "Component Contribution Analysis"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P07-FIG-01",
+      "caption": "Retrieval-Focused Execution Segment: The layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating."
+    },
+    {
+      "figure_id": "P07-FIG-02",
+      "caption": "LDCC Topological Rejection: Known probe matches tight enrolled cluster ($\\sigma_k^2 < \\epsilon$); unknown probe in sparse region fails LDCC variance threshold and is rejected."
+    },
+    {
+      "figure_id": "P07-FIG-03",
+      "caption": "Real-time console telemetry validating sub-millisecond HNSW lookup and LDCC neighborhood density consistency on embedded edge CPU."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P07-REF-01",
+      "key": "b1",
+      "raw_citation": "T. S. Lim, S. C. Sim, and M. M. Mansor, \"RFID based attendance system,\" in 2009 IEEE Symposium on Industrial Electronics \\& Applications , vol. 2, pp. 778-782, 2009."
+    },
+    {
+      "reference_id": "P07-REF-02",
+      "key": "b18",
+      "raw_citation": "F. Schroff, D. Kalenichenko, and J. Philbin, \"FaceNet: A unified embedding for face recognition and clustering,\" in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2015, pp. 815-823."
+    },
+    {
+      "reference_id": "P07-REF-03",
+      "key": "b20",
+      "raw_citation": "M. Fredrikson, S. Jha, and T. Ristenpart, \"Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures,\" in Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security (CCS) , 2015, pp. 1322-1333."
+    },
+    {
+      "reference_id": "P07-REF-04",
+      "key": "b13",
+      "raw_citation": "K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, \"Joint Face Detection and Alignment Using Multitask Cascaded Convolutional Networks,\" IEEE Signal Processing Letters , vol. 23, no. 10, pp. 1499-1503, 2016."
+    },
+    {
+      "reference_id": "P07-REF-05",
+      "key": "b15",
+      "raw_citation": "W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, \"Edge Computing: Vision and Challenges,\" IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637-646, 2016."
+    },
+    {
+      "reference_id": "P07-REF-06",
+      "key": "b17",
+      "raw_citation": "B. Amos, B. Ludwiczuk, and M. Satyanarayanan, \"OpenFace: A general-purpose face recognition library with mobile applications,\" Technical Report CMU-CS-16-118 , Carnegie Mellon University, 2016."
+    },
+    {
+      "reference_id": "P07-REF-07",
+      "key": "megaface",
+      "raw_citation": "I. Kemelmacher-Shlizerman et al., \"The MegaFace Benchmark: 1 Million Faces for Recognition at Scale,\" in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2016, pp. 4873-4882."
+    },
+    {
+      "reference_id": "P07-REF-08",
+      "key": "b4",
+      "raw_citation": "A. G. Howard et al., \"MobileNets: Efficient convolutional neural networks for mobile vision applications,\" arXiv preprint arXiv:1704.04861 , 2017."
+    },
+    {
+      "reference_id": "P07-REF-09",
+      "key": "b21",
+      "raw_citation": "Y. Liu, A. Jourabloo, and X. Liu, \"Learning Deep Models for Face Anti-Spoofing: Binary or Auxiliary Supervision,\" in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2018, pp. 389-398."
+    },
+    {
+      "reference_id": "P07-REF-10",
+      "key": "b7",
+      "raw_citation": "Y. A. Malkov and D. A. Yashunin, \"Efficient and robust approximate nearest neighbor search using HNSW graphs,\" IEEE Transactions on Pattern Analysis and Machine Intelligence , vol. 42, no. 4, pp. 824-836, 2018."
+    },
+    {
+      "reference_id": "P07-REF-11",
+      "key": "cosface",
+      "raw_citation": "H. Wang et al., \"CosFace: Large Margin Cosine Loss for Deep Face Recognition,\" in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , 2018, pp. 5265-5274."
+    },
+    {
+      "reference_id": "P07-REF-12",
+      "key": "b2",
+      "raw_citation": "Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, \"Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,\" Proceedings of the IEEE , vol. 107, no. 8, pp. 1738-1762, 2019."
+    },
+    {
+      "reference_id": "P07-REF-13",
+      "key": "b3",
+      "raw_citation": "Q. Zhang, \"Privacy-preserving deep learning based face recognition on the cloud,\" IEEE Trans. Ind. Info. , vol. 16, 2019."
+    },
+    {
+      "reference_id": "P07-REF-14",
+      "key": "b5",
+      "raw_citation": "J. Deng, J. Guo, N. Xue, and S. Zafeiriou, \"ArcFace: Additive angular margin loss for deep face recognition,\" in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2019, pp. 4690-4699."
+    },
+    {
+      "reference_id": "P07-REF-15",
+      "key": "b6",
+      "raw_citation": "J. Johnson, M. Douze, and H. J\u00e9gou, \"Billion-scale similarity search with GPUs,\" IEEE Transactions on Big Data , vol. 7, no. 3, pp. 535-547, 2019."
+    }
+  ]
+}

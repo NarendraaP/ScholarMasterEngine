@@ -1,0 +1,243 @@
+{
+  "paper_id": "P08",
+  "paper_num": 8,
+  "title": "A Cryptographic Provenance Model with Erasure-Compatible Immutability\n\\thanks{Implementation artifacts are available upon request.",
+  "abstract_snippet": "Edge-native monitoring infrastructures produce vast telemetry streams that require persistent integrity verification. Modern data protection regulations impose stringent constraints on long-term personal data retention, while conventional database systems allow data rewriting by privileged accounts, undermining non-repudiation. Conversely, immutable append-only ledgers conflict with privacy regula...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Cryptographic Construction",
+    "Protocol Design \\& Key Management",
+    "Performance Evaluation",
+    "Security Analysis",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Structural Conflict Between Immutable Auditability and Selective Erasure",
+    "Contributions and Subsystem Scope",
+    "Immutability vs. Erasure",
+    "Proposed Solution: Cryptographic Provenance Layer",
+    "Distributed Ledgers in Institutional Settings",
+    "Secure Provenance and Directed Acyclic Graphs",
+    "The Immutability-Erasure Paradox",
+    "Formalizing Erasure-Compatible Immutability",
+    "Hash-Chained State Construction",
+    "Batched Merkle-Tree Mechanism",
+    "Authenticated Encryption (AES-GCM)",
+    "Future Extensibility: Zero-Knowledge Proofs",
+    "Per-Identity Symmetric Key (PISK) Lifecycle",
+    "Cryptographic Shredding Protocol",
+    "Merkle Proof Verification Workflow",
+    "Throughput and Latency Analysis",
+    "Storage Complexity and Asymptotic Growth",
+    "Merkle Proof Overhead Analysis",
+    "Cryptographic Computational Overhead",
+    "Security Assumptions",
+    "Resistance to Retroactive Modification",
+    "Key Custody and Shredding Finality",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P08-PARA-01",
+      "text_snippet": "This study presents the Cryptographic Provenance Layer (CPL), combining hash commitment schemes with selective data revocation. Encrypted event payloads are stored off-chain while their Merkle tree root commitments are anchored to a permissioned ledger. To achieve Erasure-Compatible Immutability, we...",
+      "char_count": 537
+    },
+    {
+      "paragraph_id": "P08-PARA-02",
+      "text_snippet": "Evaluation on a simulated BFT validator network confirms sustained throughput above 1,000 transactions per second with sub-second confirmation latency. Because only fixed-size commitments enter the ledger, storage overhead remains constant per transaction. The findings prove that layered cryptograph...",
+      "char_count": 406
+    },
+    {
+      "paragraph_id": "P08-PARA-03",
+      "text_snippet": "The main point of this paper is that by decoupling attestation from disclosure, we can achieve tamper-evident provenance while simultaneously maintaining the option of selectively withholding payload contents through cryptographic erasure. Edge computing deployments are increasingly generating telem...",
+      "char_count": 540
+    },
+    {
+      "paragraph_id": "P08-PARA-04",
+      "text_snippet": "Within the ScholarMaster architecture, this subsystem manages provenance attestation, governs cryptographic key life cycles, and provides revocable payload accessibility only and does not orchestrate runtime activation (Paper 9), validate survivability behavior (Paper 10), optimize federated adaptat...",
+      "char_count": 422
+    },
+    {
+      "paragraph_id": "P08-PARA-05",
+      "text_snippet": "Distributed ledgers tackle the problem of mutability by design: they make all changes to the state append-only and, therefore, create tamper-evident provenance histories b12 . At the same time, the inability to alter stored information conflicts with modern data privacy regulations, such as the GDPR...",
+      "char_count": 442
+    },
+    {
+      "paragraph_id": "P08-PARA-06",
+      "text_snippet": "The removal or rewriting of historical blocks from a hash-linked ledger would undermine later commitments. Consequently, na\\\"ive use of immutable provenance ledgers in regulated environments is likely to cause compliance difficulties. The problem is to devise a system where these properties can co-e...",
+      "char_count": 341
+    },
+    {
+      "paragraph_id": "P08-PARA-07",
+      "text_snippet": "In order to investigate the ways auditability and erasure requirements could be reconciled, we propose an applied cryptographic provenance model, which we evaluated in the setting of high-frequency telemetry environments. The key innovation of the CPL is its Dual-Layer Provenance Model that decouple...",
+      "char_count": 376
+    },
+    {
+      "paragraph_id": "P08-PARA-08",
+      "text_snippet": "By considering each spatiotemporal event as an attestation that forms a part of a linear chain that is linked using cryptographic means, the attestation layer makes the historical chain of events resistant to modification by default.",
+      "char_count": 233
+    },
+    {
+      "paragraph_id": "P08-PARA-09",
+      "text_snippet": "In order to achieve revocation at the disclosure layer, we propose the following cryptographic shredding mechanism based on PISK. The payloads are encrypted with unique, disposable keys before being hashed into the ledger. This way, upon a revocation request, the key used to decrypt the correspondin...",
+      "char_count": 540
+    },
+    {
+      "paragraph_id": "P08-PARA-10",
+      "text_snippet": "Our approach utilizes a more robust and passive cryptographic mechanism: Off-Chain Data with On-Chain Fingerprints and Per-Identity Encryption b20 . By keeping the encrypted payloads off-chain and only anchoring the cryptographic hashes, the system allows for functional deletion by destroying the sp...",
+      "char_count": 373
+    },
+    {
+      "paragraph_id": "P08-PARA-11",
+      "text_snippet": "We now describe the cryptographic structure used to transform conventional telemetry logging into a proof-based provenance system.",
+      "char_count": 130
+    },
+    {
+      "paragraph_id": "P08-PARA-12",
+      "text_snippet": "The interaction between immutability and selective erasure can be formalized as a cryptographic design property. Erasure targets recoverability rather than historical attestation. The ledger remains immutable while accessibility becomes revocable, rather than immutable data itself being deleted.",
+      "char_count": 296
+    },
+    {
+      "paragraph_id": "P08-PARA-13",
+      "text_snippet": "Let $ L $ represent the immutable ledger state, $C_x$ represent the ciphertext payload of identity $x$, and $K_x$ represent the associated per-identity symmetric key.",
+      "char_count": 166
+    },
+    {
+      "paragraph_id": "P08-PARA-14",
+      "text_snippet": "Under this formulation, hash commitments remain essentially unaltered even after their payload accessibility is revoked. The ledger bears witness to a cryptographic artifact having once existed, but the plaintext is forever beyond reach.",
+      "char_count": 237
+    },
+    {
+      "paragraph_id": "P08-PARA-15",
+      "text_snippet": "Each block $B_i$ stores a cryptographic summary of the set of telemetry events as a hash value $H_i$, timestamp $T_i$ and hash of the previous state $H_{i-1 $. The state hash is subsequently computed using the SHA-256 cryptographic hash function: equation H_i = SHA256 ( M_{root H_{i-1 T_i ) equation...",
+      "char_count": 546
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P08-EQ-01",
+      "latex": "H_i = \\text{SHA256}( M_{root} \\parallel H_{i-1} \\parallel T_i )"
+    },
+    {
+      "equation_id": "P08-EQ-02",
+      "latex": "L_j = \\text{SHA256}(C_j \\parallel T_j \\parallel \\text{Nonce}_j), \\quad \\forall j \\in \\{1, \\dots, k\\}"
+    },
+    {
+      "equation_id": "P08-EQ-03",
+      "latex": "H_{parent} = \\text{SHA256}(H_{left} \\parallel H_{right})"
+    },
+    {
+      "equation_id": "P08-EQ-04",
+      "latex": "C_{payload}, Tag = \\text{AES-GCM}(K_{sym}^{ID}, E_{payload}, IV)"
+    },
+    {
+      "equation_id": "P08-EQ-05",
+      "latex": "\\text{PRK} = \\text{HKDF-Extract}(K_{master}, \\text{system\\_salt})"
+    },
+    {
+      "equation_id": "P08-EQ-06",
+      "latex": "K_{sym}^{x} = \\text{HKDF-Expand}(\\text{PRK}, ID_x \\parallel \\text{Salt}_x, L)"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P08-TAB-01",
+      "caption": "Merkle Proof Size Overhead vs Batch Size"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P08-FIG-01",
+      "caption": "Batched Merkle Tree Construction. Individual encrypted events are hashed with nonces and timestamps into leaf nodes ($L_0 \\dots L_3$). The tree recursively hashes upward to generate a single 32-byte Merkle Root ($M_{root"
+    },
+    {
+      "figure_id": "P08-FIG-02",
+      "caption": "PISK Lifecycle and Cryptographic Shredding. Encrypted payloads are stored in the Off-chain DB, whereas only the Merkle Root is anchored to the Ledger. In addition, deletion only involves the KMS Key to be erased, satisfying cryptographic erasure."
+    },
+    {
+      "figure_id": "P08-FIG-03",
+      "caption": "Indicative performance curve: Batched Merkle model was able to sustain under one second latency up to 1,200 TPS in the experimental setup, after which the increased queueing latency caused a steep rise in overall latency."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P08-REF-01",
+      "key": "b6",
+      "raw_citation": "R. C. Merkle, ``A Digital Signature Based on a Conventional Encryption Function,'' in Advances in Cryptology --- CRYPTO '87 , Springer, 1988, pp. 369-378."
+    },
+    {
+      "reference_id": "P08-REF-02",
+      "key": "b15",
+      "raw_citation": "M. Castro and B. Liskov, ``Practical Byzantine Fault Tolerance,'' in OSDI , vol. 99, 1999, pp. 173-186."
+    },
+    {
+      "reference_id": "P08-REF-03",
+      "key": "b14",
+      "raw_citation": "D. A. McGrew and J. Viega, ``The security and performance of the Galois/Counter Mode (GCM) of operation,'' in Proc. INDOCRYPT , Springer, 2004, pp. 343-355."
+    },
+    {
+      "reference_id": "P08-REF-04",
+      "key": "b28",
+      "raw_citation": "S. Nakamoto, ``Bitcoin: A peer-to-peer electronic cash system,'' Decentralized Business Review, 2008."
+    },
+    {
+      "reference_id": "P08-REF-05",
+      "key": "b13",
+      "raw_citation": "H. Krawczyk, ``Cryptographic extraction and key derivation: The HKDF scheme,'' in Proc. CRYPTO , 2010, pp. 631-648."
+    },
+    {
+      "reference_id": "P08-REF-06",
+      "key": "b29",
+      "raw_citation": "E. Ben-Sasson et al., ``Zerocash: Decentralized Anonymous Payments from Bitcoin,'' in IEEE Symposium on Security and Privacy , 2014, pp. 459-474."
+    },
+    {
+      "reference_id": "P08-REF-07",
+      "key": "b20",
+      "raw_citation": "G. Zyskind et al., ``Decentralizing privacy: Using blockchain to protect personal data,'' in IEEE Security and Privacy Workshops (SPW) , 2015, pp. 180-184."
+    },
+    {
+      "reference_id": "P08-REF-08",
+      "key": "b11",
+      "raw_citation": "C. Christidis and M. Devetsikiotis, ``Blockchains and Smart Contracts for the Internet of Things,'' IEEE Access , vol. 4, pp. 2292-2303, 2016."
+    },
+    {
+      "reference_id": "P08-REF-09",
+      "key": "b4",
+      "raw_citation": "M. Sharples and J. Domingue, ``The blockchain and kudos: A distributed system for educational record, reputation and reward,'' in European Conference on Technology Enhanced Learning (EC-TEL) , Springer, 2016, pp. 490-496."
+    },
+    {
+      "reference_id": "P08-REF-10",
+      "key": "b10",
+      "raw_citation": "G. Ateniese, B. Magri, D. Venturi, and E. Andrade, ``Redactable Blockchain - or - Rewriting History in Bitcoin and Friends,'' in 2017 IEEE European Symposium on Security and Privacy (EuroS\\&P) , 2017, pp. 111-126."
+    },
+    {
+      "reference_id": "P08-REF-11",
+      "key": "b23",
+      "raw_citation": "P. Voigt and A. Von dem Bussche, ``The EU General Data Protection Regulation (GDPR): A Practical Guide,'' Springer International Publishing, 2017."
+    },
+    {
+      "reference_id": "P08-REF-12",
+      "key": "b3",
+      "raw_citation": "A. Grech and A. F. Camilleri, ``Blockchain in education,'' JRC Science for Policy Report , vol. 10, p. 132, 2017."
+    },
+    {
+      "reference_id": "P08-REF-13",
+      "key": "b5",
+      "raw_citation": "X. Liang, S. Shetty, D. Tosh, C. Kamhoua, K. Kwiat, and L. Njilla, ``ProvChain: A blockchain-based data provenance architecture in cloud environment with enhanced privacy and availability,'' in Proc. IEEE/ACM CCGRID , 2017, pp. 468-477."
+    },
+    {
+      "reference_id": "P08-REF-14",
+      "key": "b7",
+      "raw_citation": "A. Ramachandran and M. Kantarcioglu, ``Using Blockchain and smart contracts for secure data provenance management,'' arXiv preprint arXiv:1709.10000 , 2017."
+    },
+    {
+      "reference_id": "P08-REF-15",
+      "key": "b1",
+      "raw_citation": "M. Turkanovi\\'{c , M. H\\\"{o lbl, K. Ko s i c , M. Heri c ko, and A. Kami s ali\\'{c , ``EduCTX: A blockchain-based higher education credit platform,'' IEEE Access , vol. 6, pp. 5112-5127, 2018."
+    }
+  ]
+}

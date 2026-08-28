@@ -1,0 +1,221 @@
+{
+  "paper_id": "P24",
+  "paper_num": 24,
+  "title": "Generalized Cross-Modal Recovery under Compromised Primary Sensing",
+  "abstract_snippet": "Cyber-physical edge systems operating in unconstrained environments frequently encounter physical sensor degradation, optical occlusions, and adversarial tampering. While multi-modal sensory architectures incorporate complementary sensing streams (e.g., optical RGB, skeletal pose kinematics, and acoustic spectral features), conventional multi-modal fusion mechanisms employ static weighting matrice...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work \\& Multi-Modal Fusion Taxonomy",
+    "Information-Theoretic JSD Consensus Formulation",
+    "Asynchronous Multi-Rate Synchronization Architecture",
+    "Empirical Degradation \\& Recovery Results",
+    "Failure Boundaries \\& Multi-Channel Breakdown",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Classical Multisensor Data Fusion",
+    "Deep Multimodal Fusion Strategies",
+    "Missing-Modality Learning \\& Generative Imputation",
+    "Modality Dropout \\& Reliability-Weighted Fusion",
+    "Information-Theoretic Divergence \\& Consensus",
+    "Modality Probability Representations \\& Mixture Consensus",
+    "First-Principles Proof of Symmetric JSD Boundedness",
+    "Pinsker-Type Total Variation Metric Bounds",
+    "Infinitesimal Fisher Information Geometry",
+    "Dynamic Trust Weight Gradient Adaptation",
+    "Heterogeneous Clock Jitter \\& Temporal Skew",
+    "Multi-Rate Ring Buffer Synchronization Model",
+    "Experimental Setup \\& Degradation Protocol",
+    "Quantitative Telemetry \\& Authority Redistribution",
+    "Deep Interpretation of Recovery Telemetry (3-Layer Standard)",
+    "Multi-Modality Breakdown Conditions",
+    "Correlated Sensor Contamination \\& Fail-Closed Quarantine"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P24-PARA-01",
+      "text_snippet": "To mitigate single-channel vulnerability, modern edge platforms deploy heterogeneous sensor suites combining optical RGB cameras, skeletal pose estimators, thermal infrared detectors, acoustic arrays, and inertial measurement units (IMUs) khaleghi2013multisensor . Nevertheless, simply aggregating mu...",
+      "char_count": 1568
+    },
+    {
+      "paragraph_id": "P24-PARA-02",
+      "text_snippet": "To address these shortcomings, we propose to make a fundamental distinction between Multimodal Fusion , which assumes clean inputs, and Multimodal Recovery that actively identifies corrupted channels, suppresses their influence, and recovers the distribution of intact states without retraining. The ...",
+      "char_count": 670
+    },
+    {
+      "paragraph_id": "P24-PARA-03",
+      "text_snippet": "This paper establishes the mathematical foundations, synchronization architecture, and empirical verification of Generalized Cross-Modal Consensus Recovery . Our architecture treats modality trust as a continuous, time-varying dynamic state governed by symmetric Jensen-Shannon Divergence ($ JSD $). ...",
+      "char_count": 566
+    },
+    {
+      "paragraph_id": "P24-PARA-04",
+      "text_snippet": "Specifically, this paper makes four core contributions: enumerate Information-Theoretic Consensus \\& Boundedness Proof : We formalize cross-modal agreement on the statistical probability simplex using symmetric Jensen-Shannon Divergence. We establish from first principles that $ JSD (P_m P_c)$ exhib...",
+      "char_count": 1621
+    },
+    {
+      "paragraph_id": "P24-PARA-05",
+      "text_snippet": "To establish an unbiased reference baseline against which individual channel disagreement can be evaluated, we construct the instantaneous arithmetic mixture consensus distribution $P_c ^K$: equation P_c(k) = 1 {|M| _{m M P_m(k), k \\{1, , K\\ . equation",
+      "char_count": 252
+    },
+    {
+      "paragraph_id": "P24-PARA-06",
+      "text_snippet": "For $j m$: equation w_m { JSD _j = e^{- JSD _m {Z e^{- JSD _j {Z = w_m w_j > 0. equation proof",
+      "char_count": 94
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P24-THE-01",
+      "type": "THEOREM",
+      "statement": "[JSD Information-Theoretic Bounds] \\label{thm:jsd_bounds} For any discrete probability distributions $P_m, P_c \\in \\Delta^K$, the Jensen-Shannon Divergence is symmetric, non-negative, and strictly bounded: \\begin{equation} 0 \\le \\mathrm{JSD}(P_m \\parallel P_c) \\le \\ln(2) \\approx 0.69315\\text{ nats}...."
+    },
+    {
+      "theorem_id": "P24-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[Analytical Trust Weight Gradients] The dynamic trust weight allocation satisfies the following analytical gradient properties: \\begin{align} \\text{Self-Gradient:} \\quad \\frac{\\partial w_m}{\\partial \\mathrm{JSD}_m} &= -\\beta w_m (1 - w_m) < 0, \\label{eq:self_grad} \\\\ \\text{Cross-Gradient:} \\quad \\fr..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P24-EQ-01",
+      "latex": "P_m = [P_m(1), \\dots, P_m(K)]^T, \\quad \\sum_{k=1}^K P_m(k) = 1."
+    },
+    {
+      "equation_id": "P24-EQ-02",
+      "latex": "P_c(k) = \\frac{1}{|M|} \\sum_{m \\in M} P_m(k), \\quad \\forall k \\in \\{1, \\dots, K\\}."
+    },
+    {
+      "equation_id": "P24-EQ-03",
+      "latex": "\\mathrm{JSD}(P_m \\parallel P_c) = \\frac{1}{2} \\mathrm{KL}(P_m \\parallel \\bar{M}_m) + \\frac{1}{2} \\mathrm{KL}(P_c \\parallel \\bar{M}_m),"
+    },
+    {
+      "equation_id": "P24-EQ-04",
+      "latex": "0 \\le \\mathrm{JSD}(P_m \\parallel P_c) \\le \\ln(2) \\approx 0.69315\\text{ nats}."
+    },
+    {
+      "equation_id": "P24-EQ-05",
+      "latex": "\\mathrm{JSD}(P_m \\parallel P_c) &= \\frac{1}{2} \\sum_{k=1}^K P_m(k) \\ln \\frac{P_m(k)}{\\bar{M}_m(k)} \\nonumber \\\\ &\\quad + \\frac{1}{2} \\sum_{k=1}^K P_c(k) \\ln \\frac{P_c(k)}{\\bar{M}_m(k)} \\nonumber \\\\ &= -\\frac{1}{2} H(P_m) -\\frac{1}{2} H(P_c) \\nonumber..."
+    },
+    {
+      "equation_id": "P24-EQ-06",
+      "latex": "H\\left( \\frac{P_m + P_c}{2} \\right) \\ge \\frac{1}{2} H(P_m) + \\frac{1}{2} H(P_c)."
+    },
+    {
+      "equation_id": "P24-EQ-07",
+      "latex": "H\\left( \\frac{P_m + P_c}{2} \\right) &= -\\sum_{k=1}^K \\bar{M}_m(k) \\ln \\bar{M}_m(k) \\nonumber \\\\ &= \\ln(2) - \\frac{1}{2}\\sum_k P_m(k) \\ln(P_m(k) + P_c(k)) \\nonumber \\\\ &\\quad - \\frac{1}{2}\\sum_k P_c(k) \\ln(P_m(k) + P_c(k))."
+    },
+    {
+      "equation_id": "P24-EQ-08",
+      "latex": "-\\ln(P_m(k) + P_c(k)) &\\le -\\ln P_m(k), \\\\ -\\ln(P_m(k) + P_c(k)) &\\le -\\ln P_c(k)."
+    },
+    {
+      "equation_id": "P24-EQ-09",
+      "latex": "H\\left( \\frac{P_m + P_c}{2} \\right) &\\le \\ln(2) - \\frac{1}{2}\\sum_k P_m(k) \\ln P_m(k) \\nonumber \\\\ &\\quad - \\frac{1}{2}\\sum_k P_c(k) \\ln P_c(k) \\nonumber \\\\ &= \\ln(2) + \\frac{1}{2} H(P_m) + \\frac{1}{2} H(P_c)."
+    },
+    {
+      "equation_id": "P24-EQ-10",
+      "latex": "\\mathrm{JSD}(P_m \\parallel P_c) \\le \\ln(2) \\approx 0.69315\\text{ nats}."
+    },
+    {
+      "equation_id": "P24-EQ-11",
+      "latex": "\\frac{1}{2} \\|P_m - P_c\\|_{TV}^2 \\le \\mathrm{JSD}(P_m \\parallel P_c) \\le \\ln(2) \\|P_m - P_c\\|_{TV}."
+    },
+    {
+      "equation_id": "P24-EQ-12",
+      "latex": "\\mathrm{KL}(P_m \\parallel \\bar{M}_m) &\\ge 2 \\|P_m - \\bar{M}_m\\|_{TV}^2 \\nonumber \\\\ &= 2 \\left( \\tfrac{1}{2}\\|P_m - P_c\\|_{TV} \\right)^2 \\nonumber \\\\ &= \\tfrac{1}{2}\\|P_m - P_c\\|_{TV}^2."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P24-TAB-01",
+      "caption": "Comparative Taxonomy of Multimodal Sensor Fusion, Missing-Modality Learning, and Recovery Paradigms"
+    },
+    {
+      "table_id": "P24-TAB-02",
+      "caption": "Cross-Modal Recovery and Modality Trust Allocation Across Degradation Regimes"
+    },
+    {
+      "table_id": "P24-TAB-03",
+      "caption": "Secondary Modality Authority Transfer Dynamics and Consensus Entropy"
+    }
+  ],
+  "figures_inventory": [],
+  "references_inventory": [
+    {
+      "reference_id": "P24-REF-01",
+      "key": "baltrusaitis2018multimodal",
+      "raw_citation": "T. Baltru{ s aitis, C. Ahuja, and L. P. Morency, ``Multimodal machine learning: A survey and taxonomy,'' IEEE Trans. Pattern Anal. Mach. Intell. , vol. 41, no. 2, pp. 423--443, 2018."
+    },
+    {
+      "reference_id": "P24-REF-02",
+      "key": "ramachandram2017deep",
+      "raw_citation": "D. Ramachandram and G. W. Taylor, ``Deep multimodal learning: A survey on recent advances and trends,'' IEEE Signal Process. Mag. , vol. 34, no. 6, pp. 96--108, 2017."
+    },
+    {
+      "reference_id": "P24-REF-03",
+      "key": "dodge2016understanding",
+      "raw_citation": "S. Dodge and L. Karam, ``Understanding how image quality affects deep neural networks,'' in Proc. QoMEX , 2016, pp. 1--6."
+    },
+    {
+      "reference_id": "P24-REF-04",
+      "key": "hendrycks2019benchmarking",
+      "raw_citation": "D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in Proc. ICLR , 2019."
+    },
+    {
+      "reference_id": "P24-REF-05",
+      "key": "tsai2019multimodal",
+      "raw_citation": "Y. H. H. Tsai et al., ``Multimodal transformer for unaligned multimodal language sequences,'' in Proc. ACL , 2019, pp. 6558--6569."
+    },
+    {
+      "reference_id": "P24-REF-06",
+      "key": "ma2021smil",
+      "raw_citation": "M. Ma, J. Ren, L. Zhao, D. Testuggine, and X. Peng, ``SMIL: Multimodal learning with severely missing modality,'' in Proc. AAAI , 2021, pp. 2302--2310."
+    },
+    {
+      "reference_id": "P24-REF-07",
+      "key": "lee2020private",
+      "raw_citation": "N. Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in Proc. NeurIPS , 2020."
+    },
+    {
+      "reference_id": "P24-REF-08",
+      "key": "khaleghi2013multisensor",
+      "raw_citation": "B. Khaleghi, A. Khamis, F. O. Karray, and S. N. Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' Information Fusion , vol. 14, no. 1, pp. 28--44, 2013."
+    },
+    {
+      "reference_id": "P24-REF-09",
+      "key": "lin1991divergence",
+      "raw_citation": "J. Lin, ``Divergence measures based on the Shannon entropy,'' IEEE Trans. Inf. Theory , vol. 37, no. 1, pp. 145--151, 1991."
+    },
+    {
+      "reference_id": "P24-REF-10",
+      "key": "endres2003new",
+      "raw_citation": "D. M. Endres and J. E. Schindelin, ``A new metric for probability distributions,'' IEEE Trans. Inf. Theory , vol. 49, no. 7, pp. 1858--1860, 2003."
+    },
+    {
+      "reference_id": "P24-REF-11",
+      "key": "kullback1951information",
+      "raw_citation": "S. Kullback and R. A. Leibler, ``On information and sufficiency,'' Ann. Math. Stat. , vol. 22, no. 1, pp. 79--86, 1951."
+    },
+    {
+      "reference_id": "P24-REF-12",
+      "key": "julier2000new",
+      "raw_citation": "S. Julier, J. Uhlmann, and H. F. Durrant-Whyte, ``A new method for the nonlinear transformation of means and covariances in filters,'' IEEE Trans. Autom. Control , vol. 45, no. 3, pp. 477--482, 2000."
+    },
+    {
+      "reference_id": "P24-REF-13",
+      "key": "jaegle2021perceiver",
+      "raw_citation": "A. Jaegle et al., ``Perceiver: General perception with iterative attention,'' in Proc. ICML , 2021, pp. 4651--4664."
+    },
+    {
+      "reference_id": "P24-REF-14",
+      "key": "neverova2015moddrop",
+      "raw_citation": "N. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' IEEE Trans. Pattern Anal. Mach. Intell. , vol. 38, no. 8, pp. 1692--1706, 2015."
+    },
+    {
+      "reference_id": "P24-REF-15",
+      "key": "blundell2015weight",
+      "raw_citation": "C. Blundell, J. Cornebise, K. Kavukcuoglu, and D. Wierstra, ``Weight uncertainty in neural networks,'' in Proc. ICML , 2015, pp. 1613--1622."
+    }
+  ]
+}

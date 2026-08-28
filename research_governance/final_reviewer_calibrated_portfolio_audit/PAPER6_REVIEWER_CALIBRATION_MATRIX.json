@@ -1,0 +1,98 @@
+{
+  "calibration_standard": "Paper 6 Real Peer-Review Comments (ACM TECS / IEEE Sensors Journal)",
+  "cross_portfolio_vulnerability_mapping": [
+    {
+      "paper_6_reviewer_issue": "1. Known techniques / weak novelty: Challenge that FFT and GCC-PHAT are standard signal processing tools and combination lacks fundamental theoretical novelty.",
+      "equivalent_risk_in_portfolio": "Reviewers challenging whether the paper is primarily an engineering integration of known AI models or classical algorithms.",
+      "papers_affected": [
+        "P1",
+        "P4",
+        "P9",
+        "P11",
+        "P13",
+        "P14",
+        "P20"
+      ],
+      "severity": "HIGH",
+      "mitigation": "Sharpen the core theoretical/methodological delta. Explicitly decompose known prior components from the novel cyber-physical coupling (e.g. kinematic velocity bounds in P9, polynomial staleness in P14)."
+    },
+    {
+      "paper_6_reviewer_issue": "2. Related Work depth: Literature review was challenged for being too narrow and omitting recent deep-learning-based acoustic classifiers.",
+      "equivalent_risk_in_portfolio": "Reviewers rejecting papers with <20 citations or missing modern 2024-2026 baselines.",
+      "papers_affected": [
+        "P13 (13 refs)",
+        "P14 (15 refs)",
+        "P9 (22 refs)",
+        "P24 (19 refs)"
+      ],
+      "severity": "CRITICAL",
+      "mitigation": "Expand Related Work in P13 and P14 to 25+ references covering modern streaming active learning and asynchronous hierarchical federated aggregation."
+    },
+    {
+      "paper_6_reviewer_issue": "3. Single environment validation: Acoustic evaluation was initially performed in a single hallway environment with synthetic RIR simulations.",
+      "equivalent_risk_in_portfolio": "Reviewers objecting that empirical results are derived from a single simulated campus setting or one synthetic dataset.",
+      "papers_affected": [
+        "P9",
+        "P13",
+        "P14",
+        "P22"
+      ],
+      "severity": "HIGH",
+      "mitigation": "Explicitly distinguish synthetic simulation sweeps from real multi-environment traces. Emphasize multi-session robustness across diverse operational conditions."
+    },
+    {
+      "paper_6_reviewer_issue": "4. Missing strong baselines: Reviewers requested comparison against deep learning audio models (AST/YamNet) and standard amplitude thresholding.",
+      "equivalent_risk_in_portfolio": "Reviewers requesting contemporary state-of-the-art competing methods rather than simple naive baselines.",
+      "papers_affected": [
+        "P9 (needs VideoStorm/Chameleon)",
+        "P11 (needs RAUC/Mender)",
+        "P13 (needs VFDT/DDM)",
+        "P14 (needs FedAsync/Aso-Fed)"
+      ],
+      "severity": "HIGH",
+      "mitigation": "Add rigorous comparative baselines and qualitative trade-off matrices in the Results/Discussion sections."
+    },
+    {
+      "paper_6_reviewer_issue": "5. Robustness & variance: Reviewers demanded multiple random seeds, confidence bounds, and sensitivity to noise.",
+      "equivalent_risk_in_portfolio": "Reporting single-run average numbers without variance or confidence intervals.",
+      "papers_affected": [
+        "P1",
+        "P3",
+        "P4",
+        "P8",
+        "P9",
+        "P11",
+        "P13"
+      ],
+      "severity": "MEDIUM",
+      "mitigation": "Report explicit standard deviation / 95% confidence intervals across repeated experimental runs."
+    },
+    {
+      "paper_6_reviewer_issue": "6. Realistic limitations: Reviewers demanded discussion of severe acoustic reverberation, multi-source interference, and background HVAC noise.",
+      "equivalent_risk_in_portfolio": "Omitting realistic failure modes, network dropouts, sensor occlusion, or compute saturation in limitations.",
+      "papers_affected": [
+        "P9",
+        "P11",
+        "P13",
+        "P14"
+      ],
+      "severity": "HIGH",
+      "mitigation": "Add dedicated 'Limitations and Failure Boundaries' subsections detailing exact operational breakdown thresholds."
+    },
+    {
+      "paper_6_reviewer_issue": "7. Overclaiming & language calibration: Reviewers challenged claims of 'perfect privacy' and 'optimal localization'.",
+      "equivalent_risk_in_portfolio": "Using uncalibrated words like 'guaranteed', 'zero', '100%', 'state-of-the-art' without strict formal scope.",
+      "papers_affected": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P11",
+        "P13",
+        "P14"
+      ],
+      "severity": "MEDIUM",
+      "mitigation": "Apply minor textual reframing to replace absolute assertions with rigorously scoped empirical and bounded claims."
+    }
+  ]
+}

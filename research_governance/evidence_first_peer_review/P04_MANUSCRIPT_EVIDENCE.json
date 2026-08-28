@@ -1,0 +1,263 @@
+{
+  "paper_id": "P04",
+  "paper_num": 4,
+  "title": "Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup",
+  "abstract_snippet": "Sensing infrastructure detecting spatial presence is becoming autonomous from institutional schedule databases, making it challenging to ensure observations of presence correspond to required obligations. This work introduces a relational evaluation framework which constantly harmonizes detected spatial presence with institutional schedules using predicate logic.\n\nThe framework introduces the Cont...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Operational Model",
+    "Abstract Processing Model",
+    "Data Sanitization \\& Debounce Logic",
+    "Burst-Elastic Read Optimization",
+    "Experimental Evaluation",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Temporal Blindness of Snapshot Attendance Systems",
+    "Subsystem Scope and Canonical Separation",
+    "Continuous Predicate Evaluation",
+    "Contributions",
+    "Limitations of Passive Evaluation",
+    "Discrete Verification versus Continuous Reconciliation",
+    "Stream Processing and Spatiotemporal Coordination",
+    "Context-Blindness in Edge Sensors",
+    "Continuous Predicate Evaluation Model (CPEM)",
+    "Spatial Exclusivity Invariant",
+    "End-to-End Logic",
+    "Zone Mapping and Resolution",
+    "Persistent Constraint Violation Filter (PCVF)",
+    "Hysteresis Handling",
+    "Schema Partitioning Strategy",
+    "Composite Temporal Indexing",
+    "Evaluation Scope and Environment",
+    "Latency Decomposition",
+    "Throughput and Concurrency Stress Testing",
+    "Scenario-Based Operational Testing",
+    "Logic Decoupling and Extensibility",
+    "Predicate Auditability",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P04-PARA-01",
+      "text_snippet": "The framework introduces the Continuous Predicate Evaluation Model (CPEM) which encodes institutional rules as logical predicates over continuous streams of event-tuples. A Persistent Constraint Violation Filter (PCVF) is used to suppress transient sensor-induced and transit-related constraint viola...",
+      "char_count": 623
+    },
+    {
+      "paragraph_id": "P04-PARA-02",
+      "text_snippet": "To ensure that bursty traffic during context switches between classes is handled correctly, the relational pipeline caches connections via transaction-level pooling, partitions tables using list-based partitioning and composite time-based indexes in PostgreSQL. Evaluation layer load-testing confirms...",
+      "char_count": 580
+    },
+    {
+      "paragraph_id": "P04-PARA-03",
+      "text_snippet": "The main thesis of this paper is that continuously evaluated relational predicates are crucial to achieving bounded latency reconciliation between spatial event streams and institutional schedules in the face of bursting concurrent accesses. This paper is a relational stream-evaluation study which a...",
+      "char_count": 410
+    },
+    {
+      "paragraph_id": "P04-PARA-04",
+      "text_snippet": "Specifically, this paper: itemize Formalizes spatiotemporal compliance rules as continuously evaluated relational predicates (CPEM), enabling schedule comparison at event granularity. Introduces a temporally stabilized violation mechanism (PCVF) to suppress short-lived mismatches caused by transit o...",
+      "char_count": 598
+    },
+    {
+      "paragraph_id": "P04-PARA-05",
+      "text_snippet": "Sensing, identity resolution, and governance escalation are treated as external subsystem dependencies; this work isolates the relational predicate evaluation layer.",
+      "char_count": 165
+    },
+    {
+      "paragraph_id": "P04-PARA-06",
+      "text_snippet": "The approach suggested here is based on an exception-based evaluation. Human operator attention is drawn only when a formally specified deviation is detected beyond the debounce period b17 , thus lightening the supervisory function without adversely affecting the responsiveness of the process.",
+      "char_count": 294
+    },
+    {
+      "paragraph_id": "P04-PARA-07",
+      "text_snippet": "A continuous reconciliation over a zone as described in this paper goes much further than the preceding model. By using ideas from moving-object databases b15, b16 , it performs reconciliation at every instant during the interval. Whereas the preceding approach reconciles a single predicate at one p...",
+      "char_count": 392
+    },
+    {
+      "paragraph_id": "P04-PARA-08",
+      "text_snippet": "The emphasis here is on relational reconciliation rather than perceptual optimization---a distinction that positions this work closer to stream-processing systems research b22 than to computer vision or behavioral analytics.",
+      "char_count": 224
+    },
+    {
+      "paragraph_id": "P04-PARA-09",
+      "text_snippet": "Consider two identical physical observations at 14:30: itemize Scenario A: Student $X$ is detected at the Exit Gate. The schedule indicates campus dismissal. $ $ Evaluation: Compliant. Scenario B: Student $X$ is detected at the Exit Gate. The schedule indicates mandatory laboratory. $ $ Evaluation: ...",
+      "char_count": 322
+    },
+    {
+      "paragraph_id": "P04-PARA-10",
+      "text_snippet": "From the sensor's point of view, these are not different situations. The difference is introduced when the spatial event has to be related to the schedule. The evaluation of predicates yields the formal state of compliance.",
+      "char_count": 223
+    },
+    {
+      "paragraph_id": "P04-PARA-11",
+      "text_snippet": "We enforce the spatial exclusivity invariant: equation |\\{z : Loc (s_i,t)=z\\ | 1 equation A token representing an entity cannot reside in two disjoint zones simultaneously. If detections are made for the same object (token) at the same time, the evaluation layer recognizes this as a teleportation an...",
+      "char_count": 507
+    },
+    {
+      "paragraph_id": "P04-PARA-12",
+      "text_snippet": "To operationalize real-time compliance evaluation, we assume a logical processing model positioned between an incoming event stream and a relational schedule store.",
+      "char_count": 164
+    },
+    {
+      "paragraph_id": "P04-PARA-13",
+      "text_snippet": "Instead, deviation is treated as a time-accumulated state. We define the sustained violation integral: equation V(s_i,t) = _{t_0 ^{t 1 _{T(s_i, ) d equation To approximate a rectangular low-pass filter, we compute: theorem [Debounce Transient Suppression Invariant] Let a transient sensor anomaly or ...",
+      "char_count": 679
+    },
+    {
+      "paragraph_id": "P04-PARA-14",
+      "text_snippet": "This state-machine behavior (Figure fig:fsm ) stabilizes evaluation across intermittent signal loss while preserving responsiveness to genuine zone changes.",
+      "char_count": 156
+    },
+    {
+      "paragraph_id": "P04-PARA-15",
+      "text_snippet": "Synchronized class transitions impose brief, extremely high event traffic. Latency is reduced by controlled relational-access behavior rather than intrinsically new database theory. Throughput is gained by decreasing relational access-paths, since pooling reduces concurrency pressure and partitionin...",
+      "char_count": 325
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P04-THE-01",
+      "type": "THEOREM",
+      "statement": "[Debounce Transient Suppression Invariant] Let a transient sensor anomaly or brief physical passage generate an invalid deviation signal $T(s_i, \\tau) = 1$ for total duration $\\Delta t_{\\mathrm{glitch}}$. If $\\Delta t_{\\mathrm{glitch}} < \\tau_{\\mathrm{debounce}}$, the accumulated violation integral ..."
+    },
+    {
+      "theorem_id": "P04-THE-02",
+      "type": "THEOREM",
+      "statement": "[Bounded Relational Lookup Latency] Let a campus schedule database contain $N$ total enrolled students across $D=5$ weekdays with maximum $K$ schedule entries per student per day. Under list partitioning by $\\mathtt{day\\_of\\_week}$ and composite B-Tree indexing on $(s_i, t_{\\mathrm{start}}, t_{\\math..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P04-EQ-01",
+      "latex": "E = \\{(s_i, z, t)\\}"
+    },
+    {
+      "equation_id": "P04-EQ-02",
+      "latex": "T(s_i, t) \\iff \\text{Loc}(s_i, t) \\neq S(s_i, t) \\land S(s_i, t) \\notin \\{\\emptyset, \\text{Break}\\}"
+    },
+    {
+      "equation_id": "P04-EQ-03",
+      "latex": "|\\{z : \\text{Loc}(s_i,t)=z\\}| \\le 1"
+    },
+    {
+      "equation_id": "P04-EQ-04",
+      "latex": "V(s_i,t) = \\int_{t_0}^{t} \\mathbb{1}_{T(s_i,\\tau)} d\\tau"
+    },
+    {
+      "equation_id": "P04-EQ-05",
+      "latex": "V(s_i, t) = \\int_{t-\\tau_{\\mathrm{debounce}}}^t \\mathbb{1}_{T(s_i, \\tau)} d\\tau < \\tau_{\\mathrm{debounce}},"
+    },
+    {
+      "equation_id": "P04-EQ-06",
+      "latex": "(ID, Zone, Timestamp)"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P04-TAB-01",
+      "caption": "Latency Decomposition per Event (Single Query)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P04-FIG-01",
+      "caption": "PCVF State Machine acting as temporal low-pass filter. Student triggered out-of-schedule transition to Transient state. Alert will only be issued if accumulated violation integral reaches debounce threshold."
+    },
+    {
+      "figure_id": "P04-FIG-02",
+      "caption": "Figure"
+    },
+    {
+      "figure_id": "P04-FIG-03",
+      "caption": "Throughput Stress Test. Without pooling (Red): connection exhaustion causes p99 latency spikes beyond 3,000 QPS. With connection pooling (Green): 5,000 QPS is sustained with p99 latency below 15 ms."
+    },
+    {
+      "figure_id": "P04-FIG-04",
+      "caption": "Spatiotemporal discrepancy scenario: Agent observed in Zone A (Canteen) during scheduled obligation in Zone B (Math Lab). PCVF verifies sustained violation before alerting."
+    },
+    {
+      "figure_id": "P04-FIG-05",
+      "caption": "Real-time console telemetry showing relational predicate evaluation and PCVF threshold escalation."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P04-REF-01",
+      "key": "b18",
+      "raw_citation": "D. Comer, \"The ubiquitous B-tree,\" ACM Computing Surveys (CSUR) , vol. 11, no. 2, pp. 121-137, 1979."
+    },
+    {
+      "reference_id": "P04-REF-02",
+      "key": "b10",
+      "raw_citation": "D. L. Hall and J. Llinas, \"An introduction to multisensor data fusion,\" Proceedings of the IEEE , vol. 85, no. 1, pp. 6-23, 1997."
+    },
+    {
+      "reference_id": "P04-REF-03",
+      "key": "b19",
+      "raw_citation": "B. Salzberg and V. J. Tsotras, \"Comparison of access methods for time-evolving data,\" ACM Computing Surveys (CSUR) , vol. 31, no. 2, pp. 158-221, 1999."
+    },
+    {
+      "reference_id": "P04-REF-04",
+      "key": "b15",
+      "raw_citation": "R. H. G\u00fcting et al., \"A foundation for representing and querying moving objects,\" ACM Transactions on Database Systems (TODS) , vol. 25, no. 1, pp. 1-42, 2000."
+    },
+    {
+      "reference_id": "P04-REF-05",
+      "key": "b13",
+      "raw_citation": "M. Stonebraker et al., \"The 8 requirements of real-time stream processing,\" SIGMOD Record , vol. 34, no. 4, pp. 42-47, 2005."
+    },
+    {
+      "reference_id": "P04-REF-06",
+      "key": "b17",
+      "raw_citation": "E. Wu et al., \"High-performance complex event processing over streams,\" SIGMOD , pp. 407-418, 2006."
+    },
+    {
+      "reference_id": "P04-REF-07",
+      "key": "b21",
+      "raw_citation": "J. M. Hellerstein et al., \"Architecture of a Database System,\" Foundations and Trends in Databases , vol. 1, no. 2, pp. 141-259, 2007."
+    },
+    {
+      "reference_id": "P04-REF-08",
+      "key": "b20",
+      "raw_citation": "S. Harizopoulos et al., \"OLTP through the looking glass, and what we found there,\" SIGMOD , pp. 981-992, 2008."
+    },
+    {
+      "reference_id": "P04-REF-09",
+      "key": "b6",
+      "raw_citation": "P. K. Atrey et al., \"Multimodal fusion for multimedia analysis: A survey,\" Multimedia Systems , vol. 16, no. 6, pp. 345-379, 2010."
+    },
+    {
+      "reference_id": "P04-REF-10",
+      "key": "b5",
+      "raw_citation": "X. Wang, \"Intelligent multi-camera video surveillance: A review,\" Pattern Recognition Letters , vol. 34, no. 1, pp. 3-19, 2013."
+    },
+    {
+      "reference_id": "P04-REF-11",
+      "key": "b24",
+      "raw_citation": "D. Abadi et al., \"The Beckman Report on Database Research,\" SIGMOD Record , vol. 43, no. 3, pp. 61-70, 2014."
+    },
+    {
+      "reference_id": "P04-REF-12",
+      "key": "b14",
+      "raw_citation": "T. Akidau et al., \"The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing,\" Proc. VLDB Endow. , vol. 8, no. 12, pp. 1792-1803, 2015."
+    },
+    {
+      "reference_id": "P04-REF-13",
+      "key": "b16",
+      "raw_citation": "Y. Zheng, \"Trajectory data mining: an overview,\" ACM Transactions on Intelligent Systems and Technology (TIST) , vol. 6, no. 3, pp. 1-41, 2015."
+    },
+    {
+      "reference_id": "P04-REF-14",
+      "key": "b22",
+      "raw_citation": "P. Carbone et al., \"Apache Flink: Stream and Batch Processing in a Single Engine,\" IEEE Data Engineering Bulletin , vol. 38, no. 4, pp. 28-38, 2015."
+    },
+    {
+      "reference_id": "P04-REF-15",
+      "key": "b11",
+      "raw_citation": "W. Shi et al., \"Edge Computing: Vision and Challenges,\" IEEE Internet of Things Journal , vol. 3, no. 5, pp. 637-646, 2016."
+    }
+  ]
+}

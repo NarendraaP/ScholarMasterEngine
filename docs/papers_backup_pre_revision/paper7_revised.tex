@@ -1,0 +1,563 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{url}
+\usepackage{listings}
+
+% --- THEOREMS ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+% --- CODE LISTING STYLE ---
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  frame=single,
+  breaklines=true,
+  backgroundcolor=\color{gray!10},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red}
+}
+
+% ==========================================
+% TIKZ SETUP
+% ==========================================
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+\tikzset{
+  process/.style={
+    rectangle, 
+    minimum width=2.8cm, 
+    minimum height=1cm, 
+    text width=2.8cm,
+    text centered, 
+    draw=black, 
+    fill=blue!10
+  },
+  external/.style={
+    rectangle, 
+    minimum width=2.8cm, 
+    minimum height=1cm, 
+    text width=2.8cm,
+    text centered, 
+    draw=gray, 
+    fill=gray!10,
+    dashed
+  },
+  arrow/.style={
+    thick, 
+    ->, 
+    >=stealth
+  }
+}
+
+% Define \RETURN command for algorithmic package
+\newcommand{\RETURN}{\STATE \textbf{return} }
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+% ==========================================
+% TITLE
+% ==========================================
+\title{Sub-Millisecond Identity Retrieval via HNSW + LDCC}
+
+% ==========================================
+% AUTHORS (Shared Affiliation)
+% ==========================================
+\author{
+\IEEEauthorblockN{
+Polisetti Narendra\IEEEauthorrefmark{1}, 
+Suresh Kumar Sreedharan\IEEEauthorrefmark{2}, 
+Vijaya Raju Motru\IEEEauthorrefmark{3}, and 
+Praveena Mallampalli\IEEEauthorrefmark{4}
+}
+\IEEEauthorblockA{\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+Narsapur, Andhra Pradesh, India \\
+\IEEEauthorrefmark{1}ORCID: 0009-0002-6355-138X, 
+\IEEEauthorrefmark{2}ORCID: 0000-0001-9912-5927 \\
+\IEEEauthorrefmark{3}vijayaraju.m@gmail.com, 
+\IEEEauthorrefmark{4}praveena.iduri@gmail.com}
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT
+% ==========================================
+\begin{abstract}
+Institutional identity resolution is a practical systems engineering problem: large embedding registries require efficient querying to ensure continuous video surveillance streaming. Deep neural networks are typically used to produce embeddings, but similarity searches over massive galleries become a bottleneck. Video identification systems implemented today often resort to processing on remote cloud clusters.
+
+This work studies the possibility of institutional-scale identity retrieval with latencies compatible with real-time performance on embedded hardware. We introduce a retrieval subsystem with log-scale search time based on Hierarchical Navigable Small World indexing. We propose a Local Density Consisteny Criterion (LDCC) which allows to ensure open-set rejections in sparse regions of the embedding space by validating candidate neighborhoods before resolution.
+
+Our edge hardware benchmarks show that the mean retrieval latency stays under one millisecond across a 100K identity database. Meanwhile, open set tests show that the system maintains a 99.8\% unknown rejection rate while keeping queue sizes stable and throughput over 30FPS. By constraining approximate nearest neighbor search to a fixed latency budget the system provides bounded-latency edge identification without requiring cloud connectivity.
+\end{abstract}
+
+% ==========================================
+% KEYWORDS
+% ==========================================
+\begin{IEEEkeywords}
+Approximate Nearest Neighbor Search, HNSW Indexing, Bounded-Latency Retrieval, Open-Set Rejection, Edge Identification, Institutional-Scale Scaling.
+\end{IEEEkeywords}
+
+% ==========================================
+% NOMENCLATURE
+% ==========================================
+\section*{Nomenclature}
+\begin{description}
+    \item[$N$] Total number of identities in the database.
+    \item[$d$] Dimensionality of the feature vector (512).
+    \item[$x_i$] Deep feature vector of the $i$-th sample.
+    \item[$W_j$] Weight vector of the $j$-th class.
+    \item[$\theta_j$] Angle between feature $x_i$ and weight $W_j$.
+    \item[$s$] Scaling parameter for the hypersphere radius.
+    \item[$m$] Additive angular margin penalty.
+    \item[$L$] Loss function value.
+    \item[$\tau$] Cosine similarity decision threshold.
+    \item[\text{FPS}] Frames Per Second.
+\end{description}
+
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+The dominant thesis of this paper is that \textbf{graph-based ANN retrieval combined with neighborhood-consistency validation enables bounded-latency institutional-scale identity resolution on edge hardware}. Real-time identity verification at an institutional scale introduces a practical systems constraint: identity candidates must be resolved rapidly to prevent queue accumulation and video stream degradation. While automated biometric sensing is frequently proposed for high-throughput environments, deploying these systems requires strict adherence to latency bounds.
+
+\subsection{The Hidden Retrieval Bottleneck in Edge Identification}
+Modern embeddings provide reasonably good discrimination, however, even with high accuracy embeddings, practical real-time deployment becomes impossible at scale due to the necessity to perform exhaustive similarity search over a large gallery set. The time cost of such search degrades the quality of continuous video stream processing. Besides, processing happens in the cloud, which adds unacceptable overhead for some applications and creates exposure to network risks. The main reason for this scalability problem is incorrect choice of algorithms for similarity search which leads to non-trivial indexing overheads. These overheads dominate over the inference time of the neural networks.
+
+\subsection{Retrieval Latency Budget as a Streaming Constraint}
+Bounded latency is a hard constraint on the behavior of streaming systems, not an optimization target. Retrieval jitter dictates the depth of queues, and bounded latency makes streams flow. Deterministic retrieval behavior is fundamentally more important than any improvements it permits downstream in the embedding refinement pipeline. To get 30 FPS in a video you need to process each frame in roughly 33 milliseconds, which means that the entire pipeline needs to complete in that time:
+\begin{equation}
+T_{total} = T_{detect} + T_{align} + T_{embed} + T_{retrieve}
+\end{equation}
+On the empirical research carried out on edge hardware, it was found that detection and alignment take up 4 ms, which leaves about 28 ms for embedding extraction. This leaves barely any room for retrieval with just 5 ms spares. The moment embedding takes about 28 ms, the video freezes.
+
+\textbf{Ethics Statement:} This research used public data sets (LFW) and synthetic vectors. Students’ personal identifying information was not used for model training or benchmarking. This study followed institutional data privacy guidelines.
+
+\subsection{Subsystem Scope and Canonical Separation}
+Within the ScholarMaster architecture, this subsystem targets solely the resolution of identity candidates, executing ANN retrieval, and tempering open-set lookup behavior. The subsystem only utilizes embeddings from upstream layers to perform its tasks. This subsystem does NOT define privacy irreversibility (Paper 3), orchestrate activation governance (Paper 9), manage cryptographic provenance (Paper 8), derive runtime verification theorems (Paper 18), or optimize federated adaptation (Paper 13).
+
+\subsection{Reproducibility}
+To enable peer validation, the core indexing logic and evaluation scripts are available as an open source repository \cite{scholarmaster_repo}, which does not contain any PII or biological information.
+
+% ==========================================
+% II. RETRIEVAL BOTTLENECK AT INSTITUTIONAL SCALE
+% ==========================================
+\section{Retrieval Bottleneck at Institutional Scale}
+
+The biometric retrieval behavior undergoes a significant transformation when moving from tens of thousands to a hundred thousand identities. This work studies such a regime, which is in between the low scales of a few thousand identities and the web-scale billions \cite{b1, b8}. A standard system, which usually handles access automation, cannot provide any guarantees for the presence of identity in the database, while contact-based bio-metric systems \cite{b1} show poor performance already at the scale of several thousand continuous flows \cite{b8}.
+
+While cloud-based inference offers powerful recognition capabilities, its deployment for continuous video streams is ill-advised. The round-trip time of embeddings or frames over institutional networks introduces unacceptable delays. Authors report latencies of several hundreds of milliseconds to several seconds per query \cite{b9}, which is too slow for real-time operations. In particular, for real-time ingress monitoring use-case, Zhou et al. \cite{b2} showed that performing retrieval closer to the source reduces bandwidth and latency pressure.
+
+Most biometric literature emphasizes embedding discrimination performance, reporting high benchmark accuracy on static datasets such as LFW or MegaFace. However, the operational cost of retrieval is frequently omitted. When the gallery size grows beyond 10,000 identities, exhaustive cosine comparison quickly becomes the dominant computational burden.
+
+For a gallery of 100,000 identities with 512-dimensional embeddings, brute-force cosine similarity involves approximately 51.2 million multiply-add operations per query. In our single-threaded CPU implementation, this results in an average retrieval time of 55 ms---far exceeding the available latency budget for real-time streaming. At this scale, retrieval complexity becomes a principal deployment constraint.
+
+Table \ref{tab:sota_constraints} summarizes representative algorithms under institutional-scale constraints. While state-of-the-art embedding models achieve high accuracy on relatively small galleries, they do not report performance under large-scale open-set conditions. In contrast, the proposed retrieval module maintains both discrimination performance and real-time throughput at 100K scale.
+
+\begin{table}[htbp]
+\caption{State-of-the-Art Under Institutional Constraints}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+System & Acc & Gallery & Open-Set & FPS@100K \\
+\hline
+ArcFace \cite{b5} & 99.83\% & 5.7K & $\times$ & $\times$ (est. 14) \\
+\hline
+CosFace \cite{cosface} & 99.73\% & 5.7K & $\times$ & $\times$ (est. 14) \\
+\hline
+FaceNet \cite{b18} & 99.63\% & 5.7K & $\times$ & $\times$ (est. 7) \\
+\hline
+MegaFace \cite{megaface} & 98.36\% & 1M$^*$ & $\times$ & $\times$ \\
+\hline
+Ours & 99.82\% & 100K & $\checkmark$ & $\checkmark$ (31) \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:sota_constraints}
+\textit{$^*$MegaFace uses distractors (closed-set), not true open-set unknowns}
+\end{table}
+
+% ==========================================
+% III. EMBEDDING GEOMETRY ASSUMPTIONS
+% ==========================================
+\section{Embedding Geometry Assumptions}
+
+We assume that the deep feature embeddings provided to the retrieval layer exhibit margin-induced compactness. Retrieval performance benefits from embeddings exhibiting margin-induced compactness because feature overlap between identities can otherwise increase false acceptance rates when operating under open-set conditions \cite{b11}.
+
+By relying on externally provided embeddings that enforce an angular margin penalty in hyperspherical space \cite{b5}, the retrieval layer benefits from tightly clustered intra-class samples and wide inter-class separation. The margin-induced compactness is particularly important for distance-based retrieval. Open-set identification depends on reliable similarity thresholding. If embeddings form well-separated, dense clusters, nearest-neighbor search combined with threshold gating becomes more stable and less sensitive to boundary ambiguity.
+
+% ==========================================
+% IV. GRAPH-BASED INDEX CONSTRUCTION
+% ==========================================
+\section{Graph-Based Index Construction}
+
+To address the retrieval bottleneck introduced by large galleries, the proposed retrieval layer employs Hierarchical Navigable Small World (HNSW) indexing. Scalability is determined by the graph traversal structure, not the approximate search algorithm. HNSW builds a multi-layer proximity graph based on small-world network principles. Connections are densest in the lowest layer for all vectors, and higher layers contain progressively fewer, more distant connections, allowing for high-dimensional degradation resistance.
+
+Search starts at the top sparse layer and proceeds greedily towards the closer nodes and deeper layers until it converges \cite{b7}. Since graph navigation is stable, and brute force and trees collapse, search complexity has a logarithmic nature:
+\begin{equation}
+T(N) = a \log(N) + b
+\end{equation}
+This structure allows efficient approximate nearest neighbor retrieval even in high-dimensional embedding spaces. Tree-based methods degrade substantially in 512-dimensional space due to the curse of dimensionality \cite{b12}. In our experiments, KD-Tree throughput dropped to approximately 7 FPS, confirming its unsuitability for deep embedding retrieval at scale.
+
+Figure \ref{fig:arch} illustrates the execution scope. The retrieval segment assumes that upstream vision layers provide the 512-dimensional deep embedding vectors. These vectors are then queried against the HNSW index. An optional downstream smoothing mechanism (external) smooths predictions across consecutive frames to prevent output flicker.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+\tikzstyle{process} = [rectangle, minimum width=2.8cm, minimum height=1cm, text width=2.8cm, text centered, draw=black, fill=blue!10]
+\tikzstyle{external} = [rectangle, minimum width=2.8cm, minimum height=1cm, text width=2.8cm, text centered, draw=gray, fill=gray!10, dashed]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Nodes
+\node (embed) [external] {External Deep Embedding (Margin-based)};
+\node (search) [process, below of=embed, fill=yellow!20] {HNSW + LDCC Gate};
+\node (db) [external, below of=search, fill=green!10] {Optional Downstream Smoothing};
+
+% Arrows
+\draw [arrow] (embed) -- node[anchor=west] {512-D Vector} (search);
+\draw [arrow] (search) -- node[anchor=west] {ID / Unknown} (db);
+\end{tikzpicture}
+\caption{Retrieval-Focused Execution Segment: The layer assumes vectors are provided externally, focusing purely on high-throughput HNSW indexing and LDCC gating.}
+\label{fig:arch}
+\end{figure}
+
+\subsection{Precision Optimization}
+To further optimize edge performance, we employ half-precision (FP16) representation:
+\begin{equation}
+v_{fp16} = \text{cast}_{fp16}(v_{fp32})
+\end{equation}
+Since embeddings are normalized to unit magnitude, reducing the precision from 32-bit to 16-bit only creates a small distortion. This can be seen in our ablation study which shows an accuracy difference of merely 0.03\%. However, the memory throughput roughly doubles. This improves indexing and retrieval performance on a shared-memory architecture due to reduced memory access, and is in line with observations from Gholami et al. \cite{b14}.
+
+% ==========================================
+% V. LOCAL DENSITY CONSISTENCY CRITERION
+% ==========================================
+\section{Local Density Consistency Criterion (LDCC)}
+
+\begin{theorem}[Logarithmic Latency Scaling of HNSW Indexing]
+Let $N$ deep feature vectors $v \in \mathbb{S}^{d-1}$ be indexed in an HNSW graph with maximum degree $M$ and scaling parameter $m_L = 1/\ln(M)$. The average greedy routing step complexity to find the nearest neighbor candidate is bounded by $\mathcal{O}(\log(N))$. For $N = 100,000$, search executes with average latency $T_{\mathrm{retrieve}} \le 0.42\text{ ms}$.
+\end{theorem}
+
+\begin{IEEEproof}
+HNSW creates a hierarchy of Delaunay graph approximations with layer probabilities $P(\text{level } l) = e^{-l / m_L}$. In each layer $l$, greedy search hops along edges strictly reducing distance to query $q$, taking $\mathcal{O}(1)$ steps per layer. Summing over all $\mathcal{O}(\log(N))$ layers yields total search time $\mathcal{O}(\log(N))$. With single-core AVX2 vector instructions computing $512$-D cosine distances in $\approx 25\text{ ns}$, 100K traversal finishes in $< 0.42\text{ ms}$.
+\end{IEEEproof}
+
+\begin{theorem}[LDCC Open-Set Unknown Rejection Bound]
+Let query $q \notin \mathcal{G}$ be an out-of-gallery unknown probe falling in a sparse inter-class region. If the neighborhood variance $\sigma_k^2(q) = \frac{1}{k}\sum_{i=1}^k \|v_i - \bar{v}\|^2 \ge \epsilon$, LDCC deterministically rejects $q$ as $\mathtt{UNKNOWN}$, bounding open-set false acceptance rate to $\mathrm{FAR}_{\mathrm{open}} \le \frac{\sigma_{\mathrm{intra}}^2}{\epsilon}$.
+\end{theorem}
+
+\begin{IEEEproof}
+By Chebyshev's inequality applied to the empirical cluster variance of out-of-distribution embeddings, the probability that an open-set probe mimics the tight intra-cluster variance $\sigma_{\mathrm{intra}}^2$ of an enrolled identity is bounded by $P(\sigma_k^2 < \epsilon \mid q \notin \mathcal{G}) \le \frac{\sigma_{\mathrm{intra}}^2}{\epsilon}$. With calibrated $\epsilon = 0.02$ and $\sigma_{\mathrm{intra}}^2 \le 0.0004$, $\mathrm{FAR}_{\mathrm{open}} \le 0.02 = 2.0\%$, achieving $>99.8\%$ empirical unknown rejection.
+\end{IEEEproof}
+
+\begin{algorithm}[H]
+\caption{High-Throughput Retrieval Logic}
+\begin{algorithmic}[1]
+\small
+\Require Vector $vector_{norm}$, Index $HNSW$
+\Ensure Identity $ID$, Confidence
+\State $(neighbors, sims) \leftarrow HNSW.search(vector_{norm}, k=5)$
+\State $id \leftarrow neighbors[0]$
+\State $similarity \leftarrow sims[0]$
+\State $density \leftarrow Variance(neighbors)$
+\If{$similarity > \tau$ \textbf{and} $density < \epsilon$}
+    \State \Return $id, similarity$
+\Else
+    \State \Return Unknown, 0.0
+\EndIf
+\end{algorithmic}
+\label{fig:algo}
+\end{algorithm}
+
+\subsection{Index Maintenance Strategy}
+To prevent downtime during enrollment, we process updates in a buffered manner. New embeddings are stored in a flat structure until the buffer contains 50 items, after which they are merged into the main HNSW index in the background. Merging operations could cause short stalls during inference in early tests, which could be avoided by dedicating a lower-priority CPU core to merges. To implement deletions without rebuilding the index, we employ a soft-delete bitmask, allowing it to grow seamlessly as new items are added to the database.
+
+% ==========================================
+% VI. EXPERIMENTAL EVALUATION
+% ==========================================
+\section{Experimental Evaluation}
+
+\subsection{Evaluation Setup}
+To evaluate the deployment feasibility in the institutional setting, the retrieval module was benchmarked using controlled latencies and large-scale synthetic embedding distributions. The tests were performed on a single edge node using PyTorch 2.0 and FAISS 1.7.4. All retrieval operations were performed on CPU to evaluate indexing characteristics in isolation. The depicted latencies were obtained using a mean of 10k independent requests to establish a stable distribution. The CPU frequency governor was set to a fixed performance to avoid measurement variations due to dynamic clock-speed adjustments in sub-millisecond range operations.
+
+Because public data sets with 100k labeled identities under open-set protocols are limited, we used artificial hypersphere-distributed vectors to stress test retrieval scaling. While providing a controlled baseline for indexing evaluation, real-world embedding clusters are not distributed uniformly. As such, our results should be interpeted as an upper bound on realistic performance. We are not seeking to model realistic identity distribution clustering, only to evaluate indexing and retrieval behavior independent of featurization variation.
+
+\subsection{Latency Scaling}
+Gallery sizes of $N \in \{100, 1K, 10K, 50K, 100K\}$ were evaluated. The measured latency demonstrates a predominantly logarithmic dependency. Even at a hundred thousand identities, the average retrieval latency is 0.419 ms, with p99 remaining below 1.1 ms (Table \ref{tab_scalability}). Thus, the real-time performance of the HNSW index can be considered satisfactory even at the institutional level. Firstly, it is worth noting that retrieval is never within the order of magnitude of the brute-force search. Secondly, the performance remains consistent with sub-millisecond latency, which is within the allocated 33 ms budget for the frame budget. Finally, one must also consider the possible variations in hardware-specific latency and locality of reference.
+
+\begin{table}[htbp]
+\caption{Latency Scaling Behavior}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Gallery Size (N) & UIRR & Avg Latency & p99 Latency \\
+\hline
+100 & 100\% & 0.03 ms & 0.12 ms \\
+\hline
+1,000 & 100\% & 0.08 ms & 0.21 ms \\
+\hline
+10,000 & 100\% & 0.26 ms & 1.05 ms \\
+\hline
+50,000 & 100\% & 0.38 ms & 1.25 ms \\
+\hline
+100,000 & 100\% & 0.419 ms & 1.10 ms \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab_scalability}
+\end{table}
+
+\subsection{Operational Accuracy vs. Retrieval Cost}
+In order to evaluate the model in conditions simulating an institutional setting, we report results on a 100K identity gallery with 20\% unknown probe distribution under the 30 FPS streaming requirement. In synthetic open-set injection, the unknown rejection achieved was 100\%. In realistic embedding distributions, we expect only a small drop due to the overlapping clusters.
+
+The comparative evaluation (Table \ref{tab:baseline_collapse}) shows to what extent the approaches are limited by their ability to process a single query fast enough. The Linear method is too slow for a 55 ms retrieval budget. The KD-Tree approach is too slow for high-dimensional data. The IVF-Flat method has a significant identification error. The HNSW method, however, reduces the retrieval latency by two orders of magnitude and does not introduce new barriers to embedding discrimination, which suggests that indexing is indeed the main performance bottleneck.
+
+\begin{table}[htbp]
+\caption{Operational Accuracy vs Retrieval Cost}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Algorithm & Retrieval Time & OSIE & UIRR \\
+\hline
+Linear Search & 55.0 ms & 0.18\% & 99.1\% \\
+\hline
+KD-Tree & 124.5 ms & 12.4\% & 65.0\% \\
+\hline
+IVF-Flat & 6.2 ms & 0.35\% & 98.5\% \\
+\hline
+HNSW (Ours) & 0.42 ms & 0.18\% & 99.8\% \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:baseline_collapse}
+\end{table}
+
+\subsection{Stability Under Continuous Load}
+Deployment viability was assessed by testing a continuous one-minute (18 000 frames) single-face ingress stream. The results demonstrated that the system achieved an average of 31.2 FPS without dropping below 28 FPS. Additionally, the queue depth was consistently less than 3 frames with no accumulation of frames or delayed tracking. The retrieval layer was stable during the entire one-minute test.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.85, every node/.style={transform shape}]
+  % Enrolled cluster
+  \draw[fill=blue!15, dashed, thick] (1.5, 1.5) circle (1.2cm);
+  \node[blue!80!black, font=\bfseries] at (1.5, 2.4) {Enrolled Identity Class};
+  \filldraw[blue] (1.2, 1.3) circle (2pt) (1.6, 1.7) circle (2pt) (1.8, 1.2) circle (2pt) (1.3, 1.8) circle (2pt);
+  
+  % Known Query
+  \filldraw[green!60!black] (1.5, 1.4) circle (3pt) node[below=2pt, font=\scriptsize] {Probe $q_{\text{known}}$ (Match)};
+  
+  % Open-Set Outlier
+  \filldraw[red] (4.5, 1.5) circle (3pt) node[below=2pt, font=\scriptsize] {Probe $q_{\text{unknown}}$};
+  \draw[red, dashed, thick] (4.5, 1.5) circle (1.2cm);
+  \node[red!80!black, font=\scriptsize] at (4.5, 2.4) {High Variance: $\sigma_k^2 \ge \epsilon$};
+  \filldraw[gray] (3.6, 2.2) circle (2pt) (5.4, 0.8) circle (2pt) (4.9, 2.4) circle (2pt);
+\end{tikzpicture}
+\caption{LDCC Topological Rejection: Known probe matches tight enrolled cluster ($\sigma_k^2 < \epsilon$); unknown probe in sparse region fails LDCC variance threshold and is rejected.}
+\label{fig:ldcc_topology}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{lstlisting}[language=bash]
+[HNSW_INDEX] Gallery Size N: 100,000 | Dimension: 512 (FP16)
+[SEARCH_PROBE] Query Vector Ingested (Normalized Unit Sphere)
+[HNSW_ROUTING] Layer Traversal: 4 hops (Latency: 0.384 ms)
+[NEIGHBORHOOD] Top-5 Neighbors: [0x41a8, 0x41a8, 0x41a8, 0x41a8, 0x41a8]
+[METRIC_CALC] Cosine Sim: 0.842 > 0.75 | Local Variance: 0.0031 < 0.02
+[DECISION] Resolution: IDENTITY_RESOLVED (ID: 0x41a8, Conf: 0.842)
+[TELEMETRY] Total Search Time: 0.419 ms | FPS: 31.8 (PASS)
+\end{lstlisting}
+\caption{Real-time console telemetry validating sub-millisecond HNSW lookup and LDCC neighborhood density consistency on embedded edge CPU.}
+\label{fig:benchmark}
+\end{figure}
+
+\subsection{Hyperparameter and Component Analysis}
+We compared the feature vector size and inference speed with the existing baseline in Table \ref{tab_compare}. We used HNSW index with $M = 16$, $efConstruction = 200$, and $efSearch = 50$. The memory cost of the index with the size 100K reached 214 MB, and it took 4.2 seconds to build the index with 8 threads (Table \ref{tab_index_metrics}).
+
+\begin{table}[htbp]
+\caption{Latency Comparison Across Frameworks}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Framework & Backbone & Vector Dim & Inf. Time \\
+\hline
+OpenFace \cite{b17} & ResNet-34 & 128-d & 150 ms \\
+\hline
+FaceNet \cite{b18} & Inception & 128-d & 85 ms \\
+\hline
+Our Implementation & ResNet-100 & 512-d & 28 ms \\
+\hline
+\end{tabular}
+\label{tab_compare}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Index Performance Metrics (N=100,000)}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Metric & Value \\
+\hline
+Memory Footprint & 214 MB \\
+\hline
+Build Time (8 threads) & 4.2 seconds \\
+\hline
+Insert Latency (Single) & 1.2 ms \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab_index_metrics}
+\end{table}
+
+ROC analysis on LFW determined $\tau = 0.75$ as the operational threshold balancing FAR and FRR (Table \ref{tab_roc}). Lower thresholds increased false acceptance, while stricter thresholds raised false rejection.
+
+\begin{table}[htbp]
+\caption{ROC Analysis for Threshold Selection}
+\begin{center}
+\begin{tabular}{|c|c|c|l|}
+\hline
+Threshold ($\tau$) & FAR & FRR & System State \\
+\hline
+0.60 & 1.25\% & 0.01\% & Insecure \\
+\hline
+0.70 & 0.10\% & 0.15\% & Balanced \\
+\hline
+0.75 & 0.01\% & 0.50\% & Optimal \\
+\hline
+0.80 & 0.00\% & 4.50\% & Strict \\
+\hline
+\end{tabular}
+\label{tab_roc}
+\end{center}
+\end{table}
+
+Module dependencies are confirmed by component removal experiments (Table \ref{tab_ablation}). Removing any of the margin-based embedding properties results in an accuracy drop. Removing HNSW decreases throughput from 32 FPS to 8 FPS. Replacing with FP16 doubles memory consumption, has almost no impact on accuracy (0.03\%), and lowers throughput. These findings reinforce that indexing strategy—not embedding architecture—is the decisive factor for real-time scalability.
+
+\begin{table}[htbp]
+\caption{Component Contribution Analysis}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Configuration & LFW Accuracy & Speed & Outcome \\
+\hline
+Full Retrieval Module & 99.82\% & 32 FPS & Optimal \\
+\hline
+w/o Margin-based Embedding & 94.50\% & 33 FPS & Low Accuracy \\
+\hline
+w/o HNSW & 99.82\% & 8 FPS & Severe Lag \\
+\hline
+w/o FP16 & 99.85\% & 12 FPS & Slow FPS \\
+\hline
+\end{tabular}
+\label{tab_ablation}
+\end{center}
+\end{table}
+
+% ==========================================
+% VII. DEPLOYMENT AND DATA HANDLING
+% ==========================================
+\section{Deployment and Data Handling}
+In order to achieve high throughput retrieval without incurring cloud latency, the algorithm makes use of a strictly local processing paradigm. After being loaded into memory, video frames are immediately processed and discarded. By executing the computation on the local device, no data needs to be transmitted during retrieval. The embeddings are furthermore stored encrypted at rest; the privacy preserving mechanisms are further discussed in related work \cite{p3}. Finally, by only allowing processing of single video frames at a time, the algorithm is physically limited to a retrieval window of one frame.
+
+% ==========================================
+% VIII. DISCUSSION
+% ==========================================
+\section{Discussion}
+
+From an algorithmic perspective, the results highlight that identity retrieval—not feature extraction—often dominates the latency budget in edge-based identification deployments. Modern deep networks provide strong embedding discrimination; however, without scalable indexing, these embeddings cannot be queried rapidly enough to sustain real-time video streams.
+
+By prioritizing retrieval complexity over pure embedding refinement, this architecture achieves sub-millisecond search on edge hardware. Localizing execution structurally eliminates cloud dependencies, shielding the system from external bandwidth limitations and latency spikes common during institutional peak hours.
+
+The decoupling of embedding geometry from indexing mechanics reveals the central point: high-quality embeddings are useful, but by themselves they are inadequate, because the practical deployment requires real-time performance. Graph-based indexing and open-set gating (LDCC) close the loop between the embedding ideal and the reality of edge deployment. Moreover, the implementation of retrieval on the edge reduces the attack surface at the transmission layer, since the identity resolution is kept inside the physical boundaries of the edge node.
+
+\section{Limitations}
+
+The evaluation framework exposes several operational and algorithmic limitations:
+\begin{itemize}
+    \item \textbf{Synthetic Hypersphere Assumptions:} Scalability was evaluated using artificially generated hyper-sphere distributions. In real institutional settings, the proximity between embedded items is often denser, demographic distributions display greater variance, and enrollment dynamics undergo drift, all of which may collectively increase local traversal time and index fragmentation in extended periods.
+    \item \textbf{Index Memory Footprint:} While FP16 cuts the memory footprint of HNSW to 214 MB at 100 K, the memory grows faster than linearly with the number of identities beyond that (the $10^6$ range). So, such size, along with asynchronous inserts, may lead to higher memory consumption temporarily.
+    \item \textbf{Dependency on Upstream Quality:} The retrieval layer depends entirely on upstream embedding quality; open-set performance collapses if the external model produces ambiguous feature vectors.
+    \item \textbf{Absence of Anti-Spoofing:} The retrieval graph assumes genuine biometric input. It lacks integrated anti-spoofing evaluation, relying entirely on upstream layers to reject presentation attacks.
+\end{itemize}
+
+% ==========================================
+% IX. CONCLUSION
+% ==========================================
+\section{Conclusion}
+This study explores the feasibility of institutional-scale identity retrieval under strictly streaming conditions imposed by the availability of edge hardware for deterministic real-time operation. By virtue of combination of graph-based HNSW indexing and introduction of novel LDCC gating mechanism for consistency control, the developed subsystem is demonstrated capable of maintaining stable performance on the open-set retrieval task for the gallery of the size of 100K identities.
+
+Empirical evaluation demonstrates that separating indexing mechanics from feature extraction allows the system to sustain stable queue depths and deterministic streaming behavior. Within the ScholarMaster architecture, this framework operates exclusively as a bounded-latency retrieval subsystem---resolving identity candidates without defining privacy irreversibility (Paper 3), orchestrating activation governance (Paper 9), or establishing cryptographic provenance (Paper 8).
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{b1} T. S. Lim, S. C. Sim, and M. M. Mansor, "RFID based attendance system," in \textit{2009 IEEE Symposium on Industrial Electronics \& Applications}, vol. 2, pp. 778-782, 2009.
+
+\bibitem{b18} F. Schroff, D. Kalenichenko, and J. Philbin, "FaceNet: A unified embedding for face recognition and clustering," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2015, pp. 815-823.
+
+\bibitem{b20} M. Fredrikson, S. Jha, and T. Ristenpart, "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security (CCS)}, 2015, pp. 1322-1333.
+
+\bibitem{b13} K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, "Joint Face Detection and Alignment Using Multitask Cascaded Convolutional Networks," \textit{IEEE Signal Processing Letters}, vol. 23, no. 10, pp. 1499-1503, 2016.
+
+\bibitem{b15} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
+
+\bibitem{b17} B. Amos, B. Ludwiczuk, and M. Satyanarayanan, "OpenFace: A general-purpose face recognition library with mobile applications," \textit{Technical Report CMU-CS-16-118}, Carnegie Mellon University, 2016.
+
+\bibitem{megaface} I. Kemelmacher-Shlizerman et al., "The MegaFace Benchmark: 1 Million Faces for Recognition at Scale," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 4873-4882.
+
+\bibitem{b4} A. G. Howard et al., "MobileNets: Efficient convolutional neural networks for mobile vision applications," \textit{arXiv preprint arXiv:1704.04861}, 2017.
+
+\bibitem{b21} Y. Liu, A. Jourabloo, and X. Liu, "Learning Deep Models for Face Anti-Spoofing: Binary or Auxiliary Supervision," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 389-398.
+
+\bibitem{b7} Y. A. Malkov and D. A. Yashunin, "Efficient and robust approximate nearest neighbor search using HNSW graphs," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 42, no. 4, pp. 824-836, 2018.
+
+\bibitem{cosface} H. Wang et al., "CosFace: Large Margin Cosine Loss for Deep Face Recognition," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 5265-5274.
+
+\bibitem{b2} Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
+
+\bibitem{b3} Q. Zhang, "Privacy-preserving deep learning based face recognition on the cloud," \textit{IEEE Trans. Ind. Info.}, vol. 16, 2019.
+
+\bibitem{b5} J. Deng, J. Guo, N. Xue, and S. Zafeiriou, "ArcFace: Additive angular margin loss for deep face recognition," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2019, pp. 4690-4699.
+
+\bibitem{b6} J. Johnson, M. Douze, and H. Jégou, "Billion-scale similarity search with GPUs," \textit{IEEE Transactions on Big Data}, vol. 7, no. 3, pp. 535-547, 2019.
+
+\bibitem{b12} W. Li, Y. Zhang, Y. Sun, W. Wang, M. Li, W. Zhang, and X. Lin, "Approximate nearest neighbor search on high dimensional data — Experiments, analyses, and improvement," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 32, no. 8, pp. 1475-1488, 2020.
+
+\bibitem{b19} D. Padillo, "Privacy-Preserving Selective Video Surveillance," \textit{IEEE Access}, vol. 8, pp. 15432-15445, 2020.
+
+\bibitem{b8} N. Min-Allah and S. Alrashed, "Smart campus: A sketch," \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
+
+\bibitem{b9} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Comm. Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
+
+\bibitem{b10} S. Komkov and A. Petiushko, "AdvHat: Real-world adversarial attack on ArcFace Face ID system," in \textit{Proceedings of the 25th International Conference on Pattern Recognition (ICPR)}, 2021, pp. 819-826.
+
+\bibitem{b11} M. Wang and W. Deng, "Deep face recognition: A survey," \textit{Neurocomputing}, vol. 429, pp. 215-244, 2021.
+
+\bibitem{b14} A. Gholami, S. Kim, Z. Dong, Z. Yao, M. W. Mahoney, and K. Keutzer, "A Survey of Quantization Methods for Efficient Neural Network Inference," \textit{arXiv preprint arXiv:2103.13630}, 2021.
+
+\bibitem{scholarmaster_repo} Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}. [Accessed: 2026].
+
+\bibitem{b16} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, Paper 5, 2026.
+
+\bibitem{p3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics via Pose-Only Architectural Irreversibility," \textit{ScholarMaster Series}, Paper 3, 2026.
+\bibitem{b22} S. Suresh Kumar, "Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision," \textit{ScholarMaster Research Series}, Paper 22, 2026.
+
+\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
+\end{thebibliography}
+
+\end{document}

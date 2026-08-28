@@ -1,0 +1,275 @@
+{
+  "paper_id": "P06",
+  "paper_num": 6,
+  "title": "NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT",
+  "abstract_snippet": "There are areas in many indoor situations where optical detection cannot indicate in time. The deployment of cameras in areas with bends, architectural junctions and partly occluded space generates permanent blind spots. The phenomenon of sound propagating and diffracting everywhere could offer a possible new physical modality.\n\nThe proposed work designs a deterministic acoustic sensor unit to det...",
+  "pdf_total_pages": 8,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "Theoretical Framework",
+    "System Implementation",
+    "Experimental Setup",
+    "Performance Evaluation",
+    "Discussion",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Spatial Blindness in Line-of-Sight Monitoring",
+    "Subsystem Scope and Canonical Separation",
+    "Operational Constraints in Reverberant Corridors",
+    "Contributions",
+    "Deep Learning AED vs. Edge Signal Processing",
+    "Source Localization Under Reverberation",
+    "Corridor Acoustics and SPL Calibration",
+    "Reverberation and the Operating Regime",
+    "Autocorrelation-Based Periodic Rejection",
+    "GCC-PHAT for Multipath Mitigation",
+    "Hardware Architecture and Sensor Geometry",
+    "Buffer Management and Latency Bounding",
+    "Computational Complexity",
+    "Anomaly Verification Routine (Spectral Gating)",
+    "Physical Testbed Description",
+    "Dataset Generation via RIR Convolution",
+    "NLOS Safety Envelope Validation",
+    "SNR Stress Testing and Precision-Recall Behavior",
+    "Ablation Study on Heuristic Filters",
+    "Spectral Discrimination Profile",
+    "Acoustic Robustness versus Semantic Richness",
+    "Privacy by Architectural Constraint",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P06-PARA-01",
+      "text_snippet": "The proposed work designs a deterministic acoustic sensor unit to detect high-decibel impulse events occurring at sources hidden by visual obstruction from corridor locations. Input audio signals are processed using a finite-size circular RAM buffer, which is immune to swap persistence attacks. An S...",
+      "char_count": 647
+    },
+    {
+      "paragraph_id": "P06-PARA-02",
+      "text_snippet": "In controlled corridor evaluation, detection probability of more than 95\\% was achieved within a 15 m safety envelope and end-to-end latency remained below about 120 ms. Raw PCM segments are overwritten right after feature extraction. Hence, the light-weight directional metadata is all that is retai...",
+      "char_count": 497
+    },
+    {
+      "paragraph_id": "P06-PARA-03",
+      "text_snippet": "The dominant thesis of this paper is that deterministic signal-processing pipelines can reliably detect impulsive NLOS anomalies under reverberant corridor conditions while preserving bounded latency and bounded retention behavior .",
+      "char_count": 232
+    },
+    {
+      "paragraph_id": "P06-PARA-04",
+      "text_snippet": "Acoustic sensing provides an alternative physical modality. Sound propagates omnidirectionally and diffracts around physical obstacles. In enclosed corridors, reflections from rigid surfaces extend acoustic reach well beyond visual coverage.",
+      "char_count": 241
+    },
+    {
+      "paragraph_id": "P06-PARA-05",
+      "text_snippet": "Amplitude-based triggering is usually not very effective in such scenarios. Sound bursts produced by mechanical mechanisms, falling objects, or any form of sudden impact often surpass preset thresholds. TDOA-based positioning deteriorates due to echoes that arrive after a delay.",
+      "char_count": 279
+    },
+    {
+      "paragraph_id": "P06-PARA-06",
+      "text_snippet": "On the other hand, deep learning acoustic event detection models have some inherent drawbacks. For instance, AST models need to consider multi-second context windows and allocate adequate memory resources for inference. In cases where real-time detection is necessary, buffering multi-second chunks o...",
+      "char_count": 368
+    },
+    {
+      "paragraph_id": "P06-PARA-07",
+      "text_snippet": "However, the acoustic sensing unit described below follows a different methodology. Instead of classification of semantic content, it implements physical signal distinction on a local basis inside a circular RAM buffer. Derived characteristics, such as energy ratio, periodicity measure, and azimuth ...",
+      "char_count": 367
+    },
+    {
+      "paragraph_id": "P06-PARA-08",
+      "text_snippet": "The detection model does not attempt semantic audio interpretation. Its scope is deliberately narrower: detect high-energy, chaotic impulses and estimate their direction within bounded processing time.",
+      "char_count": 201
+    },
+    {
+      "paragraph_id": "P06-PARA-09",
+      "text_snippet": "The latest systems for detecting acoustic events depend on deep neural architectures designed for doing semantic sound classification b8, b12 . Architectures such as PANNs b22 and AST b23 can achieve strong performance on the FSD50K benchmark. These systems run on mel-spectrogram patches often spann...",
+      "char_count": 318
+    },
+    {
+      "paragraph_id": "P06-PARA-10",
+      "text_snippet": "When you have larger temporal context windows, they help enhance your performing semantic recognition accuracy but at the same time introduce structural latency. Introducing 10-second windows before inference is inherently against strict response constraints. Furthermore, large transformer-based mod...",
+      "char_count": 755
+    },
+    {
+      "paragraph_id": "P06-PARA-11",
+      "text_snippet": "Safety applications have a different goal from those used for environmental classification or strain monitoring. In safety, early detection of high energy events is required. Deterministic signal processing is therefore more significant than their semantic processing in the pipeline system proposed....",
+      "char_count": 360
+    },
+    {
+      "paragraph_id": "P06-PARA-12",
+      "text_snippet": "Steered Response Power with PHAT weighting (SRP-PHAT) b27 achieves high localization accuracy but requires scanning large spatial grids, increasing computational load beyond what lightweight edge nodes comfortably sustain.",
+      "char_count": 222
+    },
+    {
+      "paragraph_id": "P06-PARA-13",
+      "text_snippet": "Standard cross-correlation TDOA methods, though inexpensive, degrade rapidly when multipath reflections dominate. Echoes introduce multiple delayed peaks, obscuring the true time offset.",
+      "char_count": 186
+    },
+    {
+      "paragraph_id": "P06-PARA-14",
+      "text_snippet": "To analyze the feasibility of acoustic monitoring in visually occluded corridors, we begin by examining the physical propagation characteristics of sound in such environments.",
+      "char_count": 175
+    },
+    {
+      "paragraph_id": "P06-PARA-15",
+      "text_snippet": "The Sound Pressure Level (SPL) at distance $r$ from an omnidirectional source of sound power $L_W$ is given by: equation L_p(r) = L_W + 10 _{10 ( Q {4 r^2 + 4 {R_c ) equation where $Q$ denotes the source directivity factor and $R_c$ is the room constant.",
+      "char_count": 254
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P06-EQ-01",
+      "latex": "L_p(r) = L_W + 10 \\log_{10}\\left(\\frac{Q}{4\\pi r^2} + \\frac{4}{R_c}\\right)"
+    },
+    {
+      "equation_id": "P06-EQ-02",
+      "latex": "S_{env} = 15m"
+    },
+    {
+      "equation_id": "P06-EQ-03",
+      "latex": "RT_{60} = \\frac{0.161 V}{A_{eq}}"
+    },
+    {
+      "equation_id": "P06-EQ-04",
+      "latex": "D_c \\approx 0.057 \\sqrt{\\frac{V}{RT_{60}}}"
+    },
+    {
+      "equation_id": "P06-EQ-05",
+      "latex": "\\mathcal{R}_{rev} = \\{ r : r > D_c \\}"
+    },
+    {
+      "equation_id": "P06-EQ-06",
+      "latex": "S_{env} \\gg D_c"
+    },
+    {
+      "equation_id": "P06-EQ-07",
+      "latex": "R_{xx}(k) = \\sum_{n=0}^{N-1-k} x(n)x(n+k)"
+    },
+    {
+      "equation_id": "P06-EQ-08",
+      "latex": "\\rho = \\frac{\\max_{k > k_{min}} R_{xx}(k)}{R_{xx}(0)}"
+    },
+    {
+      "equation_id": "P06-EQ-09",
+      "latex": "\\rho_{thresh} = 0.65"
+    },
+    {
+      "equation_id": "P06-EQ-10",
+      "latex": "G_{12}(f) = X_1(f) \\cdot X_2^*(f)"
+    },
+    {
+      "equation_id": "P06-EQ-11",
+      "latex": "R_{phat}(f) = \\frac{G_{12}(f)}{|G_{12}(f)|} = e^{j\\angle G_{12}(f)}"
+    },
+    {
+      "equation_id": "P06-EQ-12",
+      "latex": "f_{alias} = \\frac{c}{2d \\sin(\\theta_{max})}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P06-TAB-01",
+      "caption": "Applicability Analysis: Benchmark AED vs. Proposed System"
+    },
+    {
+      "table_id": "P06-TAB-02",
+      "caption": "Evaluation Dataset Composition"
+    },
+    {
+      "table_id": "P06-TAB-03",
+      "caption": "Safety Envelope Detection Rates (NLOS Corridor)"
+    },
+    {
+      "table_id": "P06-TAB-04",
+      "caption": "Signal-Processing Model Performance Metrics vs. Ambient Noise (SNR)"
+    },
+    {
+      "table_id": "P06-TAB-05",
+      "caption": "Ablation Study on Filtering Heuristics (Mixed Dataset)"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P06-FIG-01",
+      "caption": "Spectral Discrimination Profile. Impulsive anomalies (Red) exhibit high energy in the 2-4kHz range, while physical impacts (Blue) are dominated by low frequencies, forming the physical basis for the $\\delta$ discrimination index."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P06-REF-01",
+      "key": "b20",
+      "raw_citation": "C. Knapp and G. Carter, \"The generalized correlation method for estimation of time delay,\" IEEE Transactions on Acoustics, Speech, and Signal Processing , vol. 24, no. 4, pp. 320-327, 1976."
+    },
+    {
+      "reference_id": "P06-REF-02",
+      "key": "b30",
+      "raw_citation": "J. B. Allen and D. A. Berkley, \"Image method for efficiently simulating small-room acoustics,\" The Journal of the Acoustical Society of America , vol. 65, no. 4, pp. 943-950, 1979."
+    },
+    {
+      "reference_id": "P06-REF-03",
+      "key": "b11",
+      "raw_citation": "L. Rabiner and B. Juang, Fundamentals of Speech Recognition , Prentice Hall, 1993."
+    },
+    {
+      "reference_id": "P06-REF-04",
+      "key": "b9",
+      "raw_citation": "J. Blauert, Spatial Hearing: The Psychophysics of Human Sound Localization , MIT Press, 1997."
+    },
+    {
+      "reference_id": "P06-REF-05",
+      "key": "b27",
+      "raw_citation": "J. H. DiBiase, \"A high-accuracy, closed-form approximation to the equivalency between SRP-PHAT and TDOA,\" in Proc. IEEE ICASSP , 2000."
+    },
+    {
+      "reference_id": "P06-REF-06",
+      "key": "b21",
+      "raw_citation": "M. Gruteser and D. Grunwald, \"Anonymous usage of location-based services through spatial and temporal cloaking,\" in Proceedings of the 1st International Conference on Mobile Systems, Applications and Services , 2003, pp. 31-42."
+    },
+    {
+      "reference_id": "P06-REF-07",
+      "key": "b31",
+      "raw_citation": "H. Fastl and E. Zwicker, Psychoacoustics: Facts and Models , Springer Science \\& Business Media, 2006."
+    },
+    {
+      "reference_id": "P06-REF-08",
+      "key": "b1",
+      "raw_citation": "A. Cavallaro, \"Privacy in video surveillance,\" IEEE Signal Processing Magazine , vol. 24, no. 2, pp. 168-169, 2007."
+    },
+    {
+      "reference_id": "P06-REF-09",
+      "key": "b5",
+      "raw_citation": "G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, \"Scream and gunshot detection and localization for audio-surveillance systems,\" in 2007 IEEE Conference on Advanced Video and Signal Based Surveillance , pp. 21-26, 2007."
+    },
+    {
+      "reference_id": "P06-REF-10",
+      "key": "b10",
+      "raw_citation": "S. Mallat, A Wavelet Tour of Signal Processing , Academic Press, 2008."
+    },
+    {
+      "reference_id": "P06-REF-11",
+      "key": "b29",
+      "raw_citation": "J. Benesty, J. Chen, and Y. Huang, Microphone Array Signal Processing , Springer Science \\& Business Media, 2008."
+    },
+    {
+      "reference_id": "P06-REF-12",
+      "key": "b28",
+      "raw_citation": "H. Kuttruff, Room Acoustics , 5th ed. CRC Press, 2009."
+    },
+    {
+      "reference_id": "P06-REF-13",
+      "key": "b32",
+      "raw_citation": "A. Cavoukian, \"Privacy by Design: The 7 Foundational Principles,\" Information and Privacy Commissioner of Ontario , 2009."
+    },
+    {
+      "reference_id": "P06-REF-14",
+      "key": "b25",
+      "raw_citation": "P. A. Naylor and N. D. Gaubitch, Speech Dereverberation , Springer, 2010."
+    },
+    {
+      "reference_id": "P06-REF-15",
+      "key": "b33",
+      "raw_citation": "J. H. Ziegeldorf, O. G. Morchon, and K. Wehrle, \"Privacy in the Internet of Things: threats and challenges,\" Security and Communication Networks , vol. 7, no. 12, pp. 2728-2742, 2014."
+    }
+  ]
+}

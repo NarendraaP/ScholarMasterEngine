@@ -1,0 +1,280 @@
+{
+  "paper_id": "P02",
+  "paper_num": 2,
+  "title": "A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis",
+  "abstract_snippet": "The automated engagement classifiers we propose are hampered by the fact that many facial expressions characteristic of negative emotions (furrowed brows, averted gaze, reduced facial expressiveness) are also characteristic of deep cognitive processing. As a result, as the level of cognitive processing deepens, visual models systematically confuse boredom with high cognitive load. Standard cost-se...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Theoretical Framework and Contextual Modeling",
+    "Asymmetric Risk Minimization via Probabilistic Re-weighting",
+    "Formulation of the Re-weighting Logic",
+    "Simulation Design (Sim-Class-24)",
+    "Empirical Evaluation",
+    "Discussion",
+    "Limitations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Semantic Ambiguity of Concentration",
+    "Subsystem Scope and Canonical Separation",
+    "Asymmetric Risk and Probabilistic Interpretation",
+    "Limitations of Unimodal Valence Estimation",
+    "Formalizing the Valence Discrepancy",
+    "Cognitive Load Theory and Contextual Conditioning",
+    "Formalizing the Risk Function",
+    "Bayesian Prior Shift Interpretation",
+    "Derivation of the Re-weighting Equation",
+    "Abstract Inputs",
+    "Analytical Formulation of Re-weighting",
+    "Simulation Protocol",
+    "Noise Injection and Environmental Variability",
+    "Timeline Dynamics Under High Load",
+    "Runtime Execution Verification",
+    "Baseline Comparison and Statistical Significance",
+    "Ablation Study",
+    "Sensitivity and Latency Analysis",
+    "Lexical Density versus Prosodic Cues",
+    "Interpretability as a Structural Architectural Principle"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P02-PARA-01",
+      "text_snippet": "This paper introduces a contextual probabilistic interpretation layer capturing the distributional interplay between observed facial valence and instructional context. The model jointly accounts for facial valence estimates and schedule metadata alongside semantic density of instructional speech, wi...",
+      "char_count": 562
+    },
+    {
+      "paragraph_id": "P02-PARA-02",
+      "text_snippet": "Across all random splits of the Sim-Class-24 staged dataset, the proposed framework reduces the Simulation False Negative Rate under High Load (Sim-FNR-HL) to 6.0\\% (95\\% CI [4.1\\%, 7.9\\%]) versus 42.0\\% for a vision-only baseline. By prefering structured priors to opaque deep re-weighting, traceabl...",
+      "char_count": 564
+    },
+    {
+      "paragraph_id": "P02-PARA-03",
+      "text_snippet": "The main thesis of this paper is that ambiguous visual engagement cues can be probabilistically disambiguated using contextual instructional priors to improve asymmetric false-negative risk with minimal loss of interpretability, as a basis for building a probabilistic multimodal educational AI. This...",
+      "char_count": 436
+    },
+    {
+      "paragraph_id": "P02-PARA-04",
+      "text_snippet": "The assumption fails in an educational setting, where pedagogical engagement takes place in a multi-dimensional space distinct from raw emotional valence b7 ---a student may be paying close attention, despite a neutral-to-negative facial expression. Concentrated effort can visually resemble disengag...",
+      "char_count": 467
+    },
+    {
+      "paragraph_id": "P02-PARA-05",
+      "text_snippet": "Without environmental conditioning, visual models systematically over-interpret negative facial signals during precisely the instructional periods where engagement is most likely.",
+      "char_count": 179
+    },
+    {
+      "paragraph_id": "P02-PARA-06",
+      "text_snippet": "If $D_{valence > $ (where $ $ encodes negativity resulting from neutral instruction distribution), then any unimodal classifier will systematically misclassify concentration as lack thereof. The more concentrated the instructions are, the more errors will occur.",
+      "char_count": 262
+    },
+    {
+      "paragraph_id": "P02-PARA-07",
+      "text_snippet": "This definition frames the question as one of conditional probability rather than simple classification of features. The probabilistic logic, then, has an advantage over the feature-based approach in that it conditions on (i.e., takes into account) environmental state variables, thereby becoming les...",
+      "char_count": 320
+    },
+    {
+      "paragraph_id": "P02-PARA-08",
+      "text_snippet": "Cognitive Load Theory is the theoretical basis for the contextual conditioning of probabilistic interpretation b5 . The working memory has a limited capacity that must be used to construct and refine knowledge structures; the cognitive load associated with this activity is referred to as germane loa...",
+      "char_count": 302
+    },
+    {
+      "paragraph_id": "P02-PARA-09",
+      "text_snippet": "During periods of high germane load, people display behavioral shifts that may confuse an affect-based classifier. For instance, their micro-expressions are reduced, their faces tense, and their socially-appropriate behaviors (e.g., smiling) decrease. An affect-based classifier would wrongly identif...",
+      "char_count": 387
+    },
+    {
+      "paragraph_id": "P02-PARA-10",
+      "text_snippet": "By exploiting schedule metadata and the semantic density of instructional speech, the proposed interpretation layer thus adapts its probabilistic model b10 . Semantic density defines weights for contextual framing, not cognitive state; lexical density offers contextual evidence, not demonstration of...",
+      "char_count": 550
+    },
+    {
+      "paragraph_id": "P02-PARA-11",
+      "text_snippet": "Engagement monitoring in instructional environments produces classification errors with asymmetric consequences. The central contribution of this work is treating contextual re-weighting as a formal asymmetric risk minimization problem with inspectable probabilistic structure, rather than an implici...",
+      "char_count": 351
+    },
+    {
+      "paragraph_id": "P02-PARA-12",
+      "text_snippet": "We explicitly encode the relationship: equation C_{FN C_{FP equation reflecting that false negatives (mislabeling engaged students as disengaged) are more disruptive than false positives b18 .",
+      "char_count": 192
+    },
+    {
+      "paragraph_id": "P02-PARA-13",
+      "text_snippet": "The expected risk $R$ becomes: equation R = C_{FP P( y =E y=D) + C_{FN P( y =D y=E) equation",
+      "char_count": 92
+    },
+    {
+      "paragraph_id": "P02-PARA-14",
+      "text_snippet": "Standard classifiers implicitly assume $C_{FP = C_{FN $. The proposed framework introduces contextual modulation during identified high-load intervals, structurally reducing: equation P( y =D y=E) equation The framework is skewed to avoid false negative concentrations rather than to maximize overall...",
+      "char_count": 555
+    },
+    {
+      "paragraph_id": "P02-PARA-15",
+      "text_snippet": "The contextual probabilistic interpretation layer can be understood as a prior adjustment within a Bayesian decision framework. Contextual priors reshape interpretation, they do not override visual evidence.",
+      "char_count": 207
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P02-THE-01",
+      "type": "THEOREM",
+      "statement": "[Asymmetric Risk Minimization Bound] Let the asymmetric cost ratio be $\\rho = C_{FN} / C_{FP} > 1$. Under the Bayesian prior shift induced by high instructional load $C_{load}$, the optimal Bayes decision boundary $\\tau^*(C_{load})$ satisfies: \\begin{equation} \\tau^*(C_{load}) = \\frac{1}{1 + \\rho \\c..."
+    },
+    {
+      "theorem_id": "P02-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[Bounded Phase Delay of IIR Temporal Smoothing] The first-order IIR filter $E_{smooth}(t) = \\gamma E_{score}(t) + (1-\\gamma) E_{smooth}(t-1)$ with $\\gamma = 0.2$ and sampling interval $\\Delta t = 1.0\\text{ s}$ exhibits group delay $\\tau_g(0) = \\frac{1-\\gamma}{\\gamma} \\Delta t = 4.0\\text{ s}$, suppre..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P02-EQ-01",
+      "latex": "D_{valence} = P(V_{neg} \\mid HighLoad)"
+    },
+    {
+      "equation_id": "P02-EQ-02",
+      "latex": "C_{FN} \\gg C_{FP}"
+    },
+    {
+      "equation_id": "P02-EQ-03",
+      "latex": "R = C_{FP} P(\\hat{y}=E \\mid y=D) + C_{FN} P(\\hat{y}=D \\mid y=E)"
+    },
+    {
+      "equation_id": "P02-EQ-04",
+      "latex": "P(\\hat{y}=D \\mid y=E)"
+    },
+    {
+      "equation_id": "P02-EQ-05",
+      "latex": "P(E \\mid V, C_{load}) = \\frac{P(V \\mid E) \\cdot P(E \\mid C_{load})}{P(V \\mid C_{load})}"
+    },
+    {
+      "equation_id": "P02-EQ-06",
+      "latex": "C_{load}(t) = \\frac{1}{\\Delta t} \\int_{t-\\Delta t}^{t} \\frac{\\sum_{w \\in W_{domain}} \\mathbb{I}(speech(w))}{\\sum w_{total}} d\\tau"
+    },
+    {
+      "equation_id": "P02-EQ-07",
+      "latex": "E_{score}(t) = \\alpha \\cdot (1 - V_{neg}) + \\beta \\cdot \\left[ \\frac{1}{1 + e^{-k(C_{load}(t) - \\mu)}} \\right]"
+    },
+    {
+      "equation_id": "P02-EQ-08",
+      "latex": "\\tau^*(C_{load}) = \\frac{1}{1 + \\rho \\cdot \\frac{P(E \\mid C_{load})}{1 - P(E \\mid C_{load})}}. \\label{eq:bayes_bound}"
+    },
+    {
+      "equation_id": "P02-EQ-09",
+      "latex": "P(\\hat{y}=D \\mid y=E, C_{load}) \\le \\frac{1}{1 + \\rho \\cdot \\Lambda(C_{load})},"
+    },
+    {
+      "equation_id": "P02-EQ-10",
+      "latex": "C_{FN} P(E \\mid x) \\ge C_{FP} P(D \\mid x) \\implies \\frac{P(E \\mid x)}{P(D \\mid x)} \\ge \\frac{C_{FP}}{C_{FN}} = \\frac{1}{\\rho}."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P02-TAB-01",
+      "caption": "Baseline Comparison Focused on Type-II Errors ($N=1,440$)"
+    },
+    {
+      "table_id": "P02-TAB-02",
+      "caption": "Ablation Study on Multimodal Components (Scenario C)"
+    },
+    {
+      "table_id": "P02-TAB-03",
+      "caption": "Sensitivity: Audio Oracle Model Size vs. Efficiency"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P02-FIG-01",
+      "caption": "Conceptual Signal Inputs to Contextual Model."
+    },
+    {
+      "figure_id": "P02-FIG-02",
+      "caption": "During the high-load segment (20-50m), the baseline model falsely reports low engagement. The probabilistic model classifies this as active concentration."
+    },
+    {
+      "figure_id": "P02-FIG-03",
+      "caption": "Real-time console telemetry demonstrating contextual probabilistic re-weighting. A visually negative valence ($V_{neg"
+    },
+    {
+      "figure_id": "P02-FIG-04",
+      "caption": "Performance Heatmap: The probabilistic interpretation layer significantly reduces the False Negative rate to 6\\% during high-load STEM simulations."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P02-REF-01",
+      "key": "b2",
+      "raw_citation": "P. Ekman and W. V. Friesen, \"Constants across cultures in the face and emotion,\" Journal of Personality and Social Psychology , vol. 17, no. 2, pp. 124-129, 1971."
+    },
+    {
+      "reference_id": "P02-REF-02",
+      "key": "b5",
+      "raw_citation": "J. Sweller, \"Cognitive load during problem solving: Effects on learning,\" Cognitive Science , vol. 12, no. 2, pp. 257-285, 1988."
+    },
+    {
+      "reference_id": "P02-REF-03",
+      "key": "b1",
+      "raw_citation": "R. W. Picard, Affective Computing . MIT Press, 2000."
+    },
+    {
+      "reference_id": "P02-REF-04",
+      "key": "b19",
+      "raw_citation": "R. O. Duda, P. E. Hart, and D. G. Stork, Pattern Classification , 2nd ed. Wiley, 2000."
+    },
+    {
+      "reference_id": "P02-REF-05",
+      "key": "b18",
+      "raw_citation": "C. Elkan, \"The foundations of cost-sensitive learning,\" in IJCAI , vol. 1, no. 1, pp. 973-978, 2001."
+    },
+    {
+      "reference_id": "P02-REF-06",
+      "key": "b11",
+      "raw_citation": "P. K. Atrey et al., \"Multimodal fusion for multimedia analysis: A survey,\" Multimedia Systems , vol. 16, no. 6, pp. 345-379, 2010."
+    },
+    {
+      "reference_id": "P02-REF-07",
+      "key": "b15",
+      "raw_citation": "A. V. Oppenheim and R. W. Schafer, Discrete-Time Signal Processing . Pearson, 2010."
+    },
+    {
+      "reference_id": "P02-REF-08",
+      "key": "b20",
+      "raw_citation": "R. S. Baker et al., \"Better to be frustrated than bored: The incidence, persistence, and impact of learners\u2019 cognitive\u2013affective states,\" International Journal of Human-Computer Studies , vol. 68, no. 4, pp. 223-241, 2010."
+    },
+    {
+      "reference_id": "P02-REF-09",
+      "key": "b3",
+      "raw_citation": "A. D. Saragih, S. Lucey, and J. F. Cohn, \"Deformable model fitting by regularized landmark mean-shift,\" International Journal of Computer Vision , vol. 91, no. 2, pp. 200-215, 2011."
+    },
+    {
+      "reference_id": "P02-REF-10",
+      "key": "b16",
+      "raw_citation": "G. Casquez, D. Vogel, and R. Wattenhofer, \"One Euro Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems,\" in Proceedings of the SIGCHI Conference on Human Factors in Computing Systems , 2012, pp. 2527-2530."
+    },
+    {
+      "reference_id": "P02-REF-11",
+      "key": "b4",
+      "raw_citation": "S. D'Mello and A. Graesser, \"Dynamics of affective states during complex learning,\" Learning and Instruction , vol. 22, no. 2, pp. 145-157, 2012."
+    },
+    {
+      "reference_id": "P02-REF-12",
+      "key": "b24",
+      "raw_citation": "G. Siemens, \"Learning analytics: The emergence of a discipline,\" American Behavioral Scientist , vol. 57, no. 10, pp. 1380-1400, 2013."
+    },
+    {
+      "reference_id": "P02-REF-13",
+      "key": "b6",
+      "raw_citation": "J. Grafsgaard, J. B. Wiggins, K. E. Boyer, E. N. Wiebe, and J. C. Lester, \"Automatically recognizing facial indicators of frustration and satisfaction in tutorial dialogue,\" in 2013 Affective Computing and Intelligent Interaction (ACII) , IEEE, 2013,..."
+    },
+    {
+      "reference_id": "P02-REF-14",
+      "key": "b7",
+      "raw_citation": "J. Whitehill, Z. Serpell, Y.-C. Lin, A. Foster, and J. R. Movellan, \"The faces of engagement: Automatic recognition of student engagement from facial expressions,\" IEEE Transactions on Affective Computing , vol. 5, no. 1, pp. 86-98, 2014."
+    },
+    {
+      "reference_id": "P02-REF-15",
+      "key": "b8",
+      "raw_citation": "N. Bosch, S. D'Mello, R. Baker, J. Ocumpaugh, and V. Shute, \"Detecting student engagement: Human versus machine,\" in Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing , 2015, pp. 817-820."
+    }
+  ]
+}

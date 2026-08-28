@@ -1,0 +1,689 @@
+{
+  "P1": {
+    "paper_id": "P1",
+    "title": "ScholarMaster: A Layered Edge-Native Architecture for Real-Time Context-Aware Intelligent Systems",
+    "research_problem": "Operational fragility in end-to-end intelligent systems caused by cross-layer coupling between sensor physics and high-level compliance policies.",
+    "claimed_research_gap": "Monolithic edge pipelines lack architectural decoupling, causing perception latency spikes to propagate into compliance violations.",
+    "claimed_novelty": "4-stratum edge-native architecture decoupling sensor physics, feature abstraction, compliance logic, and audit stewardship via volatile UMA ring buffers.",
+    "known_components_identified": "POSIX shared memory ring buffers, multi-threaded pipelines, layered architectural patterns.",
+    "residual_novelty_after_deconstruction": "Formal inter-stratum execution contracts and zero-overwrite memory confinement invariants.",
+    "closest_competing_prior_works": [
+      "ROS 2 (Macenski et al., 2020)",
+      "EdgeX Foundry (Linux Foundation, 2021)",
+      "Ray Plasma Store (Moritz et al., 2018)",
+      "ZeroMQ (Hintjens, 2013)"
+    ],
+    "differentiation_quality": "Unlike ROS 2 and EdgeX which use message-passing serialization, P1 enforces zero-copy volatile buffer confinement with strict memory barrier invariants.",
+    "strengths": [
+      "Clear conceptual separation into 4 strata; mathematically formalizes inter-stratum boundaries.",
+      "Structured Related Work section with 25 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "The paper combines known architectural patterns; authors must emphasize why existing middleware like ROS 2 or Plasma fails for hard real-time compliance."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "WEAK_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P2": {
+    "paper_id": "P2",
+    "title": "A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis",
+    "research_problem": "High false negative rates in unimodal classroom attention monitoring under varying lighting and ambient acoustic noise.",
+    "claimed_research_gap": "Prior multimodal fusion frameworks treat all classification errors symmetrically, ignoring the asymmetric pedagogical risk of false disengagement alerts.",
+    "claimed_novelty": "Bayesian asymmetric risk minimization theorem (Theorem 1) contracting decision boundaries under high cognitive load with IIR group delay bounds (Proposition 1).",
+    "known_components_identified": "ResNet vision backbones, pitch tracking, weighted cross-entropy loss.",
+    "residual_novelty_after_deconstruction": "First-principles Bayes risk minimization proof proving contraction of false negatives under high contextual uncertainty.",
+    "closest_competing_prior_works": [
+      "DAiSEE (Gupta et al., 2016)",
+      "Multimodal Transformer (Tsai et al., 2019)",
+      "Cost-Sensitive ResNet (He et al., 2016)",
+      "Prosodic Fusion (Schuller et al., 2018)"
+    ],
+    "differentiation_quality": "Explicitly proves that asymmetric risk re-weighting strictly minimizes expected pedagogical loss compared to symmetric cross-entropy.",
+    "strengths": [
+      "Rigorous Theorem 1 formulation and Proposition 1 IIR group delay bound.",
+      "Structured Related Work section with 25 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Assumes audio SNR remains above 10 dB; degradation under extreme acoustic reverberation in 200-seat lecture halls should be acknowledged."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P3": {
+    "paper_id": "P3",
+    "title": "Pose-Only Edge Action Sensing with Enforced Volatile Memory Confinement",
+    "research_problem": "Privacy violations arising from persistent storage of raw RGB video frames in campus surveillance cameras.",
+    "claimed_research_gap": "Existing privacy-preserving vision either applies reversible pixel obfuscation or relies on software sandboxing without mathematical irreversibility guarantees.",
+    "claimed_novelty": "Rank-Nullity information-theoretic reconstruction irreversibility proof (Theorem 1) for 17-keypoint sparse coordinate vectors in volatile ring buffers.",
+    "known_components_identified": "MediaPipe pose extraction, Kalman filtering, circular memory buffers.",
+    "residual_novelty_after_deconstruction": "Formal proof that raw RGB frames cannot be reconstructed from 17 2D coordinates due to rank deficiency in the inverse projection operator.",
+    "closest_competing_prior_works": [
+      "OpenPose (Cao et al., 2019)",
+      "MediaPipe (Lugaresi et al., 2019)",
+      "ST-GCN (Yan et al., 2018)",
+      "Differential Privacy Vision (Dwork et al., 2014)"
+    ],
+    "differentiation_quality": "Proves architectural irreversibility at the physical memory barrier rather than relying on cryptographic key trust.",
+    "strengths": [
+      "Formal Rank-Nullity theorem and clear privacy threat model.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "MediaPipe keypoint extraction is well known; paper must emphasize the mathematical irreversibility proof and volatile memory confinement."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P4": {
+    "paper_id": "P4",
+    "title": "Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup",
+    "research_problem": "False attendance and spatial compliance violations caused by transient boundary crossings and noisy edge sensor detections.",
+    "claimed_research_gap": "Complex Event Processing (CEP) engines evaluate point-in-time predicates without bounded debounce hysteresis, inducing glitch cascades in relational databases.",
+    "claimed_novelty": "Spatiotemporal debounce glitch suppression invariant (Theorem 1) and logarithmic relational query latency bound (Theorem 2) for stream-relational joins.",
+    "known_components_identified": "PostgreSQL partitioned B-trees, temporal hysteresis timers, GIS bounding box checks.",
+    "residual_novelty_after_deconstruction": "First-principles proofs bounding stream debounce latency and establishing logarithmic query execution guarantees under 5,000 QPS burst load.",
+    "closest_competing_prior_works": [
+      "Esper CEP (Bernhardt et al., 2012)",
+      "PostGIS (Obe & Hsu, 2015)",
+      "Apache Flink CEP (Carbone et al., 2015)",
+      "Spatio-Temporal Logic (Bartocci et al., 2018)"
+    ],
+    "differentiation_quality": "Integrates stream debounce invariance directly with partitioned relational indexing, guaranteeing sub-15ms p99 latency under burst traffic.",
+    "strengths": [
+      "Rigorous debounce theorems and formal relational schema definitions.",
+      "Structured Related Work section with 23 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Debounce timers are common in hardware; manuscript must clearly articulate why stream-relational debounce requires formal invariance proofs."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P5": {
+    "paper_id": "P5",
+    "title": "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model",
+    "research_problem": "Thermal throttling and memory bandwidth saturation on edge SoCs running continuous deep learning inference.",
+    "claimed_research_gap": "Standard roofline models ignore dynamic thermal accumulation and unified memory contention between CPU and GPU compute cores.",
+    "claimed_novelty": "Memory-Bound Edge Efficiency Envelope (MBEEE) analytical thermodynamic heat equations establishing sustained operating boundaries (Published).",
+    "known_components_identified": "Roofline model, thermal dissipation differential equations, DVFS.",
+    "residual_novelty_after_deconstruction": "Unified thermodynamic and memory bus saturation model specifically calibrated for unified memory architectures (Apple Silicon / NVIDIA Jetson).",
+    "closest_competing_prior_works": [
+      "Roofline Model (Williams et al., 2009)",
+      "Jetson Power Benchmarks (NVIDIA, 2021)",
+      "MobileNetV3 (Howard et al., 2019)"
+    ],
+    "differentiation_quality": "Published foundational baseline providing closed-form thermodynamic operating envelopes.",
+    "strengths": [
+      "Published work serving as authoritative reference for the ScholarMaster series.",
+      "Structured Related Work section with 28 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "None; paper is published."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P6": {
+    "paper_id": "P6",
+    "title": "NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT",
+    "research_problem": "Acoustic spatial blindness in Non-Line-of-Sight (NLOS) corridor surveillance.",
+    "claimed_research_gap": "Standard audio event detectors fail to localize sound sources around blind corners in reverberant concrete corridors.",
+    "claimed_novelty": "Non-Line-of-Sight acoustic sensing via spectral gating and GCC-PHAT spatial localization (Accepted In-Press).",
+    "known_components_identified": "GCC-PHAT cross-correlation, acoustic beamforming, spectral subtraction.",
+    "residual_novelty_after_deconstruction": "Dual-microphone NLOS localization model isolating corner diffraction paths from multipath wall reflections.",
+    "closest_competing_prior_works": [
+      "GCC-PHAT (Knapp & Carter, 1976)",
+      "Acoustic SLAM (Evers et al., 2018)",
+      "Deep AED (Kumar et al., 2021)"
+    ],
+    "differentiation_quality": "Accepted in press; peer-reviewed physical hardware testbed.",
+    "strengths": [
+      "Real physical microphone array testbed in campus corridors; gold-standard reviewer calibration paper.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Reviewer requested clarification on multiple simultaneous sound sources and language repetition."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P7": {
+    "paper_id": "P7",
+    "title": "Sub-Millisecond Identity Retrieval via HNSW + LDCC",
+    "research_problem": "Linear latency scaling and false acceptance of unknown faces during large-scale institutional identity retrieval.",
+    "claimed_research_gap": "Standard approximate nearest neighbor (ANN) search engines optimize recall but lack confidence contraction for open-set unknown rejection.",
+    "claimed_novelty": "Sub-millisecond open-set unknown face rejection via Local Density Confidence Contraction (LDCC) over HNSW graph indexing (Theorems 1 & 2).",
+    "known_components_identified": "HNSW graphs, cosine similarity, Faiss, ScaNN.",
+    "residual_novelty_after_deconstruction": "Logarithmic latency scaling theorem and LDCC contraction proof bounding open-set false acceptance under 0.2%.",
+    "closest_competing_prior_works": [
+      "HNSW (Malkov & Yashunin, 2018)",
+      "ScaNN (Guo et al., 2020)",
+      "Faiss IVF-PQ (Johnson et al., 2019)",
+      "ArcFace (Deng et al., 2019)"
+    ],
+    "differentiation_quality": "Unlike ScaNN/Faiss which return the top-1 nearest neighbor regardless of confidence, LDCC contracts the search radius based on local graph density, rejecting out-of-gallery faces in 0.419 ms.",
+    "strengths": [
+      "Theorem 1 logarithmic scaling proof and Theorem 2 LDCC open-set rejection bound (>99.8%).",
+      "Structured Related Work section with 27 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Must clarify how the HNSW index handles real-time dynamic insertions without periodic global re-indexing."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P8": {
+    "paper_id": "P8",
+    "title": "A Cryptographic Provenance Model with Erasure-Compatible Immutability\n\\thanks{Implementation artifacts are available upon request.",
+    "research_problem": "Conflict between immutable audit logging requirements and privacy right-to-erasure (GDPR Article 17).",
+    "claimed_research_gap": "Standard blockchain and append-only ledgers cannot delete historical personal records without breaking cryptographic Merkle tree integrity.",
+    "claimed_novelty": "Cryptographic provenance model with Provable In-Storage Key Shredding (PISK) reconciling immutability with provable erasure.",
+    "known_components_identified": "Merkle trees, HMAC, AES-GCM, forward secrecy.",
+    "residual_novelty_after_deconstruction": "Dual-layer cryptographic architecture where immutable hash chains verify tamper-evidence while ephemeral payload keys are shredded to achieve provable erasure.",
+    "closest_competing_prior_works": [
+      "Certificate Transparency (Laurie et al., 2014)",
+      "Hyperledger Fabric (Androulaki et al., 2018)",
+      "Cryptographic Erasure (Boneh & Lipton, 1996)"
+    ],
+    "differentiation_quality": "Maintains cryptographic proof of event existence while rendering the associated biometric payload permanently unrecoverable.",
+    "strengths": [
+      "Addresses a critical real-world legal and cryptographic tension with a clean mathematical model.",
+      "Structured Related Work section with 25 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Key shredding assumes secure flash memory wear-leveling control; raw NAND key persistence must be addressed."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P9": {
+    "paper_id": "P9",
+    "title": "A Hierarchical Edge Control Plane for Policy-Aware Multi-Module AI Orchestration",
+    "research_problem": "Inference rate thrashing and thermal throttling in edge vision systems processing unpredictable subject kinematic velocities.",
+    "claimed_research_gap": "Dynamic video analytics frameworks (e.g. VideoStorm, Chameleon) rely on periodic heuristic adaptation that causes frame drop oscillations during rapid velocity spikes.",
+    "claimed_novelty": "Kinematic-coupled edge control plane with Lyapunov asymptotic PID stability proof (Theorems 1 & 2) governing inference frame rate.",
+    "known_components_identified": "PID controllers, optical flow velocity estimation, dynamic frame skipping.",
+    "residual_novelty_after_deconstruction": "First-principles Lyapunov stability theorem proving zero frame rate oscillation and asymptotic convergence under bounded subject acceleration.",
+    "closest_competing_prior_works": [
+      "VideoStorm (Zhang et al., NSDI 2017)",
+      "Chameleon (Jiang et al., SIGCOMM 2018)",
+      "Lyapunov Control (Khalil, 2002)",
+      "Mainwaring et al. (2019)"
+    ],
+    "differentiation_quality": "Unlike VideoStorm and Chameleon which use periodic profile re-evaluations (every 10\u201330s), P9 adjusts frame rates on a per-frame basis with guaranteed Lyapunov stability.",
+    "strengths": [
+      "Theorem 1 kinematic sampling bound and Theorem 2 Lyapunov asymptotic stability proof; 26 peer-reviewed citations.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "PID gain tuning is sensitive to sensor frame rate jitter; automated gain scheduling should be discussed."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P10": {
+    "paper_id": "P10",
+    "title": "Integrated Stress Validation of an Edge-Native Academic Analytics Architecture",
+    "research_problem": "System crash and memory exhaustion in edge appliances under concurrent multi-tenant stress loads.",
+    "claimed_research_gap": "Edge systems are typically evaluated under isolated synthetic micro-benchmarks rather than integrated multi-stress matrices (CPU + GPU + Memory + Flash).",
+    "claimed_novelty": "Integrated Stress Matrix (ISM) empirical methodology and hardware failure envelope characterization for edge-native appliances.",
+    "known_components_identified": "Stress-ng, multi-threaded benchmarking, hardware performance counters.",
+    "residual_novelty_after_deconstruction": "Multi-dimensional stress testing methodology uncovering subtle cross-subsystem race conditions in edge vision pipelines.",
+    "closest_competing_prior_works": [
+      "NVIDIA DeepStream (2021)",
+      "Intel OpenVINO (2021)",
+      "Stress-ng (King, 2020)"
+    ],
+    "differentiation_quality": "Evaluates simultaneous cross-layer resource starvation (CPU + UMA RAM + NVMe + Thermal) rather than single-component saturation.",
+    "strengths": [
+      "Rich empirical telemetry across 13 sections with 6 comparative stress tables.",
+      "Structured Related Work section with 18 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Paper is heavily empirical and architectural; Reviewer A notes it lacks formal mathematical theorems compared to P7 or P9."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "WEAK_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P11": {
+    "paper_id": "P11",
+    "title": "Lifecycle Hardening of Immutable Edge Appliances under Power and Connectivity Instability",
+    "research_problem": "Appliance bricking and root filesystem corruption in edge deployments subjected to abrupt physical power loss.",
+    "claimed_research_gap": "Standard Linux distributions rely on mutable root filesystems where journal corruption during power cuts requires manual intervention.",
+    "claimed_novelty": "Lifecycle hardening with immutable dm-verity rootfs, dual-partition A/B recovery, and power-cut state invariance proofs (Theorem 1, Lemma 1).",
+    "known_components_identified": "dm-verity, dual-rootfs A/B bootloaders, overlayfs, RAUC, Mender.io.",
+    "residual_novelty_after_deconstruction": "Formal proof of state invariance across arbitrary power-cut instants and bounded rollback liveness theorems.",
+    "closest_competing_prior_works": [
+      "RAUC (Industrial OTA, 2021)",
+      "Mender.io (2020)",
+      "BalenaOS (2021)",
+      "dm-verity (Android Open Source, 2015)"
+    ],
+    "differentiation_quality": "Unlike standard RAUC/Mender which focus on OTA updates, P11 proves mathematical crash consistency across 50 abrupt physical power-cut cycles with zero corruption.",
+    "strengths": [
+      "Theorem 1 power-cut state invariance and Lemma 1 rollback liveness; comparison against RAUC and Mender.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "A/B partitioning and dm-verity are industry standards; manuscript must clearly emphasize the formal proof of crash invariance."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P12": {
+    "paper_id": "P12",
+    "title": "Flash Endurance Engineering for Write-Intensive Embedded Workloads: Extending SD Card Lifespan Through Kernel-Level Optimization",
+    "research_problem": "Flash memory premature wear-out in write-intensive edge computing appliances executing continuous local logging.",
+    "claimed_research_gap": "Standard database and logging systems treat flash memory as generic block storage, causing catastrophic write amplification in NAND flash translation layers (FTL).",
+    "claimed_novelty": "Kernel and VFS optimization architecture decoupling volatile telemetry ring buffers from flash storage, minimizing FTL write amplification.",
+    "known_components_identified": "NAND flash FTL, wear-leveling algorithms, in-memory log compaction.",
+    "residual_novelty_after_deconstruction": "Mathematical FTL write amplification model and kernel-level dirty page throttling governor tailored for edge appliances.",
+    "closest_competing_prior_works": [
+      "F2FS (Lee et al., 2015)",
+      "RocksDB Write-Ahead-Log (Facebook, 2020)",
+      "SQLite WAL (Hipp, 2020)"
+    ],
+    "differentiation_quality": "Reduces flash write amplification by 78% compared to standard SQLite WAL by aggregating temporal audit logs in volatile UMA buffers.",
+    "strengths": [
+      "Addresses a critical hardware longevity bottleneck with detailed FTL mathematical modeling.",
+      "Structured Related Work section with 29 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Reviewer A notes the contribution is primarily kernel systems engineering rather than a new data structure theory."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "WEAK_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P13": {
+    "paper_id": "P13",
+    "title": "Federated Drift Compensation via Active Learning in Edge Deployed Neural Networks",
+    "research_problem": "Catastrophic forgetting and concept drift in edge computer vision models under strict label scarcity and privacy constraints.",
+    "claimed_research_gap": "Continual learning methods require frequent centralized label annotation, violating privacy, while streaming active learning methods lack formal privacy noise variance bounds.",
+    "claimed_novelty": "Differential privacy active learning framework with selective layer freezing and formal stationary variance bounds (Theorem 1).",
+    "known_components_identified": "Active learning, BALD uncertainty sampling, streaming Hoeffding trees (VFDT), DP-SGD.",
+    "residual_novelty_after_deconstruction": "First-principles theorem bounding the stationary variance of online gradient updates under Gaussian DP noise during drift adaptation.",
+    "closest_competing_prior_works": [
+      "Streaming Hoeffding Trees / VFDT (Domingos & Hulten, 2000)",
+      "BALD Active Learning (Gal et al., 2017)",
+      "DP-SGD (Abadi et al., 2016)",
+      "EWC (Kirkpatrick et al., 2017)"
+    ],
+    "differentiation_quality": "Unlike VFDT and BALD which ignore privacy, P13 proves drift adaptation convergence while guaranteeing (epsilon, delta)-differential privacy.",
+    "strengths": [
+      "Theorem 1 stationary variance bound under DP noise; 29 peer-reviewed citations.",
+      "Structured Related Work section with 29 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Active learning still requires an oracle; human annotation budget limits must be formalized."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P14": {
+    "paper_id": "P14",
+    "title": "Hierarchical Federated Aggregation for Cross-Institution Model Adaptation Under Asynchronous Participation",
+    "research_problem": "Communication bottlenecks and model divergence in cross-institutional federated learning with heterogeneous edge clients and network stragglers.",
+    "claimed_research_gap": "Standard federated aggregation (FedAvg, FedProx) assumes flat client topologies and synchronous rounds, stalling under slow campus WAN links.",
+    "claimed_novelty": "Hierarchical federated aggregation (HFL) with polynomial damped asynchronous convergence rate under bounded client delay tau <= 50 (Theorem 1).",
+    "known_components_identified": "Federated averaging, HierFAVG, FedAsync, Dirichlet non-IID data partitioning.",
+    "residual_novelty_after_deconstruction": "Asymptotic convergence proof under hierarchical two-tier aggregation with polynomial delay damping factors.",
+    "closest_competing_prior_works": [
+      "FedAvg (McMahan et al., 2017)",
+      "FedProx (Li et al., 2020)",
+      "HierFAVG (Liu et al., 2020)",
+      "FedAsync (Xie et al., 2019)"
+    ],
+    "differentiation_quality": "Proves model convergence under asynchronous cluster-level updates with extreme statistical skew (Dirichlet beta = 0.05).",
+    "strengths": [
+      "Theorem 1 asymptotic convergence proof and non-IID Dirichlet matrix; 26 peer-reviewed citations.",
+      "Structured Related Work section with 22 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Hierarchical FL is an established research direction; paper must clearly emphasize the polynomial damping convergence proof."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P15": {
+    "paper_id": "P15",
+    "title": "Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-Anchored AR Visualization",
+    "research_problem": "Cognitive overload and delayed emergency response in security operators monitoring dozens of disjoint 2D CCTV camera walls.",
+    "claimed_research_gap": "Traditional 2D video management systems require mental spatial reconstruction, increasing reaction times during campus security events.",
+    "claimed_novelty": "Augmented situation awareness framework with deterministic 60 FPS spatial projection latency bound (Theorem 1) and NASA-TLX user study (p < 0.01).",
+    "known_components_identified": "ARKit/ARCore spatial anchors, visual positioning systems, NASA-TLX workload index.",
+    "residual_novelty_after_deconstruction": "Deterministic 60 FPS spatial projection latency bound proof and distance-attenuated depth culling algorithms for edge AR HUDs.",
+    "closest_competing_prior_works": [
+      "ARKit / ARCore (2021)",
+      "NASA-TLX (Hart & Staveland, 1988)",
+      "Spatial HUDs (Billinghurst et al., 2015)"
+    ],
+    "differentiation_quality": "Proves deterministic frame time bounds (<16.6 ms) for spatially-anchored edge telemetry projection and reports statistically significant NASA-TLX reduction (d = 1.12).",
+    "strengths": [
+      "Theorem 1 projection latency bound and Proposition 1 depth culling invariant.",
+      "Structured Related Work section with 27 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "AR HUDs are common in defense/robotics; paper must emphasize the cyber-physical campus security context and formal latency proofs."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P16": {
+    "paper_id": "P16",
+    "title": "Beyond the Panopticon: A Longitudinal Study of Student Trust in Automated Stewardship Systems",
+    "research_problem": "Student resistance and perceived surveillance overreach in institutional smart campus deployments.",
+    "claimed_research_gap": "Technical literature focuses exclusively on detection accuracy and latency, neglecting empirical longitudinal student privacy perceptions and trust dynamics.",
+    "claimed_novelty": "Longitudinal empirical study (N=1,240) evaluating student privacy perceptions, trust decay, and compliance acceptance over two academic semesters.",
+    "known_components_identified": "Likert survey methodology, structural equation modeling, privacy calculus theory.",
+    "residual_novelty_after_deconstruction": "First large-scale longitudinal empirical dataset linking architectural privacy guarantees (volatile buffers, pose-only sensing) to student acceptance.",
+    "closest_competing_prior_works": [
+      "Privacy Calculus Theory (Dinev & Hart, 2006)",
+      "Surveillance Studies (Zuboff, 2019)",
+      "HCI Privacy Models (Acquisti et al., 2015)"
+    ],
+    "differentiation_quality": "Demonstrates empirically that architectural guarantees (e.g. pose-only sensing) yield 4.1x higher trust retention than policy-only privacy notices.",
+    "strengths": [
+      "Vital empirical grounding bridging technical architecture and human-centered institutional trust.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Reviewer A notes the paper is empirical social computing/HCI rather than a core systems algorithm paper."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "WEAK_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P17": {
+    "paper_id": "P17",
+    "title": "Architectural Irreversibility: Enforcing Privacy, Governance, and Trust in Intelligent Campus Systems",
+    "research_problem": "Ineffectiveness of policy-based privacy notices in preventing unauthorized secondary data usage in edge surveillance.",
+    "claimed_research_gap": "Privacy policies are legal constructs that fail to prevent rogue administrators or compromised software from exfiltrating raw sensor streams.",
+    "claimed_novelty": "Architectural Irreversibility taxonomy and formal reframing of privacy enforcement from legal policy to physical hardware constraints.",
+    "known_components_identified": "Privacy-by-Design, hardware security enclaves, information flow control.",
+    "residual_novelty_after_deconstruction": "Formal taxonomy and structural framework defining architectural irreversibility invariants across the sensing pipeline.",
+    "closest_competing_prior_works": [
+      "Privacy by Design (Cavoukian, 2009)",
+      "Information Flow Control (Myers & Liskov, 1997)",
+      "Enclave Computing (Costan & Devadas, 2016)"
+    ],
+    "differentiation_quality": "Reframes privacy from subjective policy compliance to mathematically verifiable non-interference.",
+    "strengths": [
+      "Compelling intellectual reframing and taxonomy of privacy architectures.",
+      "Structured Related Work section with 22 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Paper is primarily conceptual and taxonomical; Reviewer A notes it serves as a position paper."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P18": {
+    "paper_id": "P18",
+    "title": "Runtime Enforcement of Architectural Irreversibility in Edge AI Systems\n\\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \\& Technology (Autonomous), as part of academic research activities.",
+    "research_problem": "Runtime circumvention of privacy invariants by compromised edge container processes or root-level malware.",
+    "claimed_research_gap": "Static verification cannot detect dynamic memory tampering or side-channel leakage occurring after software deployment.",
+    "claimed_novelty": "Runtime enforcement of architectural irreversibility via hardware memory barriers, eBPF syscall filtering, and Bounded Model Checking (BMC).",
+    "known_components_identified": "eBPF, Linux seccomp, Bounded Model Checking (CBMC), hardware MMU.",
+    "residual_novelty_after_deconstruction": "Dual-enforcement architecture combining low-overhead eBPF syscall filtering (<1.8% overhead) with formal BMC invariant proofs.",
+    "closest_competing_prior_works": [
+      "eBPF Security (Vieira et al., 2020)",
+      "CBMC (Kroening & Tautschnig, 2014)",
+      "AppArmor / SELinux (Bauer, 2006)"
+    ],
+    "differentiation_quality": "Enforces provable memory non-retention at runtime with zero overhead on normal frame processing paths.",
+    "strengths": [
+      "Formal irreversibility invariants and comprehensive threat model.",
+      "Structured Related Work section with 24 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "eBPF and seccomp are standard Linux security tools; manuscript must highlight the formal invariant verification engine."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P19": {
+    "paper_id": "P19",
+    "title": "Formal Threat Model and Trusted Computing Base Definition for Architecturally Irreversible Edge AI\n\\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \\& Technology (Autonomous), as part of academic research activities.",
+    "research_problem": "Formal security specification ambiguity in multi-tenant edge cyber-physical sensing systems.",
+    "claimed_research_gap": "Existing edge security papers specify informal threat models that fail to capture side-channel leakage across shared memory buses.",
+    "claimed_novelty": "Formal threat model and Trusted Computing Base (TCB) definition with 5 mathematical theorems proving non-interference and state transition safety.",
+    "known_components_identified": "Non-interference logic (Goguen & Meseguer, 1982), Dolev-Yao adversary model, Bell-LaPadula.",
+    "residual_novelty_after_deconstruction": "First formal adversary classification model and non-interference proofs specifically modeling UMA shared memory edge vision stacks.",
+    "closest_competing_prior_works": [
+      "Dolev-Yao Model (1983)",
+      "Rushby Non-Interference (1992)",
+      "TCG TPM Specification (2019)"
+    ],
+    "differentiation_quality": "Proves 5 formal theorems establishing information flow security across the 4 canonical strata of ScholarMaster.",
+    "strengths": [
+      "5 mathematical theorems, 13 detailed sections, and formal adversary classification.",
+      "Structured Related Work section with 31 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Highly formal and theoretical; paper relies on analytical proofs rather than physical hardware benchmarks."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P20": {
+    "paper_id": "P20",
+    "title": "The ScholarMaster Architecture: A Unified Reference Model for Privacy-First Intelligent Campus Systems",
+    "research_problem": "Architectural fragmentation and lack of formal traceability between high-level system requirements and executable edge code.",
+    "claimed_research_gap": "Cyber-Physical System (CPS) reference architectures (NIST, EdgeX) provide qualitative block diagrams without formal mathematical theorem traceability.",
+    "claimed_novelty": "Constraint-First Architectural Synthesis (CFAS) methodology and Theorem-Implementation Lattice mapping mathematical theorems to executable modules.",
+    "known_components_identified": "NIST CPS Framework, Design by Contract, Software Architecture synthesis.",
+    "residual_novelty_after_deconstruction": "4-stage CFAS synthesis lifecycle and formal Theorem-Implementation Lattice linking 25 subsystem theorems to code.",
+    "closest_competing_prior_works": [
+      "NIST CPS Framework (Griffor et al., 2017)",
+      "EdgeX Foundry (2021)",
+      "AUTOSAR (2018)",
+      "Design by Contract (Meyer, 1992)"
+    ],
+    "differentiation_quality": "Establishes bidirectional mathematical traceability from first-principles theorems down to Linux kernel invariants.",
+    "strengths": [
+      "Comprehensive reference model with 32 peer-reviewed citations and comparative CPS taxonomy.",
+      "Structured Related Work section with 32 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Paper is a macro reference model; Reviewer A emphasizes maintaining clear separation from individual component papers."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P21": {
+    "paper_id": "P21",
+    "title": "Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity",
+    "research_problem": "Lack of formal mathematical foundations for spatiotemporal compliance verification in distributed edge sensor networks.",
+    "claimed_research_gap": "Existing spatiotemporal logic frameworks lack formal proofs of distributed consistency under asynchronous network partitions.",
+    "claimed_novelty": "Formal mathematical foundations with 8 theorems proving spatiotemporal compliance, non-interference, and distributed consensus.",
+    "known_components_identified": "Spatial Logic, Temporal Logic (LTL/STL), Hoare Logic, Distributed Consensus.",
+    "residual_novelty_after_deconstruction": "8 first-principles mathematical theorems formalizing spatial compliance, boundary invariants, and distributed verification.",
+    "closest_competing_prior_works": [
+      "Spatial-Temporal Logic (Bartocci et al., 2018)",
+      "Signal Temporal Logic (Maler & Nickovic, 2004)",
+      "Hoare Logic (1969)"
+    ],
+    "differentiation_quality": "Provides the complete foundational mathematical proofs underlying spatiotemporal predicates in edge cyber-physical systems.",
+    "strengths": [
+      "8 formal mathematical theorems establishing absolute theoretical rigor across 5,537 words.",
+      "Structured Related Work section with 27 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Pure theoretical mathematics; lacks empirical benchmark plots (which is appropriate for a formal foundation paper)."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P22": {
+    "paper_id": "P22",
+    "title": "Perception Integrity Foundations: Evidential Uncertainty, Disagreement Dynamics, and Blur Bounds in Edge Vision",
+    "research_problem": "Silent failure and miscalibration of edge computer vision under optical blur and multi-view sensor disagreement.",
+    "claimed_research_gap": "Softmax probabilities become overconfident under out-of-distribution optical blur, while Monte Carlo dropout is too compute-intensive for edge real-time execution.",
+    "claimed_novelty": "Dirichlet evidential uncertainty calibration with first-principles variance bounds (Theorem 1, Propositions 1 & 2) under frequency-domain optical blur.",
+    "known_components_identified": "Evidential Deep Learning, Dirichlet distributions, Beta marginals, ImageNet-C corruption benchmarks.",
+    "residual_novelty_after_deconstruction": "First-principles evidence variance bound proving that Dirichlet concentration parameters decay monotonically with high-frequency spatial attenuation.",
+    "closest_competing_prior_works": [
+      "Evidential Deep Learning (Sensoy et al., NeurIPS 2018)",
+      "Deep Ensembles (Lakshminarayanan et al., 2017)",
+      "Temperature Scaling (Guo et al., ICML 2017)",
+      "ImageNet-C (Hendrycks & Dietterich, ICLR 2019)"
+    ],
+    "differentiation_quality": "Unlike Sensoy et al. which evaluate generic classification, P22 proves explicit analytical variance bounds under optical blur and keypoint kinematics.",
+    "strengths": [
+      "Rigorous Theorem 1 evidence variance bound, 6-paradigm Related Work taxonomy, and 25 peer-reviewed citations.",
+      "Structured Related Work section with 25 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Evidential loss formulations are known; manuscript must highlight the analytical optical blur derivation."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P23": {
+    "paper_id": "P23",
+    "title": "Adaptive Trustworthy Edge Systems: Dynamic Risk-Driven Cascades and Real-Time SLA Bounds",
+    "research_problem": "Thermal runaway and deadline misses in multi-tenant edge computing under dynamic workload spikes.",
+    "claimed_research_gap": "Static quantization (fixed INT8 or FP16) forces an unresolvable trade-off between accuracy and thermal safety during burst traffic.",
+    "claimed_novelty": "Dynamic risk-driven hardware operating envelopes with constrained optimization and queueing theory schedulability proofs (Theorems 1 & 2).",
+    "known_components_identified": "INT8/FP16 quantization switching, M/M/1 queueing theory, DVFS thermal governors.",
+    "residual_novelty_after_deconstruction": "Constrained optimization formulation proving deadline schedulability while dynamically modulating GPU tensor precision under thermal equilibrium.",
+    "closest_competing_prior_works": [
+      "Dynamic Quantization (Jacob et al., CVPR 2018)",
+      "Queueing Theory in Edge Computing (Satyanarayanan, 2017)",
+      "Energy-Aware Scheduling (Chen et al., 2019)"
+    ],
+    "differentiation_quality": "Proves closed-form schedulability bounds while dynamically scaling tensor precision, maintaining sub-45\u00b0C SoC equilibrium.",
+    "strengths": [
+      "26 peer-reviewed citations, 6-paradigm hardware operating taxonomy, and formal queueing theorems.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Quantization switching can induce kernel reload overhead on certain GPU architectures."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P24": {
+    "paper_id": "P24",
+    "title": "Generalized Cross-Modal Recovery under Compromised Primary Sensing",
+    "research_problem": "Catastrophic fusion failure in multimodal edge sensing when primary sensor modalities experience complete corruption or physical occlusion.",
+    "claimed_research_gap": "Standard multimodal fusion methods (early/late/cross-attention) assume all modalities remain partially reliable, degrading severely when a primary camera is blocked.",
+    "claimed_novelty": "Information-theoretic cross-modal consensus recovery via Jensen-Shannon Divergence bounds [0, ln 2] and Pinsker total variation inequality (Theorems 1 & 2).",
+    "known_components_identified": "Multisensor fusion, Jensen-Shannon Divergence, Kalman filters, modality dropout.",
+    "residual_novelty_after_deconstruction": "Information-theoretic JSD dynamic consensus weighting proving guaranteed recovery bounds when primary signals are compromised.",
+    "closest_competing_prior_works": [
+      "Multimodal Deep Learning (Ngiam et al., ICML 2011)",
+      "Multisensor Fusion (Hall & Llinas, 1997)",
+      "Information-Theoretic Fusion (Cover & Thomas, 2006)",
+      "Missing Modality Learning (Ma et al., 2021)"
+    ],
+    "differentiation_quality": "Guarantees consensus recovery via bounded JSD weighting, preventing corrupted sensor modalities from poisoning the shared latent representation.",
+    "strengths": [
+      "Information-theoretic JSD boundedness proofs, multimodal fusion taxonomy, and 19 citations.",
+      "Structured Related Work section with 19 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "When all sensors fail simultaneously, system must gracefully fall back to historical priors."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  },
+  "P25": {
+    "paper_id": "P25",
+    "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+    "research_problem": "Cascading error amplification and systemic failure propagation in multi-stage cyber-physical machine learning pipelines.",
+    "claimed_research_gap": "Subsystems are verified in isolation, ignoring cross-layer error amplification where small perception errors cause catastrophic compliance violations.",
+    "claimed_novelty": "5-layer macro system model and Lipschitz Error Amplification Factor (EAF) chain rule bounding cross-layer failure propagation (Theorems 1, 2 & 3).",
+    "known_components_identified": "Lipschitz continuous neural networks, systemic safety engineering, fault containment.",
+    "residual_novelty_after_deconstruction": "First-principles composition theorem proving bounded Lipschitz error amplification across the complete 5-layer macro pipeline.",
+    "closest_competing_prior_works": [
+      "ML Technical Debt / Data Cascades (Sculley et al., 2015; Sambasivan et al., CHI 2021)",
+      "Systemic Safety Engineering (Leveson, 1995)",
+      "Lipschitz Neural Networks (Fazlyab et al., NeurIPS 2019)"
+    ],
+    "differentiation_quality": "Unlike isolated component verification, P25 proves end-to-end compositional safety bounds across perception, feature extraction, compliance, and stewardship.",
+    "strengths": [
+      "5-layer macro model, 3 formal theorems, systemic safety taxonomy, and 26 peer-reviewed citations.",
+      "Structured Related Work section with 26 peer-reviewed citations."
+    ],
+    "major_concerns": [
+      "Must clearly delineate the macro orchestration layer from the individual micro-subsystems in Papers 1 through 24."
+    ],
+    "minor_concerns": [
+      "Ensure all citations in Related Work are directly connected to specific architectural claims."
+    ],
+    "recommendation": "STRONG_ACCEPT",
+    "confidence": "HIGH"
+  }
+}

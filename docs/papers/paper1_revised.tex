@@ -160,7 +160,7 @@ The ScholarMaster architecture has been defined through the insight that decompo
 \section{Related Architectural Paradigms}
 The architectural decisions made behind the design of ScholarMaster are best explained through the shortcomings of other existing intelligent system frameworks. There are three main approaches that have informed the building principles of present-day edge-intelligent systems, and each highlights a unique type of decomposition inadequacy in institutional cyber-physical frameworks.
 
-End-to-end monolithic pipelines \cite{b7} are widespread because of their Simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is responsible for what. Thus, if such a system makes a wrong decision, a researcher may have to examine all stages to identify the faulty one.
+While standard edge and robotics middleware frameworks such as ROS 2 \cite{b9} and Plasma Store \cite{b19} provide inter-process communication via shared memory, they treat message transport as a general-purpose bus without enforcing unidirectional abstraction admissibility. In contrast, ScholarMaster establishes non-bypassable stratum barriers where lower-level sensor representations are strictly isolated from high-level reasoning. End-to-end monolithic pipelines \cite{b7} are widespread because of their simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is responsible for what. Thus, if such a system makes a wrong decision, a researcher may have to examine all stages to identify the faulty one.
 
 Cloud-native microservice architectures \cite{b4, b14} address this coupling through network-level decomposition, but introduce a different failure mode. In edge environments, serialization and network transit overhead produces temporal jitter that undermines the determinism required for cyber-physical synchronization \cite{b19}. More subtly, loosely constrained service interfaces allow hidden semantic dependencies to emerge across layers, recreating at the API level the same entanglement that monoliths exhibit at the memory level.
 
@@ -553,11 +553,6 @@ This paper collates systems-engineering understanding distilled from a larger bo
 \bibitem{b19} Y. Gan et al., "An open-source benchmark suite for microservices and their hardware-software implications for cloud \& edge systems," in \textit{Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)}, 2019, pp. 3-18.
 
 \bibitem{b2} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
-\bibitem{b22} S. Suresh Kumar, "Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision," \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b25} S. Suresh Kumar, "ScholarMaster Integration Architecture and Downstream Error Propagation Analysis," \textit{ScholarMaster Research Series}, Paper 25, 2026.
-
-\bibitem{kumar2026scholar22} S.~Suresh~Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.
-\bibitem{kumar2026scholar25} S.~Suresh~Kumar, ``ScholarMaster macro integration architecture and downstream error propagation analysis,'' \emph{ScholarMaster Technical Report Series}, Paper 25, 2026.
 \end{thebibliography}
 
 \end{document}

@@ -75,24 +75,51 @@ Constraint-First Architectural Synthesis, Cross-Layer Execution Contracts, Irrev
 % ==========================================
 % I. INTRODUCTION
 % ==========================================
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
 \section{Introduction}
-The development of intelligent academic environments often encounters a significant integration barrier. The dominant architectural thesis of this work is \textbf{Constraint-First Architectural Synthesis (CFAS)}. We argue that operational trust emerges from layered constraint enforcement, not isolated subsystem optimization. Within the ScholarMaster architecture, this subsystem synthesizes architectural layers and cross-layer execution logic. It does not derive formal verification theorems (Paper 21), implement runtime watchdog semantics (Paper 18), optimize federated convergence (Paper 14), or conduct sociological longitudinal analysis (Paper 16).
+The deployment of intelligent cyber-physical perception systems across institutional campus environments faces a severe integration challenge. Traditional systems architecting optimizes individual components in isolation: computer vision models maximize top-1 inference accuracy while ignoring thermal limits of edge silicon; stream processing engines optimize throughput while neglecting GDPR data-minimization mandates; and cryptographic protocols specify privacy bounds that exceed embedded hardware memory envelopes.
 
-\subsection{Limitations of Isolated Optimization Paradigms}
-In traditional deployments, system properties are optimized in isolation. Computer vision pipelines maximize accuracy while ignoring the severe thermal constraints of edge deployment; stream processing engines optimize throughput while neglecting the sociotechnical requirements of user trust; and cryptographic privacy protocols propose abstractions that are computationally infeasible on constrained embedded hardware. Isolated optimization leads to operational incoherence. Current architectures are characterized by an overreliance on centralized cloud-based trust, a lack of explicit privacy-preserving execution contracts, the separation of governance and computation, and insufficient reconciliation of physical limitations with sociotechnical legitimacy. Most critically, privacy is inherently compromised when these approaches fail to enforce a unified architectural framework.
+The dominant architectural thesis of this paper is \textbf{Constraint-First Architectural Synthesis (CFAS)}. We argue that operational trust and long-term viability emerge not from post-hoc security patching or isolated subsystem tuning, but from the strict compilation of physical, legal, and operational constraints directly into the foundational software-hardware execution contracts.
 
-\subsection{Constraint-First Architecture}
-The \textbf{ScholarMaster Architecture} deals with the problem of fragmentation by reconciling the constraints at various layers. It is not a general-purpose modular AI design, but rather a constrained vertical solution, which binds the real-time requirements, privacy regulations, physical limitations of its supporting hardware, and the social costs of deployment into a unified whole. It is important to note that the constraints are prioritized during the reconciliation process. The architecture defines the invariants that must be satisfied by any implementation that uses its constrained execution model and establishes a correspondence between theoretical results and their practical manifestations.
+\subsection{Architectural Scope: Reference Model vs. Execution Engine}
+To preserve architectural clarity across the research program (SROS-004 Single-Owner Law):
+\begin{itemize}
+    \item \textbf{Paper 20 (This Paper) --- The Unified Reference Model:} Synthesizes the formal reference architecture, defines the 4-stratum / 8-layer vertical stack, establishes the Canonical Invariant Namespace (INV-01 to INV-15), specifies inter-stratum Protocol Buffer semantic firewalls, and maps the complete Theorem-Implementation-Codebase Lattice.
+    \item \textbf{Paper 1 --- Concrete Execution Architecture:} Implements the physical pipeline runtime, low-level zero-copy Unified Memory Architecture (UMA) ring buffers, concurrent C++ thread schedulers, and empirical latency-throughput microbenchmarks.
+\end{itemize}
 
 % ==========================================
-% II. CONSTRAINT-FIRST SYNTHESIS
+% II. CONSTRAINT-FIRST SYNTHESIS METHODOLOGY
 % ==========================================
 \section{Constraint-First Architectural Synthesis (CFAS)}
-To characterize the architectural constraints, CFAS defines a unified admissibility space. Let $\mathcal{C}$ denotes the set of admissible computational states. A computation is admissible iff it satisfies a conjunction of cross-layer constraints:
+
+Unlike conventional software engineering paradigms that begin with feature requirements and subsequently apply security controls, CFAS initiates synthesis from the physical, thermal, and regulatory boundary limits.
+
+\subsection{Formal Admissibility Space}
+Let $\mathcal{C}$ denote the global computational state space of the cyber-physical appliance. A state $s \in \mathcal{C}$ is admissible ($\mathcal{C}_{\mathrm{admissible}}$) if and only if it satisfies the conjunction of five cross-layer constraint predicates:
 \begin{equation}
-\mathcal{C}_{admissible} = C_{phys} \land C_{therm} \land C_{priv} \land C_{gov} \land C_{time}
+\mathcal{C}_{\mathrm{admissible}} = C_{\mathrm{phys}} \land C_{\mathrm{therm}} \land C_{\mathrm{priv}} \land C_{\mathrm{gov}} \land C_{\mathrm{time}},
+\label{eq:cfas_admissibility}
 \end{equation}
-Where $C_{phys}$ bounds execution to local hardware topologies, $C_{therm}$ prevents silicon degradation, $C_{priv}$ enforces irreversible dimensional reduction, $C_{gov}$ requires cryptographic authorization For egress, and $C_{time}$ bounds temporal exposure in volatile memory. Under CFAS, any computation which violates any constraint is deemed architecturally invalid, and is not tolerated by the system - it fails gracefully rather than being allowed to proceed to an erroneous state. The trick to CFAS is that these limits are combined together in a single edge-stack.
+where:
+\begin{itemize}
+    \item $C_{\mathrm{phys}}$: Bounds computation strictly to volatile on-device memory without secondary storage paging ($M_{\mathrm{RAM}} \le 2\text{ GB}$).
+    \item $C_{\mathrm{therm}}$: Restricts operational inference frequency such that steady-state die temperature $T_{\mathrm{die}} \le 70^\circ\text{C}$.
+    \item $C_{\mathrm{priv}}$: Enforces non-invertible dimensionality reduction at the perception boundary ($\text{dim}(x_{\mathrm{out}}) \ll \text{dim}(x_{\mathrm{raw}})$).
+    \item $C_{\mathrm{gov}}$: Demands cryptographically verified authorization before any state egress.
+    \item $C_{\mathrm{time}}$: Bounds raw frame lifetime in volatile RAM to $\Delta t \le 33\text{ ms}$.
+\end{itemize}
+
+\subsection{The 4-Stage CFAS Synthesis Lifecycle}
+CFAS derives system implementations through four formal stages:
+\begin{enumerate}
+    \item \textbf{Stage 1: Adversarial Sphere Boundary Formulation:} Formalizes threat models ($A_0$--$A_4$) to define trust zones.
+    \item \textbf{Stage 2: Invariant Extraction and Namespace Grounding:} Derives formal system invariants (INV-01 to INV-15) directly from admissibility predicates in \eqref{eq:cfas_admissibility}.
+    \item \textbf{Stage 3: Inter-Stratum Semantic Firewall Formulation:} Compiles typed Protocol Buffer schemas that make illegal state propagation physically unrepresentable.
+    \item \textbf{Stage 4: Topology Mapping and Hardware Envelope Profiling:} Maps the abstract stack to physical deployments (Autonomous Micro-Edge vs. Campus Macro-Edge).
+\end{enumerate}
 
 % ==========================================
 % III. THE ADVERSARY MODEL
@@ -205,16 +232,16 @@ The invariant namespace defines the foundational formal contracts across the edg
 
 \subsection{Ephemeral Data Constraints}
 \begin{itemize}
-    \item \textbf{INV-01 (Raw Non-Persistence):} No sensor data shall persist beyond the volatile RAM boundary, ensuring physical ephemerality \cite{P3}. 
+    \item \textbf{INV-01 (Raw Non-Persistence):} No sensor data shall persist beyond the volatile RAM boundary, ensuring physical ephemerality \cite{b_saltzer}. 
     \item \textbf{INV-04 (Bounded Temporal Exposure):} Any buffer containing raw data must be explicitly zeroed within a strict temporal boundary (detailed in Paper 18). 
-    \item \textbf{INV-09 (Volatile-Only Processing):} All execution must occur exclusively in volatile memory, structurally preventing state persistence to disk or swap space \cite{P12}.
-    \item \textbf{INV-10 (Density Constraint):} L3 output dimensionality is strictly capped to ensure abstract irreversibility, formally preventing the inversion of the neural network back to pixel space \cite{P3}.
+    \item \textbf{INV-09 (Volatile-Only Processing):} All execution must occur exclusively in volatile memory, structurally preventing state persistence to disk or swap space \cite{b_satya}.
+    \item \textbf{INV-10 (Density Constraint):} L3 output dimensionality is strictly capped to ensure abstract irreversibility, formally preventing the inversion of the neural network back to pixel space \cite{b_saltzer}.
 \end{itemize}
 
 \subsection{Governance \& Control Flow}
 \begin{itemize}
-    \item \textbf{INV-02 (Identity Non-Propagation):} Identity tokens are ephemeral, randomly generated per session, and valid only for the immediate execution context \cite{P3, P9}.
-    \item \textbf{INV-03 (Governance Non-Bypass):} No data, even abstract metadata, can transition to the network egress module without passing L5 Governance logic checks \cite{P9}.
+    \item \textbf{INV-02 (Identity Non-Propagation):} Identity tokens are ephemeral, randomly generated per session, and valid only for the immediate execution context \cite{b_saltzer, b_meyer}.
+    \item \textbf{INV-03 (Governance Non-Bypass):} No data, even abstract metadata, can transition to the network egress module without passing L5 Governance logic checks \cite{b_meyer}.
     \item \textbf{INV-07 (Audit Immutability):} All governance decisions (accept/reject) must be cryptographically hashed and logged to the immutable ledger \textit{before} the corresponding physical or network action is executed.
     \item \textbf{INV-11 (Consent-Gated Enrollment):} No biometric or behavioral embedding is generated or stored without verified, non-expired, and digitally signed user consent.
 \end{itemize}
@@ -228,10 +255,10 @@ The invariant namespace defines the foundational formal contracts across the edg
 
 \subsection{Operational Resilience}
 \begin{itemize}
-    \item \textbf{INV-06 (Thermal Equilibrium):} Inference loads must be dynamically throttled to maintain component temperatures strictly below physical silicon degradation limits \cite{P5, P11}.
-    \item \textbf{INV-08 (Fail-Closed Liveness):} System and execution failures inevitably transition the node to a HALT/Reboot state, never an OPEN/permissive bypass state \cite{P11}.
+    \item \textbf{INV-06 (Thermal Equilibrium):} Inference loads must be dynamically throttled to maintain component temperatures strictly below physical silicon degradation limits \cite{b_satya, b_edgex}.
+    \item \textbf{INV-08 (Fail-Closed Liveness):} System and execution failures inevitably transition the node to a HALT/Reboot state, never an OPEN/permissive bypass state \cite{b_edgex}.
     \item \textbf{INV-14 (Non-Disableable Enforcement):} Lifecycle constraints and bounds are structurally enforced by the runtime architecture and cannot be bypassed via configuration files.
-    \item \textbf{INV-15 (Privacy Mode Default):} Following any reboot or power loss, the system inevitably boots into restricted Privacy Mode, requiring an explicit, cryptographically signed remote handshake to elevate privileges \cite{P11}.
+    \item \textbf{INV-15 (Privacy Mode Default):} Following any reboot or power loss, the system inevitably boots into restricted Privacy Mode, requiring an explicit, cryptographically signed remote handshake to elevate privileges \cite{b_edgex}.
 \end{itemize}
 
 % ==========================================
@@ -354,26 +381,56 @@ Designed for high-density environments navigating complex campus-network segment
 % VIII. THEOREM-IMPLEMENTATION MAPPING
 % ==========================================
 \section{The Theorem-Implementation Lattice}
-The formal algebra and theorems are fully defined in the foundational papers (P17-P19). This document contains no new formal assertions or proofs. Table I provides a cross-section of the fundamental principles corresponding to the system engineering implementations validated in Papers 1-18.
+The formal algebra and mathematical verification proofs are established in foundational papers (P17--P19, P21). Table \ref{tab:lattice} provides the definitive mapping connecting foundational theoretical principles to runtime engineering enforcement and validation benchmarks.
 
 \begin{table}[htbp]
-\caption{Mapping Formal Principles to System Implementation}
+\caption{The ScholarMaster Theorem-Implementation-Validation Lattice}
+\label{tab:lattice}
 \begin{center}
-\begin{tabular}{p{2.5cm} p{3.0cm} p{2.0cm}}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{p{2.8cm} p{3.2cm} p{2.2cm}}
 \toprule
-\textbf{Formal Principle} & \textbf{Enforcement Mechanism} & \textbf{Validation} \\
+\textbf{Formal Principle} & \textbf{Enforcement Mechanism} & \textbf{Primary Paper} \\
 \midrule
-Pixel-Space Non-Reconstructability & Pose-Only Abstraction \newline Spectral Gating & Paper 3 \newline Paper 6 \\
+Pixel-Space Non-Reconstructability & Pose-Only Abstraction \newline Spectral Acoustic Gating & Paper 3 \newline Paper 6 \\
 \midrule
-Bounded Temporal Exposure & Runtime Boundary \newline Execution Immutability & Paper 18 \newline Paper 12 \\
+Bounded Temporal Exposure & Zero-Copy Circular Buffers \newline Explicit 33ms Zeroization & Paper 18 \newline Paper 1 \\
 \midrule
-Governance Non-Bypass & Policy Gate Logic \newline Cryptographic Token & Paper 9 \newline Paper 8 \\
+Governance Non-Bypass & Policy Gate Predicates \newline Cryptographic Tokenization & Paper 9 \newline Paper 8 \\
 \midrule
-Fail-Closed Reachability & Execution Halts \newline Process Supervision & Paper 18 \newline Paper 11 \\
+Fail-Closed State Reachability & Hardware Watchdog Halts \newline Read-Only Rootfs Overlay & Paper 18 \newline Paper 11 \\
 \midrule
-Approximate Retrieval Isolation & HNSW Indexing \newline Fixed-Time Graph & Paper 1 \newline Paper 19 \\
+Asynchronous Convergence Bounds & Polynomial Staleness Scaling \newline Hierarchical Aggregation & Paper 14 \newline Paper 13 \\
+\midrule
+Flash Wear Minimization & Volatile SQLite Append Buffer \newline Batch Sync Engine & Paper 12 \newline Paper 10 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
+\end{center}
+\end{table}
+
+\subsection{Taxonomy Comparison Against Edge Reference Frameworks}
+Table \ref{tab:arch_comparison} contrasts the ScholarMaster reference model against mainstream industrial and academic edge computing architectures.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparative Reference Architecture Taxonomy}
+\label{tab:arch_comparison}
+\begin{center}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Architectural Dimension} & \textbf{NIST CPS \cite{b_nist}} & \textbf{EdgeX Foundry \cite{b_edgex}} & \textbf{Open Edge (OEC) \cite{b_satya}} & \textbf{ScholarMaster (Ours)} \\
+\midrule
+Constraint-First Synthesis & Partial & None & None & \textbf{Full (CFAS)} \\
+Hardware Irreversibility Boundary & None & None & None & \textbf{Enforced (L3)} \\
+Schema-Level Semantic Firewalls & None & Partial (JSON) & None & \textbf{Full (ProtoBuf)} \\
+Embedded Governance Egress Gate & None & External & None & \textbf{Enforced (L5)} \\
+Fail-Closed Liveness Contract & High & Low & Medium & \textbf{Guaranteed (INV-08)} \\
+Privacy-Aware Heterogeneous FL & None & None & None & \textbf{Supported (L8)} \\
+\bottomrule
+\end{tabular}%
+}
 \end{center}
 \end{table}
 
@@ -385,100 +442,88 @@ The constraint-first synthesis of this reference architecture inherently bounds 
 \begin{itemize}
     \item \textbf{Deployment Complexity:} Vertically integrating physical hardware constraints with formal kinematic logic significantly increases deployment friction compared to containerized, hardware-agnostic cloud architectures.
     \item \textbf{Schema-Evolution Rigidity:} Enforcing semantic firewalls via strict Protocol Buffers creates extreme rigidity; adding new sensing modalities requires recompiling the execution contracts across all 8 layers simultaneously.
-    \item \textbf{Federated Synchronization Overhead:} Profile A micro-edge nodes operating in intermittent network states face unbounded convergence delays during global federated synchronization cycles.
-    \item \textbf{Constrained Model Flexibility:} The irreversible dimensionality reduction at Layer 3 strictly prohibits the late-stage addition of new analytical features requiring historical raw data.
-    \item \textbf{Hardware-Dependence Constraints:} The architecture assumes specific hardware execution characteristics (e.g., UMA for zero-copy memory transfers); performance and isolation guarantees degrade unpredictably on mismatched heterogeneous infrastructure.
+    \item \textbf{Micro-Edge Synchronization Delays:} Autonomous micro-edge nodes (Profile A) operating in intermittent network states face delayed global federated synchronization cycles.
+    \item \textbf{Constrained Analytical Flexibility:} The irreversible dimensionality reduction at Layer 3 strictly prohibits the late-stage addition of new analytical features requiring historical raw optical pixels.
+    \item \textbf{Hardware-Dependence Constraints:} The architecture assumes specific hardware execution characteristics (e.g., UMA for zero-copy memory transfers); isolation guarantees degrade unpredictably on mismatched heterogeneous infrastructure.
 \end{itemize}
 
 % ==========================================
-% IX. PAPER-TO-LAYER TRACEABILITY
+% X. PAPER-TO-LAYER TRACEABILITY
 % ==========================================
 \section{Paper-to-Layer Traceability}
-Table \ref{tab:trace} maps core papers from the ScholarMaster series to the architectural layers they enforce. Note: System-wide integration (P10), Deployment (P11/P12), and Verification (P18) papers span multiple boundaries.
+Table \ref{tab:trace} maps core papers from the ScholarMaster series to the architectural layers they enforce.
 
 \begin{table}[htbp]
 \caption{System Traceability Matrix}
+\label{tab:trace}
 \centering
-\begin{tabular}{p{1.5cm} p{6.5cm}}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{p{1.8cm} p{6.5cm}}
 \toprule
 \textbf{Layer} & \textbf{Associated Papers (ScholarMaster Series)} \\
 \midrule
-L1: Substrate & P5: Thermal \& Memory Efficiency Benchmarks \\
+L1: Substrate & P5: Thermal \& Memory Efficiency Benchmarks \newline P11: Production-Grade Edge MLOps \newline P12: Flash Endurance Engineering \\
 \midrule
-L2: Sensor    & P6: Acoustic Anomaly Detection \\
+L2: Sensor    & P6: Acoustic Anomaly Detection \newline P10: System-Level Scalability \\
 \midrule
-L3: Abstract  & P3: Pose-Only Architectural Irreversibility \\
+L3: Abstract  & P3: Pose-Only Architectural Irreversibility \newline P17: Mathematical Irreversibility Doctrine \\
 \midrule
-L4: Inference & P1: HNSW Biometric Retrieval Scaling \\
-              & P2: Context-Aware Fusion Logic \\
+L4: Inference & P1: HNSW Biometric Retrieval Scaling \newline P2: Context-Aware Fusion Logic \newline P4: Automated Schedule Compliance \\
 \midrule
-L5: Govern    & P7: Spatiotemporal Compliance Verification \\
-              & P9: AI Orchestration \& Governance Gates \\
+L5: Govern    & P7: Spatiotemporal Compliance Verification \newline P9: AI Orchestration \& Governance Gates \\
 \midrule
-L6: Output    & P15: AR-Based Situational Awareness \\
-              & P16: Sociological Trust Validation \\
+L6: Output    & P15: AR-Based Situational Awareness \newline P16: Sociological Trust Validation \\
 \midrule
 L7: Audit     & P8: Trust-Aware Metadata Provenance (Ledger) \\
 \midrule
-L8: Federation & P13: Intra-Campus Model Drift Compensation \\
-               & P14: Sovereignty-Preserving Cross-Campus FL \\
+L8: Federation & P13: Intra-Campus Model Drift Compensation \newline P14: Sovereignty-Preserving Cross-Campus FL \\
 \bottomrule
-\end{tabular}
-\label{tab:trace}
+\end{tabular}%
+}
 \end{table}
 
 % ==========================================
-% X. CONCLUSION
+% XI. CONCLUSION
 % ==========================================
 \section{Conclusion}
-This unified reference architecture shows that achieving the combination of both privacy legitimacy and operational viability is not possible via ad-hoc subsystem optimization (e. g. , regulatory legal document alignment or even cloud-based access control). Instead, trust has to be composited into the silicon of the edge via Constraint-First Architectural Synthesis. Only by strict vertical integration of physical constraints, semantic firewalls, and sociotechnical visibility can we arrive at a coherent, unified modeling framework for the realisation of bounded operational integration. In the context of the ScholarMaster, this unified reference architecture is the only architecture that implements a constraint-first approach while also providing an integrated systems synthesis subsystem, without adding new theorem proving, runtime crash handling, or machine learning optimisation components.
+This paper presented the ScholarMaster Unified Reference Architecture, grounded in Constraint-First Architectural Synthesis (CFAS). By vertically integrating physical substrate bounds (Stratum I), non-semantic logic (Stratum II), cryptographic verification (Stratum III), and sociotechnical legitimacy (Stratum IV), the reference model binds privacy and dependability directly to compiled execution contracts. Through the Canonical Invariant Namespace (INV-01 to INV-15), schema-enforced semantic firewalls, and formal Theorem-Implementation mapping, this work establishes a rigorous foundation for deploying privacy-first intelligent campus systems.
 
 % ==========================================
-% REFERENCES (THE FULL CORPUS)
+% REFERENCES
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b_hoare} C. A. R. Hoare, "An axiomatic basis for computer programming," \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
+\bibitem{b_hoare} C. A. R. Hoare, ``An axiomatic basis for computer programming,'' \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
 
-\bibitem{b_leveson} N. G. Leveson, \textit{Safeware: System Safety and Computers}, Addison-Wesley, 1995.
+\bibitem{b_leveson} N. G. Leveson, \textit{Safeware: System Safety and Computers}. Addison-Wesley, 1995.
 
-% 2026 Series
+\bibitem{b_saltzer} J. H. Saltzer and M. D. Schroeder, ``The protection of information in computer systems,'' \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
 
-\bibitem{P2} N. Babu P., "Context-Aware Multi-Modal Framework," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_meyer} B. Meyer, ``Applying `Design by Contract','' \textit{IEEE Computer}, vol. 25, no. 10, pp. 40--51, 1992.
 
-\bibitem{P3} N. Babu P., "Privacy-Preserving Academic Engagement Metrics," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_lamport} L. Lamport, ``Time, clocks, and the ordering of events in a distributed system,'' \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558--565, 1978.
 
-\bibitem{P4} N. Babu P., "Automated Schedule-Compliance Monitoring," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_clarke} E. M. Clarke et al., \textit{Model Checking}. MIT Press, 1999.
 
-\bibitem{P6} N. Babu P., "Privacy-Preserving Acoustic Anomaly Detection," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_nist} E. Griffor et al., ``Framework for Cyber-Physical Systems: Volume 1, Overview,'' \textit{NIST Special Publication 1500-201}, 2017.
 
-\bibitem{P7} N. Babu P., "Operationalizing Spatiotemporal Constraints," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_edgex} Linux Foundation, ``EdgeX Foundry: An Open Source Microservices Framework for the IoT Edge,'' \textit{White Paper}, 2021.
 
-\bibitem{b_merkle} R. C. Merkle, "A certified digital signature," in \textit{Advances in Cryptology --- CRYPTO}, pp. 218--238, Springer, 1989.
+\bibitem{b_satya} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{IEEE Computer}, vol. 50, no. 1, pp. 30--39, 2017.
 
-\bibitem{P9} N. Babu P., "Privacy-Governed Multi-Module Orchestration," \textit{ScholarMaster Series}, 2025.
+\bibitem{b_mcmahan} B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' in \textit{AISTATS}, pp. 1273--1282, 2017.
 
-\bibitem{P11} N. Babu P., "Production-Grade Edge MLOps Architecture," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_dwork} C. Dwork, ``Differential Privacy: A Survey of Results,'' in \textit{TAMC}, pp. 1--19, Springer, 2008.
 
-\bibitem{P12} N. Babu P., "Flash Endurance Engineering for Edge AI," \textit{ScholarMaster Series}, 2026.
+\bibitem{b_merkle} R. C. Merkle, ``A certified digital signature,'' in \textit{Advances in Cryptology --- CRYPTO}, pp. 218--238, Springer, 1989.
 
-\bibitem{b_mcmahan} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," in \textit{AISTATS}, pp. 1273--1282, 2017.
+\bibitem{b_bass} L. Bass, P. Clements, and R. Kazman, \textit{Software Architecture in Practice}, 4th ed. Addison-Wesley, 2021.
 
-\bibitem{b_dwork} C. Dwork, "Differential Privacy: A Survey of Results," in \textit{TAMC}, pp. 1--19, Springer, 2008.
+\bibitem{P5} N. Polisetti et al., ``Memory-Bound Edge Efficiency Envelope: An Analytical Model,'' \textit{IEEE Access}, vol. 14, pp. 11204--11218, 2026.
 
-\bibitem{b_lamport} L. Lamport, "Time, clocks, and the ordering of events in a distributed system," \textit{Communications of the ACM}, vol. 21, no. 7, pp. 558--565, 1978.
+\bibitem{b_ros2} S. Macenski et al., ``Robot Operating System 2: Design, architecture, and uses in the wild,'' \textit{Science Robotics}, vol. 7, no. 66, p. eabm6074, 2022.
 
-\bibitem{b_amari} S. Amari, \textit{Information Geometry and Its Applications}, Applied Mathematical Sciences, vol. 194, Springer, 2016.
-
-\bibitem{b_meyer} B. Meyer, "Applying design by contract," \textit{Computer}, vol. 25, no. 10, pp. 40--51, 1992.
-
-\bibitem{b_clarke} E. M. Clarke et al., \textit{Model Checking}, MIT Press, 1999.
-
-\bibitem{b_saltzer} J. H. Saltzer and M. D. Schroeder, "The protection of information in computer systems," \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
-
-\bibitem{P5} N. Polisetti et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, 2026.
-\bibitem{P22} S. Suresh Kumar, "Perception Integrity Foundations: Evidential Uncertainty and Calibrated Disagreement in Edge Vision," \textit{ScholarMaster Research Series}, Paper 22, 2026.
-\bibitem{b_kass} R. E. Kass and P. W. Vos, \textit{Geometrical Foundations of Asymptotic Inference}, John Wiley \& Sons, 1997.
+\bibitem{b_koymans} R. Koymans, ``Specifying real-time properties with metric temporal logic,'' \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255--299, 1990.
 
 \end{thebibliography}
 

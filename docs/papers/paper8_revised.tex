@@ -119,7 +119,7 @@ The removal or rewriting of historical blocks from a hash-linked ledger would un
 
 \subsection{Proposed Solution: Cryptographic Provenance Layer}
 
-In order to investigate the ways auditability and erasure requirements could be reconciled, we propose an applied cryptographic provenance model, which we evaluated in the setting of high-frequency telemetry environments. The key innovation of the CPL is its Dual-Layer Provenance Model that decouples the statement of an event’s occurrence from the disclosure of its payload.
+While cryptographic key shredding and Merkle tree batching are established primitives, their formal synthesis into an erasure-compatible provenance architecture for high-throughput edge compliance requires careful trust modeling. Assuming a secure Key Management Service (KMS) or hardware security module (HSM) for root key custody, we propose an applied cryptographic provenance model, which we evaluated in the setting of high-frequency telemetry environments. The key innovation of the CPL is its Dual-Layer Provenance Model that decouples the statement of an event’s occurrence from the disclosure of its payload.
 
 By considering each spatiotemporal event as an attestation that forms a part of a linear chain that is linked using cryptographic means, the attestation layer makes the historical chain of events resistant to modification by default.
 

@@ -1,0 +1,257 @@
+{
+  "paper_id": "P15",
+  "paper_num": 15,
+  "title": "Augmented Situation Awareness: Reducing Cognitive Load in Campus Security via Spatially-Anchored AR Visualization",
+  "abstract_snippet": "Large-scale campus monitoring systems can quickly generate thousands of alerts in a short time. As these systems detect anomalies, human operators must make sense of these alerts and respond physically. Conventional dashboards often present streams of text or other visual summaries such as markers on a geographic display that require operators to interpret these abstractions into physical location...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Theoretical Framework",
+    "AR Client Design",
+    "Methodology: Visual Positioning System",
+    "Holographic Design System",
+    "Methodology: User Study",
+    "Experimental Results",
+    "Energy Constraints",
+    "Ergonomic Considerations",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Cognitive Cost of Symbolic Monitoring Interfaces",
+    "Spatial Computing as Cognitive Alignment",
+    "Spatial Cognitive Offloading Model",
+    "Cognitive Load Theory and Split-Attention",
+    "Multiple Resource Theory",
+    "Situation Awareness Model",
+    "Information Tunneling and Peripheral Processing",
+    "Spatial Reference Resolution",
+    "Rendering Stability",
+    "Visual Abstraction Mapping",
+    "Anchor Alignment Mathematics",
+    "Occlusion Handling and Depth Culling",
+    "Color Mapping",
+    "Spatial Clustering",
+    "Reproducible Telemetry Simulation Framework (RTSF)",
+    "Study Design and Participants",
+    "The Multi-Point Failure Scenario",
+    "Time-to-Action (TTA) and Navigational Errors",
+    "Theoretical Analysis via Fitts's Law",
+    "Cognitive Load Assessment (NASA-TLX)",
+    "Learnability and Habituation",
+    "Heads-Up Advantage vs Gorilla Arm",
+    "Environmental Constraints",
+    "Limitations"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P15-PARA-01",
+      "text_snippet": "This work evaluates the potential of spatially anchored Augmented Reality (AR) visualization to offload cognitive translation of spatial information from the operator. We introduce a light-weight AR client that interprets standardized event streams and renders detected anomalies as location-bound vi...",
+      "char_count": 471
+    },
+    {
+      "paragraph_id": "P15-PARA-02",
+      "text_snippet": "In a controlled within-subjects user study ($N = 20$), participants using an AR interface needed 42\\% less time to accomplish the multi-point campus navigation task than with traditional dashboard displays. Additionally, NASA-TLX results suggest that the AR interface was associated with significantl...",
+      "char_count": 368
+    },
+    {
+      "paragraph_id": "P15-PARA-03",
+      "text_snippet": "These results suggest that spatial computing interfaces can substantially reduce interpretation latency between automated anomaly detection and human operational response. abstract",
+      "char_count": 180
+    },
+    {
+      "paragraph_id": "P15-PARA-04",
+      "text_snippet": "The main point of this paper is that the visualizations that incorporate spatial positioning reduce the cognitive distance between the symbols on the screen and the actions that need to be taken . The monitoring systems in the majority of the cases are equipped with algorithms that allow them to det...",
+      "char_count": 572
+    },
+    {
+      "paragraph_id": "P15-PARA-05",
+      "text_snippet": "Suppose a simple alert: \u201cAcoustic Anomaly: Stairwell North-3.\u201d The operator must first interpret the text, then imagine the location of Stairwell North-3, formulate a route from his or her current position, and then actually go there, all while maintaining situational awareness. This process can add...",
+      "char_count": 426
+    },
+    {
+      "paragraph_id": "P15-PARA-06",
+      "text_snippet": "This paper focuses strictly on the cognitive interface layer. We do not propose new anomaly detection algorithms, nor evaluate upstream infrastructure. Within the ScholarMaster architecture, this subsystem optimizes spatial cognition, AR-guided interpretation, and response-oriented cognitive offload...",
+      "char_count": 551
+    },
+    {
+      "paragraph_id": "P15-PARA-07",
+      "text_snippet": "Evaluating such an interface requires grounding the analysis in established cognitive and human-computer interaction frameworks.",
+      "char_count": 128
+    },
+    {
+      "paragraph_id": "P15-PARA-08",
+      "text_snippet": "In traditional 2D dashboard environments, all three components are carried in working memory by the user. In the AR paradigm, the spatial anchoring of the three components in physical space makes explicit $A_s$ while reducing $N_u$ due to the contextualization of the instructions within the environm...",
+      "char_count": 818
+    },
+    {
+      "paragraph_id": "P15-PARA-09",
+      "text_snippet": "Dashboard interfaces frequently introduce substantial extraneous cognitive load because the user is forced to constantly translate 2D map coordinates into 3D real-world actions.",
+      "char_count": 177
+    },
+    {
+      "paragraph_id": "P15-PARA-10",
+      "text_snippet": "This process creates the Split-Attention Effect. The operator has to split his working memory between the mobile screen and the actual environment. AR interfaces reduce this effect by anchoring the attention to the physical environment. By placing the digital information on the real world, the opera...",
+      "char_count": 335
+    },
+    {
+      "paragraph_id": "P15-PARA-11",
+      "text_snippet": "Traditional text logs are often effective at level 1, but less so at level 2: operators may understand the alert, but have difficulty localizing it in 3-D space, especially under time pressure. With AR, level 2 understanding is aided, due to perceptual fusion, which reduces cognitive load by present...",
+      "char_count": 491
+    },
+    {
+      "paragraph_id": "P15-PARA-12",
+      "text_snippet": "Spatial AR natively supports parallel processing. By virtue of using bright colors and animations, AR overlays tap into the operator\u2019s ambient visual processing. An operator walking down a hallway could instantly observe the status of ten separate rooms using color-coded AR indicators, by taking adv...",
+      "char_count": 359
+    },
+    {
+      "paragraph_id": "P15-PARA-13",
+      "text_snippet": "To evaluate the proposed interaction model, we implemented a lightweight augmented reality client designed to visualize event data directly within the operator's physical environment. The client operates on standard commodity mobile hardware (Android/iOS tablets or smartphones).",
+      "char_count": 279
+    },
+    {
+      "paragraph_id": "P15-PARA-14",
+      "text_snippet": "The AR client treats upstream event sources as opaque data providers. It consumes spatially-referenced event payloads containing a semantic location identifier, a severity level, and a timestamp. The specific detection algorithms, network transport mechanisms, and backend infrastructure that produce...",
+      "char_count": 487
+    },
+    {
+      "paragraph_id": "P15-PARA-15",
+      "text_snippet": "The physical environment includes static QR anchors positioned at key architectural locations. After scanning an anchor, the client retrieves the spatial graph for the corresponding building floor. Incoming events are then rendered relative to that anchor's established coordinate frame.",
+      "char_count": 287
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P15-THE-01",
+      "type": "THEOREM",
+      "statement": "[Deterministic AR Projection Latency Bound] Let a mobile AR viewport process $M$ active spatially-anchored alert beacons with EKF pose state updates $x_k \\in \\mathbb{R}^6$ at 60 Hz. The end-to-end projection latency $T_{\\mathrm{render}}$ through quaternion transform $P_{\\mathrm{render}} = P_{\\mathrm..."
+    },
+    {
+      "theorem_id": "P15-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[Distance-Attenuated Depth Culling Invariant] To prevent occluded wall ambiguity while preserving peripheral situation awareness, the beacon opacity alpha $\\alpha(d)$ at geodesic distance $d$ is governed by: \\begin{equation} \\alpha(d) = \\min\\left(1.0, \\max\\left(0.2, 1.0 - \\frac{d - d_{\\mathrm{near}}..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P15-EQ-01",
+      "latex": "TTA = f(P_s + A_s + N_u)"
+    },
+    {
+      "equation_id": "P15-EQ-02",
+      "latex": "P_{render} = P_{camera} + Q_{rel}(P_{target}-P_{anchor})Q_{rel}^{-1}"
+    },
+    {
+      "equation_id": "P15-EQ-03",
+      "latex": "T_{\\mathrm{render}} = T_{\\mathrm{EKF}} + M \\cdot T_{\\mathrm{quat}} + T_{\\mathrm{draw}} \\le 16.6\\text{ ms},"
+    },
+    {
+      "equation_id": "P15-EQ-04",
+      "latex": "\\alpha(d) = \\min\\left(1.0, \\max\\left(0.2, 1.0 - \\frac{d - d_{\\mathrm{near}}}{d_{\\mathrm{far}} - d_{\\mathrm{near}}}\\right)\\right),"
+    },
+    {
+      "equation_id": "P15-EQ-05",
+      "latex": "E \\propto R + \\text{camera duty cycle}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P15-TAB-01",
+      "caption": "User Study Participant Demographics"
+    },
+    {
+      "table_id": "P15-TAB-02",
+      "caption": "Time-to-Action and Error Performance"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P15-FIG-01",
+      "caption": "AR Client Internal Structure. The upstream event source is treated as an opaque provider. The client resolves semantic identifiers to world coordinates, fuses them with the device's SLAM-derived pose, and renders spatially-anchored overlays."
+    },
+    {
+      "figure_id": "P15-FIG-02",
+      "caption": "Conceptual viewport mockup of the AR Interface. The red beacon acts as a spatially-anchored overlay, guiding the user's focal attention directly to the physical source of the event. The blue arrow provides intuitive path-finding cues."
+    },
+    {
+      "figure_id": "P15-FIG-03",
+      "caption": "Cognitive Load Comparison. The AR interface significantly reduced perceived Mental Demand and Frustration."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P15-REF-01",
+      "key": "b30",
+      "raw_citation": "D. Wu et al., ``A feature-based learning system for internet of things applications,'' IEEE Internet of Things Journal , vol. 6, no. 2, pp. 1928--1937, 2019."
+    },
+    {
+      "reference_id": "P15-REF-02",
+      "key": "b7",
+      "raw_citation": "P. M. Fitts, ``The information capacity of the human motor system in controlling the amplitude of movement,'' Journal of Experimental Psychology , vol. 47, no. 6, pp. 381--391, 1954."
+    },
+    {
+      "reference_id": "P15-REF-03",
+      "key": "b2",
+      "raw_citation": "J. Sweller, ``Cognitive load during problem solving,'' Cognitive Science , vol. 12, no. 2, pp. 257--285, 1988."
+    },
+    {
+      "reference_id": "P15-REF-04",
+      "key": "b8",
+      "raw_citation": "S. G. Hart and L. E. Staveland, ``Development of NASA-TLX (Task Load Index): Results of empirical and theoretical research,'' Advances in Psychology , vol. 52, pp. 139--183, 1988."
+    },
+    {
+      "reference_id": "P15-REF-05",
+      "key": "b3",
+      "raw_citation": "P. Milgram and F. Kishino, ``A taxonomy of mixed reality visual displays,'' IEICE Transactions on Information and Systems , vol. E77-D, no. 12, pp. 1321--1329, 1994."
+    },
+    {
+      "reference_id": "P15-REF-06",
+      "key": "b11",
+      "raw_citation": "G. Welch and G. Bishop, ``An introduction to the Kalman filter,'' University of North Carolina at Chapel Hill , Tech. Rep. TR 95-041, 1995."
+    },
+    {
+      "reference_id": "P15-REF-07",
+      "key": "b5",
+      "raw_citation": "M. R. Endsley, ``Toward a theory of situation awareness in dynamic systems,'' Human Factors , vol. 37, no. 1, pp. 32--64, 1995."
+    },
+    {
+      "reference_id": "P15-REF-08",
+      "key": "b4",
+      "raw_citation": "C. D. Wickens, ``Multiple resources and performance prediction,'' Theoretical Issues in Ergonomics Science , vol. 3, no. 2, pp. 159--177, 2002."
+    },
+    {
+      "reference_id": "P15-REF-09",
+      "key": "b6",
+      "raw_citation": "A. Dey et al., ``A review of 10 years of augmented reality usability studies: 2005 to 2014,'' IEEE ISMAR , 2015."
+    },
+    {
+      "reference_id": "P15-REF-10",
+      "key": "b1",
+      "raw_citation": "R. R. Hoffman et al., ``Accelerated proficiency and facilitated retention,'' Cognitive Processing , vol. 14, no. 2, pp. 147--163, 2013."
+    },
+    {
+      "reference_id": "P15-REF-11",
+      "key": "b10",
+      "raw_citation": "D. Schmalstieg and T. Hollerer, Augmented Reality: Principles and Practice . Addison-Wesley Professional, 2016."
+    },
+    {
+      "reference_id": "P15-REF-12",
+      "key": "b12",
+      "raw_citation": "R. A. Light, ``Mosquitto: server and client implementation of the MQTT protocol,'' Journal of Open Source Software , vol. 2, no. 13, p. 265, 2017."
+    },
+    {
+      "reference_id": "P15-REF-13",
+      "key": "b32",
+      "raw_citation": "A. Abuarqoub et al., ``A survey on internet of things enabled smart campus applications,'' Proceedings of the International Conference on Future Networks and Distributed Systems , 2017."
+    },
+    {
+      "reference_id": "P15-REF-14",
+      "key": "b33",
+      "raw_citation": "J. Lin et al., ``A survey on internet of things: Architecture, enabling technologies, security and privacy, and applications,'' IEEE Internet of Things Journal , vol. 4, no. 5, pp. 1125--1142, 2017."
+    },
+    {
+      "reference_id": "P15-REF-15",
+      "key": "b22",
+      "raw_citation": "H. Xu et al., ``Reinforcement learning-based control and networking co-design for industrial internet of things,'' IEEE Journal on Selected Areas in Communications , vol. 38, no. 5, pp. 885--898, 2020."
+    }
+  ]
+}

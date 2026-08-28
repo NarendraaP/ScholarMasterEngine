@@ -1,0 +1,65 @@
+{
+  "policy_name": "ScholarMaster Independent Three-Question Citation Decision Policy",
+  "version": "2.0.0-PROD",
+  "last_updated": "2026-08-28T21:43:49.632971+00:00",
+  "core_principle": "RESEARCH PLAN != PUBLICATION STATE != CITATION ELIGIBILITY != CITATION RELEVANCE != CITATION NECESSITY != ACTUAL CITATION",
+  "three_questions": {
+    "question_a_legal_chronology_eligibility": {
+      "rule": "Target paper status in {ACCEPTED_IN_PRESS, PUBLISHED} AND citing_date >= cited_date",
+      "failure_outcome": "CITATION_CHRONOLOGICALLY_INVALID / CITATION_NOT_YET_ELIGIBLE",
+      "invariant": "Publication today does NOT retroactively legitimize historical forward citations."
+    },
+    "question_b_scientific_relevance": {
+      "rule": "Explicit functional/methodological dependency in Research Plan Graph OR declared single-owner domain interface",
+      "anti_pattern_prohibited": "paper.research_plan_position > target_paper.research_plan_position is STRICTLY PROHIBITED as a relevance rule.",
+      "failure_outcome": "CITATION_SCIENTIFICALLY_IRRELEVANT -> NO_ACTION"
+    },
+    "question_c_citation_necessity_and_presence": {
+      "rule": "Actual manuscript inspection of .tex source determines whether reference exists or is scientifically needed.",
+      "presence_outcome": "CITATION_PRESENT -> AUTOMATIC_BIBLIOGRAPHIC_SYNC",
+      "absence_outcome": "CITATION_ABSENT -> HUMAN_REVIEW_REQUIRED"
+    }
+  },
+  "decision_matrix": [
+    {
+      "chronology": false,
+      "relevance": "ANY",
+      "presence": true,
+      "action": "REPLACE_INVALID_FORWARD_CITATION",
+      "automation_allowed": false,
+      "human_review": true
+    },
+    {
+      "chronology": false,
+      "relevance": "ANY",
+      "presence": false,
+      "action": "NO_ACTION",
+      "automation_allowed": true,
+      "human_review": false
+    },
+    {
+      "chronology": true,
+      "relevance": false,
+      "presence": "ANY",
+      "action": "NO_ACTION",
+      "automation_allowed": true,
+      "human_review": false
+    },
+    {
+      "chronology": true,
+      "relevance": true,
+      "presence": true,
+      "action": "AUTOMATIC_BIBLIOGRAPHIC_SYNC",
+      "automation_allowed": true,
+      "human_review": false
+    },
+    {
+      "chronology": true,
+      "relevance": true,
+      "presence": false,
+      "action": "HUMAN_REVIEW_REQUIRED",
+      "automation_allowed": false,
+      "human_review": true
+    }
+  ]
+}

@@ -1,0 +1,509 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% ==========================================
+% PACKAGES
+% ==========================================
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{float} 
+\usepackage{url}
+
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{shapes.geometric, arrows, positioning, automata, calc, shadows, decorations.pathreplacing}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% --- CODE LISTING STYLE ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+\lstset{style=mystyle}
+
+% --- COMPRESSION: Standard IEEE Spacing ---
+\setlength{\textfloatsep}{10pt plus 1.0pt minus 2.0pt}
+\renewcommand{\baselinestretch}{1.0} 
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+% ==========================================
+% TITLE & AUTHORS
+% ==========================================
+\title{A Cryptographic Provenance Model with Erasure-Compatible Immutability
+\thanks{Implementation artifacts are available upon request.}
+}
+
+\author{\IEEEauthorblockN{Dr. S. Suresh Kumar}
+\IEEEauthorblockA{\textit{Department of Computer Science}\\
+\textit{Swarnandhra College of Engineering \& Technology (Autonomous)}\\
+Seetharampuram, Narsapur, Andhra Pradesh, India}
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT
+% ==========================================
+\begin{abstract}
+Edge-native monitoring infrastructures produce vast telemetry streams that require persistent integrity verification. Modern data protection regulations impose stringent constraints on long-term personal data retention, while conventional database systems allow data rewriting by privileged accounts, undermining non-repudiation. Conversely, immutable append-only ledgers conflict with privacy regulations such as GDPR Article 17, which mandate verifiable data deletion upon request.
+
+This study presents the Cryptographic Provenance Layer (CPL), combining hash commitment schemes with selective data revocation. Encrypted event payloads are stored off-chain while their Merkle tree root commitments are anchored to a permissioned ledger. To achieve Erasure-Compatible Immutability, we introduce the Per-Identity Symmetric Key (PISK) protocol, which enables selective revocation of payload access by deterministically shredding the corresponding identity decryption keys without altering the underlying Merkle commitments.
+
+Evaluation on a simulated BFT validator network confirms sustained throughput above 1,000 transactions per second with sub-second confirmation latency. Because only fixed-size commitments enter the ledger, storage overhead remains constant per transaction. The findings prove that layered cryptographic provenance successfully balances tamper-evident auditability with regulatory erasure mandates.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Blockchain, Data Provenance, Cryptographic Shredding, Merkle Trees, Smart Campus, Data Integrity, Key Management.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. INTRODUCTION
+% ==========================================
+\section{Introduction}
+
+The main point of this paper is that by decoupling attestation from disclosure, we can achieve tamper-evident provenance while simultaneously maintaining the option of selectively withholding payload contents through cryptographic erasure. Edge computing deployments are increasingly generating telemetry records that must be relied upon for compliance monitoring, anomaly detection, and institutional auditing, and thus, require integrity protection that allows for both retroactive tamper-evidence and scalable storage and retrieval \cite{b21}.
+
+\subsection{The Structural Conflict Between Immutable Auditability and Selective Erasure}
+Traditional centralized databases that currently dominate the telemetry aggregation domain, while being de facto standard, are largely unsuitable for secure and reliable auditing due to their mutability. To a certain extent, this compromises the principle of non-repudiation, as records may be removed or modified by authorized users. It is important to note that for such systems to provide strong integrity guarantees, they would have to be immutable, making record deletions or updates effectively impossible. This poses a challenge in terms of designing a system around the requirement of attestation while simultaneously allowing for the possibility of revocation. The two features are incompatible when it comes to storage, which necessitates either choosing one over the other or developing an alternative method of auditing that does not rely on direct data manipulation.
+
+\subsection{Contributions and Subsystem Scope}
+This study focuses exclusively on cryptographic metadata integrity, demonstrating how attestation and payload disclosure can be structurally separated. Specifically, our contributions include:
+\begin{itemize}
+    \item A Cryptographic Provenance Layer (CPL) isolating immutable attestation from off-chain storage.
+    \item Formalization of Erasure-Compatible Immutability as a cryptographic design property.
+    \item A Per-Identity Symmetric Key (PISK) lifecycle enabling selective cryptographic shredding.
+    \item Scalability improvements using batched Merkle-tree commitments.
+\end{itemize}
+
+Within the ScholarMaster architecture, this subsystem manages provenance attestation, governs cryptographic key life cycles, and provides revocable payload accessibility only and does not orchestrate runtime activation (Paper 9), validate survivability behavior (Paper 10), optimize federated adaptation (Paper 13) verify the runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
+
+\subsection{Immutability vs. Erasure}
+
+Distributed ledgers tackle the problem of mutability by design: they make all changes to the state append-only and, therefore, create tamper-evident provenance histories \cite{b12}. At the same time, the inability to alter stored information conflicts with modern data privacy regulations, such as the GDPR. More specifically, Article 17 of the GDPR gives the right to be forgotten, which requires that personal data be deleted when requested \cite{b23}.
+
+The removal or rewriting of historical blocks from a hash-linked ledger would undermine later commitments. Consequently, na\"ive use of immutable provenance ledgers in regulated environments is likely to cause compliance difficulties. The problem is to devise a system where these properties can co-exist within well-defined boundaries \cite{b19}.
+
+\subsection{Proposed Solution: Cryptographic Provenance Layer}
+
+In order to investigate the ways auditability and erasure requirements could be reconciled, we propose an applied cryptographic provenance model, which we evaluated in the setting of high-frequency telemetry environments. The key innovation of the CPL is its Dual-Layer Provenance Model that decouples the statement of an event’s occurrence from the disclosure of its payload.
+
+By considering each spatiotemporal event as an attestation that forms a part of a linear chain that is linked using cryptographic means, the attestation layer makes the historical chain of events resistant to modification by default.
+
+In order to achieve revocation at the disclosure layer, we propose the following cryptographic shredding mechanism based on PISK. The payloads are encrypted with unique, disposable keys before being hashed into the ledger. This way, upon a revocation request, the key used to decrypt the corresponding entry can be permanently erased from the database, destroying its plaintext content in the process. Note that this approach does not require any changes to the ledger itself, thus fulfilling the principle of proof-preserving auditability.
+
+% ==========================================
+% II. RELATED WORK
+% ==========================================
+\section{Related Work}
+
+\subsection{Distributed Ledgers in Institutional Settings}
+Prior work on ledger-based record management has focused on lower-frequency institutional assets, such as credential verification \cite{b1, b3}. Proposed frameworks have defined standards by which certificate hashes may be anchored to external ledgers \cite{b4}. By contrast, we explore a higher-frequency, lower-latency space of continuous telemetry tracking. Whereas sporadic credential verification may tolerate tens or hundreds of transactions per second, higher-frequency monitoring requires thousands of transactions per second for ingestion and state management \cite{b2, b11}.
+
+\subsection{Secure Provenance and Directed Acyclic Graphs}
+Secure provenance schemes \cite{b5} typically employ directed acyclic graphs (DAGs) to capture data derivation and file modification histories in a distributed cloud setting. Our approach also uses DAGs, but aims at the more modest goal of recording linear event logs that can be safely stored on memory-constrained edge nodes \cite{b22}. While general-purpose provenance systems such as the InterPlanetary File System (IPFS) aim to make information publicly accessible by default, CPL makes use of permissioned access to satisfy institutional privacy and access control policies \cite{b7}.
+
+\subsection{The Immutability-Erasure Paradox}
+The inherent immutability of cryptographic ledgers is fundamentally at odds with targeted erasure mandates such as GDPR Article 17. Prior work has sought to address this issue through a number of algorithmic compromises. Ateniese et al. \cite{b10} proposed ``Chameleon Hashes,'' which allow designated authorities holding a trapdoor key to rewrite blocks by computing hash collisions on demand. However, this introduces a backdoor key management vulnerability.
+
+Our approach utilizes a more robust and passive cryptographic mechanism: Off-Chain Data with On-Chain Fingerprints and Per-Identity Encryption \cite{b20}. By keeping the encrypted payloads off-chain and only anchoring the cryptographic hashes, the system allows for functional deletion by destroying the specific identity decryption key---a process known as Crypto-shredding \cite{b8}.
+
+% ==========================================
+% III. CRYPTOGRAPHIC CONSTRUCTION
+% ==========================================
+\section{Cryptographic Construction}
+
+We now describe the cryptographic structure used to transform conventional telemetry logging into a proof-based provenance system.
+
+\subsection{Formalizing Erasure-Compatible Immutability}
+
+The interaction between immutability and selective erasure can be formalized as a cryptographic design property. Erasure targets recoverability rather than historical attestation. The ledger remains immutable while accessibility becomes revocable, rather than immutable data itself being deleted.
+
+Let $\mathcal{L}$ represent the immutable ledger state, $C_x$ represent the ciphertext payload of identity $x$, and $K_x$ represent the associated per-identity symmetric key. 
+
+\textbf{Definition (Erasure-Compatible Immutability):} A system satisfies Erasure-Compatible Immutability if, upon a valid deletion request for identity $x$, the destruction of $K_x \to K'_x$ (where $K'_x = \emptyset$) guarantees that:
+1. The ledger integrity remains invariant: $\mathcal{L}' = \mathcal{L}$
+2. Payload recovery becomes computationally infeasible: $\Pr[\text{Dec}(C_x, K_x') = E_x] = \text{negligible}(\lambda)$
+
+Under this formulation, hash commitments remain essentially unaltered even after their payload accessibility is revoked. The ledger bears witness to a cryptographic artifact having once existed, but the plaintext is forever beyond reach.
+
+\subsection{Hash-Chained State Construction}
+To guarantee historical integrity, we need states that cannot be changed in any way that is not directly observable by the new state. We define the Immutable Ledger $\mathcal{L}$ as a sequence of state transitions, or blocks, $B_0, B_1, \dots, B_n$, that are strictly ordered.
+
+Each block $B_i$ stores a cryptographic summary of the set of telemetry events as a hash value $H_i$, timestamp $T_i$ and hash of the previous state $H_{i-1}$. The state hash is subsequently computed using the SHA-256 cryptographic hash function:
+\begin{equation}
+H_i = \text{SHA256}( M_{root} \parallel H_{i-1} \parallel T_i )
+\end{equation}
+where $\parallel$ denotes bitwise concatenation and $M_{root}$ is the Merkle root of the included events. In order to prevent manipulation of the hash chain, $T_i$ must be deterministic within the ordering of the consensus defined by the BFT validators.
+
+This recursive definition renders the blockchain inherently tamper-evident: any alteration of a preceding block invalidates the subsequent hashing scheme, consequently corrupting the ledger head unless recalculated under consensus control \cite{b18}.
+
+\subsection{Batched Merkle-Tree Mechanism}
+
+Directly committing all telemetry events to a consensus network is expensive in terms of both bandwidth and latency. The Merkle batching mechanism serves as a consensus-decoupling mechanism rather than a mere storage optimization. By virtue of temporary buffering of encrypted telemetry events in time-bounded windows followed by their aggregation as a Merkle Tree \cite{b6, b28}, the presented approach decouples the event volume from the consensus bandwidth consumption. The use of fixed-size commitment ensures linear ledger growth, while enabling post-commit verification of individual events.
+
+Let a data producer buffer a set of $k$ encrypted events $C_1, C_2, \dots, C_k$ over a short time window $W_\tau$ (e.g., 2 seconds). Smaller batch windows would incur high ledger submission overhead; larger ones would result in delayed attestations. Hence we pick 2 seconds as a sweet spot between the freshness of data audit trail and network performance. To prevent replay attacks, each leaf node is augmented with a unique nonce and timestamp. The discrete leaves of the Merkle Tree are formulated as:
+\begin{equation}
+L_j = \text{SHA256}(C_j \parallel T_j \parallel \text{Nonce}_j), \quad \forall j \in \{1, \dots, k\}
+\end{equation}
+
+% --- FIGURE 1: MERKLE TREE TIKZ ---
+
+\begin{figure}[htbp]
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tikzpicture}[
+    level distance=1.5cm,
+    level 1/.style={sibling distance=4.5cm},
+    level 2/.style={sibling distance=2.2cm},
+    every node/.style={draw, rectangle, rounded corners, fill=blue!10, text centered, font=\small, inner sep=1mm},
+    edge from parent/.style={draw, -latex, thick}
+]
+
+\node [fill=green!20, text width=2.5cm] (Root) {$M_{root}$\\\scriptsize{SHA256($H_{01} \parallel H_{23}$)}}
+  child {node [text width=2cm] (H01) {$H_{01}$\\\scriptsize{SHA256($L_0 \parallel L_1$)}}
+    child {node [fill=red!10, text width=1.9cm] (L0) {$L_0$\\\scriptsize{Hash($C_0 \parallel T_0 \parallel N_0$)}}}
+    child {node [fill=red!10, text width=1.9cm] (L1) {$L_1$\\\scriptsize{Hash($C_1 \parallel T_1 \parallel N_1$)}}}
+  }
+  child {node [text width=2cm] (H23) {$H_{23}$\\\scriptsize{SHA256($L_2 \parallel L_3$)}}
+    child {node [fill=red!10, text width=1.9cm] (L2) {$L_2$\\\scriptsize{Hash($C_2 \parallel T_2 \parallel N_2$)}}}
+    child {node [fill=red!10, text width=1.9cm] (L3) {$L_3$\\\scriptsize{Hash($C_3 \parallel T_3 \parallel N_3$)}}}
+  };
+
+\end{tikzpicture}
+}
+\caption{Batched Merkle Tree Construction. Individual encrypted events are hashed with nonces and timestamps into leaf nodes ($L_0 \dots L_3$). The tree recursively hashes upward to generate a single 32-byte Merkle Root ($M_{root}$), which is the only element submitted to the immutable ledger.}
+\label{fig:merkle}
+\end{figure}
+
+As illustrated in Figure \ref{fig:merkle}, the tree is constructed by recursively hashing paired nodes upward. For any two sibling hashes $H_{left}$ and $H_{right}$, the parent node is computed as:
+\begin{equation}
+H_{parent} = \text{SHA256}(H_{left} \parallel H_{right})
+\end{equation}
+
+If the number of events $k$ in a temporal batch is not a power of 2, the tree is padded by duplicating the final leaf node until the binary tree is balanced. This recursive process collapses the $k$ events into a single 32-byte cryptographic string: the Merkle Root ($M_{root}$). Only $M_{root}$ is submitted to the distributed ledger for consensus. The raw encrypted payloads $C_{set}$ are stored in a conventional, off-chain distributed database. 
+
+\subsection{Authenticated Encryption (AES-GCM)}
+
+Prior to entering the Merkle aggregation process, the payloads of each telemetry event must be encrypted using some cryptographic means to ensure secrecy. While AES-CBC and other standard block ciphers are effective at providing confidentiality, they do not account for integrity, leaving the ciphertext vulnerable to certain malleability attacks (e.g., bit-flipping) before the hashing step.
+
+To counter this limitation, we propose to use the AES-256 in Galois/Counter Mode (AES-GCM) \cite{b14}. AES-GCM is an Authenticated Encryption with Associated Data (AEAD) cipher. It provides IND-CCA secure encryption of the payload, along with AES-GCM authentication tag that provides integrity.
+\begin{equation}
+C_{payload}, Tag = \text{AES-GCM}(K_{sym}^{ID}, E_{payload}, IV)
+\end{equation}
+This ensures that the off-chain data store cannot subtly bit-rot or tamper with the payload without causing an obvious failure of the AES decryption check during a routine audit. Reusing an IV with the same key catastrophically compromises the security of AES-GCM; uniqueness is enforced by using a monotonically increasing counter, combined with per-batch entropy, as the IV.
+
+\subsection{Future Extensibility: Zero-Knowledge Proofs}
+The dual-layer architecture can be extended to support non-interactive zero-knowledge proofs (NIZKPs) via the Fiat-Shamir heuristic \cite{b29}. By proving that an agent possesses valid credentials that satisfy compliance predicates, the ledger verifies policy conformance while preserving absolute payload confidentiality.
+
+% ==========================================
+% IV. PROTOCOL DESIGN & KEY MANAGEMENT
+% ==========================================
+\section{Protocol Design \& Key Management}
+
+The practical operation of the provenance model depends on careful management of encryption keys across the key lifecycle within the cryptographic model.
+
+\subsection{Per-Identity Symmetric Key (PISK) Lifecycle}
+Cryptographic revocation mechanism requires fine-grained key compartmentalization rather than the general encryption key. Conventional encrypted databases employ a single master key to encrypt the whole database table or storage. Such encryption practice is rendered insecure since the revocation of a master key would result in total data loss. PISK tackles this issue by allocating a unique encryption key to every individual identity. Key lifecycle isolation thus enables selective erasure and revocation while maintaining revocation granularity at the level of individual identities. There is no need for additional key derivation as the encryption key is directly obtained from the PRF.
+In this context, the option of deriving the encryption key from a master key via a key derivation function was not preferred due to the limitations in terms of revocation granularity.
+
+\textbf{1. Key Derivation via HKDF:} Whenever a new identity token $ID_x$ is introduced into the system, the primary Key Management Service (KMS) generates a unique symmetric key for the given identity. In order to guarantee the strength of the derived keys and avoid collisions, we use the HMAC-based Extract-and-Expand Key Derivation Function (HKDF) \cite{b13}.
+
+The KMS utilizes a secure, rotated Master Key ($K_{master}$) and processes it through the HKDF extraction phase to generate a pseudorandom key (PRK):
+\begin{equation}
+\text{PRK} = \text{HKDF-Extract}(K_{master}, \text{system\_salt})
+\end{equation}
+The expansion phase then generates the identity-specific key \cite{b27}:
+\begin{equation}
+K_{sym}^{x} = \text{HKDF-Expand}(\text{PRK}, ID_x \parallel \text{Salt}_x, L)
+\end{equation}
+Where $L=32$ bytes for AES-256. The KMS maintains a secure mapping $\{ID_x \to K_{sym}^{x}\}$. In practice, rotating the master key required careful coordination to avoid invalidating active identity keys derived from prior epochs. During early testing, we observed brief decryption failures during overlapping rotation windows, necessitating version-tagged key derivation.
+
+\textbf{2. Key Distribution:} When a data producer detects the identity $ID_x$, it requests the encryption key from the KMS over a mutually authenticated TLS (mTLS) connection. The data producer caches $K_{sym}^{x}$ strictly in volatile memory.
+
+\textbf{3. Payload Encryption:} The data producer encrypts the telemetry payload using $K_{sym}^{x}$ to produce $C_{payload}$. It computes the SHA-256 hash of the resulting ciphertext and inserts it as a leaf node into the local Merkle Tree batch.
+
+\textbf{4. Ledger Submission:} Once the batch window closes, the Merkle Root $M_{root}$ is submitted to the distributed ledger validators for consensus ordering. Concurrently, the ciphertext payload is submitted to the off-chain storage pool.
+
+\subsection{Cryptographic Shredding Protocol}
+
+Selective erasure is implemented through a controlled destruction process applied to identity-specific encryption keys. Because the ciphertext $C_{payload}$ is hashed into the immutable ledger, the ciphertext itself cannot be deleted from the off-chain store without breaking the Merkle validation path for all other innocent events in that batch. Instead, the KMS permanently destroys the derivation mapping and the specific key $K_{sym}^{x}$. 
+
+Without $K_{sym}^{x}$, reversing the AES-256-GCM encryption becomes computationally infeasible under accepted cryptographic assumptions. The data is made inaccessible, providing a technically valid justification for cryptographic erasure under many jurisdictions \cite{b32}, while the $C_{payload}$ ciphertext remains stored in the off-chain store, as it is needed to satisfy the SHA-256 ledger consistency checks for the co-batched events.
+
+% --- FIGURE 2: REDESIGNED SEQUENCE DIAGRAM ---
+\begin{figure}[htbp]
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tikzpicture}[auto, thick,
+    every node/.style={font=\normalsize}, % Force readable base font size
+    actor/.style={draw, rectangle, rounded corners, fill=blue!10, minimum width=2.4cm, minimum height=0.8cm, align=center}]
+
+    % Explicit Fixed Coordinate Grid Layout - Increased vertical spacing
+    \node[actor, fill=blue!10] (Edge) at (0, 0) {\textbf{1. Edge Node}};
+    \node[actor, fill=yellow!10] (Ledger) at (5.0, 0) {\textbf{4. Ledger}};
+    
+    \node[actor, fill=green!10] (KMS) at (0, -2.5) {\textbf{2. KMS Engine}};
+    
+    % Erasure request is nicely spaced with bold readable math keys
+    \node[text=red, align=center] (Shred) at (5.0, -2.5) {\textbf{Erasure Request}\\[0.5ex]\textbf{\textit{Destroy}} $\boldsymbol{K_{sym}^x}$};
+    
+    \node[actor, fill=orange!10] (DB) at (0, -5.0) {\textbf{3. Off-Chain DB}};
+
+    % Request & Return Keys (Straight Parallel Lines)
+    \draw[-latex] ([xshift=-14pt]Edge.south) -- node[left, align=right] {Request $\boldsymbol{K_{sym}^x}$} ([xshift=-14pt]KMS.north);
+    \draw[-latex] ([xshift=14pt]KMS.north) -- node[right, align=left] {Return $\boldsymbol{K_{sym}^x}$} ([xshift=14pt]Edge.south);
+    
+    % Encrypt & Hash Path (Routed cleanly down the left side)
+    \draw[-latex, dashed] (Edge.west) -- ++(-1.8,0) |- node[pos=0.25, left, align=center] {Encrypt Payload\\Compute $M_{root}$} (DB.west);
+    
+    % Submit to Ledger
+    \draw[-latex] (Edge.east) -- node[above] {Submit $M_{root}$} (Ledger.west);
+    
+    % Erasure Request Arrow
+    \draw[-latex, red, very thick] (Shred.west) -- (KMS.east);
+
+\end{tikzpicture}
+}
+\caption{PISK Lifecycle and Cryptographic Shredding. Encrypted payloads are stored in the Off-chain DB, whereas only the Merkle Root is anchored to the Ledger. In addition, deletion only involves the KMS Key to be erased, satisfying cryptographic erasure.}
+\label{fig:sequence}
+\end{figure}
+
+\subsection{Merkle Proof Verification Workflow}
+To permit distributed auditing by any authorized third party, we define the Merkle Proof Verification algorithm. 
+1. The auditor retrieves the encrypted payload $C_{payload}$ from the off-chain storage pool.
+2. The auditor requests the decryption key $K_{sym}^{x}$ from the KMS (provided the key has not been shredded and the auditor possesses valid access credentials).
+3. The auditor requests the Merkle Sibling Path (the array of hashes required to rebuild the tree branch) from the off-chain store.
+4. The auditor locally computes the SHA-256 hash of the payload and recursively hashes it with the Sibling Path to generate a candidate root.
+5. The auditor retrieves the trusted $M_{root}$ from the immutable ledger.
+
+If the candidate root matches the trusted $M_{root}$, the auditor has cryptographically proven that the payload existed at that exact time and has not been altered by a database administrator.
+
+% ==========================================
+% V. PERFORMANCE EVALUATION
+% ==========================================
+\section{Performance Evaluation}
+
+To assess the viability of our proposed encryption model for the edge telemetry use-case, we conducted a series of controlled indicative experiments. We tested our encryption protocol in a simulated BFT-like consensus network with adjustable validator count and artificial network delay parameters \cite{b15}.
+
+\subsection{Throughput and Latency Analysis}
+
+The main limitation of distributed provenance systems is usually not the cryptographic hashing, but rather the consensus latency. By committing to Merkle roots of fixed size, rather than the (potentially much larger) telemetry payloads, the model decouples the volume of events from the consensus bandwidth \cite{b16}.
+
+We benchmarked the cryptographic model by varying the telemetry transaction load from 100 to 2,000 Transactions Per Second (TPS).
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\columnwidth,
+    title={Consensus Throughput vs Confirmation Latency},
+    xlabel={Telemetry Generation Rate (TPS)},
+    ylabel={Confirmation Latency (ms)},
+    xmin=0, xmax=2000,
+    ymin=0, ymax=1500,
+    xtick={0,500,1000,1500,2000},
+    ytick={0,300,600,900,1200,1500},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+]
+\addplot[
+    color=red,
+    mark=triangle,
+    thick
+    ]
+    coordinates {
+    (100,50)(500,120)(1000,350)(1500,700)(2000,1200)
+    };
+    \addlegendentry{Latency}
+\end{axis}
+\end{tikzpicture}
+\caption{Indicative performance curve: Batched Merkle model was able to sustain under one second latency up to 1,200 TPS in the experimental setup, after which the increased queueing latency caused a steep rise in overall latency.}
+\label{fig:throughput}
+\end{figure}
+
+The data from the experiment suggest that confirmation latency remains under 500 ms up to 1,000 transactions per second (TPS) under the simulated validator behavior. Moreover, the real latency depends on how the validator acts, network issues, and delays in transaction propagation to them. The queueing effect explains the emergence of the nonlinear section of the graph at 1,200 TPS, while the cryptographic validity of transactions was not impacted by throughput up to the observed levels, which is demonstrated by the scalable attestation line.
+
+\subsection{Storage Complexity and Asymptotic Growth}
+We analyzed the storage complexity of the CPL to verify long-term institutional viability.
+
+Let $N$ be the number of events produced per day. In a relational database, storage would scale as $O(N \cdot \text{size}(E))$. In the model described, the immutable ledger scales with $N$, but the growth of the ledger is decoupled from $N$.
+
+Because batching happens at a regular time interval ($\tau = 2$ seconds), the ledger grows in a predictable manner that does not depend on how many events occur within individual windows. At 43,200 hash commitments per day, annual ledger growth remains on the order of hundreds of megabytes, excluding block metadata overhead. The off-chain payload storage requires $O(N)$ space and can be hosted on standard replicated object storage.
+
+\subsection{Merkle Proof Overhead Analysis}
+While the ledger storage is minimal, generating cryptographic proofs requires storing the Sibling Path for each event. The size of this proof scales logarithmically with the number of events in the batch ($k$).
+
+\begin{table}[htbp]
+\caption{Merkle Proof Size Overhead vs Batch Size}
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+\textbf{Events in Batch ($k$)} & \textbf{Tree Depth ($\log_2 k$)} & \textbf{Proof Size (Bytes)} \\
+\midrule
+64 & 6 & 192 B \\
+256 & 8 & 256 B \\
+1,024 & 10 & 320 B \\
+4,096 & 12 & 384 B \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+Table I demonstrates the efficiency of the Merkle Tree construction. Even if a single 2-second batch contains 4,096 concurrent telemetry events, proving the inclusion of any single event requires transmitting only 12 hashes (384 bytes) to the auditor. This $O(\log k)$ overhead ensures that network bandwidth is not saturated during intensive auditing procedures.
+
+\subsection{Cryptographic Computational Overhead}
+Encrypting every event before hashing introduces CPU overhead at the data producers. However, benchmark evaluations indicate that cryptographic overhead remains well within the processing capacity of commodity hardware. Modern processors equipped with hardware acceleration instructions (e.g., AES-NI, ARMv8 Cryptography Extensions) can execute the complete AES-GCM $\to$ SHA-256 pipeline in microseconds per event. This ensures that the PISK and Merkle implementations do not introduce localized processing bottlenecks that could impact the upstream real-time telemetry generation pipelines.
+
+% ==========================================
+% VI. SECURITY ANALYSIS
+% ==========================================
+\section{Security Analysis}
+
+We now analyze the security properties of the cryptographic model under standard applied cryptography assumptions.
+
+\subsection{Security Assumptions}
+The integrity of the CPL rests on four standard assumptions:
+\begin{itemize}
+    \item SHA-256 collision resistance holds.
+    \item AES-256-GCM provides authenticated encryption under chosen-ciphertext (IND-CCA) security assumptions.
+    \item HKDF functions securely as a Pseudorandom Function (PRF).
+    \item Under standard BFT assumptions, the number of malicious validators $f$ is strictly bounded ($f < n/3$).
+\end{itemize}
+
+\subsection{Resistance to Retroactive Modification}
+
+Attempting to modify a historical event stored off-chain results in an immediately detectable verification failure. Because the leaf hash would change, the reconstructed Merkle root would no longer match the value committed to the ledger. Assuming collision resistance of SHA-256, it would be infeasible to create another leaf hash that would result in the same Merkle root. The only way to do so would be to rewrite the ledger state entirely, which would require consensus among a supermajority of validator nodes.
+
+\subsection{Key Custody and Shredding Finality}
+Cryptographic guarantees are instead derived from limited trust assumptions, not global decentralization. The KMS is a privileged trust boundary; compromise before shredding allows retroactive decryption of payloads. The usefulness of cryptographic shredding is therefore strictly tied to the security of the key destruction process and safe key rotation.
+
+To mitigate this risk, the KMS must enforce secure key custody; for example, a threshold secret sharing of $K_{master}$ with a quorum backed by HSMs is one option. When the Cryptographic Shredding is initiated, explicit memory zeroization will then be required to prevent remanence vulnerabilities. If the key is verifiably destroyed, then the AES-GCM ciphertext is effectively rendering the payload inaccessible, thereby fulfilling the erasure requirement.
+
+\subsection{Limitations}
+While the Cryptographic Provenance Layer secures structural immutability, the model exposes operational limitations:
+\begin{itemize}
+    \item \textbf{Legal Ambiguity around Erasure:} The jurisdictional interpretation of cryptographic erasure—whether key destruction truly satisfies data deletion mandates—remains legally variable and uncertain.
+    \item \textbf{KMS Centralization Assumptions:} The architecture relies on the KMS securely handling key finality. Compromise of this privileged boundary negates cryptographic shredding.
+    \item \textbf{Persistent Ciphertext Retention:} Off-chain storage nodes incur long-term retention overhead, continuously storing inaccessible ciphertexts to preserve Merkle root verification for co-batched events.
+    \item \textbf{Validator Consensus Assumptions:} System integrity depends on Byzantine fault tolerance thresholds. If compromised validators exceed threshold $f$, ledger finality guarantees degrade.
+    \item \textbf{Metadata Leakage Risks:} Adversaries might extract behavioral insights by correlating off-chain ciphertext sizes or network timing patterns, even without decryption keys.
+\end{itemize}
+
+% ==========================================
+% VII. DISCUSSION
+% ==========================================
+\section{Discussion}
+The results show that the issues of immutable evidence and the controlled erasure can be satisfied simultaneously if these are treated as two different problems with a shared input and output. By linking the payload disclosure and structural provenance via hashes but keeping the ledger’s contents as a separate entity, the two aspects are maintained as separate but linked functions.
+
+Cryptographic shredding offers the possibility of a technically defensible erasure. By virtue of the deterministic destruction of the key, one avoids retroactive invalidation of a potentially large number of Merkle trees. The use of batching further contributes to system simplicity by allowing predictable ledger growth independent of event volume. Most importantly, auditability must be a consequence of the construction rather than a policy decision.
+
+% ==========================================
+% VIII. CONCLUSION
+% ==========================================
+\section{Conclusion}
+
+This work considers the possibility of achieving both unconditional provenance guarantees and selective erasure within a single cryptographic primitive. The construction employs batched merkle-tree aggregation in conjunction with Per-Identity Symmetric Key (PISK) encryption to guarantee tamper-evident telemetry logging while enabling revocable payload decryption.
+
+Experimental evaluation shows that decoupling attestation from disclosure allows the system to scale cryptographic provenance, bound confirmation latency, and grow the ledger predictably within bounded trust. Instead of ideological decentralization, it provisions operational proofs of constrained provenance. The ScholarMaster architecture makes use of this framework exclusively as the cryptographic provenance subsystem, providing integrity of telemetry and managing key lifecycle but not lower-level runtime activation (Paper 9), survivability behavior (Paper 10), runtime verification theorems (Paper 18), or irreversible governance doctrine (Paper 17).
+
+% ==========================================
+% REFERENCES
+% ==========================================
+\begin{thebibliography}{00}
+
+\bibitem{b6} R. C. Merkle, ``A Digital Signature Based on a Conventional Encryption Function,'' in \textit{Advances in Cryptology --- CRYPTO '87}, Springer, 1988, pp. 369-378.
+
+\bibitem{b15} M. Castro and B. Liskov, ``Practical Byzantine Fault Tolerance,'' in \textit{OSDI}, vol. 99, 1999, pp. 173-186.
+
+\bibitem{b14} D. A. McGrew and J. Viega, ``The security and performance of the Galois/Counter Mode (GCM) of operation,'' in \textit{Proc. INDOCRYPT}, Springer, 2004, pp. 343-355.
+
+\bibitem{b28} S. Nakamoto, ``Bitcoin: A peer-to-peer electronic cash system,'' Decentralized Business Review, 2008.
+
+\bibitem{b13} H. Krawczyk, ``Cryptographic extraction and key derivation: The HKDF scheme,'' in \textit{Proc. CRYPTO}, 2010, pp. 631-648.
+
+\bibitem{b29} E. Ben-Sasson et al., ``Zerocash: Decentralized Anonymous Payments from Bitcoin,'' in \textit{IEEE Symposium on Security and Privacy}, 2014, pp. 459-474.
+
+% --- Consensus & BFT ---
+
+\bibitem{b20} G. Zyskind et al., ``Decentralizing privacy: Using blockchain to protect personal data,'' in \textit{IEEE Security and Privacy Workshops (SPW)}, 2015, pp. 180-184.
+
+\bibitem{b11} C. Christidis and M. Devetsikiotis, ``Blockchains and Smart Contracts for the Internet of Things,'' \textit{IEEE Access}, vol. 4, pp. 2292-2303, 2016.
+
+\bibitem{b4} M. Sharples and J. Domingue, ``The blockchain and kudos: A distributed system for educational record, reputation and reward,'' in \textit{European Conference on Technology Enhanced Learning (EC-TEL)}, Springer, 2016, pp. 490-496.
+
+% --- IoT, Edge, & Provenance ---
+
+\bibitem{b10} G. Ateniese, B. Magri, D. Venturi, and E. Andrade, ``Redactable Blockchain - or - Rewriting History in Bitcoin and Friends,'' in \textit{2017 IEEE European Symposium on Security and Privacy (EuroS\&P)}, 2017, pp. 111-126.
+
+\bibitem{b23} P. Voigt and A. Von dem Bussche, ``The EU General Data Protection Regulation (GDPR): A Practical Guide,'' Springer International Publishing, 2017.
+
+\bibitem{b3} A. Grech and A. F. Camilleri, ``Blockchain in education,'' \textit{JRC Science for Policy Report}, vol. 10, p. 132, 2017.
+
+\bibitem{b5} X. Liang, S. Shetty, D. Tosh, C. Kamhoua, K. Kwiat, and L. Njilla, ``ProvChain: A blockchain-based data provenance architecture in cloud environment with enhanced privacy and availability,'' in \textit{Proc. IEEE/ACM CCGRID}, 2017, pp. 468-477.
+
+\bibitem{b7} A. Ramachandran and M. Kantarcioglu, ``Using Blockchain and smart contracts for secure data provenance management,'' \textit{arXiv preprint arXiv:1709.10000}, 2017.
+
+\bibitem{b1} M. Turkanovi\'{c}, M. H\"{o}lbl, K. Ko\v{s}i\v{c}, M. Heri\v{c}ko, and A. Kami\v{s}ali\'{c}, ``EduCTX: A blockchain-based higher education credit platform,'' \textit{IEEE Access}, vol. 6, pp. 5112-5127, 2018.
+
+\bibitem{b12} Z. Zheng et al., ``Blockchain challenges and opportunities: A survey,'' \textit{Int. J. Web Grid Serv.}, vol. 14, no. 4, pp. 352-375, 2018.
+
+\bibitem{b16} E. Androulaki et al., ``Hyperledger fabric: a distributed operating system for permissioned blockchains,'' in \textit{Proc. EuroSys}, 2018, pp. 1-15.
+
+% --- GDPR & Crypto-Shredding ---
+
+\bibitem{b18} A. Reyna et al., ``On blockchain and its integration with IoT. Challenges and opportunities,'' \textit{Future Generation Computer Systems}, vol. 88, pp. 173-190, 2018.
+
+\bibitem{b2} G. Chen, B. Xu, M. Lu, and N.-S. Chen, ``Exploring blockchain technology and its potential applications for education,'' \textit{Smart Learning Environments}, vol. 5, no. 1, pp. 1-15, 2018.
+
+\bibitem{b21} R. Roman et al., ``Mobile Edge Computing, Fog et al.: A Survey and Analysis of Security Threats and Challenges,'' \textit{Future Generation Computer Systems}, vol. 78, pp. 680-698, 2018.
+
+\bibitem{b8} E. Politou, F. Casino, E. Alepis, and C. Patsakis, ``Blockchain and GDPR: The right to be forgotten in the ledger context,'' \textit{arXiv preprint arXiv:1810.02254}, 2018.
+
+\bibitem{b22} M. S. Ali et al., ``Applications of blockchains in the Internet of Things: A comprehensive survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 21, no. 2, pp. 1676-1717, 2019.
+
+% --- Cryptographic Foundations (Merkle, AEAD, HKDF, ZKP) ---
+
+\bibitem{b32} European Data Protection Board, ``Guidelines 5/2019 on the criteria of the Right to be Forgotten in the search engines cases under the GDPR,'' 2019.
+
+\bibitem{b27} D. Boneh and V. Shoup, \textit{A Graduate Course in Applied Cryptography}, Version 0.5, 2020.
+
+\bibitem{b19} S. Ruj et al., ``Blockchain and the Right to be Forgotten,'' \textit{IEEE Computer}, vol. 54, no. 1, pp. 54-63, 2021.
+
+\end{thebibliography}
+
+\end{document}

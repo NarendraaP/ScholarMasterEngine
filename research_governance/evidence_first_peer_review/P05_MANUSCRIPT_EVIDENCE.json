@@ -1,0 +1,270 @@
+{
+  "paper_id": "P05",
+  "paper_num": 5,
+  "title": "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model",
+  "abstract_snippet": "Continuous edge inference introduces architectural constraints that extend beyond raw computational throughput. Sustained vision workloads expose the energetic and latency costs of data movement across heterogeneous memory hierarchies. In discrete CPU--GPU platforms, the cost of transferring data across the PCIe bus can approach---and occasionally exceed---the cost of the computation itself.\n\nThis...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work",
+    "The Memory-Bound Edge Efficiency Envelope (MBEEE)",
+    "Microarchitectural Implications",
+    "Queueing Theory and Latency Jitter",
+    "Thermodynamic and Reliability Modeling",
+    "Operational Energy and TCO",
+    "Discussion: Architectural Tradeoffs",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "The Throughput Illusion in Continuous Edge Inference",
+    "Subsystem Scope and Canonical Separation",
+    "The Shift Toward Edge Inference and The Memory Wall",
+    "Unified Memory Architectures (UMA)",
+    "Contributions",
+    "Edge Accelerator Architectures",
+    "Memory Coherency and Heterogeneous Integration",
+    "Energy and Thermal Constraints",
+    "Defining the Envelope",
+    "Physics of Data Movement ($pJ/bit$)",
+    "Amdahl's Law and the Serial Fraction",
+    "IOMMU and Zero-Copy Semantics",
+    "Virtual-to-Physical Mapping Overheads",
+    "Derived Latency Decomposition",
+    "Stochastic vs. Deterministic Service",
+    "Jitter Envelope Interpretation",
+    "RC Equivalent Thermal Model",
+    "Arrhenius Reliability Scaling",
+    "Dynamic Voltage Frequency Scaling (DVFS)",
+    "Performance-Per-Watt (PPW)",
+    "Total Cost of Ownership (TCO)",
+    "Memory Capacity Contention",
+    "Precision vs. Bandwidth: Pareto Considerations",
+    "Deterministic Latency versus Peak Throughput",
+    "Limitations of the Analytical Model"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P05-PARA-01",
+      "text_snippet": "This study develops an analytical framework termed the Memory-Bound Edge Efficiency Envelope (MBEEE) to characterize how latency, energy, and thermal constraints jointly bound sustained edge inference. Rather than relying on benchmark comparisons, the analysis models the physics of data movement ($p...",
+      "char_count": 439
+    },
+    {
+      "paragraph_id": "P05-PARA-02",
+      "text_snippet": "The resulting analysis indicates that tightly integrated Unified Memory Architectures (UMA) reduce transfer-induced serial fractions, narrow latency jitter distributions, and improve sustained performance-per-watt under continuous workloads. Under the modeled constraints, UMA platforms exhibit an es...",
+      "char_count": 469
+    },
+    {
+      "paragraph_id": "P05-PARA-03",
+      "text_snippet": "The dominant thesis of this paper is that sustained edge inference feasibility is fundamentally bounded by memory-transfer energy, latency variance, and thermal equilibrium rather than raw accelerator throughput alone . This paper functions as an analytical hardware-efficiency study, focusing on the...",
+      "char_count": 395
+    },
+    {
+      "paragraph_id": "P05-PARA-04",
+      "text_snippet": "Prior research on efficient deep learning inference has examined accelerator microarchitecture, memory hierarchy design, and thermal constraints independently. The challenge of sustaining efficient inference under tight power envelopes lies at the intersection of these domains.",
+      "char_count": 278
+    },
+    {
+      "paragraph_id": "P05-PARA-05",
+      "text_snippet": "Similarly, Eyeriss b_eyeriss proposed a spatial accelerator architecture optimized around a row-stationary dataflow to minimize on-chip data movement. That work addresses internal SRAM efficiency but still operates within a discrete accelerator paradigm relative to the host processor. The present an...",
+      "char_count": 460
+    },
+    {
+      "paragraph_id": "P05-PARA-06",
+      "text_snippet": "In contrast, modern System-on-Chip (SoC) designs integrate CPU, GPU, and NPU cores with physically unified memory. In such systems, no off-chip traversal is required to exchange tensors between heterogeneous execution units. The distinction is not merely semantic; it alters the physical path that da...",
+      "char_count": 391
+    },
+    {
+      "paragraph_id": "P05-PARA-07",
+      "text_snippet": "Skadron et al. b_thermal established thermal-aware microarchitectural design principles, highlighting the limits of frequency scaling under sustained load. We apply similar thermodynamic reasoning to continuous edge inference, focusing on steady-state rather than burst behavior.",
+      "char_count": 279
+    },
+    {
+      "paragraph_id": "P05-PARA-08",
+      "text_snippet": "Real-time inference workloads must satisfy several simultaneous constraints that extend beyond peak throughput metrics. Continuous workloads are bounded by latency deadlines, thermal stability, and available energy budgets. The MBEEE formalizes this joint constraint space.",
+      "char_count": 273
+    },
+    {
+      "paragraph_id": "P05-PARA-09",
+      "text_snippet": "We define the feasible efficiency envelope $ E $ for sustained edge constraints as: equation E = \\{ (E, L) L L_{RT ,\\ T_{junc T_{max ,\\ E E_{budget \\ equation Where: itemize $L_{RT $ corresponds to the strict real-time constraint (e.g., $33.3$ ms at 30 FPS), $T_{max $ represents the thermal ceiling ...",
+      "char_count": 433
+    },
+    {
+      "paragraph_id": "P05-PARA-10",
+      "text_snippet": "In discrete architectures, as external data transfer approaches bus capacity ($BW_{ext $), queueing delay increases sharply. Latency may exceed $L_{RT $ even when compute capacity remains underutilized. Simultaneously, elevated bus switching activity increases dynamic power, raising $T_{junc $. UMA ...",
+      "char_count": 582
+    },
+    {
+      "paragraph_id": "P05-PARA-11",
+      "text_snippet": "For a discrete architecture: equation E_{frame = E_{compute + 2 (S_{data E_{PCIe ) equation Where $S_{data $ is the frame size in bits, and $E_{PCIe $ represents energy per bit across the peripheral bus. A 1080p RGB frame contains approximately $49.7$ Mbits. PCIe Gen3 traversal typically costs $10$\u2013...",
+      "char_count": 463
+    },
+    {
+      "paragraph_id": "P05-PARA-12",
+      "text_snippet": "In UMA systems: equation E_{frame E_{compute + E_{LPDDR + E_{Fabric equation LPDDR5 memory access costs approximately $2$\u2013$5$ $pJ/bit$, while on-die fabric traversal is typically below $1$ $pJ/bit$. Data movement energy accumulates continuously at frame-rate scale; interconnect traversal imposes a s...",
+      "char_count": 543
+    },
+    {
+      "paragraph_id": "P05-PARA-13",
+      "text_snippet": "In UMA nodes, zero-copy semantics reduce this serial fraction: equation (1-p)_{UMA (1-p)_{disc equation The serial term does not vanish entirely\u2014DRAM access and page mapping introduce residual overhead\u2014but it shrinks sufficiently to raise the asymptotic performance ceiling. The practical consequence...",
+      "char_count": 393
+    },
+    {
+      "paragraph_id": "P05-PARA-14",
+      "text_snippet": "The modeled advantages of unified memory assume specific analytical interactions between execution units and the underlying memory subsystem. Without tight integration, the expected gains do not fully materialize.",
+      "char_count": 213
+    },
+    {
+      "paragraph_id": "P05-PARA-15",
+      "text_snippet": "On UMA platforms, the analysis assumes zero-copy semantics. Instead of modeling a physical data copy, the tensor is mapped onto a shared physical memory space. The memory controller pinning prevents paging and exposes that address directly to the NPU or GPU execution engine.",
+      "char_count": 275
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P05-EQ-01",
+      "latex": "\\mathcal{E} = \\{ (E, L) \\mid L \\le L_{RT},\\ T_{junc} \\le T_{max},\\ E \\le E_{budget} \\}"
+    },
+    {
+      "equation_id": "P05-EQ-02",
+      "latex": "E_{frame} = E_{compute} + 2 \\cdot (S_{data} \\times E_{PCIe})"
+    },
+    {
+      "equation_id": "P05-EQ-03",
+      "latex": "E_{frame} \\approx E_{compute} + E_{LPDDR} + E_{Fabric}"
+    },
+    {
+      "equation_id": "P05-EQ-04",
+      "latex": "(1-p)_{disc} = \\frac{T_{PCIe}}{T_{total}}"
+    },
+    {
+      "equation_id": "P05-EQ-05",
+      "latex": "S_{max,disc} < \\frac{1}{(1-p)_{disc}}"
+    },
+    {
+      "equation_id": "P05-EQ-06",
+      "latex": "(1-p)_{UMA} \\ll (1-p)_{disc}"
+    },
+    {
+      "equation_id": "P05-EQ-07",
+      "latex": "O_{map} = P_{miss} \\times (T_{walk} + T_{sync})"
+    },
+    {
+      "equation_id": "P05-EQ-08",
+      "latex": "W_q = \\frac{\\rho}{\\mu - \\lambda}"
+    },
+    {
+      "equation_id": "P05-EQ-09",
+      "latex": "\\sigma^2_{M/M/1} = \\frac{\\rho}{(1-\\rho)^2 \\mu^2}"
+    },
+    {
+      "equation_id": "P05-EQ-10",
+      "latex": "\\sigma^2_{M/D/1} = \\frac{\\rho}{2(1-\\rho) \\mu^2}"
+    },
+    {
+      "equation_id": "P05-EQ-11",
+      "latex": "\\sigma_{lat} = \\sqrt{Var(L_i)}"
+    },
+    {
+      "equation_id": "P05-EQ-12",
+      "latex": "C_{th} \\frac{dT}{dt} = P_{dyn}(t) - \\frac{T(t) - T_{amb}}{R_{th}}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P05-TAB-01",
+      "caption": "Latency Decomposition (Architectural Bounds)"
+    },
+    {
+      "table_id": "P05-TAB-02",
+      "caption": "Hardware Tradeoffs of Quantization"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P05-FIG-01",
+      "caption": "The Memory-Bound Edge Efficiency Envelope (MBEEE). The shaded region represents theoretical edge constraints ($<30$W, $<33$ms). Discrete architectures rapidly break the envelope due to bus power and contention, stalling throughput. UMA platforms scale throughput while remaining inside the envelope."
+    },
+    {
+      "figure_id": "P05-FIG-02",
+      "caption": "Illustrative latency sequences generated from the analytical queueing variance model. Discrete architectures exhibit higher $\\sigma_{lat"
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P05-REF-01",
+      "key": "b16",
+      "raw_citation": "Moore, G.E.: Cramming more components onto integrated circuits. Electronics 38 (8), 114--117 (1965)"
+    },
+    {
+      "reference_id": "P05-REF-02",
+      "key": "b15",
+      "raw_citation": "Mudge, T.: Power: A First-Class Architectural Design Constraint. Computer 34 (4), 52--58 (2001)"
+    },
+    {
+      "reference_id": "P05-REF-03",
+      "key": "b19",
+      "raw_citation": "Kumar, R., Farkas, K.I., Jouppi, N.P., Ranganathan, P., Tullsen, D.M.: Single-ISA Heterogeneous Multi-Core Architectures. In: MICRO. pp. 81--92 (2003)"
+    },
+    {
+      "reference_id": "P05-REF-04",
+      "key": "b_thermal",
+      "raw_citation": "Skadron, K., et al.: Temperature-Aware Microarchitecture. In: ISCA. pp. 2--13. IEEE (2003)"
+    },
+    {
+      "reference_id": "P05-REF-05",
+      "key": "b17",
+      "raw_citation": "Sutter, H.: The Free Lunch Is Over: A Fundamental Turn Toward Concurrency in Software. Dr. Dobb's Journal 30 (3), 202--210 (2005)"
+    },
+    {
+      "reference_id": "P05-REF-06",
+      "key": "b5",
+      "raw_citation": "Esmaeilzadeh, H., Blem, E., St. Amant, R., Sankaralingam, K., Burger, D.: Dark silicon and the end of multicore scaling. In: ISCA. pp. 365--376. ACM (2011)"
+    },
+    {
+      "reference_id": "P05-REF-07",
+      "key": "b_keystroke_2011",
+      "raw_citation": "M. Akila and S. Suresh Kumar, \"Improving feature extraction in keystroke dynamics using optimization techniques and neural network,\" IET Digital Library , 2011."
+    },
+    {
+      "reference_id": "P05-REF-08",
+      "key": "b_wsn_optimal_2012",
+      "raw_citation": "S. Nithyakalyani and S. Suresh Kumar, \"Optimal Clustering Algorithm for Energy Efficient Data Aggregation in WSN,\" European Journal of Scientific Research , vol. 78, no. 1, pp. 146--155, 2012."
+    },
+    {
+      "reference_id": "P05-REF-09",
+      "key": "b_wsn_voronoi_2012",
+      "raw_citation": "S. Nithyakalyani and S. Suresh Kumar, \"Energy Efficient Data Aggregation using Voronoi based Genetic Clustering Algorithm in WSN,\" International Journal of Computer Applications , vol. 54, no. 4, 2012."
+    },
+    {
+      "reference_id": "P05-REF-10",
+      "key": "b_ipfc_2013",
+      "raw_citation": "B. Gopinath, S. SureshKumar, and M. Ramya, \"Genetically optimized IPFC for improving transient stability performance in power systems,\" in International Conference Circuits, Power and Computing Technologies (ICCPCT) , 2013."
+    },
+    {
+      "reference_id": "P05-REF-11",
+      "key": "b8",
+      "raw_citation": "Horowitz, M.: 1.1 Computing's energy problem (and what we can do about it). In: ISSCC. pp. 10--14. IEEE (2014)"
+    },
+    {
+      "reference_id": "P05-REF-12",
+      "key": "b24",
+      "raw_citation": "Rhu, M., Gimelshein, N., Clemons, J., Zulfiqar, A., Keckler, S.W.: vDNN: Virtualized Deep Neural Networks for Scalable, Memory-Efficient Neural Network Design. In: MICRO. pp. 1--13 (2016)"
+    },
+    {
+      "reference_id": "P05-REF-13",
+      "key": "b35",
+      "raw_citation": "Iandola, F.N., Han, S., Moskewicz, M.W., Ashraf, K., Dally, W.J., Keutzer, K.: SqueezeNet: AlexNet-level accuracy with 50x fewer parameters. arXiv preprint arXiv:1602.07360 (2016)"
+    },
+    {
+      "reference_id": "P05-REF-14",
+      "key": "b_auth_2016",
+      "raw_citation": "V. Chandrasekar, S. Suresh Kumar, and T. Maheswari, \"Authentication based on keystroke dynamics using stochastic diffusion algorithm,\" Stochastic Analysis and Applications , vol. 34, no. 1, pp. 155--164, 2016."
+    },
+    {
+      "reference_id": "P05-REF-15",
+      "key": "b_dexterous_2016",
+      "raw_citation": "V. Chandrasekar and S. Suresh Kumar, \"A Dexterous feature selection Artificial Immune System Algorithm for Keystroke Dynamics,\" Stochastic Analysis and Applications , vol. 34, no. 1, pp. 147--154, 2016."
+    }
+  ]
+}

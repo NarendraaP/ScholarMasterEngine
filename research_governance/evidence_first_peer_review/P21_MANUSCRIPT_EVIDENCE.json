@@ -1,0 +1,278 @@
+{
+  "paper_id": "P21",
+  "paper_num": 21,
+  "title": "Formal Foundations of Spatiotemporal Compliance and Distributed System Integrity",
+  "abstract_snippet": "Automated compliance verification in cyber-physical environments is often performed using heuristic anomaly detection or probabilistic inference methods. While such approaches have proven effective in simple operating environments, they provide little theoretical guarantee for complex, contested, or distributed settings where adversaries or failures may simultaneously impact the system\u2019s state. Th...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Mathematical Preliminaries",
+    "Spatiotemporal System Model",
+    "Compliance Formalization",
+    "Core Theorems",
+    "Proof Deductions",
+    "Limitations",
+    "Related Work",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Research Gap and Motivation",
+    "Contributions",
+    "Formal Assumption Model",
+    "Absorbing Failure State",
+    "Spatiotemporal Axiomatics",
+    "Event Calculus \\& State Persistence",
+    "Measure-Theoretic Schedule Formalism",
+    "State Deviation and Metric Space",
+    "Adversarial Boundary-Condition Analysis (MDP formulation)",
+    "Mechanized Verification Feasibility"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P21-PARA-01",
+      "text_snippet": "Automated compliance verification in cyber-physical environments is increasingly deployed in institutional settings ranging from campus access control to industrial safety monitoring.",
+      "char_count": 183
+    },
+    {
+      "paragraph_id": "P21-PARA-02",
+      "text_snippet": "The main contribution of this work is the proposal of the unified verification approach and the subsequent development of the supporting mathematical infrastructure. The key elements are (1) the axiomatization based on classical kinematics and Event Calculus for specifying persistence semantics, (2)...",
+      "char_count": 577
+    },
+    {
+      "paragraph_id": "P21-PARA-03",
+      "text_snippet": "Reliable compliance verification requires more than empirical performance metrics. In cyber-physical environments governed by safety or regulatory constraints, the verification logic itself must possess internally consistent mathematical semantics.",
+      "char_count": 248
+    },
+    {
+      "paragraph_id": "P21-PARA-04",
+      "text_snippet": "These assumptions motivate the choice of the mathematical machinery below; before introducing behavioral axioms, we briefly describe the topological, metric, and temporal spaces over which the system is defined, following spatial logics in b16 .",
+      "char_count": 245
+    },
+    {
+      "paragraph_id": "P21-PARA-05",
+      "text_snippet": "Having defined the underlying mathematical spaces, we now construct the formal spatiotemporal system model.",
+      "char_count": 107
+    },
+    {
+      "paragraph_id": "P21-PARA-06",
+      "text_snippet": "Distributed sensing infrastructures generate discrete point-in-time observations rather than continuous analog trajectories (a consequence of practical sensor sampling). To reason about compliance over continuous time, the verification logic requires explicit persistence semantics to bridge the gaps...",
+      "char_count": 774
+    },
+    {
+      "paragraph_id": "P21-PARA-07",
+      "text_snippet": "Let $f$ represent a fluent (a dynamic property that holds over time), specifically the location fluent $Location( , z)$. Let $e$ be a discrete digital sensor observation event.",
+      "char_count": 176
+    },
+    {
+      "paragraph_id": "P21-PARA-08",
+      "text_snippet": "Bridging the temporal gap between discrete sensor events requires asserting an explicit Axiom of Inertia.",
+      "char_count": 105
+    },
+    {
+      "paragraph_id": "P21-PARA-09",
+      "text_snippet": "Compliance evaluated only at discrete sampling instants provides an incomplete description of system behavior. An entity may appear compliant at two observation times while temporarily violating constraints between them. To capture this continuous behavior we represent compliance over a scheduled in...",
+      "char_count": 370
+    },
+    {
+      "paragraph_id": "P21-PARA-10",
+      "text_snippet": "In practice, sensor observations inevitably contain bounded measurement noise. A formal system must demonstrate that its compliance deductions remain valid despite bounded errors in digital observation. Let a global system state at time $t$, denoted $S_t$, be the mapping $S_t: $. The set of all poss...",
+      "char_count": 330
+    },
+    {
+      "paragraph_id": "P21-PARA-11",
+      "text_snippet": "This section introduces an adversarial formulation not as a universal cybersecurity guarantee, but specifically as a theoretical boundary-condition analysis. To formally stress-test the compliance model and explore the limits of spoof-resistance, we evaluate resilience against active manipulation by...",
+      "char_count": 495
+    },
+    {
+      "paragraph_id": "P21-PARA-12",
+      "text_snippet": "Let the MDP be defined by the tuple $ Q , A, P , R, $: itemize States ($ Q $): The product space of physical entity locations and digital system state. Actions ($A$): The adversary $ A $ chooses to inject forged observation vectors $O'_{t $ into the data stream. The action space is $A(q) = $. Transi...",
+      "char_count": 913
+    },
+    {
+      "paragraph_id": "P21-PARA-13",
+      "text_snippet": "The formal framework yields several structural properties governing the behavior of the verification system.",
+      "char_count": 108
+    },
+    {
+      "paragraph_id": "P21-PARA-14",
+      "text_snippet": "The following theorem formalizes the intuition that bounded sensor noise does not alter compliance evaluation when adequate safety margins are enforced.",
+      "char_count": 152
+    },
+    {
+      "paragraph_id": "P21-PARA-15",
+      "text_snippet": "We now provide formal proof sketches supporting the principal theorems introduced in the preceding section.",
+      "char_count": 107
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P21-THE-01",
+      "type": "THEOREM",
+      "statement": "[State Continuity Resolution] Under the assumptions of Event Calculus and Axiom 1, the mapping of discrete valid sensor events to $HoldsAt$ intervals results in a continuous non-overlapping spatiotemporal trajectory $\\Gamma_\\epsilon$ over $\\T$."
+    },
+    {
+      "theorem_id": "P21-THE-02",
+      "type": "THEOREM",
+      "statement": "[Bounded Forward Reachability] A physical entity which was placed at location $z_0$ at moment $t_0$ may occupy any location in the region of space, which is defined by a spatial ball with radius $R = V_{max}\\Delta t$ around $z_0$ at the moment $t_0+\\Delta t$: \\begin{equation} Reach_{fwd}(\\epsilon, t..."
+    },
+    {
+      "theorem_id": "P21-THE-03",
+      "type": "THEOREM",
+      "statement": "[Borel Measurability of Compliance] Because the trajectory $\\Tr_\\epsilon$ constructed by Event Calculus is piecewise-constant, the set of times $\\{ t \\in E \\mid \\Phi_{comp}(\\epsilon, t) = 1 \\}$ is a finite union of intervals, rendering the compliance set Borel-measurable and enabling Lebesgue integr..."
+    },
+    {
+      "theorem_id": "P21-THE-04",
+      "type": "THEOREM",
+      "statement": "[Soundness of Verification] Let $B_\\eta(W_t) = \\{ S_t \\in \\Sstate \\mid ||S_t - W_t||_\\infty \\le \\eta \\}$ be the error ball bounded by maximum theoretical sensor noise $\\eta$. If the maximum sensor error $\\eta$ is strictly less than the authorized safety margin $\\delta$ ($\\eta < \\delta$), and the obs..."
+    },
+    {
+      "theorem_id": "P21-THE-05",
+      "type": "THEOREM",
+      "statement": "[Completeness Boundary \\& Nyquist Limits] Let $\\Psi_T: (\\T \\to \\Sstate) \\to (\\mathbb{Z} \\to \\Sstate)$ be the sampling operator with uniform temporal period $T$. A discrete spatiotemporal compliance system may fail to detect certain violations if the uniform sampling frequency $f_s = 1/T$ satisfies t..."
+    },
+    {
+      "theorem_id": "P21-THE-06",
+      "type": "THEOREM",
+      "statement": "[Decidability and PSPACE-Completeness] Under the assumptions of (1) Discrete Time steps $\\Delta t$, (2) a Finite Zone set $|\\Z| < \\infty$, and (3) a Finite Entity set $|\\E| < \\infty$, the problem reduces to reachability in a finite-state transition system, placing it within PSPACE under classical co..."
+    },
+    {
+      "theorem_id": "P21-THE-07",
+      "type": "THEOREM",
+      "statement": "[Distributed Integrity Preservation] Let $V_i$ be the vector clock at distributed shard $i$. The spatial and kinematic axioms defined earlier are globally preserved during an entity's migration from shard $\\mathcal{H}_a$ to $\\mathcal{H}_b$ if and only if the handover protocol $\\Pi$ is strictly \\text..."
+    },
+    {
+      "theorem_id": "P21-THE-08",
+      "type": "THEOREM",
+      "statement": "[Equilibrium of Spoofing] Assume that the system satisfies the Completeness Boundary (Theorem 5). Given the reward structure and the sampling completeness assumptions, the optimal policy $\\pi^*$ converges towards physical compliance. Note that this equilibrium assumes rational adversaries that corre..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P21-EQ-01",
+      "latex": "\\delta_{trans}(q, \\sigma) = \\fail \\quad \\text{if } \\sigma \\text{ violates Axiom 1, 2, or 3}"
+    },
+    {
+      "equation_id": "P21-EQ-02",
+      "latex": "\\forall \\epsilon \\in \\E, \\forall t \\in \\T, \\forall z_i, z_j \\in \\Z:"
+    },
+    {
+      "equation_id": "P21-EQ-03",
+      "latex": "\\frac{d_\\Z(z_i, z_j)}{t_2 - t_1} \\le V_{max}"
+    },
+    {
+      "equation_id": "P21-EQ-04",
+      "latex": "Initiates(e, Location(\\epsilon, z), t) \\\\ Terminates(e, Location(\\epsilon, z), t)"
+    },
+    {
+      "equation_id": "P21-EQ-05",
+      "latex": "Clipped(t_1, f, t_3) \\iff \\exists e', t_2 : \\nonumber \\\\ Terminates(e', f, t_2) \\land (t_1 < t_2 < t_3)"
+    },
+    {
+      "equation_id": "P21-EQ-06",
+      "latex": "\\begin{aligned} HoldsAt&(Location(\\epsilon, z), t) \\iff \\exists e, t_1 : \\\\ & Initiates(e, Location(\\epsilon, z), t_1) \\land (t_1 < t) \\\\ & \\land \\neg Clipped(t_1, Location(\\epsilon, z), t) \\end{aligned}"
+    },
+    {
+      "equation_id": "P21-EQ-07",
+      "latex": "\\Phi_{comp}(\\epsilon, t) = \\begin{cases} 1 & \\text{if } HoldsAt(Location(\\epsilon, z), t) \\\\ & \\qquad \\implies z \\in \\Auth(\\epsilon, t) \\\\ 0 & \\text{otherwise} \\end{cases}"
+    },
+    {
+      "equation_id": "P21-EQ-08",
+      "latex": "C_{dur}(\\epsilon, E) = \\mu(\\{ t \\in E \\mid \\Phi_{comp}(\\epsilon, t) = 1 \\})"
+    },
+    {
+      "equation_id": "P21-EQ-09",
+      "latex": "C_{strict}(\\epsilon, E) \\iff C_{dur}(\\epsilon, E) = \\mu(E)"
+    },
+    {
+      "equation_id": "P21-EQ-10",
+      "latex": "||S_t - W_t||_\\infty := \\max_{\\epsilon \\in \\E} d_\\Z(L_{S_t}(\\epsilon), L_{W_t}(\\epsilon))"
+    },
+    {
+      "equation_id": "P21-EQ-11",
+      "latex": "\\forall S, S' \\in \\Sstate: ||S - S'||_\\infty \\le \\delta \\implies P(S) = P(S')"
+    },
+    {
+      "equation_id": "P21-EQ-12",
+      "latex": "R = \\begin{cases} +1 & \\text{if spoof succeeds without anomaly} \\\\ - C & \\text{if spoof triggers Kinematic anomaly} \\\\ 0 & \\text{otherwise} \\end{cases}"
+    }
+  ],
+  "tables_inventory": [],
+  "figures_inventory": [],
+  "references_inventory": [
+    {
+      "reference_id": "P21-REF-01",
+      "key": "b12",
+      "raw_citation": "H. Lebesgue, Int\u00e9grale, longueur, aire . Annali di Matematica Pura et Applicata, 1902."
+    },
+    {
+      "reference_id": "P21-REF-02",
+      "key": "b4",
+      "raw_citation": "C. E. Shannon, \"Communication in the Presence of Noise,\" Proceedings of the IRE , vol. 37, no. 1, pp. 10-21, 1949."
+    },
+    {
+      "reference_id": "P21-REF-03",
+      "key": "b11",
+      "raw_citation": "J. Nash, \"Non-cooperative games,\" Annals of Mathematics , vol. 54, no. 2, pp. 286-295, 1951."
+    },
+    {
+      "reference_id": "P21-REF-04",
+      "key": "b10",
+      "raw_citation": "R. Bellman, \"A Markovian Decision Process,\" Journal of Mathematics and Mechanics , vol. 6, pp. 679-684, 1957."
+    },
+    {
+      "reference_id": "P21-REF-05",
+      "key": "b7",
+      "raw_citation": "W. J. Savitch, \"Relationships between nondeterministic and deterministic tape complexities,\" Journal of Computer and System Sciences , vol. 4, no. 2, pp. 177-192, 1970."
+    },
+    {
+      "reference_id": "P21-REF-06",
+      "key": "b8",
+      "raw_citation": "L. Lamport, \"Time, clocks, and the ordering of events in a distributed system,\" Communications of the ACM , vol. 21, no. 7, pp. 558-565, 1978."
+    },
+    {
+      "reference_id": "P21-REF-07",
+      "key": "b5",
+      "raw_citation": "E. M. Clarke and E. A. Emerson, \"Design and synthesis of synchronization skeletons using branching-time temporal logic,\" Logic of Programs , pp. 52-71, 1981."
+    },
+    {
+      "reference_id": "P21-REF-08",
+      "key": "b24",
+      "raw_citation": "L. Lamport, R. Shostak, and M. Pease, \"The Byzantine Generals Problem,\" ACM Transactions on Programming Languages and Systems , vol. 4, no. 3, pp. 382-401, 1982."
+    },
+    {
+      "reference_id": "P21-REF-09",
+      "key": "b6",
+      "raw_citation": "J. F. Allen, \"Maintaining knowledge about temporal intervals,\" Communications of the ACM , vol. 26, no. 11, pp. 832-843, 1983."
+    },
+    {
+      "reference_id": "P21-REF-10",
+      "key": "b3",
+      "raw_citation": "K. M. Chandy and L. Lamport, \"Distributed Snapshots: Determining Global States of Distributed Systems,\" ACM Transactions on Computer Systems , vol. 3, no. 1, pp. 63-75, 1985."
+    },
+    {
+      "reference_id": "P21-REF-11",
+      "key": "b2",
+      "raw_citation": "R. Kowalski and M. Sergot, \"A logic-based calculus of events,\" New Generation Computing , vol. 4, no. 1, pp. 67-95, 1986."
+    },
+    {
+      "reference_id": "P21-REF-12",
+      "key": "b20",
+      "raw_citation": "W. Rudin, Real and Complex Analysis , McGraw-Hill, 3rd edition, 1987."
+    },
+    {
+      "reference_id": "P21-REF-13",
+      "key": "b13",
+      "raw_citation": "C. J. Fidge, \"Timestamps in Message-Passing Systems That Preserve the Partial Ordering,\" Proc. 11th Australian Computer Science Conference , 1988, pp. 56-66."
+    },
+    {
+      "reference_id": "P21-REF-14",
+      "key": "b25",
+      "raw_citation": "F. Mattern, \"Virtual time and global states of distributed systems,\" Parallel and Distributed Algorithms , pp. 215-226, 1989."
+    },
+    {
+      "reference_id": "P21-REF-15",
+      "key": "b14",
+      "raw_citation": "R. Alur, T. A. Henzinger, and E. D. Sontag, \"Hybrid Automata: An Algorithmic Approach to the Specification and Verification of Hybrid Systems,\" Hybrid Systems , 1993."
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "paper_id": "P20",
+  "paper_num": 20,
+  "title": "The ScholarMaster Architecture: A Unified Reference Model for Privacy-First Intelligent Campus Systems",
+  "abstract_snippet": "Current research in intelligent cyber-physical infrastructure frequently suffers from a fragmentation challenge: hardware efficiency, algorithmic accuracy, data privacy, and sociological trust are typically treated as isolated domains. This paper introduces Constraint-First Architectural Synthesis (CFAS) to define a unified reference architecture for privacy-centered edge intelligence. We construc...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Constraint-First Architectural Synthesis (CFAS)",
+    "The Threat Landscape and Adversary Model",
+    "The ScholarMaster Reference Stack",
+    "The Canonical Invariant Namespace",
+    "Inter-Stratum Execution Contracts",
+    "The Life of an Event: End-to-End Sequence",
+    "Physical Deployment Topologies",
+    "The Theorem-Implementation Lattice",
+    "Limitations",
+    "Paper-to-Layer Traceability",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Architectural Scope: Reference Model vs. Execution Engine",
+    "Formal Admissibility Space",
+    "The 4-Stage CFAS Synthesis Lifecycle",
+    "Adversary Classes and Attack Vectors",
+    "Stratum I: The Physics of Intelligence \\& Operations",
+    "Stratum II: The Logic of Stewardship",
+    "Stratum III: The Architecture of Verification",
+    "Stratum IV: The Sociology of Trust and Federation",
+    "Ephemeral Data Constraints",
+    "Governance \\& Control Flow",
+    "Distributed Sovereignty",
+    "Operational Resilience",
+    "Semantic Firewalls at the Execution Boundary",
+    "The Temporal Budget Contract",
+    "Profile A: The Autonomous Micro-Edge",
+    "Profile B: The Campus Macro-Edge Cluster",
+    "Taxonomy Comparison Against Edge Reference Frameworks"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P20-PARA-01",
+      "text_snippet": "The dominant architectural thesis of this paper is Constraint-First Architectural Synthesis (CFAS) . We argue that operational trust and long-term viability emerge not from post-hoc security patching or isolated subsystem tuning, but from the strict compilation of physical, legal, and operational co...",
+      "char_count": 379
+    },
+    {
+      "paragraph_id": "P20-PARA-02",
+      "text_snippet": "Unlike conventional software engineering paradigms that begin with feature requirements and subsequently apply security controls, CFAS initiates synthesis from the physical, thermal, and regulatory boundary limits.",
+      "char_count": 214
+    },
+    {
+      "paragraph_id": "P20-PARA-03",
+      "text_snippet": "The architectural invariants presented in this reference model are designed strictly to neutralize adversaries up to and including class $A_3$.",
+      "char_count": 143
+    },
+    {
+      "paragraph_id": "P20-PARA-04",
+      "text_snippet": "The architecture is organized into four distinct strata. While Layers 1-8 represent the data flow, the Research Series papers map to these strata to provide operational, logical, and sociological definitions.",
+      "char_count": 208
+    },
+    {
+      "paragraph_id": "P20-PARA-05",
+      "text_snippet": "To ensure consistency across the 19-paper research program, we formalize the ScholarMaster Invariant Namespace .",
+      "char_count": 112
+    },
+    {
+      "paragraph_id": "P20-PARA-06",
+      "text_snippet": "The invariant namespace defines the foundational formal contracts across the edge execution stack: a violation of any invariant results in an immediate L1 hardware exception.",
+      "char_count": 174
+    },
+    {
+      "paragraph_id": "P20-PARA-07",
+      "text_snippet": "Listing 1 defines the Canonical Protobuf Schema utilized to bridge the Irreversibility Boundary. By definition, the schema lacks any fields capable of holding pixel bytes or string-based personal identifiers.",
+      "char_count": 208
+    },
+    {
+      "paragraph_id": "P20-PARA-08",
+      "text_snippet": "// Payload permitted across the L3 Boundary message AbstractEvent { uint64 timestamp_ms = 1; uint32 spatial_zone_id = 2; enum EventType { UNKNOWN = 0; HAND_RAISE = 1; GAIT_ANOMALY = 2; ACOUSTIC_IMPULSE = 3; EventType type = 3; // Ephemeral tracing token (Valid for 1 frame only) // Strictly non-corre...",
+      "char_count": 644
+    },
+    {
+      "paragraph_id": "P20-PARA-09",
+      "text_snippet": "To illustrate the integration of the 19 sub-systems, we map the lifecycle of a spatiotemporal event across the architecture using a formal sequence diagram (Figure fig:sequence ).",
+      "char_count": 179
+    },
+    {
+      "paragraph_id": "P20-PARA-10",
+      "text_snippet": "Consider a student entering a restricted examination room: enumerate Ingestion (L1/L2): Photons hit the camera sensor. A frame is ingested into a bounded volatile memory buffer. The operational runtime initiates the strict temporal limit (INV-04). Abstraction (L3): The frame is processed by the NPU....",
+      "char_count": 1061
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P20-EQ-01",
+      "latex": "\\mathcal{C}_{\\mathrm{admissible}} = C_{\\mathrm{phys}} \\land C_{\\mathrm{therm}} \\land C_{\\mathrm{priv}} \\land C_{\\mathrm{gov}} \\land C_{\\mathrm{time}}, \\label{eq:cfas_admissibility}"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P20-TAB-01",
+      "caption": "The ScholarMaster Theorem-Implementation-Validation Lattice"
+    },
+    {
+      "table_id": "P20-TAB-02",
+      "caption": "Comparative Reference Architecture Taxonomy"
+    },
+    {
+      "table_id": "P20-TAB-03",
+      "caption": "System Traceability Matrix"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P20-FIG-01",
+      "caption": "The ScholarMaster Unified Reference Stack. The system is built upwards from physical constraints (I) to logical reasoning (II), verified trust (III), and finally social acceptance (IV)."
+    },
+    {
+      "figure_id": "P20-FIG-02",
+      "caption": "The formal payload schema. The compiler guarantees that no `bytes raw\\_image` field can be passed to the L4 Inference layer, physically enforcing INV-02 and INV-10."
+    },
+    {
+      "figure_id": "P20-FIG-03",
+      "caption": "End-to-End Event Sequence. Note that the Raw RGB Frame is explicitly destroyed (Step 3) before the `AbstractEvent` protobuf payload is transmitted to the Logic Layer (Step 4)."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P20-REF-01",
+      "key": "b_hoare",
+      "raw_citation": "C. A. R. Hoare, ``An axiomatic basis for computer programming,'' Communications of the ACM , vol. 12, no. 10, pp. 576--580, 1969."
+    },
+    {
+      "reference_id": "P20-REF-02",
+      "key": "b_leveson",
+      "raw_citation": "N. G. Leveson, Safeware: System Safety and Computers . Addison-Wesley, 1995."
+    },
+    {
+      "reference_id": "P20-REF-03",
+      "key": "b_saltzer",
+      "raw_citation": "J. H. Saltzer and M. D. Schroeder, ``The protection of information in computer systems,'' Proceedings of the IEEE , vol. 63, no. 9, pp. 1278--1308, 1975."
+    },
+    {
+      "reference_id": "P20-REF-04",
+      "key": "b_meyer",
+      "raw_citation": "B. Meyer, ``Applying `Design by Contract','' IEEE Computer , vol. 25, no. 10, pp. 40--51, 1992."
+    },
+    {
+      "reference_id": "P20-REF-05",
+      "key": "b_lamport",
+      "raw_citation": "L. Lamport, ``Time, clocks, and the ordering of events in a distributed system,'' Communications of the ACM , vol. 21, no. 7, pp. 558--565, 1978."
+    },
+    {
+      "reference_id": "P20-REF-06",
+      "key": "b_clarke",
+      "raw_citation": "E. M. Clarke et al., Model Checking . MIT Press, 1999."
+    },
+    {
+      "reference_id": "P20-REF-07",
+      "key": "b_nist",
+      "raw_citation": "E. Griffor et al., ``Framework for Cyber-Physical Systems: Volume 1, Overview,'' NIST Special Publication 1500-201 , 2017."
+    },
+    {
+      "reference_id": "P20-REF-08",
+      "key": "b_edgex",
+      "raw_citation": "Linux Foundation, ``EdgeX Foundry: An Open Source Microservices Framework for the IoT Edge,'' White Paper , 2021."
+    },
+    {
+      "reference_id": "P20-REF-09",
+      "key": "b_satya",
+      "raw_citation": "M. Satyanarayanan, ``The Emergence of Edge Computing,'' IEEE Computer , vol. 50, no. 1, pp. 30--39, 2017."
+    },
+    {
+      "reference_id": "P20-REF-10",
+      "key": "b_mcmahan",
+      "raw_citation": "B. McMahan et al., ``Communication-Efficient Learning of Deep Networks from Decentralized Data,'' in AISTATS , pp. 1273--1282, 2017."
+    },
+    {
+      "reference_id": "P20-REF-11",
+      "key": "b_dwork",
+      "raw_citation": "C. Dwork, ``Differential Privacy: A Survey of Results,'' in TAMC , pp. 1--19, Springer, 2008."
+    },
+    {
+      "reference_id": "P20-REF-12",
+      "key": "b_merkle",
+      "raw_citation": "R. C. Merkle, ``A certified digital signature,'' in Advances in Cryptology --- CRYPTO , pp. 218--238, Springer, 1989."
+    },
+    {
+      "reference_id": "P20-REF-13",
+      "key": "b_bass",
+      "raw_citation": "L. Bass, P. Clements, and R. Kazman, Software Architecture in Practice , 4th ed. Addison-Wesley, 2021."
+    },
+    {
+      "reference_id": "P20-REF-14",
+      "key": "P1",
+      "raw_citation": "N. Babu P., ``High-Density Biometric Vector Indexing at the Edge,'' ScholarMaster Series , Paper 1, 2025."
+    },
+    {
+      "reference_id": "P20-REF-15",
+      "key": "P2",
+      "raw_citation": "N. Babu P., ``Context-Aware Multi-Modal Framework,'' ScholarMaster Series , Paper 2, 2025."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_name": "ScholarMaster Future Paper Onboarding Specification (P26+)",
+  "version": "2.0.0-PROD",
+  "last_updated": "2026-08-28T21:43:49.634704+00:00",
+  "required_fields": [
+    "paper_id",
+    "title",
+    "authors",
+    "canonical_manuscript_path",
+    "research_plan_position",
+    "research_question",
+    "primary_contribution",
+    "single_owner_domain",
+    "evidence_type",
+    "target_venue",
+    "publication_status"
+  ],
+  "automatic_governance_provisioning": [
+    "Registers paper in PUBLICATION_REGISTRY.json",
+    "Creates nodes in RESEARCH_PLAN_GRAPH.json and ACTUAL_PUBLICATION_CITATION_GRAPH.json",
+    "Configures SROS-004 Single-Owner domain boundary",
+    "Initializes Two-Tier Reviewer Calibration validator record",
+    "Creates canonical BibTeX identity mapping",
+    "Enables automated downstream impact analysis upon state transitions"
+  ]
+}

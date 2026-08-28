@@ -1,0 +1,271 @@
+{
+  "paper_id": "P18",
+  "paper_num": 18,
+  "title": "Runtime Enforcement of Architectural Irreversibility in Edge AI Systems\n\\thanks{This research was conducted at the Department of Computer Science and Engineering, Swarnandhra College of Engineering \\& Technology (Autonomous), as part of academic research activities.",
+  "abstract_snippet": "Architectural privacy claims require runtime validation to ensure compliance under adverse deployment conditions. This paper presents a verification methodology for confirming that privacy invariants---defined in ScholarMasterEngine's canonical architecture---are enforced at runtime, including under crash and failure conditions. We enumerate a failure taxonomy covering process crashes, power loss,...",
+  "pdf_total_pages": 7,
+  "sections_inventory": [
+    "Introduction",
+    "Threat Model and Failure Taxonomy",
+    "Runtime Enforcement Mechanisms",
+    "Formal Irreversibility Invariants",
+    "Failure Injection and Test Harness",
+    "Results",
+    "Discussion",
+    "Scope and Relation to Prior Work",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Why Architectural Claims Require Runtime Verification",
+    "Scope and Authority",
+    "Paper Structure",
+    "Threat Model",
+    "Failure Taxonomy: Operational Necessity",
+    "Failure Tolerance Requirement",
+    "Volatile-Memory-Only Processing",
+    "Kernel-Level Memory Locking",
+    "Time-to-Live (TTL) Enforcement",
+    "Forced Zeroization",
+    "Independent Watchdog Process",
+    "Kill-on-Violation Semantics",
+    "Fail-Closed Behavior",
+    "P18-INV-01: Boundary Non-Crossing",
+    "P18-INV-02: TTL Compliance",
+    "Proof Sketch for P18-INV-02 (TTL Safety)",
+    "P18-INV-03: Restart Non-Replay",
+    "P18-INV-04: Governance Non-Bypass",
+    "P18-INV-05: Watchdog Independence",
+    "P18-INV-06: Zeroization Completeness",
+    "Fault Injection Methodology",
+    "Failure Scenarios",
+    "Residue Detection",
+    "Test Harness Implementation",
+    "Chaos Engineering Implementation",
+    "TTL Enforcement",
+    "Watchdog Behavior",
+    "Post-Crash Application-Layer Data Residue",
+    "System Halt Correctness",
+    "Invariant Verification Summary",
+    "Empirical Validation of Fail-Closed Semantics",
+    "Adversarial Timing Analysis (TOCTOU)",
+    "Defense in Depth",
+    "Limitations and Operational Realism",
+    "Relationship to Paper 17",
+    "Related Work",
+    "Hardware Enclaves vs. Software Enforcement",
+    "Future Direction: Formal Verification"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P18-PARA-01",
+      "text_snippet": "Our contribution is strictly empirical proof of enforcement. All invariants defined in this paper use the P18-INV namespace (P18-INV-01 through P18-INV-06) to distinguish them from the canonical invariant namespace.",
+      "char_count": 215
+    },
+    {
+      "paragraph_id": "P18-PARA-02",
+      "text_snippet": "This ensures that even if the kernel panics and dumps memory to disk for debugging, the raw sensor buffers are excluded from the dump file, satisfying P18-INV-01 under catastrophic failure b21 .",
+      "char_count": 194
+    },
+    {
+      "paragraph_id": "P18-PARA-03",
+      "text_snippet": "The TTL constants are: itemize FRAME\\_TTL\\_MS = 33 (video frames) AUDIO\\_TTL\\_MS = 3000 (audio buffers) itemize",
+      "char_count": 111
+    },
+    {
+      "paragraph_id": "P18-PARA-04",
+      "text_snippet": "The TTL thresholds mentioned in the previous paragraph are calculated with respect to the frame cadence (30 FPS) and the bounded buffering constraints described in Paper 17; they must be treated as hard deadlines rather than average destruction times, as the implementation of the TTL enforcement thr...",
+      "char_count": 499
+    },
+    {
+      "paragraph_id": "P18-PARA-05",
+      "text_snippet": "The verify\\_zero check forces a read-back to improve operational confidence, ensuring the write completed before deallocation. Failure to verify triggers an immediate halt.",
+      "char_count": 172
+    },
+    {
+      "paragraph_id": "P18-PARA-06",
+      "text_snippet": "This contrasts with fail-open systems that continue operating with degraded privacy.",
+      "char_count": 84
+    },
+    {
+      "paragraph_id": "P18-PARA-07",
+      "text_snippet": "Enforcement: Type system prevents raw data types from appearing in post-boundary function signatures. Runtime assertions verify payload types at the boundary transition.",
+      "char_count": 169
+    },
+    {
+      "paragraph_id": "P18-PARA-08",
+      "text_snippet": "Enforcement: TTL enforcement loop (10ms interval) + independent watchdog (100ms interval). Dual enforcement provides defense in depth.",
+      "char_count": 134
+    },
+    {
+      "paragraph_id": "P18-PARA-09",
+      "text_snippet": "Formally: $ restart () RawBuffers = $",
+      "char_count": 37
+    },
+    {
+      "paragraph_id": "P18-PARA-10",
+      "text_snippet": "Enforcement: Volatile memory is assumed to be cleared upon power loss under standard hardware behavior; physical remanence attacks are outside the defined threat model. Process termination triggers explicit zeroization. Boot sequence verifies empty buffer state before accepting new data.",
+      "char_count": 288
+    },
+    {
+      "paragraph_id": "P18-PARA-11",
+      "text_snippet": "Formally: $ o Output : passed\\_governance (o) = true $",
+      "char_count": 54
+    },
+    {
+      "paragraph_id": "P18-PARA-12",
+      "text_snippet": "Enforcement: The output module requires an approval token. Token is cryptographically signed by the governance process. Missing or invalid token blocks output.",
+      "char_count": 159
+    },
+    {
+      "paragraph_id": "P18-PARA-13",
+      "text_snippet": "Formally: $ crash ( main ) crash ( watchdog )$",
+      "char_count": 46
+    },
+    {
+      "paragraph_id": "P18-PARA-14",
+      "text_snippet": "Enforcement: Separate process, separate memory space, process-level isolation within the same OS instance. Watchdog monitors main process health and takes action on non-response.",
+      "char_count": 178
+    },
+    {
+      "paragraph_id": "P18-PARA-15",
+      "text_snippet": "Formally: $ d Buffers : deallocate (d) content (d) = 0 immediately prior to release $",
+      "char_count": 85
+    }
+  ],
+  "theorems_inventory": [],
+  "equations_inventory": [
+    {
+      "equation_id": "P18-EQ-01",
+      "latex": "\\forall d \\in \\mathcal{D}_{\\mathrm{raw}}, \\forall t: \\mathrm{accessible}(d, t) \\implies \\mathrm{is\\_pre\\_boundary}(d, t)"
+    },
+    {
+      "equation_id": "P18-EQ-02",
+      "latex": "\\forall d \\in \\mathcal{D}_{\\mathrm{raw}}, \\forall t: \\mathrm{accessible}(d, t) \\implies \\mathrm{age}(d, t) < \\mathrm{TTL}(d)"
+    },
+    {
+      "equation_id": "P18-EQ-03",
+      "latex": "\\{ \\text{Alloc}(b) \\land t = T_0 \\} \\quad P \\quad \\{ \\text{Zero}(b) \\land t < T_0 + \\Delta \\}"
+    },
+    {
+      "equation_id": "P18-EQ-04",
+      "latex": "\\square (\\text{State}(M) = \\text{Stale} \\implies \\Diamond \\text{State}(M) = \\text{Halted})"
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P18-TAB-01",
+      "caption": "Failure Taxonomy"
+    },
+    {
+      "table_id": "P18-TAB-02",
+      "caption": "Fault Injection Scenarios"
+    },
+    {
+      "table_id": "P18-TAB-03",
+      "caption": "TTL Enforcement Results"
+    },
+    {
+      "table_id": "P18-TAB-04",
+      "caption": "Watchdog Termination Results"
+    },
+    {
+      "table_id": "P18-TAB-05",
+      "caption": "Post-Crash Residue Detection (Application Layer)"
+    },
+    {
+      "table_id": "P18-TAB-06",
+      "caption": "System Halt Behavior"
+    },
+    {
+      "table_id": "P18-TAB-07",
+      "caption": "Invariant Verification"
+    }
+  ],
+  "figures_inventory": [
+    {
+      "figure_id": "P18-FIG-01",
+      "caption": "Watchdog Architecture. The Watchdog operates with process-level isolation within the same OS instance, monitoring the Shared Fence. If the Main Process hangs or violates TTL, the Watchdog issues a SIGKILL."
+    },
+    {
+      "figure_id": "P18-FIG-02",
+      "caption": "Fail-Closed State Machine. Any critical invariant violation (TTL, Watchdog) causes transition to the HALT state. The only possible transition caused by network problems is the move to the Degraded (Safe) state, from which no outputs are produced, but the local processing is still allowed."
+    }
+  ],
+  "references_inventory": [
+    {
+      "reference_id": "P18-REF-01",
+      "key": "b19",
+      "raw_citation": "C. A. R. Hoare, ``An axiomatic basis for computer programming,'' Communications of the ACM , vol. 12, no. 10, pp. 576--580, 1969."
+    },
+    {
+      "reference_id": "P18-REF-02",
+      "key": "b15",
+      "raw_citation": "L. Lamport, ``Proving the correctness of multiprocess programs,'' IEEE Trans. Software Engineering , vol. 3, no. 2, pp. 125--143, 1977."
+    },
+    {
+      "reference_id": "P18-REF-03",
+      "key": "b1",
+      "raw_citation": "J. Arlat et al., ``Fault injection for dependability validation: A methodology and some applications,'' IEEE Trans. Software Engineering , vol. 16, no. 2, pp. 166--182, 1990."
+    },
+    {
+      "reference_id": "P18-REF-04",
+      "key": "b5",
+      "raw_citation": "N. G. Leveson, Safeware: System Safety and Computers . Addison-Wesley, 1995."
+    },
+    {
+      "reference_id": "P18-REF-05",
+      "key": "b4",
+      "raw_citation": "P. Gutmann, ``Secure deletion of data from magnetic and solid-state memory,'' USENIX Security , 1996."
+    },
+    {
+      "reference_id": "P18-REF-06",
+      "key": "b2",
+      "raw_citation": "M. Hsueh, T. Tsai, and R. Iyer, ``Fault injection techniques and tools,'' Computer , vol. 30, no. 4, pp. 75--82, 1997."
+    },
+    {
+      "reference_id": "P18-REF-07",
+      "key": "b3",
+      "raw_citation": "A. Benso et al., ``A Watchdog Processor to Detect Data and Control Flow Errors,'' IEEE Design \\& Test of Computers , vol. 15, no. 4, pp. 24--32, 1998."
+    },
+    {
+      "reference_id": "P18-REF-08",
+      "key": "b14",
+      "raw_citation": "E. M. Clarke, O. Grumberg, and D. A. Peled, Model Checking . MIT Press, 1999."
+    },
+    {
+      "reference_id": "P18-REF-09",
+      "key": "b22",
+      "raw_citation": "J. Rushby, ``Partitioning in avionics architectures: Requirements, mechanisms, and assurance,'' NASA Contractor Report , 1999."
+    },
+    {
+      "reference_id": "P18-REF-10",
+      "key": "b16",
+      "raw_citation": "M. Leucker and C. Schallhart, ``A brief account of runtime verification,'' Journal of Logic and Algebraic Programming , vol. 78, no. 5, pp. 293--303, 2009."
+    },
+    {
+      "reference_id": "P18-REF-11",
+      "key": "b6",
+      "raw_citation": "A. Cavoukian, ``Privacy by design: The 7 foundational principles,'' Information and Privacy Commissioner of Ontario, 2009."
+    },
+    {
+      "reference_id": "P18-REF-12",
+      "key": "b8",
+      "raw_citation": "L. Szekeres et al., ``SoK: Eternal war in memory,'' IEEE S\\&P , 2013."
+    },
+    {
+      "reference_id": "P18-REF-13",
+      "key": "b21",
+      "raw_citation": "A. S. Tanenbaum and H. Bos, Modern Operating Systems , 4th ed. Pearson, 2014."
+    },
+    {
+      "reference_id": "P18-REF-14",
+      "key": "b9",
+      "raw_citation": "C. Dwork et al., ``The algorithmic foundations of differential privacy,'' Foundations and Trends in Theoretical CS , 2014."
+    },
+    {
+      "reference_id": "P18-REF-15",
+      "key": "b18",
+      "raw_citation": "R. Natella et al., ``Assessing dependability with software fault injection: A survey,'' ACM Computing Surveys , vol. 48, no. 3, pp. 1--27, 2016."
+    }
+  ]
+}

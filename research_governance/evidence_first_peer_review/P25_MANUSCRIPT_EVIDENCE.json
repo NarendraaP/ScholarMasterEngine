@@ -1,0 +1,244 @@
+{
+  "paper_id": "P25",
+  "paper_num": 25,
+  "title": "ScholarMaster Macro Integration Architecture and Downstream Error Propagation Analysis",
+  "abstract_snippet": "Complex edge intelligence pipelines compose multiple sequential inference stages, cascading from low-level sensory ingestion to high-level policy enforcement. In unmitigated architectures, minor sensory perturbations at Layer 1 undergo non-linear amplification as they propagate downstream through deep biometric feature extractors, spatial tracking filters, and formal compliance state machines---a ...",
+  "pdf_total_pages": 6,
+  "sections_inventory": [
+    "Introduction",
+    "Related Work \\& Systemic Safety Taxonomy",
+    "5-Layer Macro System Model \\& Geometric Proofs",
+    "Error Amplification Factor (EAF) \\& Lipschitz Chain Rules",
+    "Macro Empirical Results \\& Containment Analysis",
+    "Systemic Boundary Conditions \\& Architectural Invariants",
+    "Conclusion"
+  ],
+  "subsections_inventory": [
+    "Data Cascades \\& Machine Learning Technical Debt",
+    "Error Propagation in Multi-Stage ML Pipelines",
+    "Fault Containment \\& Dependable Computing",
+    "Runtime Verification \\& Formal Cyber-Physical Safety",
+    "Adversarial Robustness \\& Corruption Benchmarks",
+    "Compositional Verification \\& Lipschitz Sensitivity Analysis",
+    "Metric-Space Partitioning \\& Voronoi Geometry",
+    "Safety-Critical Edge Cyber-Physical Architectures",
+    "Canonical 5-Layer Macro Architecture",
+    "Voronoi Facet Boundary Step Discontinuity Proof",
+    "Mathematical Definition of EAF",
+    "Composite Lipschitz Chain Rule Under Domain Partitioning",
+    "Experimental Setup \\& Progressive Corruption Regimes",
+    "Empirical EAF Telemetry \\& Layer-Wise Compounding",
+    "Deep Interpretation of Telemetry (3-Layer Standard)"
+  ],
+  "paragraphs_inventory": [
+    {
+      "paragraph_id": "P25-PARA-01",
+      "text_snippet": "In multi-tier vision architectures, this compounding vulnerability is exacerbated by the mathematical nature of representation learning and metric retrieval. When optical sensors are subject to mild environmental perturbations (e.g., focal blur, decreases in intensity, advection of atmospheric parti...",
+      "char_count": 988
+    },
+    {
+      "paragraph_id": "P25-PARA-02",
+      "text_snippet": "Despite the prevalence of multi-stage pipelines in edge computing, existing literature exhibits five foundational systems research gaps: enumerate Isolated Component Evaluation : Existing benchmarks measure unimodal accuracy on curated clean datasets, failing to quantify cross-layer error amplificat...",
+      "char_count": 1437
+    },
+    {
+      "paragraph_id": "P25-PARA-03",
+      "text_snippet": "To resolve these challenges, this paper presents the complete macro integration architecture of ScholarMaster and establishes the first formal and empirical Downstream Error Propagation Analysis across its five canonical layers.",
+      "char_count": 228
+    },
+    {
+      "paragraph_id": "P25-PARA-04",
+      "text_snippet": "Specifically, this paper makes four core contributions: enumerate 5-Layer Macro System Formalization : We formalize the complete state transfer functions, data interfaces, and zero-copy ring-buffer orchestration across all five canonical layers of ScholarMaster. First-Principles Voronoi Step Jump Pr...",
+      "char_count": 1214
+    },
+    {
+      "paragraph_id": "P25-PARA-05",
+      "text_snippet": "The sequential state transition across the five canonical layers is formalized as: equation S _{l+1 = T _l( S _l, _l), l \\{1, 2, 3, 4\\ , equation where $ S _l$ represents the internal state of layer $l$ and $ _l$ denotes the localized perturbation introduced at that stage.",
+      "char_count": 273
+    },
+    {
+      "paragraph_id": "P25-PARA-06",
+      "text_snippet": "Consider a symmetric perturbation along the normal vector $ n $ with displacement $ > 0$. Evaluating the inner product difference for $ x _0 + n $: align x _0 + n , g _i - g _j &= x _0, g _i - g _j + n , g _i - g _j \\\\ &= 0 + \\| g _i - g _j\\|_2^2 {\\| g _i - g _j\\|_2 \\\\ &= \\| g _i - g _j\\|_2 > 0. ali...",
+      "char_count": 479
+    },
+    {
+      "paragraph_id": "P25-PARA-07",
+      "text_snippet": "Conversely, evaluating the inner product difference for $ x _0 - n $: equation x _0 - n , g _i - g _j = - \\| g _i - g _j\\|_2 < 0. equation Thus $ x _0 - n V _j$, implying $ N ( x _0 - n ) = j$ and $ ( x _0 - n ) = g _j$.",
+      "char_count": 220
+    },
+    {
+      "paragraph_id": "P25-PARA-08",
+      "text_snippet": "Evaluating the limit of the Euclidean jump norm as $ 0^+$: align _{ 0^+ &\\| ( x _0 + n ) - ( x _0 - n )\\|_2 \\\\ &= \\| g _i - g _j\\|_2 = 2 - 2 g _i, g _j > 0, align since distinct enrolled gallery identities satisfy $ g _i g _j$ and $ g _i, g _j < 1$. This proves that the nearest-neighbor identity map...",
+      "char_count": 400
+    },
+    {
+      "paragraph_id": "P25-PARA-09",
+      "text_snippet": "The magnitude of $ EAF _l$ defines the error transmission regime: itemize Error Amplification ($ EAF _l > 1.0$) : The multi-stage pipeline magnifies upstream sensory noise into disproportionately severe downstream errors (e.g., $5\\%$ input noise producing $6.67\\%$ error yields $ EAF = 1.3340$). Erro...",
+      "char_count": 542
+    },
+    {
+      "paragraph_id": "P25-PARA-10",
+      "text_snippet": "Because Theorem~ thm:voronoi_discontinuity proves that nearest-neighbor retrieval $f_2$ is not globally continuous on $ S ^{D-1 $, the global composite mapping $ $ is not globally Lipschitz continuous. To formalize safety guarantees, we partition the input sensory domain into two mutually disjoint s...",
+      "char_count": 561
+    }
+  ],
+  "theorems_inventory": [
+    {
+      "theorem_id": "P25-THE-01",
+      "type": "THEOREM",
+      "statement": "[Voronoi Facet Step Jump Discontinuity] \\label{thm:voronoi_discontinuity} Let $\\mathcal{F}_{ij} = \\overline{\\mathcal{V}}_i \\cap \\overline{\\mathcal{V}}_j$ denote the $(D-2)$-dimensional facet boundary separating adjacent Voronoi cells $\\mathcal{V}_i$ and $\\mathcal{V}_j$. For any interior facet point ..."
+    },
+    {
+      "theorem_id": "P25-PRO-02",
+      "type": "PROPOSITION",
+      "statement": "[ArcFace Target Angular Margin Specification] \\label{prop:arcface_margin} Under the ArcFace loss formulation with additive angular margin parameter $m = 0.5\\text{ rad}$, the target inter-class angular separation invariant between adjacent gallery centroids $\\theta_{ij} = \\arccos \\langle \\mathbf{g}_i..."
+    },
+    {
+      "theorem_id": "P25-PRO-03",
+      "type": "PROPOSITION",
+      "statement": "[Piecewise Lipschitz Chain Rule] Under Layer-1 Perception Integrity gating, the composite pipeline satisfies the following piecewise Lipschitz bounds: \\begin{enumerate} \\item On the certified sub-manifold $\\mathcal{X}_{cert}$ where embeddings remain strictly within the interior of their correct Voro..."
+    }
+  ],
+  "equations_inventory": [
+    {
+      "equation_id": "P25-EQ-01",
+      "latex": "\\mathcal{S}_{l+1} = \\mathcal{T}_l(\\mathcal{S}_l, \\Delta_l), \\quad l \\in \\{1, 2, 3, 4\\},"
+    },
+    {
+      "equation_id": "P25-EQ-02",
+      "latex": "\\mathcal{V}_i = \\left\\{ \\mathbf{z} \\in \\mathbb{S}^{D-1} \\mid \\langle \\mathbf{z}, \\mathbf{g}_i \\rangle > \\langle \\mathbf{z}, \\mathbf{g}_j \\rangle, \\, \\forall j \\neq i \\right\\}."
+    },
+    {
+      "equation_id": "P25-EQ-03",
+      "latex": "\\lim_{\\epsilon \\to 0^+} \\|\\phi(\\mathbf{x}_0 + \\epsilon \\mathbf{n}) - \\phi(\\mathbf{x}_0 - \\epsilon \\mathbf{n})\\|_2 = \\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 > 0."
+    },
+    {
+      "equation_id": "P25-EQ-04",
+      "latex": "\\langle \\mathbf{x}_0 + \\epsilon \\mathbf{n}, \\mathbf{g}_i - \\mathbf{g}_j \\rangle &= \\langle \\mathbf{x}_0, \\mathbf{g}_i - \\mathbf{g}_j \\rangle + \\epsilon \\langle \\mathbf{n}, \\mathbf{g}_i - \\mathbf{g}_j \\rangle \\nonumber \\\\ &= 0 + \\epsilon \\frac{\\|\\math..."
+    },
+    {
+      "equation_id": "P25-EQ-05",
+      "latex": "\\langle \\mathbf{x}_0 - \\epsilon \\mathbf{n}, \\mathbf{g}_i - \\mathbf{g}_j \\rangle = -\\epsilon \\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 < 0."
+    },
+    {
+      "equation_id": "P25-EQ-06",
+      "latex": "\\lim_{\\epsilon \\to 0^+} &\\|\\phi(\\mathbf{x}_0 + \\epsilon \\mathbf{n}) - \\phi(\\mathbf{x}_0 - \\epsilon \\mathbf{n})\\|_2 \\nonumber \\\\ &= \\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 = \\sqrt{2 - 2\\langle \\mathbf{g}_i, \\mathbf{g}_j \\rangle} > 0,"
+    },
+    {
+      "equation_id": "P25-EQ-07",
+      "latex": "\\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 = \\sqrt{2 - 2\\cos \\theta_{ij}} \\ge 2\\sin(m) \\approx 0.9589."
+    },
+    {
+      "equation_id": "P25-EQ-08",
+      "latex": "\\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 = \\sqrt{4\\sin^2\\left(\\frac{\\theta_{ij}}{2}\\right)} = 2\\sin\\left(\\frac{\\theta_{ij}}{2}\\right)."
+    },
+    {
+      "equation_id": "P25-EQ-09",
+      "latex": "\\|\\mathbf{g}_i - \\mathbf{g}_j\\|_2 &\\ge 2\\sin(m) \\nonumber \\\\ &= 2\\sin(0.5) \\approx 0.9589."
+    },
+    {
+      "equation_id": "P25-EQ-10",
+      "latex": "\\mathrm{EAF}_l = \\frac{E_l}{\\Delta_1}."
+    },
+    {
+      "equation_id": "P25-EQ-11",
+      "latex": "\\mathcal{X} = \\mathcal{X}_{cert} \\cup \\mathcal{X}_{quar}, \\quad \\mathcal{X}_{cert} \\cap \\mathcal{X}_{quar} = \\emptyset,"
+    },
+    {
+      "equation_id": "P25-EQ-12",
+      "latex": "\\mathrm{Lip}(\\Phi|_{\\mathcal{X}_{cert}}) \\le \\prod_{l=1}^5 \\mathrm{Lip}(f_l|_{\\mathcal{X}_{cert}})."
+    }
+  ],
+  "tables_inventory": [
+    {
+      "table_id": "P25-TAB-01",
+      "caption": "Comparative Taxonomy of Systemic Safety, Error Propagation, and Macro Architecture Paradigms"
+    },
+    {
+      "table_id": "P25-TAB-02",
+      "caption": "Downstream Error Propagation and EAF Telemetry Across Corruption Regimes"
+    },
+    {
+      "table_id": "P25-TAB-03",
+      "caption": "Layer-Wise Error Compounding Dynamics (Unprotected Pipeline)"
+    }
+  ],
+  "figures_inventory": [],
+  "references_inventory": [
+    {
+      "reference_id": "P25-REF-01",
+      "key": "sculley2015hidden",
+      "raw_citation": "D. Sculley et al., ``Hidden technical debt in machine learning systems,'' in Proc. NeurIPS , 2015, pp. 2503--2511."
+    },
+    {
+      "reference_id": "P25-REF-02",
+      "key": "sambasivan2021everyone",
+      "raw_citation": "N. Sambasivan, S. Kapania, H. Highfill, D. Akrong, P. Paritosh, and L. M. Aroyo, ```Everyone wants to do the model work, not the data work': Data Cascades in high-stakes AI,'' in Proc. CHI , 2021, pp. 1--15."
+    },
+    {
+      "reference_id": "P25-REF-03",
+      "key": "leveson1995safeware",
+      "raw_citation": "N. G. Leveson, Safeware: System Safety and Computers , Addison-Wesley, 1995."
+    },
+    {
+      "reference_id": "P25-REF-04",
+      "key": "avizienis2004basic",
+      "raw_citation": "A. Avizienis, J. C. Laprie, B. Randell, and C. Landwehr, ``Basic concepts and taxonomy of dependable and secure computing,'' IEEE Trans. Dependable Secure Comput. , vol. 1, no. 1, pp. 11--33, 2004."
+    },
+    {
+      "reference_id": "P25-REF-05",
+      "key": "deng2019arcface",
+      "raw_citation": "J. Deng, J. Guo, N. Xue, and S. Zafeiriou, ``ArcFace: Additive angular margin loss for deep face recognition,'' in Proc. CVPR , 2019, pp. 4690--4699."
+    },
+    {
+      "reference_id": "P25-REF-06",
+      "key": "malkov2018efficient",
+      "raw_citation": "Y. A. Malkov and D. A. Yashunin, ``Efficient and robust approximate nearest neighbors using Hierarchical Navigable Small World graphs,'' IEEE Trans. Pattern Anal. Mach. Intell. , vol. 42, no. 4, pp. 824--836, 2018."
+    },
+    {
+      "reference_id": "P25-REF-07",
+      "key": "seshia2018toward",
+      "raw_citation": "S. A. Seshia, D. Sadigh, and S. S. Sastry, ``Toward verified artificial intelligence,'' Commun. ACM , vol. 65, no. 7, pp. 46--55, 2022."
+    },
+    {
+      "reference_id": "P25-REF-08",
+      "key": "pnueli1977temporal",
+      "raw_citation": "A. Pnueli, ``The temporal logic of programs,'' in Proc. FOCS , 1977, pp. 46--57."
+    },
+    {
+      "reference_id": "P25-REF-09",
+      "key": "katz2017reluplex",
+      "raw_citation": "G. Katz, C. Barrett, D. L. Dill, K. Julian, and M. J. Kochenderfer, ``Reluplex: An efficient SMT solver for verifying deep neural networks,'' in Proc. CAV , 2017, pp. 97--117."
+    },
+    {
+      "reference_id": "P25-REF-10",
+      "key": "kumar2026scholar22",
+      "raw_citation": "S. Suresh Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' ScholarMaster Technical Report Series , Paper 22, 2026."
+    },
+    {
+      "reference_id": "P25-REF-11",
+      "key": "kumar2026scholar23",
+      "raw_citation": "S. Suresh Kumar, ``Adaptive trustworthy edge systems: Dynamic risk-driven cascades and real-time SLA bounds,'' ScholarMaster Technical Report Series , Paper 23, 2026."
+    },
+    {
+      "reference_id": "P25-REF-12",
+      "key": "kumar2026scholar24",
+      "raw_citation": "S. Suresh Kumar, ``Generalized cross-modal recovery under compromised sensing,'' ScholarMaster Technical Report Series , Paper 24, 2026."
+    },
+    {
+      "reference_id": "P25-REF-13",
+      "key": "he2016deep",
+      "raw_citation": "K. He, X. Zhang, S. Ren, and J. Sun, ``Deep residual learning for image recognition,'' in Proc. CVPR , 2016, pp. 770--778."
+    },
+    {
+      "reference_id": "P25-REF-14",
+      "key": "vaswani2017attention",
+      "raw_citation": "A. Vaswani et al., ``Attention is all you need,'' in Proc. NeurIPS , 2017, pp. 5998--6008."
+    },
+    {
+      "reference_id": "P25-REF-15",
+      "key": "aurenhammer1991voronoi",
+      "raw_citation": "F. Aurenhammer, ``Voronoi diagrams---a survey of a fundamental geometric data structure,'' ACM Comput. Surv. , vol. 23, no. 3, pp. 345--405, 1991."
+    }
+  ]
+}

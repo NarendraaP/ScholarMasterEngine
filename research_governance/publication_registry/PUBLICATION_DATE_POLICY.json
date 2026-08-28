@@ -1,0 +1,24 @@
+{
+  "policy_name": "ScholarMaster Publication Date & Acceptance Policy",
+  "version": "2.0.0-PROD",
+  "last_updated": "2026-08-28T21:43:49.634536+00:00",
+  "supported_date_types": [
+    "draft_date",
+    "submission_date",
+    "acceptance_date",
+    "online_publication_date",
+    "issue_publication_date",
+    "citation_eligible_date"
+  ],
+  "eligibility_bases": {
+    "ACCEPTED_IN_PRESS": "Permitted for scholarly citation when official acceptance letter / camera-ready DOI is issued.",
+    "ONLINE_FIRST": "Permitted when online version of record is published with active DOI.",
+    "ISSUE_PUBLICATION": "Permitted when volume/issue/pages are assigned in final journal/conference proceedings.",
+    "UNRESOLVED": "Target or planned dates cannot be used to infer citation eligibility."
+  },
+  "hard_invariants": [
+    "Planned dates are organizational targets, never legal citation proofs.",
+    "Target dates are not converted into actual publication dates without verification.",
+    "Missing citation_eligible_date leaves paper in CITATION_NOT_YET_ELIGIBLE state."
+  ]
+}
