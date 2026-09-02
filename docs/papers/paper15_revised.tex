@@ -87,12 +87,12 @@ Spatial Cognitive Offloading, AR Visualization, Situation Awareness, Perceptual 
 The main point of this paper is that \textbf{the visualizations that incorporate spatial positioning reduce the cognitive distance between the symbols on the screen and the actions that need to be taken}. The monitoring systems in the majority of the cases are equipped with algorithms that allow them to detect anomalies automatically. However, despite an abundance of automation, the act of alerting and taking action on the detected discrepancies remains a responsibility of humans. Therefore, the issue of visualization becomes one of the main concerns regarding such systems.
 
 \subsection{The Cognitive Cost of Symbolic Monitoring Interfaces}
-Conventional dashboard interfaces present alerts as textual streams or static map markers. Operators must continuously perform mental spatial translation: reading a symbolic alert, mapping it to a mental 3D building model, calculating a navigable route, and visually identifying the target upon arrival. This interpretation overhead compounds under stress. Response latency frequently emerges from interface cognition rather than detection accuracy \cite{b2, b29}.
+Conventional dashboard interfaces present alerts as textual streams or static map markers. Operators must continuously perform mental spatial translation: reading a symbolic alert, mapping it to a mental 3D building model, calculating a navigable route, and visually identifying the target upon arrival. This interpretation overhead compounds under stress. Response latency frequently emerges from interface cognition rather than detection accuracy \cite{b2, b29}, particularly across IoT-enabled smart campus environments \cite{b32}.
 
 Suppose a simple alert: \textit{“Acoustic Anomaly: Stairwell North-3.”} The operator must first interpret the text, then imagine the location of Stairwell North-3, formulate a route from his or her current position, and then actually go there, all while maintaining situational awareness. This process can add time, especially in large facilities where an operator might be misled into heading down the wrong hallway or wing \cite{b3}, \cite{b30}.
 
 \subsection{Spatial Computing as Cognitive Alignment}
-This work explores whether spatially anchored AR interfaces can eliminate the cognitive translation step by overlaying contextual data directly onto the operator's real-world camera view \cite{b31, b20}. The anomaly becomes a physically registered indicator rather than a symbolic text entry. Spatial anchoring functions as a cognitive alignment mechanism---perceptual coordinate fusion between digital alert data and the physical environment---rather than merely a rendering technique.
+This work explores whether spatially anchored AR interfaces can eliminate the cognitive translation step by overlaying contextual data directly onto the operator's real-world camera view \cite{b31, b20}, integrated with smart city digital twins \cite{b19} and multi-user networked AR architectures \cite{b21}. The anomaly becomes a physically registered indicator rather than a symbolic text entry. Spatial anchoring functions as a cognitive alignment mechanism---perceptual coordinate fusion between digital alert data and the physical environment---rather than merely a rendering technique.
 
 This paper focuses strictly on the cognitive interface layer. We do not propose new anomaly detection algorithms, nor evaluate upstream infrastructure. Within the ScholarMaster architecture, this subsystem optimizes spatial cognition, AR-guided interpretation, and response-oriented cognitive offloading only. It does not generate anomaly detections (earlier papers), optimize federated learning (Paper 14), construct trust-governance models (Paper 16), derive formal verification theorems (Paper 21), or synthesize deployment architecture (Paper 20).
 
@@ -484,7 +484,7 @@ Within the ScholarMaster architecture this framework only operates at the level 
 
 \bibitem{b22} H. Xu et al., ``Reinforcement learning-based control and networking co-design for industrial internet of things,'' \textit{IEEE Journal on Selected Areas in Communications}, vol. 38, no. 5, pp. 885--898, 2020.
 
-\bibitem{b25} S. B{\"u}ttner et al., ``Using Augmented Reality to Support Cognitive Task Performance in Manual Assembly,'' \textit{Frontiers in Psychology}, vol. 11, p. 1957, 2020.
+\bibitem{b25} S. B\ddot{u}ttner et al., ``Using Augmented Reality to Support Cognitive Task Performance in Manual Assembly,'' \textit{Frontiers in Psychology}, vol. 11, p. 1957, 2020.
 
 \bibitem{b16} Y. Siriwardhana et al., ``A Survey on Mobile Augmented Reality with 5G Mobile Edge Computing,'' \textit{IEEE Access}, vol. 9, pp. 81015--81050, 2021.
 
@@ -504,6 +504,11 @@ Within the ScholarMaster architecture this framework only operates at the level 
 
 \bibitem{b28} M. R. Endsley and D. G. Jones, \textit{Designing for Situation Awareness: An Approach to User-Centered Design}, 2nd ed. CRC Press, 2011.
 
+\bibitem{b19} Z. Lv, L. Qiao, J. Cai, and H. Wang, ``Digital Twins in Smart Cities,'' \textit{IEEE Transactions on Industrial Informatics}, vol. 18, no. 4, pp. 2724--2733, 2022.
+
+\bibitem{b32} A. Abuarqoub et al., ``A survey on internet of things enabled smart campus applications,'' in \textit{Proceedings of the International Conference on Future Networks and Distributed Systems (ICFNDS)}, 2017, pp. 1--7.
+
+\bibitem{b21} J. Chen, ``Networked Architectures for Localization-Based Multi-User Augmented Reality,'' \textit{IEEE Communications Magazine}, vol. 61, no. 12, pp. 104--110, 2023.
 \end{thebibliography}
 
 \end{document}

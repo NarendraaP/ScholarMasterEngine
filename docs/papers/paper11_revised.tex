@@ -87,7 +87,7 @@ Immutable Appliance Architecture, Lifecycle Hardening, OverlayFS Invariance, Bou
 The author submits that the primary thesis is that the development of non-modifiable appliances significantly contributes to optimal functioning under unstable supply voltages. Upon the initial deployment in abandoned environments, such devices’ functioning is predominantly determined by the underlying operating system’s update security and reliability rather than the inherent application stability \cite{b1, b2, b3}.
 
 \subsection{Operational Fragility of Mutable Edge Hosts}
-A conventional Linux system with a writtable root filesystem will develop configuration drift due to mutable updates at the level of individual packages. This is caused by arbitrary writes and subsequent state mutations. The result of such instability is that the system becomes more susceptible to filesystem inconsistencies on every reboot following a sudden power loss and every update which introduces new dependencies \cite{b4, b12, b18}. Such lifecycle instability exacerbates the hidden technical debt in machine learning systems \cite{b5}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
+A conventional Linux system with a writable root filesystem will develop configuration drift due to mutable updates at the level of individual packages. This is caused by arbitrary writes and subsequent state mutations. The result of such instability is that the system becomes more susceptible to filesystem inconsistencies on every reboot following a sudden power loss and every update which introduces new dependencies \cite{b4, b12, b18}, violating principles of robust embedded system engineering \cite{b15}. Containerized reproducible runtime environments \cite{b8, b10} and container orchestration frameworks \cite{b9} isolate user applications, yet host-level immutability remains essential to mitigate hidden technical debt in machine learning pipelines \cite{b5}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
 
 \subsection{Contributions and Subsystem Scope}
 This paper details an immutable, containerized OS architecture designed for Zero-Touch administration. By enforcing strict separation between a read-only host OS and containerized inference logic, we ensure that the edge node can survive power loss, recover from software hangs, and securely update its models without human intervention. Specifically:
@@ -115,10 +115,10 @@ To analyze deployment reliability systematically, we categorize the primary fail
 \end{itemize}
 
 \subsection{Embedded OTA Frameworks and Lifecycle Hardening}
-Industrial IoT systems have explored dual-partition (A/B) rootfs switching frameworks, such as RAUC \cite{b25} and Mender.io \cite{b26}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Micro-OS distributions such as BalenaOS \cite{b27} and Flatcar Container Linux \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
+Industrial IoT systems have explored dual-partition (A/B) rootfs switching frameworks, such as RAUC \cite{b25} and Mender.io \cite{b26}, alongside survivable software update protocols like The Update Framework (TUF) \cite{b20} and community delegation protections \cite{b18}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Micro-OS distributions such as BalenaOS \cite{b27} and Flatcar Container Linux \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
 
 \subsection{Embedded Reliability and Filesystems}
-Flash-based storage systems pose severe reliability challenges under power instability \cite{b12}. Journaling filesystems (e.g., Ext4) protect against metadata corruption, but cannot prevent underlying flash translation layer (FTL) corruption during interrupted block erasures \cite{b14}. F2FS \cite{b13} optimizes flash writes but remains vulnerable to power-cut corruption when root mounts remain writable. By contrast, structural immutability enforces zero host writes to flash during routine operation, mathematically eliminating FTL corruption during sudden power drops.
+Flash-based storage systems pose severe reliability challenges under power instability \cite{b12}. Journaling filesystems (e.g., Ext4) protect against metadata corruption, but cannot prevent underlying flash translation layer (FTL) corruption during interrupted block erasures \cite{b14}, contrasting with atomic transaction paradigms like ARIES \cite{b21}. F2FS \cite{b13} optimizes flash writes but remains vulnerable to power-cut corruption when root mounts remain writable. By contrast, structural immutability enforces zero host writes to flash during routine operation, mathematically eliminating FTL corruption during sudden power drops while respecting hardware-level memory and transfer efficiency bounds \cite{b24}.
 
 % ==========================================
 % III. APPLIANCE INVARIANCE MODEL
@@ -283,7 +283,7 @@ In order to achieve the Zero-Touch administration, devices are onboarded automat
 On first boot, the device contacts the provisioning server. The device uses the factory fused TPM endorsement key (EK) to assert its hardware identity to the provisioning server over PKCS\#11 interface. On successful authentication, the server issues a unique short lived X.509 certificate to the device. The private key of this certificate is generated inside the TPM and not accessible. The device retrieves its operational configuration.
 
 \subsection{Mutual TLS (mTLS) \& Secure Boot}
-After Zero-touch provisioning (ZTP), all communication with the central fleet manager is secured by Mutual TLS (mTLS) using TLS 1.2 or higher \cite{b23}. During this step, the edge node is authenticated, and the server is authenticated with the edge node using a TPM-backed certificate.
+After Zero-touch provisioning (ZTP), all communication with the central fleet manager is secured by Mutual TLS (mTLS) using TLS 1.2 \cite{b23} or TLS 1.3 \cite{b29}. During this step, the edge node is authenticated, and the server is authenticated with the edge node using a TPM-backed certificate.
 
 The TPM-backed certificate lifecycle reduces the risks of extraction of a private key by relying on a secure hardware module to store it. Similarly, Secure Boot decreases the probability that an arbitrary kernel or bootloader will be run on the device. These measures are all about lifecycle integrity: trusting that the deployment to be operated on is authentic reduces the risks of exfiltration, tampering, or unauthorized updates. In more detail, the threat modeling process is covered in later sections of this series, so we have left out some specifics that would make this post even longer than it already is.
 
@@ -443,13 +443,25 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b4} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738--1762, 2019.
 
-\bibitem{b25} E. J{\"o}rns, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' in \textit{Embedded Linux Conference Europe}, 2020.
+\bibitem{b25} E. J\ddot{o}rns, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' in \textit{Embedded Linux Conference Europe}, 2020.
 
 \bibitem{b26} Northern.tech, ``Software Updates for Embedded Linux: Requirement and Reality,'' \textit{Northern.tech Architecture Whitepaper and Technical Documentation}, 2020. [Online]. Available: https://docs.mender.io
 
 \bibitem{b27} Balena Inc., ``BalenaOS: Container-based Operating System for Embedded Devices,'' \textit{Technical Whitepaper}, 2021.
 
 \bibitem{b28} Kinvolk / Red Hat, ``Flatcar Container Linux: Secure, Minimal Host OS for Containers,'' \textit{Architecture Specification}, 2020.
+
+\bibitem{b21} C. Mohan, D. Haderle, B. Lindsay, H. Pirahesh, and P. Schwarz, ``ARIES: A transaction recovery method supporting fine-granularity locking and partial rollbacks using write-ahead logging,'' \textit{ACM Transactions on Database Systems}, vol. 17, no. 1, pp. 94--162, 1992.
+
+\bibitem{b8} D. Merkel, ``Docker: Lightweight Linux containers for consistent development and deployment,'' \textit{Linux Journal}, vol. 2014, no. 239, p. 2, 2014.
+
+\bibitem{b10} C. Boettiger, ``An introduction to Docker for reproducible research,'' \textit{ACM SIGOPS Operating Systems Review}, vol. 49, no. 1, pp. 71--79, 2015.
+
+\bibitem{b20} J. Samuel, N. Mathewson, J. Cappos, and S. Thomason, ``Survivable key compromise in software update systems,'' in \textit{Proceedings of the 17th ACM Conference on Computer and Communications Security (CCS)}, 2010, pp. 61--72.
+
+\bibitem{b24} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
+
+\bibitem{b29} E. Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.3,'' \textit{RFC 8446}, 2018.
 
 \end{thebibliography}
 

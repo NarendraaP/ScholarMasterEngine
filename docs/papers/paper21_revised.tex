@@ -343,7 +343,7 @@ Let $L_{min} = \min d_\Z(z_i, z_j)$ be the shortest physical distance across any
 \end{proof}
 
 \begin{proof}[Proof of Theorem 6 (Decidability and PSPACE)]
-We reduce the problem by constructing a deterministic Finite State Automaton $A = (Q, \Sigma, \delta_{trans}, q_0, F)$ \cite{b5}. The state space is the set of all possible entity distributions $Q = \Z^{|\E|}$. Since $\Z$ and $\E$ are strictly finite sets, $Q$ is strictly finite ($|Q| = M^N$). The alphabet $\Sigma$ is the set of input observation vectors at time $t$. The transition function $\delta_{trans}: Q \times \Sigma \to Q \cup \{\fail\}$ is defined as valid iff it satisfies Axiom 2 (Kinematic Continuity) and Axiom 3 (Topological Adjacency). If it violates these physical constraints, it transitions to the absorbing fail state $\fail$. The Accept States $F$ represent the subset of $Q$ where $\forall \epsilon \in \E, \Phi_{comp}(\epsilon, t) = 1$. Because the state space $Q$ is finite, determining if a sequence of observations belongs to the regular language accepted by $F$ is an instance of the FSA Reachability problem. Reachability in a finite state graph is strictly decidable. By Savitch's Theorem \cite{b7}, NPSPACE = PSPACE. The non-deterministic algorithm to verify reachability requires storing only the current state vector of size $|\E|$ and a step counter, executing safely in polynomial space \cite{b23}. Membership in the compliance language can, in principle, be decided within polynomial space under classical complexity assumptions.
+We reduce the problem by constructing a deterministic Finite State Automaton $A = (Q, \Sigma, \delta_{trans}, q_0, F)$ \cite{b5}. The state space is the set of all possible entity distributions $Q = \Z^{|\E|}$. Since $\Z$ and $\E$ are strictly finite sets, $Q$ is strictly finite ($|Q| = M^N$). The alphabet $\Sigma$ is the set of input observation vectors at time $t$. The transition function $\delta_{trans}: Q \times \Sigma \to Q \cup \{\fail\}$ is defined as valid iff it satisfies Axiom 2 (Kinematic Continuity) and Axiom 3 (Topological Adjacency). If it violates these physical constraints, it transitions to the absorbing fail state $\fail$. The Accept States $F$ represent the subset of $Q$ where $\forall \epsilon \in \E, \Phi_{comp}(\epsilon, t) = 1$. Because the state space $Q$ is finite, determining if a sequence of observations belongs to the regular language accepted by $F$ is an instance of the FSA Reachability problem. Reachability in a finite state graph is strictly decidable. By Savitch's Theorem \cite{b7}, NPSPACE = PSPACE \cite{b22}. The non-deterministic algorithm to verify reachability requires storing only the current state vector of size $|\E|$ and a step counter, executing safely in polynomial space \cite{b23}. Membership in the compliance language can, in principle, be decided within polynomial space under classical complexity assumptions.
 \end{proof}
 
 \begin{proof}[Proof of Theorem 7 (Distributed Integrity Preservation)]
@@ -382,11 +382,11 @@ The formal verification of spatiotemporal properties in cyber-physical systems h
 
 Signal Temporal Logic (STL) and Metric Temporal Logic (MTL) \cite{b27} provide expressive specification languages for continuous-time properties, including quantitative robustness semantics. The compliance predicates developed in this work share the spirit of STL robustness but are grounded in Lebesgue measure theory rather than signal distance metrics, and are specifically tailored to institutional schedule adherence rather than continuous signal monitoring.
 
-Runtime verification \cite{b28} provides techniques for monitoring system executions against formal specifications. The sampling completeness analysis (Theorem 5) tackles a critical issue in the context of runtime verification, namely detectability of violations under limited observation rates. The Nyquist-style bound reported here extends previous works on monitorability \cite{b27} by giving a concrete value related to physical kinematics.
+Runtime verification \cite{b28} provides techniques for monitoring system executions against formal specifications, synthesized via automated safety monitors \cite{b29}. The sampling completeness analysis (Theorem 5) tackles a critical issue in the context of runtime verification, namely detectability of violations under limited observation rates. The Nyquist-style bound reported here extends previous works on monitorability \cite{b27} by giving a concrete value related to physical kinematics.
 
 Within the CPS security problem domain, Cardenaş et al. \cite{b18} present threat models for cyber-physical systems that are useful in the development of our adversarial formulation. In particular, our MDP-based spoofing analysis (Theorem 8) builds on related work by considering an adversary that is modeled within a game-theoretic physical kinematic state and action space.
 
-The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2}, temporal interval reasoning \cite{b6}, and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8}, distributed snapshots \cite{b3}, and Mattern's vector time formalism \cite{b25} to establish causal monotonicity requirements for cross-shard entity migration. These requirements must be balanced against theoretical consistency limits in distributed environments \cite{b9}.
+The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2}, temporal interval reasoning \cite{b6}, and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8}, distributed snapshots \cite{b3}, and Mattern and Fidge's vector time formalisms \cite{b13, b25} to establish causal monotonicity requirements for cross-shard entity migration. These requirements must be balanced against theoretical consistency limits in distributed environments \cite{b9}.
 
 % ==========================================
 % REFERENCES
@@ -444,6 +444,11 @@ This paper demonstrates that cyber-physical compliance verification can transcen
 
 \bibitem{b21} T. Alpcan and T. Basar, \textit{Network Security: A Decision and Game-Theoretic Approach}, Cambridge University Press, 2010.
 
+\bibitem{b13} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," in \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56--66.
+
+\bibitem{b22} C. H. Papadimitriou, \textit{Computational Complexity}. Addison-Wesley, 1994.
+
+\bibitem{b29} K. Havelund and G. Roşu, "Synthesizing monitors for safety properties," in \textit{Proc. TACAS}, Springer, 2002, pp. 342--356.
 \end{thebibliography}
 
 \end{document}

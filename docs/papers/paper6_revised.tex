@@ -94,7 +94,7 @@ Amplitude-based triggering is usually not very effective in such scenarios. Soun
 
 On the other hand, deep learning acoustic event detection models have some inherent drawbacks. For instance, AST models need to consider multi-second context windows and allocate adequate memory resources for inference. In cases where real-time detection is necessary, buffering multi-second chunks of audio data before inference cannot be achieved within 150 ms \cite{b26}.
 
-However, the acoustic sensing unit described below follows a different methodology. Instead of classification of semantic content, it implements physical signal distinction on a local basis inside a circular RAM buffer. Derived characteristics, such as energy ratio, periodicity measure, and azimuth angle, are preserved, while PCM data samples are erased right away.
+However, the acoustic sensing unit described below follows a different methodology. Instead of classification of semantic content, it implements physical signal distinction on a local basis inside a circular RAM buffer. Derived characteristics, such as energy ratio, periodicity measure, and azimuth angle, are preserved, while PCM data samples are erased right away, adhering to privacy-by-design principles \cite{b32}, spatial cloaking methodologies \cite{b21}, and IoT privacy architectures \cite{b33}.
 
 \subsection{Contributions}
 The system is designed with respect to latency and storage issues. It utilizes only deterministic signal processing, and not any machine learning techniques. The key components are:
@@ -112,11 +112,11 @@ The detection model does not attempt semantic audio interpretation. Its scope is
 % ==========================================
 \section{Related Work}
 
-Foundational work on privacy in video surveillance \cite{b1} has driven interest in audio surveillance \cite{b2} as an alternative modality.
+Foundational work on privacy in video surveillance \cite{b1} has driven interest in audio surveillance \cite{b2} as an alternative modality \cite{b4}.
 
 \subsection{Deep Learning AED vs. Edge Signal Processing}
 
-The latest systems for detecting acoustic events depend on deep neural architectures designed for doing semantic sound classification \cite{b8, b12}. Architectures such as PANNs \cite{b22} and AST \cite{b23} can achieve strong performance on the FSD50K benchmark. These systems run on mel-spectrogram patches often spanning a few seconds.
+The latest systems for detecting acoustic events depend on deep neural architectures designed for doing semantic sound classification \cite{b8, b12}. Architectures such as PANNs \cite{b22}, AST \cite{b23}, and convolutional audio classification backbones \cite{b35} can achieve strong performance on the FSD50K benchmark \cite{b19}, building on classical speech recognition \cite{b11} and time-frequency wavelet analysis \cite{b10}. These systems run on mel-spectrogram patches often spanning a few seconds.
 
 When you have larger temporal context windows, they help enhance your performing semantic recognition accuracy but at the same time introduce structural latency. Introducing 10-second windows before inference is inherently against strict response constraints. Furthermore, large transformer-based models, such as those containing around 85 million parameters, require excessive memory and bandwidth \cite{b15, b16}. These models are particularly onerous on edge hardware based on ARM that does not contain NPU. Edge deployment feasibility remains constrained by memory-transfer and latency characteristics of embedded platforms. Prior analytical modeling of these constraints is available in \cite{b34}, while the present work focuses on reverberant acoustic sensing.
 
@@ -143,7 +143,7 @@ Semantic Inference & High (Categorization) & None (Physics-based) \\
 \end{table}
 
 \subsection{Source Localization Under Reverberation}
-Source localization depends on the physics of acoustic waves propagation \cite{b9}. The microphone arrays approach has shown its efficiency for detecting screams and gun shots \cite{b5}; however, indoor environment with corridors causes problems of reverberations \cite{b25}.
+Source localization depends on the physics of acoustic waves propagation \cite{b9}. The microphone array signal processing approach has shown its efficiency for detecting screams and gun shots \cite{b5, b29}; however, indoor environments with corridors cause severe problems of reverberation \cite{b25}.
 
 Steered Response Power with PHAT weighting (SRP-PHAT) \cite{b27} achieves high localization accuracy but requires scanning large spatial grids, increasing computational load beyond what lightweight edge nodes comfortably sustain.
 
@@ -565,6 +565,17 @@ With regard to the larger ScholarMaster framework, this architecture can serve s
 
 \bibitem{b34} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
 
+\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing: The Sparse Way}, 3rd ed. Academic Press, 2008.
+
+\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}. Prentice Hall, 1993.
+
+\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
+
+\bibitem{b21} M. Gruteser and D. Grunwald, "Anonymous usage of location-based services through spatial and temporal cloaking," in \textit{Proceedings of the 1st International Conference on Mobile Systems, Applications and Services (MobiSys)}, 2003, pp. 31-42.
+
+\bibitem{b29} J. Benesty, J. Chen, and Y. Huang, \textit{Microphone Array Signal Processing}. Springer Science \& Business Media, 2008.
+
+\bibitem{b35} S. Hershey et al., "CNN architectures for large-scale audio classification," in \textit{2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 2017, pp. 131-135.
 \end{thebibliography}
 
 \end{document}

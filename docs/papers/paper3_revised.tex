@@ -103,7 +103,7 @@ The core technical elements include:
 \begin{itemize}
     \item A formally bounded volatile memory window enforced through OS-level mechanisms.
     \item A rank-based dimensionality analysis demonstrating structural underdetermination of the pose projection.
-    \item A rule-based geometric event classifier stabilized via confidence-adaptive Kalman filtering and classical PnP orientation estimation.
+    \item A rule-based geometric event classifier stabilized via confidence-adaptive Kalman filtering \cite{b17} and classical PnP orientation estimation.
 \end{itemize}
 
 % ==========================================
@@ -119,12 +119,12 @@ Although active depth sensors do have the advantages listed above, they also hav
 Ryoo et al. \cite{b2} showed results of activity recognition from extremely low resolution imagery (e.g. 16$\times$12). While this involves loss of high-level facial features, the matrix of lower resolution is still a matrix, still open to upsampling by generative algorithms. Recent progress in GANs and diffusion models show that even a degraded pixel-based input could be utilized to synthesize realistic imagery. The low-resolution skeletal vector, if used as input, would bypass the matrix inversion process entirely, replacing it with a constrained coordinate synthesis process.
 
 \subsection{Lightweight Pose Estimation for Edge Deployment}
-Pose estimation algorithms have been transitioned from computationally expensive bottom-up approaches such as OpenPose \cite{b6} to more efficient top-down solutions such as YOLOv8-pose \cite{b10}, BlazePose \cite{b8} and ViTPose \cite{b9}, which enable real-time performance ($>$30 FPS) on embedded systems via depthwise separable convolutions and efficient anchor-based design.
+Pose estimation algorithms have been transitioned from computationally expensive bottom-up approaches such as OpenPose \cite{b6} to more efficient top-down solutions such as YOLOv8-pose \cite{b10}, BlazePose \cite{b8}, ViTPose \cite{b9}, perception graph pipelines like MediaPipe \cite{b7}, and high-resolution representation networks like HRNet \cite{b12}, which enable real-time performance ($>$30 FPS) on embedded systems via depthwise separable convolutions and efficient multi-scale architectures.
 
 Most of the prior work focuses on the improvement of the accuracy of detection (e.g. mAP on COCO \cite{b11}). In contrast, we shift the attention to system-level containment: the pose network is viewed as a projection operator, whose output is used as geometry information, while its input buffer is deallocated right after inference. Our contribution is primarily related to the memory footprint around the inference stage, not the accuracy of pose estimation.
 
 \subsection{Head Pose Estimation Without Texture}
-The head orientation is commonly estimated using a deep regression model taking cropped face images as an input \cite{b14}. This approach requires a large amount of textured information that cannot be used within the current framework.
+The head orientation is commonly estimated using a deep regression model taking cropped face images as an input \cite{b13, b14}. This approach requires a large amount of textured information that cannot be used within the current framework.
 
 Instead, we formulate the problem in the classical Perspective-n-Point (PnP) \cite{b15, b16} formulation. In particular, we utilize sparse 2D landmarks projected onto a generic 3D cranial model to reconstruct the 6-DoF orientation, which does not require analysis of facial texture, thus complying with the volatile memory constraints.
 
@@ -134,7 +134,7 @@ Instead, we formulate the problem in the classical Perspective-n-Point (PnP) \ci
 \section{Sensing Constraints and Threat Modeling}
 
 \subsection{Signal Isolation Objective}
-we first define the signal-separation objective of the sensing pipeline. In conventional pipelines, these signals are inextricably linked: the same RGB tensor carries both geometric structure and identity-bearing detail.
+We first define the signal-separation objective of the sensing pipeline. In conventional pipelines, these signals are inextricably linked: the same RGB tensor carries both geometric structure and identity-bearing detail. Deploying such neural backbones on resource-constrained accelerators like Eyeriss \cite{b24} necessitates specialized architectural confinement for privacy-preserving edge analytics \cite{b26}.
 
 The perception pipeline introduced here enforces a deliberate separation (isolating spatial topology from textural features). The pose estimator acts as a compressive transformation, allowing only low-frequency spatial topology (joint coordinates) to pass downstream. High-frequency components—skin texture, pigmentation gradients, microstructure—are discarded prior to persistence. In signal-processing terms, the pipeline behaves like a spatial abstraction filter. It transmits coordinate relationships while eliminating pixel-level content.
 
@@ -585,6 +585,17 @@ Experimental results show that the combination of pose-based dimensional reducti
 
 \bibitem{b10} G. Jocher, A. Chaurasia, and J. Qiu, "YOLO by Ultralytics," 2023.
 
+\bibitem{b7} C. Lugaresi et al., "MediaPipe: A Framework for Building Perception Pipelines," \textit{arXiv preprint arXiv:1906.08172}, 2019.
+
+\bibitem{b12} K. Sun, B. Xiao, D. Liu, and J. Wang, "Deep high-resolution representation learning for human pose estimation," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2019, pp. 5693-5703.
+
+\bibitem{b13} E. Murphy-Chutorian and M. M. Trivedi, "Head pose estimation in computer vision: A survey," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 31, no. 4, pp. 607-626, 2009.
+
+\bibitem{b17} R. E. Kalman, "A new approach to linear filtering and prediction problems," \textit{Journal of Basic Engineering}, vol. 82, no. 1, pp. 35-45, 1960.
+
+\bibitem{b24} Y.-H. Chen, T. Krishna, J. S. Emer, and V. Sze, "Eyeriss: An energy-efficient accelerator for deep convolutional neural networks," \textit{IEEE Journal of Solid-State Circuits}, vol. 52, no. 1, pp. 127-138, 2017.
+
+\bibitem{b26} S. A. Osia et al., "A Hybrid Deep Learning Architecture for Privacy-Preserving Mobile Analytics," \textit{IEEE Transactions on Network Science and Engineering}, vol. 7, no. 1, pp. 451-464, 2020.
 \end{thebibliography}
 
 \end{document}

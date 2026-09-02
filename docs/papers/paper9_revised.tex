@@ -76,10 +76,10 @@ Hierarchical Orchestration, Policy-Aware Control Plane, Inference Rate Governanc
 % ==========================================
 \section{Introduction}
 
-The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems \cite{b20} often feature multiple domainspecific AI modules hosted at the edge, running concurrently, for instance, biometric recognition, pose estimation, and speech understanding. While each can be optimized individually, their joint orchestration in a shared runtime environment introduces a distinct coordination problem \cite{b14, b21}.
+The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems \cite{b20} and edge computing foundations \cite{b11, b38, b39} often feature multiple domain-specific AI modules hosted at the edge, running concurrently, for instance, biometric recognition, pose estimation, and speech understanding, with multimodal facial expression toolkits like AFFDEX \cite{b7}. While each can be optimized individually, their joint orchestration in a shared runtime environment introduces a distinct coordination problem \cite{b14, b21}.
 
 \subsection{Architectural Fragility in Flat Multi-Model Pipelines}
-When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention interferes with other wise independent modules, while cloud mediated orchestration introduces unpredictable network latency that fails to meet the demands of interactive modeling \cite{b4, b14}. Furthermore, naive always-on sensing waste computing resources by performing heavy duty processing when not needed. Orchestration destabilization is caused by topological factors rather than mere compute model inefficiency.
+When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention interferes with other wise independent modules, while cloud mediated orchestration introduces unpredictable network latency that fails to meet the demands of interactive modeling in smart campus environments \cite{b4, b14, b19}. Furthermore, naive always-on sensing waste computing resources by performing heavy duty processing when not needed. Orchestration destabilization is caused by topological factors rather than mere compute model inefficiency.
 
 \subsection{Contributions and Subsystem Scope}
 This work explores whether a logical control-plane abstraction can be leveraged to address these coordination challenges. We envision a layered execution paradigm, where the system is partitioned into three distinct spheres of influence: Perception, Reasoning, and Governance. By enforcing information and decision isolation within these domains, we propose the following contributions:
@@ -101,7 +101,7 @@ Within the ScholarMaster architecture, this subsystem takes care of the activati
 Dynamic pipeline adaptation for continuous video analytics has received extensive attention. Zhang et al. developed VideoStorm \cite{b33}, which dynamically adjusts frame rates and image resolutions to maximize query quality under resource constraints on GPU clusters. Jiang et al. introduced Chameleon \cite{b34}, periodic spatial-temporal profiling to dynamically adapt deep neural network configurations. Gujarathi et al. proposed Ekya \cite{b35}, balancing continuous retraining and inference scheduling on edge clusters. Xu investigated approximation and adaptive scaling \cite{b36} for streaming video analytics on mobile devices. While VideoStorm and Chameleon optimize throughput and query accuracy on unconstrained cloud/cluster environments, they assume always-on sensing and lack formal policy-driven suppression primitives required for privacy-constrained and energy-bounded cyber-physical deployments.
 
 \subsection{Edge Multi-Model Orchestration and Microservice Systems}
-Standard edge AI runtime engines, such as TensorFlow Lite \cite{b10, b31} and ONNX Runtime, focus on single-model tensor optimizations (quantization, pruning, operator fusion) but provide no native facilities for cross-module coordination, fault containment, or policy-aware rate governance. Microservice frameworks for edge analytics, such as Mainstream \cite{b21} and edge cloudlet systems \cite{b6, b23}, support concurrent pipeline execution through stem-sharing. However, flat microservice architectures lack strict layer isolation: an uncontained memory leak or SIGSEGV fault in a heavy vision container cascades across the shared message broker, destabilizing concurrent lightweight pipelines \cite{b24, b18}.
+Standard edge AI runtime engines, such as TensorFlow Lite \cite{b10, b31} and ONNX Runtime, focus on single-model tensor optimizations (quantization, pruning, operator fusion) but provide no native facilities for cross-module coordination, fault containment, or policy-aware rate governance. Microservice frameworks for edge analytics, such as Mainstream \cite{b21} and edge cloudlet systems \cite{b6, b23}, support concurrent pipeline execution through stem-sharing. Edge serving architectures such as Clipper \cite{b22} and hardware-level memory efficiency bounds \cite{b40} optimize execution throughput, but flat microservice architectures lack strict layer isolation: an uncontained memory leak or SIGSEGV fault in a heavy vision container cascades across the shared message broker, destabilizing concurrent lightweight pipelines \cite{b24, b18}.
 
 \subsection{Policy-Aware Inference Governance and Privacy Gating}
 Recent works highlight the necessity of privacy-by-design sensing boundaries in institutional environments \cite{b4, b27}. Systems such as Privid \cite{b27} and Vigil \cite{b37} enforce query-level privacy by releasing bounded analytics. In educational and cyber-physical monitoring, continuous indiscriminate capture violates compliance doctrines. In contrast to retrospective data scrubbing, our hierarchical control plane embeds the Compute Justification Model directly into the runtime scheduling loop, mathematically suppressing perception activation based on physical context and policy state.
@@ -480,6 +480,19 @@ This paper presented a hierarchical edge control-plane architecture for policy-a
 
 \bibitem{b37} T. Y. H. Hung et al., ``Video Analytics at the Edge with Vigil,'' in \textit{ACM MobiCom}, pp. 120--134, 2015.
 
+\bibitem{b7} D. McDuff et al., ``AFFDEX SDK: A Cross-Platform Real-Time Multi-Face Expression Recognition Toolkit,'' in \textit{ACM CHI Extended Abstracts}, 2016, pp. 3723--3726.
+
+\bibitem{b11} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
+
+\bibitem{b38} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
+
+\bibitem{b39} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
+
+\bibitem{b19} N. Min-Allah and S. Alrashed, ``Smart Campus: A Sketch,'' \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
+
+\bibitem{b22} D. Crankshaw et al., ``Clipper: A Low-Latency Online Prediction Serving System,'' in \textit{14th USENIX Symposium on Networked Systems Design and Implementation (NSDI 17)}, 2017, pp. 613--627.
+
+\bibitem{b40} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
 \end{thebibliography}
 
 \end{document}

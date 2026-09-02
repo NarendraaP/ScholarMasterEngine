@@ -140,11 +140,11 @@ System Architecture, Edge-Native, Boundary Invariants, Deterministic Composition
 The central thesis of this paper is that architectural boundary invariants can enable decomposition to be a verifiable systems property for edge-native intelligent systems. This manuscript is exclusively a systems-architecture paper, focusing on investigating edge-native structural composition, and not a general-purpose statement about intelligent-campus design or policy.
 
 \subsection{Operational Fragility in End-to-End Intelligent Systems}
-Deploying intelligent systems in institutional cyber-physical environments \cite{b1, b5, b14, b15} presents a broad range of interlocking operational constraints \cite{b6, b21}. Monolithic edge pipelines are often insufficient, as tightly coupled representations hide interlocking dependencies, upgrades destabilize unrelated subsystems, audits fail to reconstruct lineage, and implicit assumptions dominate interactions across layers. There are no clean solutions because the challenges are deeply entangled with the architecture.
+Deploying intelligent systems in institutional cyber-physical environments \cite{b1, b5, b14, b15, b24, b26} presents a broad range of interlocking operational constraints \cite{b6, b21}. Monolithic edge pipelines are often insufficient, as tightly coupled representations hide interlocking dependencies, upgrades destabilize unrelated subsystems, audits fail to reconstruct lineage, and implicit assumptions dominate interactions across layers. There are no clean solutions because the challenges are deeply entangled with the architecture.
 
 Over the course of developing the ScholarMaster subsystem ecosystem, these architectural failure patterns became apparent \cite{b2, b13, b16}:
 \begin{enumerate}
-    \item \textbf{End-to-End Monoliths:} Optimization pressures favor direct, opaque coupling. While performant in static benchmarks, these pipelines proved brittle under incremental evolution \cite{b17}.
+    \item \textbf{End-to-End Monoliths:} Optimization pressures favor direct, opaque coupling. While performant in static benchmarks, these pipelines proved brittle under incremental evolution \cite{b17, b23}.
     \item \textbf{Cloud-Modular Dependencies:} Offloading reasoning introduces temporal jitter and privacy exposure \cite{b3, b18}.
     \item \textbf{Loose Event-Driven Buses:} Exhibit ``abstraction drift''---subsystems operating on conflicting temporal views accumulate synchronization inconsistencies.
 \end{enumerate}
@@ -160,9 +160,9 @@ The ScholarMaster architecture has been defined through the insight that decompo
 \section{Related Architectural Paradigms}
 The architectural decisions made behind the design of ScholarMaster are best explained through the shortcomings of other existing intelligent system frameworks. There are three main approaches that have informed the building principles of present-day edge-intelligent systems, and each highlights a unique type of decomposition inadequacy in institutional cyber-physical frameworks.
 
-While standard edge and robotics middleware frameworks such as ROS 2 \cite{b9} and Plasma Store \cite{b19} provide inter-process communication via shared memory, they treat message transport as a general-purpose bus without enforcing unidirectional abstraction admissibility. In contrast, ScholarMaster establishes non-bypassable stratum barriers where lower-level sensor representations are strictly isolated from high-level reasoning. End-to-end monolithic pipelines \cite{b7} are widespread because of their simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is responsible for what. Thus, if such a system makes a wrong decision, a researcher may have to examine all stages to identify the faulty one.
+While standard edge and robotics middleware frameworks such as ROS 2 \cite{b9} and Plasma Store \cite{b19} provide inter-process communication via shared memory, they treat message transport as a general-purpose bus without enforcing unidirectional abstraction admissibility. In contrast, ScholarMaster establishes non-bypassable stratum barriers where lower-level sensor representations are strictly isolated from high-level reasoning. End-to-end monolithic pipelines \cite{b7} and ad-hoc query cascades \cite{b23} are widespread because of their simplicity of implementation and throughput efficiency. The main drawback of such pipelines is the entanglement of representations of various stages in a single one, due to which it becomes difficult to determine which stage is responsible for what. Thus, if such a system makes a wrong decision, a researcher may have to examine all stages to identify the faulty one.
 
-Cloud-native microservice architectures \cite{b4, b14} address this coupling through network-level decomposition, but introduce a different failure mode. In edge environments, serialization and network transit overhead produces temporal jitter that undermines the determinism required for cyber-physical synchronization \cite{b19}. More subtly, loosely constrained service interfaces allow hidden semantic dependencies to emerge across layers, recreating at the API level the same entanglement that monoliths exhibit at the memory level.
+Cloud-native microservice architectures \cite{b4, b14} and specialized edge prediction serving engines \cite{b22, b25} address this coupling through network-level decomposition, but introduce a different failure mode. In edge environments, serialization and network transit overhead produces temporal jitter that undermines the determinism required for cyber-physical synchronization \cite{b19}. More subtly, loosely constrained service interfaces allow hidden semantic dependencies to emerge across layers, recreating at the API level the same entanglement that monoliths exhibit at the memory level.
 
 Event driven distributed pipelines \cite{b8} address both scalability and modularity concerns to some extent, but introduce the notion of synchronization drift: different elements operating on inconsistent temporal snapshots of the system state diverge in their logical state; unless explicitly mediated, this leads to violations of synchronization contracts under load or degraded operating conditions.
 
@@ -553,6 +553,16 @@ This paper collates systems-engineering understanding distilled from a larger bo
 \bibitem{b19} Y. Gan et al., "An open-source benchmark suite for microservices and their hardware-software implications for cloud \& edge systems," in \textit{Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)}, 2019, pp. 3-18.
 
 \bibitem{b2} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
+
+\bibitem{b22} D. Crankshaw, X. Wang, G. Zhou, M. J. Franklin, J. E. Gonzalez, and I. Stoica, "Clipper: A low-latency online prediction serving system," in \textit{14th USENIX Symposium on Networked Systems Design and Implementation (NSDI)}, 2017, pp. 613-627.
+
+\bibitem{b23} D. Kang, J. Emmons, F. Abuzaid, P. Bailis, and M. Zaharia, "NoScope: Optimizing neural network queries over video at scale," \textit{Proceedings of the VLDB Endowment}, vol. 10, no. 11, pp. 1586-1597, 2017.
+
+\bibitem{b24} J. Chen and X. Ran, "Deep learning with edge computing: A review," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1655-1674, 2019.
+
+\bibitem{b25} A. Das, S. Patterson, and M. P. Wittie, "EdgeBench: Benchmarking edge computing platforms," in \textit{Proc. IEEE/ACM UCC Companion (WoSC)}, 2018, pp. 44-49.
+
+\bibitem{b26} R. Buyya and S. N. Srirama, Eds., \textit{Fog and Edge Computing: Principles and Paradigms}. Hoboken, NJ: John Wiley \& Sons, 2019.
 \end{thebibliography}
 
 \end{document}

@@ -87,9 +87,9 @@ Adversary Capability Algebra, Trusted Computing Base Minimization, Information-F
 Many privacy-preserving AI systems claim robust protection without formally defining the scope of the adversary. Literature frequently blurs the distinction between user-space application compromise and institutional root compromise, often omitting explicit Trusted Computing Base (TCB) assumptions. Security claims are mathematically meaningless without bounded adversary assumptions. Empirical runtime behavior alone cannot establish formal privacy guarantees; architectural privacy requires explicit trust formalization. Without defined information-flow constraints, edge-AI systems cannot rigorously differentiate between benign operational exposure and catastrophic privacy leakage.
 
 \subsection{The Security Framing Gap}
-To mitigate systemic privacy risks, defensive frameworks based on \textit{Architectural Irreversibility} \cite{b1} have been proposed and validated through runtime enforcement \cite{b30_cps}. However, architectural intent is insufficient without a mathematically defined boundary of trust \cite{b1}. If an architecture claims to destroy raw biometric data within $33$ms, does that property hold against an institutional root administrator or a compromised OS kernel?
+To mitigate systemic privacy risks, defensive frameworks based on \textit{Architectural Irreversibility} \cite{b1} have been proposed and validated through runtime enforcement \cite{b30_cps}, grounded in edge computing architectures \cite{b6, b25, b26} and physical hardware efficiency boundaries \cite{b24}. However, architectural intent is insufficient without a mathematically defined boundary of trust \cite{b1}. If an architecture claims to destroy raw biometric data within $33$ms, does that property hold against an institutional root administrator or a compromised OS kernel?
 
-The dominant thesis of this paper is that \textbf{bounded privacy guarantees require explicit adversary and TCB formalization}. This paper bridges the security framing gap by providing the formal threat model, information-flow constraints, and trust assumptions under which irreversible edge analytics are valid. Within the ScholarMaster architecture, this subsystem defines adversary boundaries, TCB assumptions, information-flow constraints, and temporal security invariants only. It does not implement runtime crash handlers (Paper 18), define federated optimization (Paper 14), synthesize deployment architecture (Paper 20), derive spatiotemporal trajectory logic (Paper 21), or construct sociological trust models (Paper 16).
+The dominant thesis of this paper is that \textbf{bounded privacy guarantees require explicit adversary and TCB formalization}. This paper bridges the security framing gap by providing the formal threat model, information-flow constraints, and trust assumptions under which irreversible edge analytics are valid. Within the ScholarMaster architecture, this subsystem defines adversary boundaries, TCB assumptions, information-flow constraints, and temporal security invariants only. It does not implement runtime crash handlers (Paper 18), define federated optimization \cite{b15} (Paper 14), synthesize deployment architecture (Paper 20), derive spatiotemporal trajectory logic \cite{b7} (Paper 21), or construct sociological trust models (Paper 16).
 
 \subsection{Scope and Formal Dependency Hierarchy}
 This paper does not introduce new architectural layers or spatiotemporal theorems. Instead, it constructs a progressive formal dependency chain:
@@ -573,6 +573,15 @@ To computationally verify the consistency of the state machine defined by these 
 
 \bibitem{b21} N. Carlini et al., "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks," in \textit{USENIX Security}, 2019.
 
+\bibitem{b7} Y. Zheng, "Trajectory data mining: An overview," \textit{ACM Transactions on Intelligent Systems and Technology}, vol. 6, no. 3, pp. 1--41, 2015.
+
+\bibitem{b15} B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," in \textit{Proceedings of the 20th International Conference on Artificial Intelligence and Statistics (AISTATS)}, 2017, pp. 1273--1282.
+
+\bibitem{b24} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
+
+\bibitem{b25} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
+
+\bibitem{b26} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738--1762, 2019.
 \end{thebibliography}
 
 \end{document}

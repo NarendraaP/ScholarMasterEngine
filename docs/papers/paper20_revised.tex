@@ -75,11 +75,8 @@ Constraint-First Architectural Synthesis, Cross-Layer Execution Contracts, Irrev
 % ==========================================
 % I. INTRODUCTION
 % ==========================================
-% ==========================================
-% I. INTRODUCTION
-% ==========================================
 \section{Introduction}
-The deployment of intelligent cyber-physical perception systems across institutional campus environments faces a severe integration challenge. Traditional systems architecting optimizes individual components in isolation: computer vision models maximize top-1 inference accuracy while ignoring thermal limits of edge silicon; stream processing engines optimize throughput while neglecting GDPR data-minimization mandates; and cryptographic protocols specify privacy bounds that exceed embedded hardware memory envelopes.
+The deployment of intelligent cyber-physical perception systems across institutional campus environments faces a severe integration challenge. Traditional systems architecting optimizes individual components in isolation \cite{b_bass}: computer vision models maximize top-1 inference accuracy while ignoring thermal limits of edge silicon; stream processing engines optimize throughput while neglecting GDPR data-minimization mandates \cite{b_satya, b_shi, b_zhou}; and cryptographic protocols specify privacy bounds that exceed embedded hardware memory envelopes \cite{P5}.
 
 The dominant architectural thesis of this paper is \textbf{Constraint-First Architectural Synthesis (CFAS)}. We argue that operational trust and long-term viability emerge not from post-hoc security patching or isolated subsystem tuning, but from the strict compilation of physical, legal, and operational constraints directly into the foundational software-hardware execution contracts.
 
@@ -98,7 +95,7 @@ To preserve architectural clarity across the research program (SROS-004 Single-O
 Unlike conventional software engineering paradigms that begin with feature requirements and subsequently apply security controls, CFAS initiates synthesis from the physical, thermal, and regulatory boundary limits.
 
 \subsection{Formal Admissibility Space}
-Let $\mathcal{C}$ denote the global computational state space of the cyber-physical appliance. A state $s \in \mathcal{C}$ is admissible ($\mathcal{C}_{\mathrm{admissible}}$) if and only if it satisfies the conjunction of five cross-layer constraint predicates \cite{b_hoare}:
+Let $\mathcal{C}$ denote the global computational state space of the cyber-physical appliance. A state $s \in \mathcal{C}$ is admissible ($\mathcal{C}_{\mathrm{admissible}}$) if and only if it satisfies the conjunction of five cross-layer constraint predicates \cite{b_hoare}, following principles of system safety \cite{b_leveson}, design by contract \cite{b_meyer}, and formal information protection \cite{b_saltzer}:
 \begin{equation}
 \mathcal{C}_{\mathrm{admissible}} = C_{\mathrm{phys}} \land C_{\mathrm{therm}} \land C_{\mathrm{priv}} \land C_{\mathrm{gov}} \land C_{\mathrm{time}},
 \label{eq:cfas_admissibility}
@@ -130,9 +127,9 @@ To put forward the architectural requirements formulated in later sections, we u
 \subsection{Adversary Classes and Attack Vectors}
 \begin{itemize}
     \item \textbf{$A_0$ (Passive Observer):} An entity observing the physical environment. \textit{Defended via:} Transparent signaling paradigms (Paper 15).
-    \item \textbf{$A_1$ (Network Eavesdropper):} An entity actively sniffing packet traffic. \textit{Defended via:} Mutual TLS (mTLS) and Differential Privacy (Papers 11, 13).
+    \item \textbf{$A_1$ (Network Eavesdropper):} An entity actively sniffing packet traffic. \textit{Defended via:} Mutual TLS (mTLS) and Differential Privacy \cite{b_dwork, b_abadi} (Papers 11, 13).
     \item \textbf{$A_2$ (Malicious/Curious Administrator):} An insider attempting retrospective mass surveillance. \textit{Defended via:} The absolute L3 irreversibility boundary which destroys raw data before persistence (Papers 3, 8).
-    \item \textbf{$A_3$ (Hardware Thief / Root Access):} An attacker attempting physical OS-level extraction. \textit{Defended via:} Enforced architectural volatility and fail-closed hardware supervision bounds (Papers 11, 12, 18).
+    \item \textbf{$A_3$ (Hardware Thief / Root Access):} An attacker attempting physical OS-level extraction. \textit{Defended via:} Enforced architectural volatility and fail-closed hardware supervision bounds \cite{b_avizienis}, mitigating cold-boot DRAM extraction \cite{b_halderman} and partition degradation \cite{b_brewer} (Papers 11, 12, 18).
     \item \textbf{$A_4$ (State-Level Hardware Attacker):} \textit{Explicitly out of scope for the ScholarMaster architecture as formalized in Paper 19.}
 \end{itemize}
 
@@ -197,7 +194,7 @@ The architecture is organized into four distinct strata. While Layers 1-8 repres
 This layer concerns the physical, thermal, and operational reality of the edge node. It enforces "Privacy by Physics" and operational resilience against harsh deployment conditions.
 \begin{itemize}
     \item \textbf{L1 Physical Substrate:} Determined by \textbf{Paper 11} (Production MLOps) and \textbf{Paper 12} (Flash Endurance). It defines the operational time of the runtime: enforces memory volatility, execution supervision, and filesystem immutability. 
-    \item \textbf{L2 Sensor Acquisition:} Addressed in \textbf{Paper 5} (Thermal/Memory) and \textbf{Paper 10} (System level validation). Included in this category is \textbf{Paper 6} (Acoustic anomaly) which describes high fidelity environmental capture confined to a circular volatile buffer.
+    \item \textbf{L2 Sensor Acquisition:} Addressed in \textbf{Paper 5} (Thermal/Memory) and \textbf{Paper 10} (System level validation). Included in this category is \textbf{Paper 6} (Acoustic anomaly) which describes high fidelity environmental capture confined to a circular volatile buffer, interfacing with cyber-physical robotics frameworks like ROS 2 \cite{b_ros2}.
 \end{itemize}
 
 \subsection{Stratum II: The Logic of Stewardship}
@@ -208,11 +205,11 @@ This layer converts raw signals into semantic meaning and governance compliance 
 \end{itemize}
 
 \subsection{Stratum III: The Architecture of Verification}
-This layer provides the proofs that the system is behaving as claimed, bridging local logic with global accountability \cite{b_clarke}.
+This layer provides the proofs that the system is behaving as claimed, bridging local logic with global accountability \cite{b_clarke}, specified formally via Metric Temporal Logic \cite{b_koymans}.
 \begin{itemize}
     \item \textbf{L5 Governance:} \textbf{Paper 9} (Orchestration). Enforces policy gates before any data emission. It physically separates the act of algorithmic judgment (L4) from the authorization to transmit.
     \item \textbf{L6 Human Output:} \textbf{Paper 15} (AR Visualization) and \textbf{Paper 16} (Sociological Trust). Translates machine boundaries into human-verifiable proof via skeleton-only augmented reality displays.
-    \item \textbf{L7 Audit Persistence:} \textbf{Paper 8} (Blockchain Provenance). Implements a tamper-evident, append-only local ledger ensuring that $A_2$ adversaries cannot retroactively alter compliance histories.
+    \item \textbf{L7 Audit Persistence:} \textbf{Paper 8} (Blockchain Provenance). Implements a tamper-evident, append-only local ledger using cryptographic Merkle trees \cite{b_merkle} ensuring that $A_2$ adversaries cannot retroactively alter compliance histories.
 \end{itemize}
 
 \subsection{Stratum IV: The Sociology of Trust and Federation}
@@ -248,7 +245,7 @@ The invariant namespace defines the foundational formal contracts across the edg
 
 \subsection{Distributed Sovereignty}
 \begin{itemize}
-    \item \textbf{INV-05 (Federation Sovereignty):} No model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples. Robust temporal ordering \cite{b_lamport} ensures the consistency of these distributed updates.
+    \item \textbf{INV-05 (Federation Sovereignty):} No model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples. Robust temporal ordering \cite{b_lamport} and consensus protocols like Raft \cite{b_ongaro} ensure the consistency of these distributed updates, drawing upon distributed cluster scheduling \cite{b_burns, b_dean}, low-latency serving engines \cite{b_crankshaw}, and durable storage arrays \cite{b_patterson}.
     \item \textbf{INV-12 (Deletion Propagation):} User data deletion/revocation requests must propagate across active state, forcing an unlearning routine within one aggregation round.
     \item \textbf{INV-13 (Federation Payload Restriction):} Network egress transmits only DP-noised gradient summaries; explicit raw data types are banned at the schema level.
 \end{itemize}
@@ -515,6 +512,37 @@ This paper presented the ScholarMaster Unified Reference Architecture, grounded 
 
 \bibitem{P5} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
 
+\bibitem{b_patterson} D. A. Patterson, G. Gibson, and R. H. Katz, ``A case for redundant arrays of inexpensive disks (RAID),'' in \textit{Proceedings of the 1988 ACM SIGMOD International Conference on Management of Data}, 1988, pp. 109--116.
+
+\bibitem{b_merkle} R. C. Merkle, ``A certified digital signature,'' in \textit{Advances in Cryptology --- CRYPTO '89}, Springer, 1989, pp. 218--238.
+
+\bibitem{b_koymans} R. Koymans, ``Specifying real-time properties with metric temporal logic,'' \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255--299, 1990.
+
+\bibitem{b_leveson} N. G. Leveson, \textit{Safeware: System Safety and Computers}. Addison-Wesley, 1995.
+
+\bibitem{b_avizienis} A. Avizienis, J.-C. Laprie, B. Randell, and C. Landwehr, ``Basic concepts and taxonomy of dependable and secure computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11--33, 2004.
+
+\bibitem{b_dean} J. Dean and S. Ghemawat, ``MapReduce: Simplified data processing on large clusters,'' \textit{Communications of the ACM}, vol. 51, no. 1, pp. 107--113, 2008.
+
+\bibitem{b_halderman} J. A. Halderman et al., ``Lest we remember: Cold-boot attacks on encryption keys,'' \textit{Communications of the ACM}, vol. 52, no. 5, pp. 91--98, 2009.
+
+\bibitem{b_brewer} E. Brewer, ``CAP twelve years later: How the 'rules' have changed,'' \textit{Computer}, vol. 45, no. 2, pp. 23--29, 2012.
+
+\bibitem{b_ongaro} D. Ongaro and J. Ousterhout, ``In search of an understandable consensus algorithm,'' in \textit{2014 USENIX Annual Technical Conference (ATC 14)}, 2014, pp. 305--319.
+
+\bibitem{b_burns} B. Burns, B. Grant, D. Oppenheimer, E. Brewer, and J. Wilkes, ``Borg, omega, and kubernetes,'' \textit{Communications of the ACM}, vol. 59, no. 5, pp. 50--57, 2016.
+
+\bibitem{b_abadi} M. Abadi et al., ``Deep learning with differential privacy,'' in \textit{Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security (CCS)}, 2016, pp. 308--318.
+
+\bibitem{b_shi} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
+
+\bibitem{b_crankshaw} D. Crankshaw et al., ``Clipper: A Low-Latency Online Prediction Serving System,'' in \textit{14th USENIX Symposium on Networked Systems Design and Implementation (NSDI 17)}, 2017, pp. 613--627.
+
+\bibitem{b_zhou} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738--1762, 2019.
+
+\bibitem{b_bass} L. Bass, P. Clements, and R. Kazman, \textit{Software Architecture in Practice}, 4th ed. Addison-Wesley, 2021.
+
+\bibitem{b_ros2} S. Macenski et al., ``Robot Operating System 2: Design, architecture, and uses in the wild,'' \textit{Science Robotics}, vol. 7, no. 66, p. eabm6074, 2022.
 \end{thebibliography}
 
 \end{document}
