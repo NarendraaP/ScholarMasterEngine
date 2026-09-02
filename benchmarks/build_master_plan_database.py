@@ -136,7 +136,7 @@ def main():
             "plan_position": 2,
             "phase": "Phase 1: Subsystem Sensing & Perception Integrity",
             "submission_window": "Q1 2027 (Month 1)",
-            "venue": "Journal for Basic Sciences / IEEE Access (vol. 26, no. 5, pp. 112-128, 2026)",
+            "venue": "Journal for Basic Sciences / IEEE Access (vol. 26, no. 5, pp. 31-37, 2026)",
             "venue_type": "Journal",
             "status": "PUBLISHED"
         },

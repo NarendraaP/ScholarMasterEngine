@@ -68,7 +68,7 @@ Modern deep multimodal architectures are traditionally categorized by their fusi
 \begin{itemize}
     \item \textbf{Early Fusion}: Concatenates raw feature maps or sensor tokens at the network input layer \cite{baltrusaitis2018multimodal}. Early fusion allows for rich low-level cross-modal feature interactions but provides zero fault tolerance; single-sensor failures corrupt the fused representation since all information is fed into the same downstream network.
     \item \textbf{Late Fusion}: Trains separate unimodal neural networks and aggregates their softmax outputs by a fixed linear averaging or voting \cite{khaleghi2013multisensor}. While modular, static late fusion cannot adaptively adjust its weights when the environment degrades a particular sensor.
-    \item \textbf{Intermediate / Cross-Attention Fusion}: Employs pairwise self-attention or cross-modal transformer blocks (e.g., Multimodal Transformer \cite{tsai2019multimodal} or Perceiver \cite{jaegle2021perceiver}) to dynamically weight cross-modal tokens. However, transformer attention matrices scale quadratically with sequence length, producing execution latencies ($>40\text{ ms}$) that defy edge SLA constraints. Moreover, attention weights over unbounded logits can amplify model attention to high-frequency noise \cite{guo2017calibration}.
+    \item \textbf{Intermediate / Cross-Attention Fusion}: Employs pairwise self-attention or cross-modal transformer blocks (e.g., Multimodal Transformer \cite{tsai2019multimodal} or Perceiver \cite{jaegle2021perceiver}) to dynamically weight cross-modal tokens. However, transformer attention matrices scale quadratically with sequence length, producing execution latencies ($>40\text{ ms}$) that defy edge SLA constraints \cite{kumar2026scholar23}. Moreover, attention weights over unbounded logits can amplify model attention to high-frequency noise \cite{guo2017calibration}.
 \end{itemize}
 
 \begin{table*}[t]
@@ -278,7 +278,7 @@ where $K_{buf} = 64$ frames. Upon query at timestamp $t_{query}$, the synchroniz
 \begin{equation}
 \hat{\theta}_m(k+1) = \alpha \hat{\theta}_m(k) + (1 - \alpha) \delta_t(k).
 \end{equation}
-In the ScholarMaster production runtime, cross-modal synchronization is enforced by the \texttt{ConsistencyChecker} module in the perception integrity subsystem, which implements a $1.0\text{ s}$ timestamp-skew gating window and audio-visual activity correlation checks. Algorithm~\ref{alg:multirate_sync} serves as the formal multi-rate PLL reference specification.
+In the ScholarMaster production runtime, cross-modal synchronization is enforced by the \texttt{ConsistencyChecker} module in the perception integrity subsystem \cite{kumar2026scholar22}, which implements a $1.0\text{ s}$ timestamp-skew gating window and audio-visual activity correlation checks. Algorithm~\ref{alg:multirate_sync} serves as the formal multi-rate PLL reference specification.
 
 \section{Empirical Degradation \& Recovery Results}
 \subsection{Experimental Setup \& Degradation Protocol}
@@ -353,20 +353,20 @@ We established the information-theoretic formulation, mathematical bounds, and e
 
 \begin{thebibliography}{00}
 \small
-\bibitem{baltrusaitis2018multimodal} T. Baltru{\v{s}}aitis, C. Ahuja, and L. P. Morency, ``Multimodal machine learning: A survey and taxonomy,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 41, no. 2, pp. 423--443, 2018.
+\bibitem{baltrusaitis2018multimodal} T. Baltru{\v{s}}aitis, C. Ahuja, and L. P. Morency, ``Multimodal machine learning: A survey and taxonomy,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 41, no. 2, pp. 423--443, 2019.
 \bibitem{ramachandram2017deep} D. Ramachandram and G. W. Taylor, ``Deep multimodal learning: A survey on recent advances and trends,'' \emph{IEEE Signal Process. Mag.}, vol. 34, no. 6, pp. 96--108, 2017.
 \bibitem{dodge2016understanding} S. Dodge and L. Karam, ``Understanding how image quality affects deep neural networks,'' in \emph{Proc. QoMEX}, 2016, pp. 1--6.
 \bibitem{hendrycks2019benchmarking} D. Hendrycks and T. Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
 \bibitem{tsai2019multimodal} Y. H. H. Tsai et al., ``Multimodal transformer for unaligned multimodal language sequences,'' in \emph{Proc. ACL}, 2019, pp. 6558--6569.
 \bibitem{ma2021smil} M. Ma, J. Ren, L. Zhao, D. Testuggine, and X. Peng, ``SMIL: Multimodal learning with severely missing modality,'' in \emph{Proc. AAAI}, 2021, pp. 2302--2310.
-\bibitem{lee2020private} N. Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in \emph{Proc. NeurIPS}, 2020.
+\bibitem{lee2020private} M. Lee and V. Pavlovic, ``Private-shared disentangled multimodal VAE for learning of latent representations,'' in \emph{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. Workshops (CVPRW)}, 2021, pp. 1691--1700.
 \bibitem{khaleghi2013multisensor} B. Khaleghi, A. Khamis, F. O. Karray, and S. N. Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
 \bibitem{lin1991divergence} J. Lin, ``Divergence measures based on the Shannon entropy,'' \emph{IEEE Trans. Inf. Theory}, vol. 37, no. 1, pp. 145--151, 1991.
 \bibitem{endres2003new} D. M. Endres and J. E. Schindelin, ``A new metric for probability distributions,'' \emph{IEEE Trans. Inf. Theory}, vol. 49, no. 7, pp. 1858--1860, 2003.
 \bibitem{kullback1951information} S. Kullback and R. A. Leibler, ``On information and sufficiency,'' \emph{Ann. Math. Stat.}, vol. 22, no. 1, pp. 79--86, 1951.
 \bibitem{julier2000new} S. Julier, J. Uhlmann, and H. F. Durrant-Whyte, ``A new method for the nonlinear transformation of means and covariances in filters,'' \emph{IEEE Trans. Autom. Control}, vol. 45, no. 3, pp. 477--482, 2000.
 \bibitem{jaegle2021perceiver} A. Jaegle et al., ``Perceiver: General perception with iterative attention,'' in \emph{Proc. ICML}, 2021, pp. 4651--4664.
-\bibitem{neverova2015moddrop} N. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 38, no. 8, pp. 1692--1706, 2015.
+\bibitem{neverova2015moddrop} N. Neverova, C. Wolf, G. Taylor, and F. Nebout, ``ModDrop: Adaptive multi-modal gesture recognition,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 38, no. 8, pp. 1692--1706, 2016.
 \bibitem{blundell2015weight} C. Blundell, J. Cornebise, K. Kavukcuoglu, and D. Wierstra, ``Weight uncertainty in neural networks,'' in \emph{Proc. ICML}, 2015, pp. 1613--1622.
 \bibitem{guo2017calibration} C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, ``On calibration of modern neural networks,'' in \emph{Proc. ICML}, 2017, pp. 1321--1330.
 \bibitem{kumar2026scholar22} S. Suresh Kumar, ``Perception integrity foundations: Evidential uncertainty, disagreement dynamics, and blur bounds in edge vision,'' \emph{ScholarMaster Technical Report Series}, Paper 22, 2026.

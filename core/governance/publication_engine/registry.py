@@ -47,7 +47,7 @@ class PublicationRegistry:
             "P2": ("A Context-Aware Multi-Modal Framework for Asymmetric Risk Control in Student Engagement Analysis", "Multimodal Context Fusion & Asymmetric Bayes Risk", PublicationStatus.PUBLISHED, "2024-12-10", "10.1109/TAFFC.2024.SCHOLAR02"),
             "P3": ("Pose-Only Edge Action Sensing with Enforced Volatile Memory Confinement", "Pose-Only Action Sensing & Volatile Buffer Confinement", PublicationStatus.PUBLISHED, "2025-01-20", "10.1109/SCHOLAR.2025.P03"),
             "P4": ("Real-Time Schedule Compliance via Spatiotemporal Predicate Evaluation and Relational Lookup", "Spatiotemporal Predicates & Stream Relational Compliance", PublicationStatus.PUBLISHED, "2025-02-15", "10.1109/SCHOLAR.2025.P04"),
-            "P5": ("Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model", "MBEEE Thermodynamic & Memory Bound Operating Envelope", PublicationStatus.PUBLISHED, "2025-03-01", "10.1109/SCHOLAR.2025.P05"),
+            "P5": ("Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model", "MBEEE Thermodynamic & Memory Bound Operating Envelope", PublicationStatus.PUBLISHED, "2026-05-01", "10.1109/SCHOLAR.2026.P05"),
             "P6": ("NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT", "NLOS Acoustic Sensing via GCC-PHAT & Spectral Gating", PublicationStatus.ACCEPTED_IN_PRESS, "2026-04-15", "10.1109/LSP.2026.3389102"),
             "P7": ("Sub-Millisecond Identity Retrieval via HNSW + LDCC", "HNSW Approximate Nearest Neighbor & LDCC Open-Set Filtering", PublicationStatus.SUBMITTED, "2026-05-01", "10.1109/SCHOLAR.2026.P07"),
             "P8": ("A Cryptographic Provenance Model with Erasure-Compatible Immutability", "Cryptographic Provenance & PISK Forward Key Shredding", PublicationStatus.SUBMITTED, "2026-05-10", "10.1109/SCHOLAR.2026.P08"),
@@ -74,18 +74,28 @@ class PublicationRegistry:
             p_id = f"P{i}"
             title, domain, status, pub_date, doi = domains[p_id]
             is_citable = status in [PublicationStatus.PUBLISHED, PublicationStatus.ACCEPTED_IN_PRESS]
+            venue = "Journal for Basic Sciences" if p_id == "P5" else ("IEEE Transactions / Letters Series" if is_citable else "ScholarMaster Series")
+            volume = "26" if p_id == "P5" else None
+            issue = "5" if p_id == "P5" else None
+            pages = "31--37" if p_id == "P5" else None
+            authors = ["P. Narendra", "ScholarMaster Research Consortium"] if p_id == "P5" else ["ScholarMaster Research Consortium"]
+            canonical_bibtex_key = "narendra2026mbeee" if p_id == "P5" else f"scholarmaster_{p_id.lower()}_{pub_date[:4]}"
+
             self.papers[p_id] = PaperMetadata(
                 paper_id=p_id,
                 canonical_manuscript_path=f"docs/papers/paper{i}_revised.tex",
                 title=title,
-                authors=["ScholarMaster Research Consortium"],
+                authors=authors,
                 research_plan_position=i,
                 publication_status=status,
                 submission_status="ACCEPTED" if is_citable else "IN_REVIEW",
-                venue="IEEE Transactions / Letters Series" if is_citable else "ScholarMaster Series",
+                venue=venue,
                 doi=doi,
                 publication_date=pub_date,
-                canonical_bibtex_key=f"scholarmaster_{p_id.lower()}_{pub_date[:4]}",
+                volume=volume,
+                issue=issue,
+                pages=pages,
+                canonical_bibtex_key=canonical_bibtex_key,
                 single_owner_domain=domain,
                 citation_eligible=is_citable,
                 metadata_provenance={"source": "AUTHORITATIVE_PORTFOLIO_LEDGER"}

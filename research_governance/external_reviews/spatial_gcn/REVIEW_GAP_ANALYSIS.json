@@ -1,0 +1,112 @@
+[
+  {
+    "review_id": "R1-01",
+    "comment": "More implementation and experimental details",
+    "current_section": "Section III (Methodology), Algorithm 1",
+    "current_content": "Algorithm 1 provides training loop pseudocode. Architecture diagram (Fig 1) shows GCN(64)->GCN(128)->GAP->Dense+Sigmoid. Preprocessing pipeline documented (bandpass 0.5-70 Hz, notch 50 Hz, 4s windows, Z-score normalization).",
+    "current_evidence": "Algorithm 1 in manuscript, Fig 1 architecture diagram",
+    "gap": "Missing: optimizer name, weight initialization scheme, number of trainable parameters, GPU memory footprint, training time per fold, inference latency measurements.",
+    "required_revision": "Add implementation details table. Values must come from actual Colab notebooks.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R1-02",
+    "comment": "Hyperparameter settings",
+    "current_section": "Section III (Methodology), Algorithm 1",
+    "current_content": "Documented: threshold tau=0.3, epochs=100 (inferred from DBB section), GCN hidden dims 64/128 (from Fig 1), activation ReLU/Sigmoid, loss=weighted BCE, batch ratio 1:1 (DBB), decision threshold=0.9362, median filter w=3, bandpass 0.5-70 Hz, fs=500 Hz, window=4s, N=19 electrodes.",
+    "current_evidence": "Manuscript text in Sections III.A-III.H",
+    "gap": "MISSING: learning rate (numeric value), optimizer (Adam/SGD/etc), batch size, dropout rate, weight decay/L2 regularization, weight initialization, random seed, early stopping criterion, learning rate scheduler.",
+    "required_revision": "Add complete hyperparameter table. Only values recoverable from Colab notebooks should be included.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R1-03",
+    "comment": "Dataset partitioning",
+    "current_section": "Section IV.F (LOSO)",
+    "current_content": "LOSO cross-validation: 22 folds, train on 21 subjects, test on held-out 1 subject. Nasreddine dataset, 22 patients, 67 seizures. 19 electrodes, 4s epochs at 500 Hz.",
+    "current_evidence": "Section IV.F text, Table III",
+    "gap": "MISSING: Whether a separate validation set exists within each fold for hyperparameter tuning. How hyperparameters (tau, decision threshold) were selected. Whether there is any data leakage through threshold selection on test data. Exact number of seizure vs normal epochs per patient.",
+    "required_revision": "Add dataset statistics table and clarify validation protocol within LOSO folds.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R1-04",
+    "comment": "Reproducibility information",
+    "current_section": "Section III.I (Reproducibility and Code Availability)",
+    "current_content": "Two Google Colab links provided (colab1 for CNN baseline, colab2 for Spatial-GCN). Platform stated as NVIDIA Tesla T4.",
+    "current_evidence": "Section III.I, bibliography entries colab1 and colab2",
+    "gap": "MISSING: Python version, PyTorch/TensorFlow version, PyG/DGL version, random seeds, exact dependency list, whether notebooks currently reproduce reported results, data download instructions.",
+    "required_revision": "Add reproducibility checklist subsection with software environment details. Only include what can be verified from Colab.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R1-05",
+    "comment": "Additional recent SOTA comparisons",
+    "current_section": "Section IV.A (Table I)",
+    "current_content": "Only comparison is 1D-CNN (Euclidean) vs Spatial-GCN (Topological). Ablation compares Random/Physical/Functional graph priors (Table II). No comparison to published recent GNN-based seizure detection methods.",
+    "current_evidence": "Table I, Table II",
+    "gap": "MISSING: No comparison against recent methods such as EEG-GNN (Wagh 2019, cited but not benchmarked), DCRNN, ST-GCN, EEGNet, attention-based methods, or transformer-based EEG methods published 2022-2026.",
+    "required_revision": "Identify genuinely comparable recent methods. If direct comparison requires new experiments, mark as REQUIRES_NEW_EXPERIMENT. If published results on same dataset exist, add discussion table with explicit protocol comparability caveat.",
+    "classification": "MISSING"
+  },
+  {
+    "review_id": "R1-06",
+    "comment": "Statistical significance analysis",
+    "current_section": "Section IV.F (Table III LOSO results)",
+    "current_content": "LOSO results reported with Mean and Std Dev across 22 folds: AUC 0.94 +/- 0.04, Precision 31.5% +/- 5.2%, Specificity 99.8% +/- 0.2%.",
+    "current_evidence": "Table III",
+    "gap": "MISSING: No formal statistical test (paired t-test, Wilcoxon signed-rank). No p-values. No confidence intervals. No effect size (Cohen's d). No multiple comparison correction. Per-fold raw values not reported. Cannot establish statistical significance from mean +/- std alone.",
+    "required_revision": "If per-fold raw results exist in Colab output, perform paired Wilcoxon signed-rank test (GCN vs CNN per fold) and report p-value with 95% CI. If only aggregate values exist, state STATISTICAL_SIGNIFICANCE = NOT_ESTABLISHABLE_FROM_EXISTING_DATA.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R1-07",
+    "comment": "Refinement of writing",
+    "current_section": "Entire manuscript",
+    "current_content": "Writing is generally clear but contains informal phrasing, excessive quotation marks used stylistically, and some transitions between sections are abrupt.",
+    "current_evidence": "Full manuscript text",
+    "gap": "Multiple instances of informal language. Some paragraphs could be tightened.",
+    "required_revision": "Language quality pass. No scientific content changes.",
+    "classification": "WRITING_ONLY"
+  },
+  {
+    "review_id": "R1-08",
+    "comment": "Correction of minor grammatical issues",
+    "current_section": "Entire manuscript",
+    "current_content": "Several grammatical issues identified: 'the shift from the standard Euclidean space' (article usage), inconsistent use of 'that' vs 'which', missing Oxford commas, inconsistent capitalization in section headers.",
+    "current_evidence": "Full manuscript text",
+    "gap": "Grammar pass needed.",
+    "required_revision": "Grammar and punctuation corrections. No scientific content changes.",
+    "classification": "WRITING_ONLY"
+  },
+  {
+    "review_id": "R1-09",
+    "comment": "Clear explanation of novelty over existing hybrid approaches",
+    "current_section": "Section I.D (Proposed Contribution), Section II (Related Work)",
+    "current_content": "Contribution states: (1) functional connectivity as structural prior, (2) dynamic balanced batching. Related work discusses CNN limitations and edge definition approaches. Table I compares topology-aware vs topology-agnostic approaches at a high level.",
+    "current_evidence": "Table I, Section I.D, Section II",
+    "gap": "MISSING: Structured point-by-point comparison with specific prior hybrid GNN-EEG approaches (Wagh 2019, Song 2018, Jang 2019 — all cited). Does not clearly articulate what is DISTINCTIVE_COMBINATION vs METHODOLOGICAL_NOVELTY vs EMPIRICAL_CONTRIBUTION.",
+    "required_revision": "Add explicit novelty comparison table against cited hybrid approaches. Classify contribution type honestly.",
+    "classification": "PARTIALLY_SUPPORTED"
+  },
+  {
+    "review_id": "R2-03",
+    "comment": "Validation on larger datasets",
+    "current_section": "Section V.C (Limitations), Section VI (Future Scope)",
+    "current_content": "Limitations section acknowledges: 'validation on larger cohorts will be required.' Only evaluated on Nasreddine dataset (22 patients).",
+    "current_evidence": "Section V.C bullet point 3",
+    "gap": "No experiments on larger datasets (e.g., CHB-MIT has 24 patients, Temple University Hospital EEG Corpus has 10,000+ sessions). Whether existing code can run on these datasets is unknown without checking Colab notebooks.",
+    "required_revision": "If a larger public dataset can be evaluated with existing code, register as REQUIRES_NEW_EXPERIMENT. Otherwise strengthen the limitations discussion and add explicit future work commitment.",
+    "classification": "MISSING"
+  },
+  {
+    "review_id": "R2-04",
+    "comment": "Reduced reliance on self-citations",
+    "current_section": "Bibliography",
+    "current_content": "20 total references. Self-citations: narendra2026 (MBEEE/P05), colab1 (CNN baseline Colab), colab2 (Spatial-GCN Colab). 3 out of 20 references are self-citations (15%).",
+    "current_evidence": "Bibliography entries",
+    "gap": "narendra2026 is used in Section III.J (Computational Complexity) for MBEEE framework reference. This is RELEVANT_BUT_OPTIONAL — the complexity analysis could stand without it or cite general edge computing literature. colab1 and colab2 are ESSENTIAL for reproducibility.",
+    "required_revision": "Evaluate whether narendra2026 can be replaced with or supplemented by external edge computing references. Keep colab1/colab2 as essential reproducibility references.",
+    "classification": "REVIEW_REQUIRED"
+  }
+]

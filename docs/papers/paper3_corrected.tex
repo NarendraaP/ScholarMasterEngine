@@ -118,7 +118,7 @@ Early pose estimation frameworks like OpenPose \cite{b10} revolutionized human-c
 **Critical Distinction:** We cite these models as \textbf{tooling}, not contributions. Our novelty is the architectural integration, not the pose estimation algorithm itself.
 
 \subsection{Privacy via Obfuscation vs. Architectural Constraints}
-Padillo \cite{b3} proposed selective video surveillance using Gaussian blur and pixelation to obscure identity while preserving motion cues. However, this is \textit{post-hoc obfuscation}—the original high-resolution frames exist transiently in memory before blur is applied, creating a window for forensic recovery \cite{b21}. Similarly, differential privacy approaches \cite{b5} add noise to outputs but require a trusted aggregator with access to raw data.
+Fitwi and Chen \cite{b3} proposed selective video surveillance using Gaussian blur and pixelation to obscure identity while preserving motion cues. However, this is \textit{post-hoc obfuscation}—the original high-resolution frames exist transiently in memory before blur is applied, creating a window for forensic recovery \cite{b21}. Similarly, differential privacy approaches \cite{b5} add noise to outputs but require a trusted aggregator with access to raw data.
 
 In contrast, our approach enforces \textbf{architectural irreversibility}: raw frames are vectorized and destroyed within 33ms (one frame interval at 30 FPS), ensuring no biometric data survives beyond the Volatile Zone. This is an \textit{architectural constraint (reference-level)}, not a policy-dependent one.
 
@@ -685,7 +685,7 @@ We acknowledge the volunteer participants who assisted in the staged data collec
 
 \bibitem{b9} J. Shotton et al., "Real-time human pose recognition from single depth images," \textit{Proc. IEEE CVPR}, 2011.
 
-\bibitem{b8} G. Casquez et al., "One Euro Filter," \textit{Proc. CHI}, 2012.
+\bibitem{b8} G. Casiez, N. Roussel, and D. Vogel, ``1€ Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems,'' in \textit{Proc. CHI}, 2012, pp. 2527--2530.
 
 \bibitem{b15} X. P. Burgos-Artizzu et al., "Robust face landmark estimation under occlusion," \textit{Proc. IEEE ICCV}, 2013.
 
@@ -721,7 +721,7 @@ We acknowledge the volunteer participants who assisted in the staged data collec
 
 \bibitem{b2} S. Zuboff, \textit{The Age of Surveillance Capitalism}. PublicAffairs, 2019.
 
-\bibitem{b3} D. Padillo, "Privacy-Preserving Selective Video Surveillance," \textit{IEEE Access}, vol. 8, pp. 15432-15445, 2020.
+\bibitem{b3} A. H. Fitwi and Y. Chen, ``Privacy-Preserving Selective Video Surveillance,'' in \textit{Proc. IEEE International Conference on Computer Communications and Networks (ICCCN)}, 2020, pp. 1--9.
 
 \bibitem{b10} Z. Cao et al., "OpenPose: Realtime Multi-Person 2D Pose Estimation," \textit{IEEE TPAMI}, vol. 43, no. 1, pp. 172-186, 2021.
 

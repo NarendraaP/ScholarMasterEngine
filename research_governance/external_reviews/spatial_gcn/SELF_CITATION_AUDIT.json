@@ -1,0 +1,46 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "total_references": 20,
+  "self_citations": [
+    {
+      "cite_key": "narendra2026",
+      "full_reference": "P. Narendra et al., 'Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,' Journal for Basic Sciences, vol. 26, no. 5, 2026.",
+      "used_in_section": "Section III.J (Computational Complexity Analysis)",
+      "usage_context": "Referenced to justify hardware-level algorithmic trade-off analysis for resource-constrained edge devices.",
+      "classification": "RELEVANT_BUT_OPTIONAL",
+      "justification": "The complexity analysis (O(N^2*T) for graph construction, O(|E|*F) for propagation) stands on its own without MBEEE. The sentence could reference general edge computing literature instead. However, MBEEE is a companion paper by the same group, and the cross-reference is scientifically defensible as a pointer to detailed hardware modeling.",
+      "recommendation": "KEEP but supplement with 1-2 external edge computing references to reduce perceived self-reliance."
+    },
+    {
+      "cite_key": "colab1",
+      "full_reference": "Tatapudi Premkumar et al., 'CNN Baseline Experiments for EEG Seizure Detection,' Google Colab, 2026.",
+      "used_in_section": "Section III.I (Reproducibility and Code Availability)",
+      "usage_context": "Code repository for baseline CNN experiments.",
+      "classification": "ESSENTIAL",
+      "justification": "Provides reproducibility. Code availability references are standard scientific practice and NOT conventional self-citations.",
+      "recommendation": "KEEP. This is a reproducibility artifact, not a self-promotional citation."
+    },
+    {
+      "cite_key": "colab2",
+      "full_reference": "Tatapudi Premkumar et al., 'Spatial-GCN Experiments for EEG Seizure Detection,' Google Colab, 2026.",
+      "used_in_section": "Section III.I (Reproducibility and Code Availability)",
+      "usage_context": "Code repository for Spatial-GCN experiments.",
+      "classification": "ESSENTIAL",
+      "justification": "Provides reproducibility. Code availability references are standard scientific practice.",
+      "recommendation": "KEEP. Same as colab1."
+    }
+  ],
+  "external_references": 17,
+  "self_citation_ratio": "3/20 = 15%",
+  "self_citation_ratio_excluding_code": "1/20 = 5%",
+  "summary": {
+    "ESSENTIAL": 2,
+    "RELEVANT_BUT_OPTIONAL": 1,
+    "REDUNDANT": 0,
+    "NOT_RELEVANT": 0,
+    "total_self_citations": 3
+  },
+  "verdict": "Self-citation rate is moderate (15%, or 5% excluding code repositories). Only narendra2026 could be supplemented with external references. The two Colab references are reproducibility artifacts, not self-promotional citations. Overall self-citation concern is LOW.",
+  "actionable_recommendation": "Add 1-2 external edge computing references alongside narendra2026 in Section III.J to address reviewer concern. Do NOT remove colab1/colab2."
+}

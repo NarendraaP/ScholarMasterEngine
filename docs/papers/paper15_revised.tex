@@ -92,7 +92,7 @@ Conventional dashboard interfaces present alerts as textual streams or static ma
 Suppose a simple alert: \textit{“Acoustic Anomaly: Stairwell North-3.”} The operator must first interpret the text, then imagine the location of Stairwell North-3, formulate a route from his or her current position, and then actually go there, all while maintaining situational awareness. This process can add time, especially in large facilities where an operator might be misled into heading down the wrong hallway or wing \cite{b3}, \cite{b30}.
 
 \subsection{Spatial Computing as Cognitive Alignment}
-This work explores whether spatially anchored AR interfaces can eliminate the cognitive translation step by overlaying contextual data directly onto the operator's real-world camera view \cite{b31}. The anomaly becomes a physically registered indicator rather than a symbolic text entry. Spatial anchoring functions as a cognitive alignment mechanism---perceptual coordinate fusion between digital alert data and the physical environment---rather than merely a rendering technique.
+This work explores whether spatially anchored AR interfaces can eliminate the cognitive translation step by overlaying contextual data directly onto the operator's real-world camera view \cite{b31, b20}. The anomaly becomes a physically registered indicator rather than a symbolic text entry. Spatial anchoring functions as a cognitive alignment mechanism---perceptual coordinate fusion between digital alert data and the physical environment---rather than merely a rendering technique.
 
 This paper focuses strictly on the cognitive interface layer. We do not propose new anomaly detection algorithms, nor evaluate upstream infrastructure. Within the ScholarMaster architecture, this subsystem optimizes spatial cognition, AR-guided interpretation, and response-oriented cognitive offloading only. It does not generate anomaly detections (earlier papers), optimize federated learning (Paper 14), construct trust-governance models (Paper 16), derive formal verification theorems (Paper 21), or synthesize deployment architecture (Paper 20).
 
@@ -208,7 +208,7 @@ When the camera detects a QR Anchor at $P_{QR}$ with a specific rotation $Q_{QR}
 P_{render} = P_{camera} + Q_{rel}(P_{target}-P_{anchor})Q_{rel}^{-1}
 \end{equation}
 \begin{theorem}[Deterministic AR Projection Latency Bound]
-Let a mobile AR viewport process $M$ active spatially-anchored alert beacons with EKF pose state updates $x_k \in \mathbb{R}^6$ at 60 Hz. The end-to-end projection latency $T_{\mathrm{render}}$ through quaternion transform $P_{\mathrm{render}} = P_{\mathrm{cam}} + Q_{\mathrm{rel}}(P_{\mathrm{tgt}} - P_{\mathrm{anc}})Q_{\mathrm{rel}}^{-1}$ satisfies:
+Let a mobile AR viewport process $M$ active spatially-anchored alert beacons with EKF pose state updates $x_k \in \mathbb{R}^6$ at 60 Hz \cite{b11}. The end-to-end projection latency $T_{\mathrm{render}}$ through quaternion transform $P_{\mathrm{render}} = P_{\mathrm{cam}} + Q_{\mathrm{rel}}(P_{\mathrm{tgt}} - P_{\mathrm{anc}})Q_{\mathrm{rel}}^{-1}$ satisfies:
 \begin{equation}
 T_{\mathrm{render}} = T_{\mathrm{EKF}} + M \cdot T_{\mathrm{quat}} + T_{\mathrm{draw}} \le 16.6\text{ ms},
 \end{equation}
@@ -430,7 +430,7 @@ Tracking reliability is reduced in some cases, particularly in situations with p
 \subsection{Limitations}
 The spatial visualization framework exposes several operational and ergonomic boundaries within the evaluated task environment:
 \begin{itemize}
-    \item \textbf{SLAM Drift Vulnerability:} Extended navigation through featureless or highly reflective corridors induces tracking drift, requiring periodic physical QR re-anchoring to preserve spatial alignment.
+    \item \textbf{SLAM Drift Vulnerability:} Extended navigation through featureless or highly reflective corridors induces tracking drift, requiring periodic physical QR re-anchoring to preserve spatial alignment \cite{b15}.
     \item \textbf{Ergonomic Fatigue:} Sustained handheld AR use induces shoulder strain (Gorilla Arm syndrome), attention fatigue, and long-duration usability degradation, restricting the interface to intermittent response verification.
     \item \textbf{Thermal and Energy Limits:} Simultaneous SLAM tracking, rendering, and network polling induce rapid thermal throttling and battery drain on commodity mobile hardware within a 3-hour window.
     \item \textbf{Environmental Illumination Constraints:} The tracking algorithms fail abruptly in low-light environments, forcing automatic degradation to 2D radar modes.
@@ -480,21 +480,19 @@ Within the ScholarMaster architecture this framework only operates at the level 
 
 \bibitem{b12} R. A. Light, ``Mosquitto: server and client implementation of the MQTT protocol,'' \textit{Journal of Open Source Software}, vol. 2, no. 13, p. 265, 2017.
 
-\bibitem{b32} A. Abuarqoub et al., ``A survey on internet of things enabled smart campus applications,'' \textit{Proceedings of the International Conference on Future Networks and Distributed Systems}, 2017.
-
 \bibitem{b33} J. Lin et al., ``A survey on internet of things: Architecture, enabling technologies, security and privacy, and applications,'' \textit{IEEE Internet of Things Journal}, vol. 4, no. 5, pp. 1125--1142, 2017.
 
 \bibitem{b22} H. Xu et al., ``Reinforcement learning-based control and networking co-design for industrial internet of things,'' \textit{IEEE Journal on Selected Areas in Communications}, vol. 38, no. 5, pp. 885--898, 2020.
 
-\bibitem{b25} X. Li et al., ``Cognitive Load Measurement in Augmented Reality Systems,'' \textit{Frontiers in Psychology}, vol. 11, p. 574088, 2020.
+\bibitem{b25} S. B{\"u}ttner et al., ``Using Augmented Reality to Support Cognitive Task Performance in Manual Assembly,'' \textit{Frontiers in Psychology}, vol. 11, p. 1957, 2020.
 
 \bibitem{b16} Y. Siriwardhana et al., ``A Survey on Mobile Augmented Reality with 5G Mobile Edge Computing,'' \textit{IEEE Access}, vol. 9, pp. 81015--81050, 2021.
 
-\bibitem{b20} M. Billinghurst et al., ``Collaborative Mixed Reality,'' \textit{Foundations and Trends in Human-Computer Interaction}, vol. 14, no. 1-2, pp. 1-213, 2021.
+\bibitem{b20} M. Billinghurst, A. Clark, and G. Lee, ``A Survey of Augmented Reality,'' \textit{Foundations and Trends in Human-Computer Interaction}, vol. 8, no. 2--3, pp. 73--272, 2015.
 
 \bibitem{b23} C. Coupry et al., ``BIM-based digital twin and XR devices to improve maintenance procedures in smart buildings,'' \textit{Applied Sciences}, vol. 11, no. 15, p. 6810, 2021.
 
-\bibitem{b24} S. Zollmann et al., ``Navigating the Future: A Survey on Indoor Wayfinding using Augmented Reality,'' \textit{IEEE Access}, vol. 9, pp. 22462-22485, 2021.
+\bibitem{b24} S. Zollmann, C. Hoppe, T. Langlotz, and G. Reitmayr, ``FlyAR: Augmented reality supported micro aerial vehicle navigation,'' \textit{IEEE Transactions on Visualization and Computer Graphics}, vol. 20, no. 4, pp. 560--568, 2014.
 
 \bibitem{b29} Z. Cai and T. Shi, ``Distributed query processing in the edge-assisted IoT data monitoring system,'' \textit{IEEE Internet of Things Journal}, vol. 8, no. 16, pp. 12679--12693, 2021.
 
@@ -502,13 +500,9 @@ Within the ScholarMaster architecture this framework only operates at the level 
 
 \bibitem{b18} Y. Ren et al., ``Wayfinding with Augmented Reality in Hospital Environments: A Comparative Study,'' \textit{Applied Sciences}, vol. 12, no. 14, p. 7136, 2022.
 
-\bibitem{b19} Z. Lv et al., ``Digital Twins in Smart Cities,'' \textit{IEEE Transactions on Industrial Informatics}, vol. 18, no. 4, pp. 2724-2733, 2022.
+\bibitem{b15} W. Zhang et al., ``Edge-SLAM: Edge-Assisted Visual Simultaneous Localization and Mapping,'' \textit{ACM Transactions on Embedded Computing Systems}, vol. 21, no. 6, pp. 1--26, 2022.
 
-\bibitem{b15} W. Zhang et al., ``Edge-SLAM: Edge-Assisted Visual Simultaneous Localization and Mapping,'' \textit{IEEE Transactions on Mobile Computing}, vol. 22, no. 6, pp. 3405--3420, 2023.
-
-\bibitem{b21} J. Chen, ``Networked Architectures for Localization-Based Multi-User Augmented Reality,'' \textit{IEEE Communications Magazine}, vol. 61, no. 12, pp. 104--110, 2023.
-
-\bibitem{b28} J. David, ``Evaluating the Impact of Augmented Reality Maps on Emergency Response Training,'' \textit{SSRN Electronic Journal}, 2024.
+\bibitem{b28} M. R. Endsley and D. G. Jones, \textit{Designing for Situation Awareness: An Approach to User-Centered Design}, 2nd ed. CRC Press, 2011.
 
 \end{thebibliography}
 

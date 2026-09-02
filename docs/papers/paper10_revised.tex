@@ -63,7 +63,7 @@ Integrated Stress Validation, Survivability Envelope, Compound Stress Matrix, Bo
 % ==========================================
 \section{Introduction}
 
-The primary thesis of this work is that systems co-designed at the subsystem level provide significantly greater survivability under compounded operational stress than do non-integrated approaches. Edge-informed architectures are typically composed of processing chains in which perceptual, policy, privacy, and cryptographic functions are performed on shared hardware \cite{b12, b22}.
+The primary thesis of this work is that systems co-designed at the subsystem level provide significantly greater survivability under compounded operational stress than do non-integrated approaches. Edge-informed architectures \cite{b5} are typically composed of processing chains in which perceptual, policy, privacy, and cryptographic functions are performed on shared hardware \cite{b12, b22}.
 
 \subsection{Why Isolated Benchmarks Fail to Predict Deployment Survivability}
 Independent module benchmarks systematically conceal deployment failure modes. A perception model that achieves sub-millisecond inference in isolation may still violate deadlines when retrieval scales nonlinearly with registry size, scheduler priority is misaligned, or thermal throttling compounds CPU saturation. The challenge with these types of stresses is that they are usually compounded together, such that thermal, network, and scheduling issues combine to create a nonlinear system interaction. This means that the impact on latency is not easily characterized by looking at each factor considered in isolation, and any particular survivability failure is more likely to be driven by interactions between causes than by deficiencies in a single inference stream.
@@ -86,7 +86,7 @@ Within the ScholarMaster architecture, this subsystem evaluates survivability bo
 % ==========================================
 \section{The System Under Test (SUT)}
 
-The evaluated architecture is treated as a pre-defined System Under Test (SUT) established in the preceding architectural layers of this series. The study evaluates the integrated behavior of four abstracted subsystems: Perception, Policy Enforcement, Memory Isolation, and Audit Verification.
+The evaluated architecture is treated as a pre-defined System Under Test (SUT) established in the preceding architectural layers of this series. The study evaluates the integrated behavior of four abstracted subsystems: Perception, Policy Enforcement, Memory Isolation, and Audit Verification. The Perception module utilizes standard deep residual backbones \cite{b2} for feature extraction and margin-based loss functions \cite{b1} for robust face recognition pipelines.
 
 We do not propose or modify the design of these modules; instead, we evaluate their cross-subsystem interaction effects under shared resource constraints. The critical question is how their concurrent execution on a shared hardware platform affects system-wide latency and privacy preservation when subjected to compound deployment stress.
 
@@ -462,8 +462,6 @@ Within the ScholarMaster architecture, this is the integrated survivability vali
 
 \bibitem{b10} Q. Zhang, L. Cheng, and R. Boutaba, ``Cloud computing: state-of-the-art and research challenges,'' \textit{J. Internet Serv. Appl.}, 2010.
 
-\bibitem{b15} European Parliament, ``Regulation (EU) 2016/679 (General Data Protection Regulation),'' \textit{Official Journal of the European Union}, 2016.
-
 \bibitem{b2} K. He et al., ``Deep Residual Learning for Image Recognition,'' \textit{CVPR}, 2016.
 
 \bibitem{b32} M. Abadi et al., ``Deep Learning with Differential Privacy,'' \textit{ACM CCS}, 2016.
@@ -473,8 +471,6 @@ Within the ScholarMaster architecture, this is the integrated survivability vali
 \bibitem{b21} Y. Mao, C. You, J. Zhang, K. Huang, and K. B. Letaief, ``A Survey on Mobile Edge Computing: The Communication Perspective,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 19, no. 4, pp. 2322-2358, 2017.
 
 \bibitem{b4} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30-39, 2017.
-
-\bibitem{b14} R. Roman, J. Lopez, and M. Mambo, ``Mobile Edge Computing, Fog et al.: A Survey and Analysis of Security Threats and Challenges,'' \textit{Future Generation Computer Systems}, vol. 78, pp. 680-698, 2018.
 
 \bibitem{b26} P. Patel et al., ``EdgeBench: Benchmarking Edge Computing Platforms,'' \textit{IEEE/ACM Symposium on Edge Computing}, 2018.
 
@@ -486,12 +482,8 @@ Within the ScholarMaster architecture, this is the integrated survivability vali
 
 \bibitem{b22} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
 
-\bibitem{b28} G. Ananthanarayanan et al., ``REACT: Streaming Video Analytics On The Edge With Asynchronous Cloud Support,'' \textit{ACM/IEEE Symposium on Edge Computing}, 2023.
 
-\bibitem{b29} H. Li et al., ``Internet-of-Things Edge Computing Systems for Streaming Video Analytics: Trails Behind and the Paths Ahead,'' \textit{MDPI Sensors}, vol. 23, no. 4, 2023.
-
-
-\bibitem{b31} S. Ahmed et al., ``Practical Considerations for Failure Resilient ML Systems at the Edge,'' \textit{IEEE MILCOM}, 2025.
+\bibitem{b31} K. P. Gudipaty et al., ``Practical Considerations for Failure Resilient ML Systems at the Edge,'' in \textit{IEEE Military Communications Conference (MILCOM)}, 2025.
 
 \end{thebibliography}
 

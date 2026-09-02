@@ -152,8 +152,6 @@ Let $G = (\Z, E_{adj})$ be the physical connectivity graph of the environment wi
 
 \subsection{Event Calculus \& State Persistence}
 
-
-
 Distributed sensing infrastructures generate discrete point-in-time observations rather than continuous analog trajectories (a consequence of practical sensor sampling). To reason about compliance over continuous time, the verification logic requires explicit persistence semantics to bridge the gaps between samples. Without this formalization, continuous verification becomes impossible. We therefore extend Kowalski and Sergot's Event Calculus \cite{b2, b19} to the spatiotemporal domain specifically to resolve the Frame Problem (how state persists between observations) and the Ramification Problem (how verified movement implies proven absence elsewhere). This provides the necessary logical tissue connecting isolated digital snapshots into verifiable physical trajectories.
 
 Let $f$ represent a fluent (a dynamic property that holds over time), specifically the location fluent $Location(\epsilon, z)$. Let $e$ be a discrete digital sensor observation event.
@@ -380,7 +378,7 @@ The formal deductions presented in this work are mathematically structured but c
 
 \section{Related Work}
 
-The formal verification of spatiotemporal properties in cyber-physical systems has been addressed through several complementary traditions. Alur and Dill's timed automata \cite{b26} provide a foundational framework for reasoning about real-time systems with clock constraints, and their decidability results for reachability problems parallel the decidability analysis presented here. However, timed automata are typically applied to control-theoretic systems with continuous dynamics, whereas the present framework operates over discrete zone topologies with kinematic bounds.
+The formal verification of spatiotemporal properties in cyber-physical systems has been addressed through several complementary traditions. Alur and Dill's timed automata \cite{b26} and hybrid automata \cite{b14} provide a foundational framework for reasoning about real-time systems with clock constraints, and their decidability results for reachability problems parallel the decidability analysis presented here. However, timed automata are typically applied to control-theoretic systems with continuous dynamics, whereas the present framework operates over discrete zone topologies with kinematic bounds.
 
 Signal Temporal Logic (STL) and Metric Temporal Logic (MTL) \cite{b27} provide expressive specification languages for continuous-time properties, including quantitative robustness semantics. The compliance predicates developed in this work share the spirit of STL robustness but are grounded in Lebesgue measure theory rather than signal distance metrics, and are specifically tailored to institutional schedule adherence rather than continuous signal monitoring.
 
@@ -388,7 +386,7 @@ Runtime verification \cite{b28} provides techniques for monitoring system execut
 
 Within the CPS security problem domain, Cardenaş et al. \cite{b18} present threat models for cyber-physical systems that are useful in the development of our adversarial formulation. In particular, our MDP-based spoofing analysis (Theorem 8) builds on related work by considering an adversary that is modeled within a game-theoretic physical kinematic state and action space.
 
-The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2} and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8} and Mattern's vector time formalism \cite{b25} to establish causal monotonicity requirements for cross-shard entity migration.
+The event calculus formalization builds on the foundational work of Kowalski and Sergot \cite{b2}, temporal interval reasoning \cite{b6}, and Shanahan \cite{b19}, extending it to the spatiotemporal domain with an explicit Inertia axiom. The distributed integrity theorem draws on Lamport's foundational work on logical clocks \cite{b8}, distributed snapshots \cite{b3}, and Mattern's vector time formalism \cite{b25} to establish causal monotonicity requirements for cross-shard entity migration. These requirements must be balanced against theoretical consistency limits in distributed environments \cite{b9}.
 
 % ==========================================
 % REFERENCES
@@ -398,7 +396,7 @@ This paper demonstrates that cyber-physical compliance verification can transcen
 
 \begin{thebibliography}{00}
 
-\bibitem{b12} H. Lebesgue, \textit{Intégrale, longueur, aire}. Annali di Matematica Pura et Applicata, 1902.
+\bibitem{b12} H. Lebesgue, \textit{Intégrale, longueur, aire}. Annali di Matematica Pura ed Applicata, 1902.
 
 \bibitem{b4} C. E. Shannon, "Communication in the Presence of Noise," \textit{Proceedings of the IRE}, vol. 37, no. 1, pp. 10-21, 1949.
 
@@ -422,21 +420,15 @@ This paper demonstrates that cyber-physical compliance verification can transcen
 
 \bibitem{b20} W. Rudin, \textit{Real and Complex Analysis}, McGraw-Hill, 3rd edition, 1987.
 
-\bibitem{b13} C. J. Fidge, "Timestamps in Message-Passing Systems That Preserve the Partial Ordering," \textit{Proc. 11th Australian Computer Science Conference}, 1988, pp. 56-66.
-
 \bibitem{b25} F. Mattern, "Virtual time and global states of distributed systems," \textit{Parallel and Distributed Algorithms}, pp. 215-226, 1989.
 
-\bibitem{b14} R. Alur, T. A. Henzinger, and E. D. Sontag, "Hybrid Automata: An Algorithmic Approach to the Specification and Verification of Hybrid Systems," \textit{Hybrid Systems}, 1993.
-
-\bibitem{b22} C. H. Papadimitriou, \textit{Computational Complexity}, Addison-Wesley, 1994.
+\bibitem{b14} R. Alur, C. Courcoubetis, T. A. Henzinger, and P.-H. Ho, ``Hybrid automata: An algorithmic approach to the specification and verification of hybrid systems,'' in \textit{Hybrid Systems}, Springer, 1993, pp. 209--229.
 
 \bibitem{b26} R. Alur and D. L. Dill, "A theory of timed automata," \textit{Theoretical Computer Science}, vol. 126, no. 2, pp. 183-235, 1994.
 
 \bibitem{b19} M. Shanahan, "The Event Calculus Explained," \textit{Artificial Intelligence Today}, Springer, 1999.
 
 \bibitem{b23} O. Burkart, M. Caucal, F. Moller, and B. Steffen, "Verification on infinite structures," \textit{Handbook of Process Algebra}, 2001.
-
-\bibitem{b29} K. Havelund and G. Roşu, "Synthesizing monitors for safety properties," in \textit{Proc. TACAS}, Springer, 2002, pp. 342-356.
 
 \bibitem{b9} S. Gilbert and N. Lynch, "Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services," \textit{ACM SIGACT News}, vol. 33, no. 2, pp. 51-59, 2002.
 

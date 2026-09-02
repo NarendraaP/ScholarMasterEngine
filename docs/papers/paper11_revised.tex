@@ -87,7 +87,7 @@ Immutable Appliance Architecture, Lifecycle Hardening, OverlayFS Invariance, Bou
 The author submits that the primary thesis is that the development of non-modifiable appliances significantly contributes to optimal functioning under unstable supply voltages. Upon the initial deployment in abandoned environments, such devices’ functioning is predominantly determined by the underlying operating system’s update security and reliability rather than the inherent application stability \cite{b1, b2, b3}.
 
 \subsection{Operational Fragility of Mutable Edge Hosts}
-A conventional Linux system with a writtable root filesystem will develop configuration drift due to mutable updates at the level of individual packages. This is caused by arbitrary writes and subsequent state mutations. The result of such instability is that the system becomes more susceptible to filesystem inconsistencies on every reboot following a sudden power loss and every update which introduces new dependencies \cite{b4, b12, b18}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
+A conventional Linux system with a writtable root filesystem will develop configuration drift due to mutable updates at the level of individual packages. This is caused by arbitrary writes and subsequent state mutations. The result of such instability is that the system becomes more susceptible to filesystem inconsistencies on every reboot following a sudden power loss and every update which introduces new dependencies \cite{b4, b12, b18}. Such lifecycle instability exacerbates the hidden technical debt in machine learning systems \cite{b5}. Unattended devices cannot rely on manual remediation---intermittent infrastructure conditions (unstable power, wireless congestion, restricted physical access) destabilize traditional deployment assumptions. Lifecycle instability emerges structurally from mutability, not merely from poor maintenance practices.
 
 \subsection{Contributions and Subsystem Scope}
 This paper details an immutable, containerized OS architecture designed for Zero-Touch administration. By enforcing strict separation between a read-only host OS and containerized inference logic, we ensure that the edge node can survive power loss, recover from software hangs, and securely update its models without human intervention. Specifically:
@@ -187,7 +187,7 @@ This architectural decoupling ensures that the environment running the inference
 System reliability emerges from the interaction of several complementary mechanisms implemented at the operating-system level. 
 
 \subsection{Process Supervision}
-The inference engine is operationalized as a system daemon using strict process-orchestration policies \cite{b16}. The unit configuration (Listing 1) defines strict restart policies. The \texttt{OOMScoreAdjust} directive explicitly protects the primary Docker daemon and SSH server from the Linux Out-Of-Memory (OOM) killer, shifting most memory exhaustion risk to the individual user-space containers which can be safely restarted without bringing down the host OS or losing network connectivity.
+The inference engine is operationalized as a system daemon using strict process-orchestration policies \cite{b16} to ensure reliable machine learning prediction serving \cite{b6}. The unit configuration (Listing 1) defines strict restart policies. The \texttt{OOMScoreAdjust} directive explicitly protects the primary Docker daemon and SSH server from the Linux Out-Of-Memory (OOM) killer, shifting most memory exhaustion risk to the individual user-space containers which can be safely restarted without bringing down the host OS or losing network connectivity.
 
 \begin{figure}[htbp]
 \textbf{Listing 1: Supervisor Production Unit}
@@ -234,7 +234,7 @@ To reduce the risk of RAM exhaustion, log output is aggressively bounded. System
 % ==========================================
 \section{OTA Updates \& Fleet Management}
 
-Maintaining a distributed fleet of edge appliances requires deterministic and failure-tolerant update mechanisms. Deploying updated neural network weights, system dependencies, or application logic across a fleet requires fail-safe OTA mechanisms \cite{b18}. We implement a Blue/Green deployment state machine leveraging container APIs to provide deterministic cutovers with minimal service disruption \cite{b9}. The Blue/Green mechanism functions as a \textbf{bounded-failure containment mechanism}: OTA rollback constrains update blast radius, pre-flight validation limits irreversible deployment transitions, and deterministic reversion improves unattended survivability.
+Maintaining a distributed fleet of edge appliances requires deterministic and failure-tolerant update mechanisms. Deploying updated neural network weights, system dependencies, or application logic across a fleet requires fail-safe OTA mechanisms \cite{b18} to properly manage the machine learning lifecycle \cite{b7}. We implement a Blue/Green deployment state machine leveraging container APIs to provide deterministic cutovers with minimal service disruption \cite{b9}. The Blue/Green mechanism functions as a \textbf{bounded-failure containment mechanism}: OTA rollback constrains update blast radius, pre-flight validation limits irreversible deployment transitions, and deterministic reversion improves unattended survivability.
 
 \subsection{Deterministic Cutover Formalization}
 We define the update timing constraints as follows. Let $T_{pre}$ be the validation time, $T_{cutover}$ be the container swap execution, and $T_{rollback}$ be the revert time. 
@@ -409,8 +409,6 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b21} C. Mohan et al., ``ARIES: a transaction recovery method supporting fine-granularity locking and partial rollbacks using write-ahead logging,'' \textit{ACM Transactions on Database Systems}, vol. 17, no. 1, pp. 94--162, 1992.
-
 \bibitem{b19} P. England et al., ``A Trusted Open Platform,'' \textit{IEEE Computer}, vol. 36, no. 7, pp. 55--62, 2003.
 
 \bibitem{b16} A. Avizienis et al., ``Basic Concepts and Taxonomy of Dependable and Secure Computing,'' \textit{IEEE Transactions on Dependable and Secure Computing}, vol. 1, no. 1, pp. 11--33, 2004.
@@ -421,17 +419,13 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b15} J. Koopman, \textit{Better Embedded System Software}. Drumnadrochit Education, 2010.
 
-\bibitem{b12} H. Zheng et al., ``Understanding the Robustness of SSDs under Power Fault,'' in \textit{USENIX Conference on File and Storage Technologies (FAST)}, pp. 271--284, 2013.
+\bibitem{b12} M. Zheng et al., ``Understanding the Robustness of SSDs under Power Fault,'' in \textit{USENIX Conference on File and Storage Technologies (FAST)}, pp. 271--284, 2013.
 
-\bibitem{b8} D. Merkel, ``Docker: Lightweight Linux Containers for Consistent Development and Deployment,'' \textit{Linux Journal}, 2014.
-
-\bibitem{b10} C. Boettiger, ``An introduction to Docker for reproducible research,'' \textit{ACM SIGOPS Operating Systems Review}, vol. 49, no. 1, pp. 71--79, 2015.
-
-\bibitem{b13} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' in \textit{USENIX FAST}, pp. 273--286, 2015.
+\bibitem{b13} C. Lee et al., ``F2FS: A New File System for Flash Storage,'' in \textit{USENIX FAST}, pp. 273--286, 2015.
 
 \bibitem{b5} D. Sculley et al., ``Hidden Technical Debt in Machine Learning Systems,'' in \textit{NeurIPS}, pp. 2503--2511, 2015.
 
-\bibitem{b18} S. Kuppusamy et al., ``Diplomat: Using Delegations to Protect Community Repositories,'' in \textit{USENIX NSDI}, pp. 567--581, 2016.
+\bibitem{b18} T. K. Kuppusamy et al., ``Diplomat: Using Delegations to Protect Community Repositories,'' in \textit{USENIX NSDI}, pp. 567--581, 2016.
 
 \bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
 
@@ -449,9 +443,9 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b4} Z. Zhou et al., ``Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing,'' \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738--1762, 2019.
 
-\bibitem{b25} E. Tenberg, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' \textit{Embedded Linux Conference Europe}, 2020.
+\bibitem{b25} E. J{\"o}rns, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' in \textit{Embedded Linux Conference Europe}, 2020.
 
-\bibitem{b26} M. Sommer et al., ``Robust and Secure Over-the-Air Firmware Updates for Connected Embedded Devices,'' \textit{IEEE Consumer Electronics Magazine}, vol. 8, no. 6, pp. 64--71, 2019.
+\bibitem{b26} Northern.tech, ``Software Updates for Embedded Linux: Requirement and Reality,'' \textit{Northern.tech Architecture Whitepaper and Technical Documentation}, 2020. [Online]. Available: https://docs.mender.io
 
 \bibitem{b27} Balena Inc., ``BalenaOS: Container-based Operating System for Embedded Devices,'' \textit{Technical Whitepaper}, 2021.
 

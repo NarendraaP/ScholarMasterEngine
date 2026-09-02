@@ -76,7 +76,7 @@ Accelerator TOPS assume idealized utilization, but sustained hardware feasibilit
 Within the ScholarMaster architecture, this subsystem models memory-bound inference constraints, analyzes transfer-energy overhead, characterizes latency variance, and defines sustainable operating envelopes. This subsystem does NOT coordinate activation and orchestration behavior (Paper 9), evaluate adaptive-learning across distributed nodes (Paper 13), define privacy irreversibility (Paper 3), or derive runtime verification theorems (Paper 18).
 
 \subsection{The Shift Toward Edge Inference and The Memory Wall}
-Inference workloads increasingly execute at the network edge. Much of the hardware ecosystem supporting machine learning was originally designed for data centers, standing in stark contrast to distributed smart grid deployments where transient stability and traffic estimation dictate tight load constraints \cite{b_smartgrid_2016, b_ipfc_2013}. Continuous edge inference operates under fundamentally different constraints: strict limits on power consumption, thermal dissipation, and memory bandwidth. The relationship between computation and data movement becomes particularly visible in vision inference pipelines. For high-resolution frames, the PCIe bus becomes a serialized chokepoint, capping effective throughput regardless of accelerator capacity. The theoretical compute capacity is bounded not by ALU availability but by the data delivery rate.
+Inference workloads increasingly execute at the network edge. Much of the hardware ecosystem supporting machine learning was originally designed for data centers, standing in stark contrast to distributed smart grid deployments where transient stability and traffic estimation dictate tight load constraints \cite{b_smartgrid_2016, b_ipfc_2013}. Continuous edge inference operates under fundamentally different constraints: strict limits on power consumption, thermal dissipation, and memory bandwidth. The relationship between computation and data movement becomes particularly visible in vision inference pipelines. For high-resolution frames, the PCIe bus becomes a serialized chokepoint, capping effective throughput regardless of accelerator capacity. The theoretical compute capacity is bounded not by ALU availability but by the data delivery rate \cite{b17}.
 
 \subsection{Unified Memory Architectures (UMA)}
 Unified Memory Architectures address interconnect bottlenecks by collapsing heterogeneous compute units onto a shared memory fabric. Rather than maintaining isolated memory pools, CPU, GPU, and NPU cores access a common high-bandwidth fabric, typically backed by LPDDR \cite{b16, b11}. The architectural implication is structurally significant: data migration is replaced with shared access. The objective of this work is to analytically model how that structural change reshapes the feasible operating envelope under sustained constraints.
@@ -99,7 +99,7 @@ The goal is not to argue that UMA universally replaces discrete accelerators, bu
 Prior research on efficient deep learning inference has examined accelerator microarchitecture, memory hierarchy design, and thermal constraints independently. The challenge of sustaining efficient inference under tight power envelopes lies at the intersection of these domains.
 
 \subsection{Edge Accelerator Architectures}
-A substantial body of research has explored domain-specific accelerators (DSAs) tailored for deep learning. Jouppi et al. \cite{b_tpu} introduced the Tensor Processing Unit (TPU), demonstrating the efficiency of systolic arrays for dense matrix operations. While highly effective in data center environments, edge-oriented TPU variants often function as discrete coprocessors over USB or PCIe links. In doing so, they reintroduce the interconnect bottleneck examined in this work.
+A substantial body of research has explored domain-specific accelerators (DSAs) tailored for deep learning \cite{b1}. Jouppi et al. \cite{b_tpu} introduced the Tensor Processing Unit (TPU), demonstrating the efficiency of systolic arrays for dense matrix operations. While highly effective in data center environments, edge-oriented TPU variants often function as discrete coprocessors over USB or PCIe links. In doing so, they reintroduce the interconnect bottleneck examined in this work.
 
 Similarly, Eyeriss \cite{b_eyeriss} proposed a spatial accelerator architecture optimized around a row-stationary dataflow to minimize on-chip data movement. That work addresses internal SRAM efficiency but still operates within a discrete accelerator paradigm relative to the host processor. The present analysis differs in scope. Rather than optimizing internal dataflow, we examine the physical hardware consequences of eliminating host-device separation entirely.
 
@@ -109,9 +109,9 @@ Heterogeneous computing with shared virtual memory (SVM) has been studied extens
 In contrast, modern System-on-Chip (SoC) designs integrate CPU, GPU, and NPU cores with physically unified memory. In such systems, no off-chip traversal is required to exchange tensors between heterogeneous execution units. The distinction is not merely semantic; it alters the physical path that data must travel. This work attempts to model that difference in energetic and latency terms.
 
 \subsection{Energy and Thermal Constraints}
-Horowitz \cite{b8} demonstrated that data movement energy often exceeds arithmetic energy in modern CMOS systems. Fetching data from off-chip DRAM can cost orders of magnitude more energy than a floating-point operation. We extend this observation by incorporating the $pJ/bit$ penalty of peripheral interconnect traversal. In sustained vision pipelines, these costs accumulate at frame-rate scale.
+Horowitz \cite{b8} demonstrated that data movement energy often exceeds arithmetic energy in modern CMOS systems. Fetching data from off-chip DRAM can cost orders of magnitude more energy than a floating-point operation \cite{b2, b8}. We extend this observation by incorporating the $pJ/bit$ penalty of peripheral interconnect traversal. In sustained vision pipelines, these costs accumulate at frame-rate scale.
 
-Skadron et al. \cite{b_thermal} established thermal-aware microarchitectural design principles, highlighting the limits of frequency scaling under sustained load. We apply similar thermodynamic reasoning to continuous edge inference, focusing on steady-state rather than burst behavior.
+Skadron et al. \cite{b_thermal} established thermal-aware microarchitectural design principles, highlighting the limits of frequency scaling under sustained load. We apply similar thermodynamic reasoning to continuous edge inference, focusing on steady-state rather than burst behavior \cite{b5, b_thermal}.
 
 % ==========================================
 % III. THE MEMORY-BOUND EDGE EFFICIENCY ENVELOPE
@@ -469,8 +469,6 @@ The modeled efficiency improvements reflect specific analytical assumptions. Und
 
 \bibitem{b16} Moore, G.E.: Cramming more components onto integrated circuits. Electronics \textbf{38}(8), 114--117 (1965)
 
-\bibitem{b15} Mudge, T.: Power: A First-Class Architectural Design Constraint. Computer \textbf{34}(4), 52--58 (2001)
-
 \bibitem{b19} Kumar, R., Farkas, K.I., Jouppi, N.P., Ranganathan, P., Tullsen, D.M.: Single-ISA Heterogeneous Multi-Core Architectures. In: MICRO. pp. 81--92 (2003)
 
 \bibitem{b_thermal} Skadron, K., et al.: Temperature-Aware Microarchitecture. In: ISCA. pp. 2--13. IEEE (2003)
@@ -481,23 +479,11 @@ The modeled efficiency improvements reflect specific analytical assumptions. Und
 
 \bibitem{b5} Esmaeilzadeh, H., Blem, E., St. Amant, R., Sankaralingam, K., Burger, D.: Dark silicon and the end of multicore scaling. In: ISCA. pp. 365--376. ACM (2011)
 
-\bibitem{b_keystroke_2011} M. Akila and S. Suresh Kumar, "Improving feature extraction in keystroke dynamics using optimization techniques and neural network," \textit{IET Digital Library}, 2011.
-
-\bibitem{b_wsn_optimal_2012} S. Nithyakalyani and S. Suresh Kumar, "Optimal Clustering Algorithm for Energy Efficient Data Aggregation in WSN," \textit{European Journal of Scientific Research}, vol. 78, no. 1, pp. 146--155, 2012.
-
-\bibitem{b_wsn_voronoi_2012} S. Nithyakalyani and S. Suresh Kumar, "Energy Efficient Data Aggregation using Voronoi based Genetic Clustering Algorithm in WSN," \textit{International Journal of Computer Applications}, vol. 54, no. 4, 2012.
-
 \bibitem{b_ipfc_2013} B. Gopinath, S. SureshKumar, and M. Ramya, "Genetically optimized IPFC for improving transient stability performance in power systems," in \textit{International Conference Circuits, Power and Computing Technologies (ICCPCT)}, 2013.
 
 \bibitem{b8} Horowitz, M.: 1.1 Computing's energy problem (and what we can do about it). In: ISSCC. pp. 10--14. IEEE (2014)
 
 \bibitem{b24} Rhu, M., Gimelshein, N., Clemons, J., Zulfiqar, A., Keckler, S.W.: vDNN: Virtualized Deep Neural Networks for Scalable, Memory-Efficient Neural Network Design. In: MICRO. pp. 1--13 (2016)
-
-\bibitem{b35} Iandola, F.N., Han, S., Moskewicz, M.W., Ashraf, K., Dally, W.J., Keutzer, K.: SqueezeNet: AlexNet-level accuracy with 50x fewer parameters. arXiv preprint arXiv:1602.07360 (2016)
-
-\bibitem{b_auth_2016} V. Chandrasekar, S. Suresh Kumar, and T. Maheswari, "Authentication based on keystroke dynamics using stochastic diffusion algorithm," \textit{Stochastic Analysis and Applications}, vol. 34, no. 1, pp. 155--164, 2016.
-
-\bibitem{b_dexterous_2016} V. Chandrasekar and S. Suresh Kumar, "A Dexterous feature selection Artificial Immune System Algorithm for Keystroke Dynamics," \textit{Stochastic Analysis and Applications}, vol. 34, no. 1, pp. 147--154, 2016.
 
 \bibitem{b_smartgrid_2016} S. Suresh Kumar and C. Sivapragash, "Time Orient Traffic Estimation Approach to Improve Performance of Smart Grids," \textit{Journal of Computational and Theoretical Nanoscience}, vol. 13, no. 8, pp. 5037--5045, 2016.
 
@@ -509,19 +495,11 @@ The modeled efficiency improvements reflect specific analytical assumptions. Und
 
 \bibitem{b_tpu} Jouppi, N. P., et al.: In-Datacenter Performance Analysis of a Tensor Processing Unit. In: ISCA. pp. 1--12. ACM (2017)
 
-\bibitem{b31} Sandler, M., Howard, A., Zhu, M., Zhmoginov, A., Chen, L.-C.: MobileNetV2: Inverted Residuals and Linear Bottlenecks. In: CVPR. pp. 4510--4520 (2018)
-
 \bibitem{b37} Jacob, B., et al.: Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference. In: CVPR. pp. 2704--2713 (2018)
 
 \bibitem{b21} Wu, C.-J., et al.: Machine Learning at Facebook: Understanding Inference at the Edge. In: HPCA. pp. 331--344 (2019)
 
 \bibitem{b11} Dean, J.: The Deep Learning Revolution and Its Implications for Computer Architecture and Chip Design. In: ISSCC. pp. 8--14. IEEE (2020)
-
-\bibitem{b18} Shalf, J.: The future of computing beyond Moore's Law. Philosophical Transactions of the Royal Society A \textbf{378}(2166) (2020)
-
-\bibitem{b20} Abts, D., et al.: Think Fast: A Tensor Streaming Processor (TSP) for Accelerating Deep Learning Workloads. In: ISCA. pp. 145--158. IEEE (2020)
-
-\bibitem{b12} Patterson, D., et al.: Carbon Emissions and Large Neural Network Training. arXiv preprint arXiv:2104.10350 (2021)
 
 \bibitem{b38} Gholami, A., Kim, S., Dong, Z., Yao, Z., Mahoney, M.W., Keutzer, K.: A Survey of Quantization Methods for Efficient Neural Network Inference. arXiv preprint arXiv:2103.13630 (2021)
 

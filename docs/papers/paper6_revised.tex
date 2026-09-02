@@ -112,6 +112,8 @@ The detection model does not attempt semantic audio interpretation. Its scope is
 % ==========================================
 \section{Related Work}
 
+Foundational work on privacy in video surveillance \cite{b1} has driven interest in audio surveillance \cite{b2} as an alternative modality.
+
 \subsection{Deep Learning AED vs. Edge Signal Processing}
 
 The latest systems for detecting acoustic events depend on deep neural architectures designed for doing semantic sound classification \cite{b8, b12}. Architectures such as PANNs \cite{b22} and AST \cite{b23} can achieve strong performance on the FSD50K benchmark. These systems run on mel-spectrogram patches often spanning a few seconds.
@@ -157,7 +159,7 @@ Standard cross-correlation TDOA methods, though inexpensive, degrade rapidly whe
 To analyze the feasibility of acoustic monitoring in visually occluded corridors, we begin by examining the physical propagation characteristics of sound in such environments.
 
 \subsection{Corridor Acoustics and SPL Calibration}
-Propagations of sound waves in long hallways are different compared to the ideal situation where sound propagation occurs in a free space condition. The inverse square law of sound attenuation can only be applied when there is pure propagation of sound energy without any effect of reflection.
+Propagations of sound waves in long hallways are different compared to the ideal situation where sound propagation occurs in a free space condition \cite{b28}. The inverse square law of sound attenuation can only be applied when there is pure propagation of sound energy without any effect of reflection.
 
 The Sound Pressure Level (SPL) at distance $r$ from an omnidirectional source of sound power $L_W$ is given by:
 \begin{equation}
@@ -525,23 +527,15 @@ With regard to the larger ScholarMaster framework, this architecture can serve s
 
 \bibitem{b30} J. B. Allen and D. A. Berkley, "Image method for efficiently simulating small-room acoustics," \textit{The Journal of the Acoustical Society of America}, vol. 65, no. 4, pp. 943-950, 1979.
 
-\bibitem{b11} L. Rabiner and B. Juang, \textit{Fundamentals of Speech Recognition}, Prentice Hall, 1993.
-
 \bibitem{b9} J. Blauert, \textit{Spatial Hearing: The Psychophysics of Human Sound Localization}, MIT Press, 1997.
 
 \bibitem{b27} J. H. DiBiase, "A high-accuracy, closed-form approximation to the equivalency between SRP-PHAT and TDOA," in \textit{Proc. IEEE ICASSP}, 2000.
-
-\bibitem{b21} M. Gruteser and D. Grunwald, "Anonymous usage of location-based services through spatial and temporal cloaking," in \textit{Proceedings of the 1st International Conference on Mobile Systems, Applications and Services}, 2003, pp. 31-42.
 
 \bibitem{b31} H. Fastl and E. Zwicker, \textit{Psychoacoustics: Facts and Models}, Springer Science \& Business Media, 2006.
 
 \bibitem{b1} A. Cavallaro, "Privacy in video surveillance," \textit{IEEE Signal Processing Magazine}, vol. 24, no. 2, pp. 168-169, 2007.
 
 \bibitem{b5} G. Valenzise, L. Gerosa, M. Tagliasacchi, F. Antonacci, and A. Sarti, "Scream and gunshot detection and localization for audio-surveillance systems," in \textit{2007 IEEE Conference on Advanced Video and Signal Based Surveillance}, pp. 21-26, 2007.
-
-\bibitem{b10} S. Mallat, \textit{A Wavelet Tour of Signal Processing}, Academic Press, 2008.
-
-\bibitem{b29} J. Benesty, J. Chen, and Y. Huang, \textit{Microphone Array Signal Processing}, Springer Science \& Business Media, 2008.
 
 \bibitem{b28} H. Kuttruff, \textit{Room Acoustics}, 5th ed. CRC Press, 2009.
 
@@ -565,13 +559,11 @@ With regard to the larger ScholarMaster framework, this architecture can serve s
 
 \bibitem{b22} Q. Kong et al., "PANNs: Large-scale Pretrained Audio Neural Networks for Audio Pattern Recognition," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 28, pp. 2880-2894, 2020.
 
-\bibitem{b19} E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra, "FSD50K: An Open Dataset of Human-Labeled Sound Events," \textit{IEEE/ACM Transactions on Audio, Speech, and Language Processing}, vol. 30, pp. 829-852, 2021.
-
 \bibitem{b23} Y. Gong, Y.-A. Chung, and J. Glass, "AST: Audio Spectrogram Transformer," in \textit{Proc. Interspeech}, 2021, pp. 571-575.
 
-\bibitem{b4} B. Naderi, S. Möller, and R. Polzehl, "Adversarial Representation Learning for Robust Privacy Preservation in Audio," \textit{IEEE Open Journal of Signal Processing}, vol. 5, 2024.
+\bibitem{b4} S. Gharib, M. Tran, D. Luong, K. Drossos, and T. Virtanen, ``Adversarial representation learning for robust privacy preservation in audio,'' \textit{IEEE Open Journal of Signal Processing}, vol. 5, pp. 294--302, 2024.
 
-\bibitem{b34} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{Journal for Basic Sciences}, vol. 26, no. 5, 2026.
+\bibitem{b34} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
 
 \end{thebibliography}
 

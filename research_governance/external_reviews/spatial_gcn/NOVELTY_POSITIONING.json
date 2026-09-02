@@ -1,0 +1,52 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "contribution_components": [
+    {
+      "claim": "Functional connectivity (Pearson correlation) as structural prior for GCN adjacency matrix in seizure detection",
+      "novelty_type": "DISTINCTIVE_COMBINATION",
+      "justification": "Pearson correlation for EEG adjacency is not new (used in neuroscience). GCN for EEG is not new (Wagh 2019, Song 2018). The combination for seizure detection with sparsification threshold on clinical data is the contribution.",
+      "prior_work": "Wagh 2019 (distance-based adjacency), Song 2018 (dynamic GCN for emotion), Jang 2019 (GCN for seizure with thresholding)",
+      "distinction_from_prior": "Wagh uses physical distance, not functional connectivity. Song targets emotion recognition, not seizure detection. Jang uses GCN for seizure but edge construction method differs."
+    },
+    {
+      "claim": "Dynamic Balanced Batching (DBB) for extreme class imbalance in clinical EEG",
+      "novelty_type": "METHODOLOGICAL_CONTRIBUTION",
+      "justification": "Dynamic sampling during training (rather than static undersampling before training) to expose model to diversity of normal class over epochs.",
+      "prior_work": "Standard oversampling (SMOTE), static undersampling, class-weighted loss",
+      "distinction_from_prior": "DBB differs from static methods by resampling majority class each epoch. This is similar to online hard example mining but applied to imbalanced clinical data."
+    },
+    {
+      "claim": "Order-of-magnitude improvement in precision (from <1% to 36%) with near-perfect specificity",
+      "novelty_type": "EMPIRICAL_CONTRIBUTION",
+      "justification": "The empirical demonstration that graph topology dramatically changes the precision-recall operating point is the key finding.",
+      "prior_work": "CNN-based seizure detectors with high sensitivity but poor precision",
+      "distinction_from_prior": "Most prior work optimizes for sensitivity. This paper demonstrates that topology enables a fundamentally different clinical operating mode (screening vs detection)."
+    }
+  ],
+  "comparison_with_cited_hybrid_approaches": [
+    {
+      "approach": "Song et al. 2018 (EEG emotion GCN)",
+      "similarity": "Uses dynamic GCN with learned/computed adjacency for EEG classification.",
+      "difference": "Different task (emotion vs seizure). Learns adjacency end-to-end, which Spatial-GCN argues is unstable on small clinical data.",
+      "documented_in_manuscript": true,
+      "section": "Section II.B"
+    },
+    {
+      "approach": "Jang et al. 2019 (EEG seizure GCN)",
+      "similarity": "Uses GCN for seizure detection with thresholded adjacency.",
+      "difference": "Spatial-GCN claims functional connectivity is superior to physical distance for adjacency construction.",
+      "documented_in_manuscript": true,
+      "section": "Section II.A (indirectly)"
+    },
+    {
+      "approach": "Wagh & Varatharajah 2019 (EEG-GNN)",
+      "similarity": "GNN for EEG classification with electrode-level graph.",
+      "difference": "Uses distance-based adjacency (1/distance), not functional connectivity.",
+      "documented_in_manuscript": true,
+      "section": "Section II.A"
+    }
+  ],
+  "novelty_assessment": "LEGITIMATE_COMBINATION_NOVELTY — The individual components (GCN, Pearson correlation, dynamic batching) are not new. The novelty lies in: (1) the specific combination for clinical seizure detection, (2) the empirical demonstration that functional connectivity dramatically shifts the precision/specificity operating point, and (3) the clinical workflow reframing from 'detection' to 'screening/triage'. The manuscript should explicitly classify its contribution type to preempt reviewer concerns.",
+  "recommendation": "Add structured novelty table comparing Spatial-GCN against Wagh 2019, Song 2018, Jang 2019 on: adjacency construction, training strategy, evaluation protocol, clinical focus. Honestly label contribution as 'distinctive combination + empirical insight' rather than 'fundamentally new method'."
+}

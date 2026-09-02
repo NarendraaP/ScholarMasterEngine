@@ -97,11 +97,11 @@ Engagement monitoring has asymmetric classification costs: A false negative, cor
 \section{Theoretical Framework and Contextual Modeling}
 
 \subsection{Limitations of Unimodal Valence Estimation}
-Early engagement monitoring systems focused on facial expression recognition (FER) which associated facial landmarks with certain emotional categories \cite{b2}. Though useful in an affective computing context, this approach assumes that affect has a direct relationship to behavioral engagement.
+Early engagement monitoring systems focused on facial expression recognition (FER) which associated facial landmarks with certain emotional categories \cite{b1, b2}. Though useful in an affective computing context, this approach assumes that affect has a direct relationship to behavioral engagement.
 
-The assumption fails in an educational setting, where pedagogical engagement takes place in a multi-dimensional space distinct from raw emotional valence \cite{b7}---a student may be paying close attention, despite a neutral-to-negative facial expression. Concentrated effort can visually resemble disengagement, and unimodal pipelines lack the contextual grounding necessary to differentiate between frustration that impedes learning and concentration that facilitates it.
+The assumption fails in an educational setting, where pedagogical engagement takes place in a multi-dimensional space distinct from raw emotional valence \cite{b7, b8}---a student may be paying close attention, despite a neutral-to-negative facial expression. Concentrated effort can visually resemble disengagement, and unimodal pipelines lack the contextual grounding necessary to differentiate between frustration that impedes learning and concentration that facilitates it.
 
-Without environmental conditioning, visual models systematically over-interpret negative facial signals during precisely the instructional periods where engagement is most likely.
+Without environmental conditioning, visual models systematically over-interpret negative facial signals during precisely the instructional periods where engagement is most likely \cite{b4}.
 
 \subsection{Formalizing the Valence Discrepancy}
 To capture this systematic misinterpretation, we define the Valence Discrepancy ($D_{valence}$) as:
@@ -122,7 +122,7 @@ This definition frames the question as one of conditional probability rather tha
 
 Cognitive Load Theory is the theoretical basis for the contextual conditioning of probabilistic interpretation \cite{b5}. The working memory has a limited capacity that must be used to construct and refine knowledge structures; the cognitive load associated with this activity is referred to as germane load.
 
-During periods of high germane load, people display behavioral shifts that may confuse an affect-based classifier. For instance, their micro-expressions are reduced, their faces tense, and their socially-appropriate behaviors (e.g., smiling) decrease. An affect-based classifier would wrongly identify these signs as negative affect, when, in fact, they are linked to productive thought.
+During periods of high germane load, people display behavioral shifts that may confuse an affect-based classifier. For instance, their micro-expressions are reduced, their faces tense, and their socially-appropriate behaviors (e.g., smiling) decrease. An affect-based classifier would wrongly identify these signs as negative affect, when, in fact, they are linked to productive thought \cite{b20}.
 
 By exploiting schedule metadata and the semantic density of instructional speech, the proposed interpretation layer thus adapts its probabilistic model \cite{b10}. Semantic density defines weights for contextual framing, not cognitive state; lexical density offers contextual evidence, not demonstration of engagement. Visual evidence is not discounted, merely recontextualized. Negative valence is evaluated within a shifted contextual loading, retaining its evidential value but adapting its interpretive weight relative to the adjusted contextual frame.
 
@@ -487,7 +487,7 @@ Extraction (Small) & 244M & 210 & 94.8\% \\
 The results illustrate how contextual conditioning reshapes the probabilistic interpretation of visual affect during instructional activity. Several aspects of this reshaping merit further examination.
 
 \subsection{Lexical Density versus Prosodic Cues}
-Many multimodal approaches focus on prosody, such as pitch and speaking rate, \cite{b9} which are less prominent in a technically dense lecture delivered in a relatively monotone voice.
+Many multimodal approaches focus on prosody, such as pitch and speaking rate, \cite{b9, b11} which are less prominent in a technically dense lecture delivered in a relatively monotone voice.
 
 Unlike the prosodic weightings, lexical density thus directly encodes semantic complexity, a consideration that frequently dominates didactic contexts requiring domain specific terminology, an insight that underlies the greater effectiveness of lexical cues observed in Table I. The present finding therefore emphasizes the importance of distinguishing between the general benefit of employing multiple modalities (a baseline comparative advantage) and the specific contextual value of differentially diagnostic cues within each modality for addressing asymmetric misclassification in the didactic context.
 
@@ -543,17 +543,9 @@ The results suggest that a probabilistic interpretation layer, structured around
 
 \bibitem{b11} P. K. Atrey et al., "Multimodal fusion for multimedia analysis: A survey," \textit{Multimedia Systems}, vol. 16, no. 6, pp. 345-379, 2010.
 
-\bibitem{b15} A. V. Oppenheim and R. W. Schafer, \textit{Discrete-Time Signal Processing}. Pearson, 2010.
-
 \bibitem{b20} R. S. Baker et al., "Better to be frustrated than bored: The incidence, persistence, and impact of learners’ cognitive–affective states," \textit{International Journal of Human-Computer Studies}, vol. 68, no. 4, pp. 223-241, 2010.
 
-\bibitem{b3} A. D. Saragih, S. Lucey, and J. F. Cohn, "Deformable model fitting by regularized landmark mean-shift," \textit{International Journal of Computer Vision}, vol. 91, no. 2, pp. 200-215, 2011.
-
-\bibitem{b16} G. Casquez, D. Vogel, and R. Wattenhofer, "One Euro Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems," in \textit{Proceedings of the SIGCHI Conference on Human Factors in Computing Systems}, 2012, pp. 2527-2530.
-
 \bibitem{b4} S. D'Mello and A. Graesser, "Dynamics of affective states during complex learning," \textit{Learning and Instruction}, vol. 22, no. 2, pp. 145-157, 2012.
-
-\bibitem{b24} G. Siemens, "Learning analytics: The emergence of a discipline," \textit{American Behavioral Scientist}, vol. 57, no. 10, pp. 1380-1400, 2013.
 
 \bibitem{b6} J. Grafsgaard, J. B. Wiggins, K. E. Boyer, E. N. Wiebe, and J. C. Lester, "Automatically recognizing facial indicators of frustration and satisfaction in tutorial dialogue," in \textit{2013 Affective Computing and Intelligent Interaction (ACII)}, IEEE, 2013, pp. 159-165.
 
@@ -561,25 +553,13 @@ The results suggest that a probabilistic interpretation layer, structured around
 
 \bibitem{b8} N. Bosch, S. D'Mello, R. Baker, J. Ocumpaugh, and V. Shute, "Detecting student engagement: Human versus machine," in \textit{Proceedings of the 2015 ACM International Joint Conference on Pervasive and Ubiquitous Computing}, 2015, pp. 817-820.
 
-\bibitem{b17} K. He, X. Zhang, S. Ren, and J. Sun, "Deep Residual Learning for Image Recognition," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 770-778.
-
 \bibitem{b10} S. Poria, E. Cambria, R. Bajpai, and A. Hussain, "A review of affective computing: From unimodal analysis to multimodal fusion," \textit{Information Fusion}, vol. 37, pp. 98-125, 2017.
-
-\bibitem{b14} S. Hershey et al., "CNN architectures for large-scale audio classification," in \textit{2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 2017, pp. 131-135.
 
 \bibitem{b26} T.-Y. Lin et al., "Focal loss for dense object detection," in \textit{Proceedings of the IEEE International Conference on Computer Vision (ICCV)}, 2017, pp. 2980-2988.
 
 \bibitem{b21} Yao-Hung Hubert Tsai et al., "Multimodal Transformer for Unaligned Multimodal Language Sequences," in \textit{Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics (ACL)}, 2019, pp. 6558-6569.
 
-\bibitem{b23} D. Gunning et al., "XAI—Explainable artificial intelligence," \textit{Science Robotics}, vol. 4, no. 37, eaay7120, 2019.
-
 \bibitem{b9} T. Baltrušaitis, C. Ahuja, and L.-P. Morency, "Multimodal Machine Learning: A Survey and Taxonomy," \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 41, no. 2, pp. 423-443, 2019.
-
-\bibitem{b12} J. Deng, J. Guo, E. Ververas, I. Kotsia, and S. Zafeiriou, "RetinaFace: Single-Shot Multi-Level Face Localisation in the Wild," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2020, pp. 5203-5212.
-
-\bibitem{b22} A. Baevski et al., "wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations," in \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 33, 2020, pp. 12449-12460.
-
-\bibitem{b13} A. Radford et al., "Robust Speech Recognition via Large-Scale Weak Supervision," in \textit{International Conference on Machine Learning (ICML)}, 2023, pp. 28492-28518.
 
 \end{thebibliography}
 

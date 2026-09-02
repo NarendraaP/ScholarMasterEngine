@@ -98,14 +98,14 @@ To preserve architectural clarity across the research program (SROS-004 Single-O
 Unlike conventional software engineering paradigms that begin with feature requirements and subsequently apply security controls, CFAS initiates synthesis from the physical, thermal, and regulatory boundary limits.
 
 \subsection{Formal Admissibility Space}
-Let $\mathcal{C}$ denote the global computational state space of the cyber-physical appliance. A state $s \in \mathcal{C}$ is admissible ($\mathcal{C}_{\mathrm{admissible}}$) if and only if it satisfies the conjunction of five cross-layer constraint predicates:
+Let $\mathcal{C}$ denote the global computational state space of the cyber-physical appliance. A state $s \in \mathcal{C}$ is admissible ($\mathcal{C}_{\mathrm{admissible}}$) if and only if it satisfies the conjunction of five cross-layer constraint predicates \cite{b_hoare}:
 \begin{equation}
 \mathcal{C}_{\mathrm{admissible}} = C_{\mathrm{phys}} \land C_{\mathrm{therm}} \land C_{\mathrm{priv}} \land C_{\mathrm{gov}} \land C_{\mathrm{time}},
 \label{eq:cfas_admissibility}
 \end{equation}
 where:
 \begin{itemize}
-    \item $C_{\mathrm{phys}}$: Bounds computation strictly to volatile on-device memory without secondary storage paging ($M_{\mathrm{RAM}} \le 2\text{ GB}$).
+    \item $C_{\mathrm{phys}}$: Bounds computation strictly to volatile on-device memory without secondary storage paging ($M_{\mathrm{RAM}} \le 2\text{ GB}$) \cite{P5}.
     \item $C_{\mathrm{therm}}$: Restricts operational inference frequency such that steady-state die temperature $T_{\mathrm{die}} \le 70^\circ\text{C}$.
     \item $C_{\mathrm{priv}}$: Enforces non-invertible dimensionality reduction at the perception boundary ($\text{dim}(x_{\mathrm{out}}) \ll \text{dim}(x_{\mathrm{raw}})$).
     \item $C_{\mathrm{gov}}$: Demands cryptographically verified authorization before any state egress.
@@ -208,7 +208,7 @@ This layer converts raw signals into semantic meaning and governance compliance 
 \end{itemize}
 
 \subsection{Stratum III: The Architecture of Verification}
-This layer provides the proofs that the system is behaving as claimed, bridging local logic with global accountability.
+This layer provides the proofs that the system is behaving as claimed, bridging local logic with global accountability \cite{b_clarke}.
 \begin{itemize}
     \item \textbf{L5 Governance:} \textbf{Paper 9} (Orchestration). Enforces policy gates before any data emission. It physically separates the act of algorithmic judgment (L4) from the authorization to transmit.
     \item \textbf{L6 Human Output:} \textbf{Paper 15} (AR Visualization) and \textbf{Paper 16} (Sociological Trust). Translates machine boundaries into human-verifiable proof via skeleton-only augmented reality displays.
@@ -218,7 +218,7 @@ This layer provides the proofs that the system is behaving as claimed, bridging 
 \subsection{Stratum IV: The Sociology of Trust and Federation}
 This layer treats sociotechnical legitimacy as an operational systems constraint, not an ethical afterthought. Institutional acceptance materially affects deployability; visible boundedness improves operational trust.
 \begin{itemize}
-    \item \textbf{L8 Federation:} Allows the network to learn global behavioral drifts without transmitting local data, governed by strict differential privacy budgets. This layer preserves federated institutional decentralization.
+    \item \textbf{L8 Federation:} Allows the network to learn global behavioral drifts without transmitting local data \cite{b_mcmahan}, governed by strict differential privacy budgets \cite{b_dwork}. This layer preserves federated institutional decentralization.
 \end{itemize}
 
 % ==========================================
@@ -248,7 +248,7 @@ The invariant namespace defines the foundational formal contracts across the edg
 
 \subsection{Distributed Sovereignty}
 \begin{itemize}
-    \item \textbf{INV-05 (Federation Sovereignty):} No model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples.
+    \item \textbf{INV-05 (Federation Sovereignty):} No model weight update shall contain gradient data allowing the mathematical reconstruction of localized training samples. Robust temporal ordering \cite{b_lamport} ensures the consistency of these distributed updates.
     \item \textbf{INV-12 (Deletion Propagation):} User data deletion/revocation requests must propagate across active state, forcing an unlearning routine within one aggregation round.
     \item \textbf{INV-13 (Federation Payload Restriction):} Network egress transmits only DP-noised gradient summaries; explicit raw data types are banned at the schema level.
 \end{itemize}
@@ -495,8 +495,6 @@ This paper presented the ScholarMaster Unified Reference Architecture, grounded 
 
 \bibitem{b_hoare} C. A. R. Hoare, ``An axiomatic basis for computer programming,'' \textit{Communications of the ACM}, vol. 12, no. 10, pp. 576--580, 1969.
 
-\bibitem{b_leveson} N. G. Leveson, \textit{Safeware: System Safety and Computers}. Addison-Wesley, 1995.
-
 \bibitem{b_saltzer} J. H. Saltzer and M. D. Schroeder, ``The protection of information in computer systems,'' \textit{Proceedings of the IEEE}, vol. 63, no. 9, pp. 1278--1308, 1975.
 
 \bibitem{b_meyer} B. Meyer, ``Applying `Design by Contract','' \textit{IEEE Computer}, vol. 25, no. 10, pp. 40--51, 1992.
@@ -515,15 +513,7 @@ This paper presented the ScholarMaster Unified Reference Architecture, grounded 
 
 \bibitem{b_dwork} C. Dwork, ``Differential Privacy: A Survey of Results,'' in \textit{TAMC}, pp. 1--19, Springer, 2008.
 
-\bibitem{b_merkle} R. C. Merkle, ``A certified digital signature,'' in \textit{Advances in Cryptology --- CRYPTO}, pp. 218--238, Springer, 1989.
-
-\bibitem{b_bass} L. Bass, P. Clements, and R. Kazman, \textit{Software Architecture in Practice}, 4th ed. Addison-Wesley, 2021.
-
-\bibitem{P5} N. Polisetti et al., ``Memory-Bound Edge Efficiency Envelope: An Analytical Model,'' \textit{IEEE Access}, vol. 14, pp. 11204--11218, 2026.
-
-\bibitem{b_ros2} S. Macenski et al., ``Robot Operating System 2: Design, architecture, and uses in the wild,'' \textit{Science Robotics}, vol. 7, no. 66, p. eabm6074, 2022.
-
-\bibitem{b_koymans} R. Koymans, ``Specifying real-time properties with metric temporal logic,'' \textit{Real-Time Systems}, vol. 2, no. 4, pp. 255--299, 1990.
+\bibitem{P5} P. Narendra et al., ``Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model,'' \textit{Journal for Basic Sciences}, vol. 26, no. 5, pp. 31--37, 2026.
 
 \end{thebibliography}
 

@@ -1,0 +1,61 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "dataset": {
+    "name": "Nasreddine dataset",
+    "citation_key": "nasreddine",
+    "citation": "Z. Nasreddine et al., IEEE Trans. Biomed. Eng., vol. 68, no. 11, pp. 3123-3132, 2021",
+    "num_patients": 22,
+    "num_seizures": 67,
+    "num_electrodes": 19,
+    "sampling_rate_hz": 500,
+    "availability": "UNKNOWN — manuscript says 'multi-center' but does not provide a download URL or access instructions"
+  },
+  "partitioning": {
+    "primary_protocol": "Leave-One-Subject-Out (LOSO)",
+    "num_folds": 22,
+    "train_subjects_per_fold": 21,
+    "test_subjects_per_fold": 1,
+    "subject_level_split": true,
+    "data_leakage_risk": "LOW — LOSO ensures no subject overlap between train and test",
+    "documented_evidence": "Section IV.F: 'in each fold we trained the model on data from 21 patients and tested the model on the held-out (22nd) patient'"
+  },
+  "gaps": [
+    {
+      "field": "validation_set",
+      "status": "NOT_DOCUMENTED",
+      "notes": "No mention of a validation split within each LOSO fold. Unknown how hyperparameters (tau=0.3, decision threshold=0.9362) were tuned. If threshold was selected on test data, this constitutes information leakage."
+    },
+    {
+      "field": "hyperparameter_tuning_protocol",
+      "status": "NOT_DOCUMENTED",
+      "notes": "Decision threshold 0.9362 described as chosen for 'zero false alarms' — unclear if this was selected per-fold or globally. If globally, potential leakage."
+    },
+    {
+      "field": "epoch_counts_per_patient",
+      "status": "NOT_DOCUMENTED",
+      "notes": "Total seizure and normal epoch counts per patient not provided. Only aggregate (67 seizures across 22 patients) stated."
+    },
+    {
+      "field": "seizure_duration_statistics",
+      "status": "NOT_DOCUMENTED",
+      "notes": "No per-seizure duration statistics provided."
+    },
+    {
+      "field": "class_imbalance_ratio",
+      "status": "PARTIALLY_DOCUMENTED",
+      "notes": "Paper mentions '99% of the normal class' would be discarded in static undersampling, implying ~1:100 imbalance. But exact numbers not stated."
+    },
+    {
+      "field": "data_download_instructions",
+      "status": "NOT_DOCUMENTED",
+      "notes": "No URL or access procedure for Nasreddine dataset."
+    }
+  ],
+  "summary": {
+    "subject_level_split": "YES (LOSO)",
+    "validation_set_documented": "NO",
+    "class_distribution_documented": "NO (only approximate ratio)",
+    "data_access_documented": "NO"
+  }
+}

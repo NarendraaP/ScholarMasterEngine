@@ -67,10 +67,10 @@ Federated Drift Compensation, Active Learning Stability, Bayesian Uncertainty, E
 % ==========================================
 \section{Introduction}
 
-The dominant thesis of this paper is that \textbf{epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints}. The Edge AI systems are inherently developed to operate in a self-sustaining environment that is constantly changing \cite{b1}. Contrary to the controlled conditions under which standard performance tests are performed, the characteristics of the environment at the Edge change dynamically, leading to shifts in the statistics of the data acquired by sensors and consequent degradation of performance of analytical or predictive models, also known as concept drift \cite{b28}.
+The dominant thesis of this paper is that \textbf{epistemic-uncertainty-guided sample acquisition enables sustainable federated drift adaptation under sparse-label constraints}. The Edge AI systems are inherently developed to operate in a self-sustaining environment that is constantly changing \cite{b1}. Contrary to the controlled conditions under which standard performance tests are performed, the characteristics of the environment at the Edge change dynamically, leading to shifts in the statistics of the data acquired by sensors and consequent degradation of performance of analytical or predictive models, also known as concept drift \cite{b28, b10}.
 
 \subsection{The Drift Adaptation Problem Under Label Scarcity}
-Federated synchronization alone does not provide fresh supervision. When an edge node encounters a drifted distribution, it lacks ground-truth annotations to orient the optimization trajectory. Static edge models become increasingly detached from the evolving environment, and naive continuous annotation is infeasible due to the resulting annotation bottlenecks created by randomly requesting human verification on a continuous stream \cite{b19}. The key issue is not distributed optimization but rather selecting when to acquire supervision.
+Federated synchronization alone does not provide fresh supervision. When an edge node encounters a drifted distribution, it lacks ground-truth annotations to orient the optimization trajectory. Static edge models become increasingly detached from the evolving environment, and naive continuous annotation is infeasible due to the resulting annotation bottlenecks created by randomly requesting human verification on a continuous stream \cite{b19, b11}. The key issue is not distributed optimization but rather selecting when to acquire supervision.
 
 In practical deployments, temporal distribution shifts manifest across three operationally distinct vectors:
 \begin{itemize}
@@ -103,7 +103,7 @@ Active learning aims to maximize model generalization while minimizing annotatio
 Gal and Ghahramani \cite{b21} proved that deep neural networks with dropout applied at test time act as approximate variational inference in Bayesian Neural Networks (BNNs). The resulting Bayesian Active Learning by Disagreement (BALD) framework \cite{b25} measures the mutual information between model predictions and parameter posterior distributions. Recent advancements have extended active learning to federated topologies \cite{b26, b27}; however, prior works have overlooked the critical interaction between sparse active gradients and differential privacy noise, which this paper resolves.
 
 \subsection{Federated Continual Learning and Privacy-Preserving Optimization}
-Federated Learning (FL) enables distributed model optimization across decentralized clients \cite{b29, b35}. A central challenge in edge FL is data heterogeneity (non-IID data distributions), which causes client drift and destabilizes global convergence \cite{b7, b30}. To safeguard client privacy, local updates are typically perturbed via Differential Privacy (DP) Gaussian mechanisms \cite{b34, b31}. While prior literature explores DP convergence bounds under fully-supervised dense batches \cite{b32}, sparse active-learning updates generate fragile, low-magnitude gradients that are highly susceptible to noise-induced divergence in high-dimensional parameter spaces \cite{b13}. This paper bridges this gap through structural layer-freezing bounds.
+Federated Learning (FL) enables distributed model optimization across decentralized clients \cite{b29, b35, b14}. A central challenge in edge FL is data heterogeneity (non-IID data distributions), which causes client drift and destabilizes global convergence \cite{b7, b30}. To safeguard client privacy, local updates are typically perturbed via Differential Privacy (DP) Gaussian mechanisms \cite{b34, b31}. While prior literature explores DP convergence bounds under fully-supervised dense batches \cite{b32}, sparse active-learning updates generate fragile, low-magnitude gradients that are highly susceptible to noise-induced divergence in high-dimensional parameter spaces \cite{b13}. This paper bridges this gap through structural layer-freezing bounds.
 
 % ==========================================
 % III. PROBLEM FORMULATION & DATA ABSTRACTION
@@ -432,8 +432,6 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b1} W. Y. B. Lim et al., ``Federated Learning in Mobile Edge Networks: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 3, pp. 2031--2063, 2020.
 
-\bibitem{b3} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
-
 \bibitem{b28} J. Gama et al., ``A survey on concept drift adaptation,'' \textit{ACM Computing Surveys}, vol. 46, no. 4, pp. 1--37, 2014.
 
 \bibitem{b2} J. Lu et al., ``Learning Under Concept Drift: A Review,'' \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 31, no. 12, pp. 2346--2363, 2018.
@@ -450,15 +448,11 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b11} D. Miller et al., ``Human-in-the-Loop Active Learning under Operator Fatigue: A Cognitive Load Analysis,'' \textit{ACM Transactions on Interactive Intelligent Systems}, vol. 14, no. 1, pp. 1--28, 2024.
 
-\bibitem{b12} D. H. Lee, ``Pseudo-label: The simple and efficient semi-supervised learning method for deep neural networks,'' in \textit{ICML Workshop on Challenges in Representation Learning}, 2013.
-
-\bibitem{b13} X. Yu et al., ``Federated Continual Learning under Concept Drift: Mitigating Confirmation Bias,'' \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, vol. 46, no. 5, pp. 3102--3118, 2024.
+\bibitem{b13} R. C. Geyer, T. Klein, and M. Nabi, ``Differentially private federated learning: A client level perspective,'' in \textit{Proc. NeurIPS Workshop on Machine Learning: Systems}, 2017. arXiv:1712.07557.
 
 \bibitem{b14} M. Mohri et al., ``Agnostic Federated Learning,'' in \textit{Proceedings of the International Conference on Machine Learning (ICML)}, pp. 4615--4625, 2019.
 
 \bibitem{b8} M. S. Hossain et al., ``Edge Computing in IoT: A Review,'' \textit{IEEE Internet of Things Journal}, vol. 6, no. 5, pp. 7820--7834, 2019.
-
-\bibitem{b15} S. Suresh Kumar et al., ``Memory-Bound Edge Efficiency Envelope: An Analytical Model,'' \textit{IEEE Access}, vol. 14, pp. 11204--11218, 2026.
 
 \bibitem{b16} P. Domingos and G. Hulten, ``Mining high-speed data streams,'' in \textit{Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, pp. 71--80, 2000.
 
@@ -466,7 +460,7 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b18} M. Baena-Garc{\'\i}a et al., ``Early drift detection method,'' in \textit{Fourth International Workshop on Knowledge Discovery from Data Streams}, pp. 77--86, 2006.
 
-\bibitem{b21} Y. Gal and Z. Ghahramani, ``Dropout as a Bayesian approximation: Representing model uncertainty in deep learning, in \textit{International Conference on Machine Learning (ICML)}, pp. 1050--1059, 2016.
+\bibitem{b21} Y. Gal and Z. Ghahramani, ``Dropout as a Bayesian approximation: Representing model uncertainty in deep learning,'' in \textit{International Conference on Machine Learning (ICML)}, pp. 1050--1059, 2016.
 
 \bibitem{b22} A. Bifet and R. Gavald{\`a}, ``Learning from time-changing data with adaptive windowing,'' in \textit{Proceedings of the SIAM International Conference on Data Mining}, pp. 443--448, 2007.
 
@@ -480,7 +474,7 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b26} J. Goetz et al., ``Active Federated Learning,'' \textit{arXiv preprint arXiv:1909.12641}, 2019.
 
-\bibitem{b27} J. H. Ahn et al., ``Federated Active Learning via Disagreement,'' \textit{IEEE Transactions on Mobile Computing}, vol. 23, no. 4, pp. 3840--3854, 2024.
+\bibitem{b27} J.-H. Ahn, Y. Ma, S. Park, and C. You, ``Federated Active Learning (F-AL): An Efficient Annotation Strategy for Federated Learning,'' \textit{IEEE Access}, vol. 12, pp. 39261--39269, 2024.
 
 \bibitem{b30} T. Li et al., ``Federated optimization in heterogeneous networks,'' in \textit{Proceedings of Machine Learning and Systems (MLSys)}, vol. 2, pp. 429--450, 2020.
 

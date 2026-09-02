@@ -76,7 +76,7 @@ Hierarchical Orchestration, Policy-Aware Control Plane, Inference Rate Governanc
 % ==========================================
 \section{Introduction}
 
-The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems often feature multiple domainspecific AI modules hosted at the edge, running concurrently, for instance, biometric recognition, pose estimation, and speech understanding. While each can be optimized individually, their joint orchestration in a shared runtime environment introduces a distinct coordination problem \cite{b14, b21}.
+The main idea of this paper is that hierarchical policy-aware orchestration can provide deterministic and fault-contained coordination of heterogeneous edge AI modules operated within common constraints. Edge intelligent systems \cite{b20} often feature multiple domainspecific AI modules hosted at the edge, running concurrently, for instance, biometric recognition, pose estimation, and speech understanding. While each can be optimized individually, their joint orchestration in a shared runtime environment introduces a distinct coordination problem \cite{b14, b21}.
 
 \subsection{Architectural Fragility in Flat Multi-Model Pipelines}
 When modules are tightly coupled in flat execution pipelines, localized crashes in one heavy perception model can easily propagate, causing cascading failure across the entire sensing system. Shared compute contention interferes with other wise independent modules, while cloud mediated orchestration introduces unpredictable network latency that fails to meet the demands of interactive modeling \cite{b4, b14}. Furthermore, naive always-on sensing waste computing resources by performing heavy duty processing when not needed. Orchestration destabilization is caused by topological factors rather than mere compute model inefficiency.
@@ -90,7 +90,7 @@ This work explores whether a logical control-plane abstraction can be leveraged 
     \item Validation via fault injection to confirm orchestration resilience under deterministic failure scenarios \cite{b28}.
 \end{itemize}
 
-Within the ScholarMaster architecture, this subsystem takes care of the activation of other modules, controls their orchestration logic, and only these three things. It does not assess survivability envelopes (Paper 10), optimize flash memory durability (Paper 12), optimize federated adaptation (Paper 13), develop runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
+Within the ScholarMaster architecture, this subsystem takes care of the activation of other modules, controls their orchestration logic, and only these three things. It does not assess survivability envelopes (Paper 10), optimize flash memory durability (Paper 12), optimize federated adaptation \cite{b8} (Paper 13), develop runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
 
 % ==========================================
 % II. RELATED WORK
@@ -98,7 +98,7 @@ Within the ScholarMaster architecture, this subsystem takes care of the activati
 \section{Related Work}
 
 \subsection{Edge Video Analytics and Dynamic Pipeline Adaptation}
-Dynamic pipeline adaptation for continuous video analytics has received extensive attention. Zhang et al. developed VideoStorm \cite{b33}, which dynamically adjusts frame rates and image resolutions to maximize query quality under resource constraints on GPU clusters. Jiang et al. introduced Chameleon \cite{b34}, periodic spatial-temporal profiling to dynamically adapt deep neural network configurations. Gujarathi et al. proposed Ekya \cite{b35}, balancing continuous retraining and inference scheduling on edge clusters. Hsieh et al. formulated AdaScale \cite{b36}, adaptively scaling video resolutions based on object velocity. While VideoStorm and Chameleon optimize throughput and query accuracy on unconstrained cloud/cluster environments, they assume always-on sensing and lack formal policy-driven suppression primitives required for privacy-constrained and energy-bounded cyber-physical deployments.
+Dynamic pipeline adaptation for continuous video analytics has received extensive attention. Zhang et al. developed VideoStorm \cite{b33}, which dynamically adjusts frame rates and image resolutions to maximize query quality under resource constraints on GPU clusters. Jiang et al. introduced Chameleon \cite{b34}, periodic spatial-temporal profiling to dynamically adapt deep neural network configurations. Gujarathi et al. proposed Ekya \cite{b35}, balancing continuous retraining and inference scheduling on edge clusters. Xu investigated approximation and adaptive scaling \cite{b36} for streaming video analytics on mobile devices. While VideoStorm and Chameleon optimize throughput and query accuracy on unconstrained cloud/cluster environments, they assume always-on sensing and lack formal policy-driven suppression primitives required for privacy-constrained and energy-bounded cyber-physical deployments.
 
 \subsection{Edge Multi-Model Orchestration and Microservice Systems}
 Standard edge AI runtime engines, such as TensorFlow Lite \cite{b10, b31} and ONNX Runtime, focus on single-model tensor optimizations (quantization, pruning, operator fusion) but provide no native facilities for cross-module coordination, fault containment, or policy-aware rate governance. Microservice frameworks for edge analytics, such as Mainstream \cite{b21} and edge cloudlet systems \cite{b6, b23}, support concurrent pipeline execution through stem-sharing. However, flat microservice architectures lack strict layer isolation: an uncontained memory leak or SIGSEGV fault in a heavy vision container cascades across the shared message broker, destabilizing concurrent lightweight pipelines \cite{b24, b18}.
@@ -446,13 +446,9 @@ This paper presented a hierarchical edge control-plane architecture for policy-a
 
 \bibitem{b10} M. Abadi et al., ``TensorFlow: A System for Large-Scale Machine Learning,'' in \textit{USENIX Symposium on Operating Systems Design and Implementation (OSDI)}, pp. 265--283, 2016.
 
-\bibitem{b11} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
-
 \bibitem{b4} European Parliament, ``Regulation (EU) 2016/679 (GDPR),'' \textit{Official Journal of the European Union}, L119, 2016.
 
 \bibitem{b6} M. Chiang and T. Zhang, ``Fog and IoT: An Overview of Research Opportunities,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 6, pp. 854--864, 2016.
-
-\bibitem{b7} D. McDuff et al., ``AFFDEX SDK: A Cross-Platform Real-Time Multi-Face Expression Recognition Toolkit,'' in \textit{ACM CHI Extended Abstracts}, pp. 3723--3726, 2016.
 
 \bibitem{b17} N. Dragoni et al., ``Microservices: Yesterday, Today, and Tomorrow,'' in \textit{Present and Ulterior Software Engineering}, Springer, pp. 195--216, 2017.
 
@@ -476,21 +472,13 @@ This paper presented a hierarchical edge control-plane architecture for policy-a
 
 \bibitem{b14} J. Verbraeken et al., ``A Survey on Distributed Machine Learning,'' \textit{ACM Computing Surveys}, vol. 53, no. 2, pp. 1--33, 2020.
 
-\bibitem{b19} N. Min-Allah and S. Alrashed, ``Smart Campus: A Sketch,'' \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
-
 \bibitem{b35} R. Gujarathi et al., ``Ekya: Continuous Learning of Video Analytics Models on Edge Compute Clusters,'' in \textit{USENIX NSDI}, pp. 469--483, 2021.
 
 \bibitem{b27} F. Yi et al., ``Privid: Practical, Privacy-Preserving Video Analytics Queries,'' in \textit{USENIX NSDI}, pp. 287--306, 2022.
 
-\bibitem{b36} K. I. Hsieh et al., ``AdaScale: Towards Real-time Video Analytics on Embedded Systems with Adaptive Scaling,'' in \textit{ACM SenSys}, pp. 145--158, 2022.
+\bibitem{b36} R. Xu, ``Approximation for streaming video analytics on mobile devices,'' Doctoral dissertation, Purdue University, 2021.
 
 \bibitem{b37} T. Y. H. Hung et al., ``Video Analytics at the Edge with Vigil,'' in \textit{ACM MobiCom}, pp. 120--134, 2015.
-
-\bibitem{b38} M. Satyanarayanan et al., ``The Emergence of Edge Computing,'' \textit{IEEE Pervasive Computing}, vol. 16, no. 1, pp. 30--39, 2017.
-
-\bibitem{b39} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
-
-\bibitem{b40} S. Suresh Kumar et al., ``Memory-Bound Edge Efficiency Envelope: An Analytical Model,'' \textit{IEEE Access}, vol. 14, pp. 11204--11218, 2026.
 
 \end{thebibliography}
 

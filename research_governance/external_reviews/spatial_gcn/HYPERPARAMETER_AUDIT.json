@@ -1,0 +1,192 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "audit_method": "MANUSCRIPT_TEXT_EXTRACTION",
+  "source": "Manuscript LaTeX source (user-provided)",
+  "notes": "Values extracted from manuscript text only. Code notebooks NOT inspected. Missing values marked UNKNOWN.",
+  "documented_hyperparameters": [
+    {
+      "parameter": "sparsification_threshold_tau",
+      "value": "0.3",
+      "source_location": "Section III.E, Algorithm 1 line 1",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "num_epochs",
+      "value": "100",
+      "source_location": "Section III.G (Dynamic Balanced Batching: 'Over the course of 100 training epochs')",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "gcn_layer_1_hidden_dim",
+      "value": "64",
+      "source_location": "Figure 1 (Architecture diagram: 'Spatial GCN (64)')",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "gcn_layer_2_hidden_dim",
+      "value": "128",
+      "source_location": "Figure 1 (Architecture diagram: 'Spatial GCN (128)')",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "activation_hidden",
+      "value": "ReLU",
+      "source_location": "Algorithm 1 lines 11-12",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "activation_output",
+      "value": "Sigmoid",
+      "source_location": "Algorithm 1 line 13, Figure 1",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "loss_function",
+      "value": "Weighted Binary Cross-Entropy",
+      "source_location": "Algorithm 1 line 15",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "class_weight_scheme",
+      "value": "Dynamic per-batch (computed from batch B_e)",
+      "source_location": "Algorithm 1 line 4",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "batch_class_ratio",
+      "value": "1:1 (minority:majority)",
+      "source_location": "Section III.G (DBB: 'randomly sample a new subset of normal epochs to match the seizure count (1:1 ratio)')",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "decision_threshold",
+      "value": "0.9362",
+      "source_location": "Section IV.B ('the decision threshold had to be raised to 0.9362')",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "median_filter_window_w",
+      "value": "3 (spanning 12 seconds)",
+      "source_location": "Section III.H (Post-Processing)",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "bandpass_filter",
+      "value": "4th-order Butterworth, 0.5-70 Hz",
+      "source_location": "Section III.A item 1",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "notch_filter",
+      "value": "50 Hz",
+      "source_location": "Section III.A item 1",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "window_size",
+      "value": "4 seconds, non-overlapping",
+      "source_location": "Section III.A item 2",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "sampling_rate",
+      "value": "500 Hz",
+      "source_location": "Section III.A item 2",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "normalization",
+      "value": "Channel-wise Z-score",
+      "source_location": "Section III.A item 3",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "num_electrodes_N",
+      "value": "19",
+      "source_location": "Section III.B",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "num_gcn_layers",
+      "value": "2",
+      "source_location": "Figure 1, Algorithm 1",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    },
+    {
+      "parameter": "readout",
+      "value": "Global Average Pooling",
+      "source_location": "Figure 1, Algorithm 1 line 13",
+      "verification_status": "DOCUMENTED_IN_MANUSCRIPT"
+    }
+  ],
+  "missing_hyperparameters": [
+    {
+      "parameter": "learning_rate",
+      "status": "MISSING",
+      "notes": "Referenced symbolically as eta in Algorithm 1 but numeric value never specified."
+    },
+    {
+      "parameter": "optimizer",
+      "status": "MISSING",
+      "notes": "Not specified anywhere. Could be Adam, SGD, AdamW, etc."
+    },
+    {
+      "parameter": "batch_size",
+      "status": "MISSING",
+      "notes": "Not specified. Only batch class ratio (1:1) is documented."
+    },
+    {
+      "parameter": "dropout_rate",
+      "status": "MISSING",
+      "notes": "Not mentioned. Unknown if dropout is used."
+    },
+    {
+      "parameter": "weight_decay_L2",
+      "status": "MISSING",
+      "notes": "Not mentioned."
+    },
+    {
+      "parameter": "weight_initialization",
+      "status": "MISSING",
+      "notes": "Not specified. Could be Xavier, Kaiming, default, etc."
+    },
+    {
+      "parameter": "random_seed",
+      "status": "MISSING",
+      "notes": "Not specified anywhere. Critical for reproducibility."
+    },
+    {
+      "parameter": "early_stopping_criterion",
+      "status": "MISSING",
+      "notes": "Not mentioned. Unknown if training runs for full 100 epochs or stops early."
+    },
+    {
+      "parameter": "learning_rate_scheduler",
+      "status": "MISSING",
+      "notes": "Not mentioned."
+    },
+    {
+      "parameter": "node_feature_type",
+      "status": "PARTIALLY_DOCUMENTED",
+      "notes": "Figure 1 shows 'Spectral Features' block but exact feature extraction method not specified in text. Power spectral density? FFT? Band powers?"
+    },
+    {
+      "parameter": "node_feature_dimensionality",
+      "status": "MISSING",
+      "notes": "Input feature dimension F per node not specified."
+    },
+    {
+      "parameter": "num_trainable_parameters",
+      "status": "MISSING",
+      "notes": "Not reported."
+    }
+  ],
+  "summary": {
+    "documented_count": 19,
+    "missing_count": 12,
+    "documentation_completeness": "61%",
+    "critical_missing": ["learning_rate", "optimizer", "batch_size", "random_seed", "node_feature_type"],
+    "recoverable_from_colab": "UNKNOWN — Colab notebooks not inspected"
+  }
+}

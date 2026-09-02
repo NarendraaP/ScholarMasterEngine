@@ -1,0 +1,36 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "existing_data": {
+    "LOSO_fold_count": 22,
+    "reported_statistics": {
+      "AUC": {"mean": 0.94, "std": 0.04, "range": "0.89-0.99"},
+      "Precision": {"mean": 0.315, "std": 0.052, "range": "0.22-0.41"},
+      "Specificity": {"mean": 0.998, "std": 0.002, "range": "0.992-0.999"}
+    },
+    "per_fold_raw_values_available": "UNKNOWN — not reported in manuscript, may exist in Colab output"
+  },
+  "assessment": {
+    "statistical_tests_performed": "NONE",
+    "p_values_reported": "NONE",
+    "confidence_intervals_reported": "NONE",
+    "effect_size_reported": "NONE",
+    "multiple_comparison_correction": "NOT_APPLICABLE (no tests performed)",
+    "paired_comparison_available": "UNKNOWN — requires per-fold CNN vs GCN results on same test subjects"
+  },
+  "what_can_be_done": {
+    "if_per_fold_raw_values_exist": [
+      "Paired Wilcoxon signed-rank test (GCN AUC vs CNN AUC per fold)",
+      "95% confidence interval via bootstrap",
+      "Cohen's d effect size for AUC difference",
+      "Friedman test if comparing 3+ methods across folds"
+    ],
+    "if_only_aggregate_values_exist": [
+      "Two-sample t-test approximation from means and standard deviations (WEAK)",
+      "NOTE: This is NOT equivalent to paired testing and would be APPROXIMATE_ONLY"
+    ]
+  },
+  "verdict": "NOT_ESTABLISHABLE_FROM_MANUSCRIPT_ALONE",
+  "notes": "The manuscript reports mean +/- std across 22 LOSO folds, which provides descriptive statistics but NOT formal hypothesis testing. Statistical significance requires per-fold paired comparison values from the Colab notebooks. If per-fold values do not exist in Colab output, statistical significance CANNOT be established without re-running experiments.",
+  "recommendation": "Inspect Colab notebook output cells for per-fold metric values. If available, perform paired Wilcoxon signed-rank test. If not available, honestly state in revision that formal statistical testing was not performed and provide mean +/- std as descriptive statistics with appropriate caveats."
+}

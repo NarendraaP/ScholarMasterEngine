@@ -143,7 +143,7 @@ Bounded latency is a hard constraint on the behavior of streaming systems, not a
 \begin{equation}
 T_{total} = T_{detect} + T_{align} + T_{embed} + T_{retrieve}
 \end{equation}
-On the empirical research carried out on edge hardware, it was found that detection and alignment take up 4 ms, which leaves about 28 ms for embedding extraction. This leaves barely any room for retrieval with just 5 ms spares. The moment embedding takes about 28 ms, the video freezes.
+On the empirical research carried out on edge hardware, it was found that face detection (e.g., using MTCNN \cite{b13}) and alignment take up 4 ms, which leaves about 28 ms for embedding extraction. This leaves barely any room for retrieval with just 5 ms spares. The moment embedding takes about 28 ms, the video freezes.
 
 \textbf{Ethics Statement:} This research used public data sets (LFW) and synthetic vectors. Students’ personal identifying information was not used for model training or benchmarking. This study followed institutional data privacy guidelines.
 
@@ -481,7 +481,7 @@ From an algorithmic perspective, the results highlight that identity retrieval�
 
 By prioritizing retrieval complexity over pure embedding refinement, this architecture achieves sub-millisecond search on edge hardware. Localizing execution structurally eliminates cloud dependencies, shielding the system from external bandwidth limitations and latency spikes common during institutional peak hours.
 
-The decoupling of embedding geometry from indexing mechanics reveals the central point: high-quality embeddings are useful, but by themselves they are inadequate, because the practical deployment requires real-time performance. Graph-based indexing and open-set gating (LDCC) close the loop between the embedding ideal and the reality of edge deployment. Moreover, the implementation of retrieval on the edge reduces the attack surface at the transmission layer, since the identity resolution is kept inside the physical boundaries of the edge node.
+The decoupling of embedding geometry from indexing mechanics reveals the central point: high-quality embeddings are useful, but by themselves they are inadequate, because the practical deployment requires real-time performance. Graph-based indexing and open-set gating (LDCC) close the loop between the embedding ideal and the reality of edge deployment. Moreover, the implementation of retrieval on the edge reduces the attack surface at the transmission layer, since the identity resolution is kept inside the physical boundaries of the edge node. This localization mitigates risks such as model inversion attacks \cite{b20} that threaten cloud-based templates.
 
 \section{Limitations}
 
@@ -490,7 +490,7 @@ The evaluation framework exposes several operational and algorithmic limitations
     \item \textbf{Synthetic Hypersphere Assumptions:} Scalability was evaluated using artificially generated hyper-sphere distributions. In real institutional settings, the proximity between embedded items is often denser, demographic distributions display greater variance, and enrollment dynamics undergo drift, all of which may collectively increase local traversal time and index fragmentation in extended periods.
     \item \textbf{Index Memory Footprint:} While FP16 cuts the memory footprint of HNSW to 214 MB at 100 K, the memory grows faster than linearly with the number of identities beyond that (the $10^6$ range). So, such size, along with asynchronous inserts, may lead to higher memory consumption temporarily.
     \item \textbf{Dependency on Upstream Quality:} The retrieval layer depends entirely on upstream embedding quality; open-set performance collapses if the external model produces ambiguous feature vectors.
-    \item \textbf{Absence of Anti-Spoofing:} The retrieval graph assumes genuine biometric input. It lacks integrated anti-spoofing evaluation, relying entirely on upstream layers to reject presentation attacks.
+    \item \textbf{Absence of Anti-Spoofing:} The retrieval graph assumes genuine biometric input. It lacks integrated anti-spoofing evaluation, relying entirely on upstream layers to reject presentation attacks \cite{b21}.
 \end{itemize}
 
 % ==========================================
@@ -514,13 +514,9 @@ Empirical evaluation demonstrates that separating indexing mechanics from featur
 
 \bibitem{b13} K. Zhang, Z. Zhang, Z. Li, and Y. Qiao, "Joint Face Detection and Alignment Using Multitask Cascaded Convolutional Networks," \textit{IEEE Signal Processing Letters}, vol. 23, no. 10, pp. 1499-1503, 2016.
 
-\bibitem{b15} W. Shi, J. Cao, Q. Zhang, Y. Li, and L. Xu, "Edge Computing: Vision and Challenges," \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637-646, 2016.
-
 \bibitem{b17} B. Amos, B. Ludwiczuk, and M. Satyanarayanan, "OpenFace: A general-purpose face recognition library with mobile applications," \textit{Technical Report CMU-CS-16-118}, Carnegie Mellon University, 2016.
 
 \bibitem{megaface} I. Kemelmacher-Shlizerman et al., "The MegaFace Benchmark: 1 Million Faces for Recognition at Scale," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016, pp. 4873-4882.
-
-\bibitem{b4} A. G. Howard et al., "MobileNets: Efficient convolutional neural networks for mobile vision applications," \textit{arXiv preprint arXiv:1704.04861}, 2017.
 
 \bibitem{b21} Y. Liu, A. Jourabloo, and X. Liu, "Learning Deep Models for Face Anti-Spoofing: Binary or Auxiliary Supervision," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2018, pp. 389-398.
 
@@ -530,29 +526,19 @@ Empirical evaluation demonstrates that separating indexing mechanics from featur
 
 \bibitem{b2} Z. Zhou, X. Chen, E. Li, L. Zeng, K. Luo, and J. Zhang, "Edge Intelligence: Paving the Last Mile of Artificial Intelligence With Edge Computing," \textit{Proceedings of the IEEE}, vol. 107, no. 8, pp. 1738-1762, 2019.
 
-\bibitem{b3} Q. Zhang, "Privacy-preserving deep learning based face recognition on the cloud," \textit{IEEE Trans. Ind. Info.}, vol. 16, 2019.
-
 \bibitem{b5} J. Deng, J. Guo, N. Xue, and S. Zafeiriou, "ArcFace: Additive angular margin loss for deep face recognition," in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2019, pp. 4690-4699.
 
-\bibitem{b6} J. Johnson, M. Douze, and H. Jégou, "Billion-scale similarity search with GPUs," \textit{IEEE Transactions on Big Data}, vol. 7, no. 3, pp. 535-547, 2019.
-
 \bibitem{b12} W. Li, Y. Zhang, Y. Sun, W. Wang, M. Li, W. Zhang, and X. Lin, "Approximate nearest neighbor search on high dimensional data — Experiments, analyses, and improvement," \textit{IEEE Transactions on Knowledge and Data Engineering}, vol. 32, no. 8, pp. 1475-1488, 2020.
-
-\bibitem{b19} D. Padillo, "Privacy-Preserving Selective Video Surveillance," \textit{IEEE Access}, vol. 8, pp. 15432-15445, 2020.
 
 \bibitem{b8} N. Min-Allah and S. Alrashed, "Smart campus: A sketch," \textit{Sustainable Cities and Society}, vol. 59, p. 102231, 2020.
 
 \bibitem{b9} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Comm. Surveys \& Tutorials}, vol. 22, no. 2, pp. 869-904, 2020.
-
-\bibitem{b10} S. Komkov and A. Petiushko, "AdvHat: Real-world adversarial attack on ArcFace Face ID system," in \textit{Proceedings of the 25th International Conference on Pattern Recognition (ICPR)}, 2021, pp. 819-826.
 
 \bibitem{b11} M. Wang and W. Deng, "Deep face recognition: A survey," \textit{Neurocomputing}, vol. 429, pp. 215-244, 2021.
 
 \bibitem{b14} A. Gholami, S. Kim, Z. Dong, Z. Yao, M. W. Mahoney, and K. Keutzer, "A Survey of Quantization Methods for Efficient Neural Network Inference," \textit{arXiv preprint arXiv:2103.13630}, 2021.
 
 \bibitem{scholarmaster_repo} Narendra Babu P, "ScholarMasterEngine: Edge-Native Intelligent System Prototypes," 2025. [Online]. Available: \url{https://github.com/NarendraaP/ScholarMasterEngine}. [Accessed: 2026].
-
-\bibitem{b16} P. Narendra et al., "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," \textit{ScholarMaster Series}, Paper 5, 2026.
 
 \end{thebibliography}
 

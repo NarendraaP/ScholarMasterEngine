@@ -119,7 +119,7 @@ At a physical level, wear occurs due to the continuous program/read cycles that 
 
 Because host operating systems interface with flash storage via logical block addressing, the Flash Translation Layer (FTL) is central to the locality of physical wear (mapping of logical writes to physical flash pages) \cite{b7}. Host operating systems perform logical writes at the sector granularity, while the underlying hardware operates at the multi-megabyte flash block level. The flash memory controller maintains a mapping table of Logical Block Addresses (LBA) to physical flash pages.
 
-This discrepancy is often the root cause of Write Amplification. In this scenario, numerous minor logical updates initiated by the host can lead to considerable block-level data rewrites inside the drive. Especially problematic are the cases when the FTL needs to perform an internal Read-Modify-Write cycle in order to free up space inside the logical block for the new data. Enterprise-grade NVMe controllers usually have large RAM buffers and employ advanced algorithms to prevent this from happening, while the cheap firmware in SD cards has very limited resources to handle such situations, resulting in excessive writes on the flash level.
+This discrepancy is often the root cause of Write Amplification. In this scenario, numerous minor logical updates initiated by the host can lead to considerable block-level data rewrites inside the drive. Especially problematic are the cases when the FTL needs to perform an internal Read-Modify-Write cycle in order to free up space inside the logical block for the new data. Enterprise-grade NVMe controllers usually have large RAM buffers and employ advanced algorithms to prevent this from happening \cite{b11}, while the cheap firmware in SD cards has very limited resources to handle such situations, resulting in excessive writes on the flash level.
 
 \subsection{Mathematical Formulation of FTL Garbage Collection}
 
@@ -241,7 +241,7 @@ Unlike Btrfs, Ext4 uses the classic update-in-place approach. This approach is p
 The JBD2 commit could be expensive in terms of flash endurance. Single metadata change takes 4 physical writes: (1) writing the descriptor block, (2) writing metadata payload to the journal, (3) writing commit block, and (4) finally writing metadata to its place in the main filesystem. In cases where one has to write a lot of small JSON records for telemetry purposes, the ratio of journal writes to the actual data is tremendously high ($W_{meta} \gg W_{data}$).
 
 \subsection{F2FS Architecture and the Wandering Tree Problem}
-To address this issue, the current system adopts the Flash Friendly File System (F2FS). It is worth noticing that the F2FS is designed according to the physics of NAND \cite{b18}. Similarly to other log-structured file systems (LFS), F2FS transforms random writes into appending ones, which allows FTL to write new pages in sequentially allocated empty blocks and, thus, to avoid costly R/W operations over existing data (Fig. 1).
+To address this issue, the current system adopts the Flash Friendly File System (F2FS). It is worth noticing that the F2FS is designed according to the physics of NAND \cite{b18}. Similarly to other log-structured file systems (LFS) \cite{b17, b19}, F2FS transforms random writes into appending ones, which allows FTL to write new pages in sequentially allocated empty blocks and, thus, to avoid costly R/W operations over existing data (Fig. 1).
 
 However, standard LFS implementations have one major limitation. It is called the Wandering Tree Problem. The issue occurs when a file needs to change data block location due to an edit. The file’s direct inode has to be changed and points to a new physical location, and that creates a cascade effect. Indirect index nodes also have to be changed and are updated all the way to the root inode.
 
@@ -431,9 +431,7 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b12} JEDEC Solid State Technology Association, ``Solid-State Drive (SSD) Requirements and Endurance Test Method (JESD218),'' 2010.
 
-\bibitem{b7} J. Kim et al., ``A Survey on Flash Translation Layer,'' \textit{IEEE Transactions on Consumer Electronics}, 2010.
-
-\bibitem{b21} H. Kim et al., ``Revisiting storage for smartphones,'' in \textit{Proc. USENIX FAST}, 2012.
+\bibitem{b7} T.-S. Chung, D.-J. Park, S. Park, D.-H. Lee, S.-W. Lee, and H.-J. Song, ``A survey of flash translation layer,'' \textit{Journal of Systems Architecture}, vol. 55, no. 5--6, pp. 332--343, 2009.
 
 \bibitem{b22} C. Min et al., ``SFS: Random write considered harmful in solid state drives,'' in \textit{Proc. USENIX FAST}, 2012.
 
@@ -445,27 +443,21 @@ Within the ScholarMaster architecture, this framework operates exclusively as th
 
 \bibitem{b16} M. Bjørling et al., ``Linux block IO: Introducing multi-queue SSD access on multi-core systems,'' in \textit{Proc. ACM SYSTOR}, 2013.
 
-\bibitem{b26} S. Baek et al., ``SSDAlloc: Hybrid SSD/RAM Memory Management Made Easy,'' in \textit{Proc. NSDI}, 2013.
+\bibitem{b26} A. Badam and V. S. Pai, ``SSDAlloc: Hybrid SSD/RAM Memory Management Made Easy,'' in \textit{Proc. USENIX NSDI}, pp. 211--224, 2011.
 
 \bibitem{b28} J. Dean and L. A. Barroso, ``The tail at scale,'' \textit{Communications of the ACM}, vol. 56, no. 2, pp. 74-80, 2013.
 
 \bibitem{b29} T. S. Pillai et al., ``All file systems are not created equal: On the complexity of crafting crash-consistent applications,'' in \textit{Proc. USENIX OSDI}, 2014.
 
-\bibitem{b18} J. Lee et al., ``F2FS: A New File System for Flash Storage,'' \textit{USENIX FAST}, pp. 273--286, 2015.
+\bibitem{b18} C. Lee et al., ``F2FS: A New File System for Flash Storage,'' in \textit{USENIX FAST}, pp. 273--286, 2015.
 
 \bibitem{b25} Y. Cai et al., ``Understanding Data Retention in Modern Flash Memory,'' in \textit{Proc. HPCA}, 2015.
 
 \bibitem{b30} M. Satyanarayanan et al., ``Edge Analytics in the Internet of Things,'' \textit{IEEE Pervasive Computing}, 2015.
 
-\bibitem{b2} W. Shi et al., ``Edge Computing: Vision and Challenges,'' \textit{IEEE Internet of Things Journal}, vol. 3, no. 5, pp. 637--646, 2016.
-
 \bibitem{b24} B. Gregg, ``The Flame Graph: This visual representation of profiled software execution is a new addition to the developer's toolbox,'' \textit{Communications of the ACM}, vol. 59, no. 6, pp. 48-57, 2016.
 
-\bibitem{b1} M. Satyanarayanan, ``The Emergence of Edge Computing,'' \textit{Computer}, vol. 50, no. 1, pp. 30--39, 2017.
-
 \bibitem{b23} B. Gregg, \textit{BPF Performance Tools}. Addison-Wesley Professional, 2019.
-
-\bibitem{b3} X. Wang et al., ``Convergence of Edge Computing and Deep Learning: A Comprehensive Survey,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 22, no. 2, pp. 869--904, 2020.
 
 \end{thebibliography}
 

@@ -110,8 +110,6 @@ By defining these bounds, we align the evaluation of the system with established
 \section{Formal Adversary Classification Model}
 To analyze system resilience, we must first formalize the capabilities of the attacker. We adapt standard threat modeling \cite{b2} and extend it for cyber-physical edge nodes. This formal classification extends the architectural threat overview presented in prior reference architecture work \cite{b6} by introducing mathematical capability tuples, explicit bounding assumptions, and TCB-grounded proof conditions.
 
-
-
 Let an Adversary $A$ be defined by a tuple of capabilities:
 \begin{equation}
 A = \langle \mathcal{O}, \mathcal{M}, \mathcal{E} \rangle
@@ -253,8 +251,6 @@ We define the following predicates over a data buffer $b \in M_{high}$:
 % ==========================================
 \section{Trusted Computing Base (TCB)}
 The Trusted Computing Base (TCB) comprises the totality of hardware, firmware, and software components that are critical to system security. Minimizing the TCB is a fundamental goal of secure system design \cite{b3}. 
-
-
 
 \subsection{Explicit TCB Formalization}
 Let the total system environment consist of the union of the Trusted Computing Base ($TCB$) and untrusted components ($\mathcal{U}$). We formally define the TCB as the set:
@@ -416,9 +412,6 @@ The system utilizes a \textbf{Fixed Computational Graph}. Neural network executi
 \subsection{Leakage Claim}
 The mutual information between the execution time $T$ and the high-domain input $X$, denoted as $I(T; X)$, is negligible and bounded by the scheduling jitter $\delta_{jitter}$. Consequently, timing leakage is bounded and considered negligible under adversaries $A_0$ through $A_3$.
 
-
-
-
 % ==========================================
 % XI. FORMAL SECURITY THEOREMS
 % ==========================================
@@ -471,7 +464,7 @@ The formalization of security boundaries for computing systems has a long tradit
 
 The adversary classification model adapts the Dolev-Yao threat model \cite{b2} to the edge AI context. While Dolev-Yao assumes an omnipotent network adversary, our tiered model explicitly bounds adversary capabilities at each privilege level and identifies the precise boundary ($A_3$/$A_4$) where software-level invariants collapse. This approach aligns with CPS threat modeling methodologies \cite{b30_cps} that distinguish between cyber and physical attack surfaces.
 
-Metric Temporal Logic \cite{b9} and model checking \cite{b10} provide the formal verification tools used to validate security invariants. The TLA+ bounded model checking employed here follows established practice for concurrent system verification, though the application to privacy-by-architecture security properties is novel.
+Metric Temporal Logic \cite{b9}, foundational temporal logic \cite{b13}, timed automata models \cite{b20}, and model checking \cite{b10} provide the formal verification tools used to validate security invariants. The TLA+ bounded model checking employed here follows established practice for concurrent system verification, though the application to privacy-by-architecture security properties is novel.
 
 Recent work on Trusted Execution Environments (TEEs) such as Intel SGX \cite{b16} and ARM TrustZone \cite{b17_tz} addresses hardware-level isolation. Our architecture explicitly operates below the TEE assumption boundary, relying instead on software-level TCB minimization for commodity edge hardware.
 
@@ -566,13 +559,9 @@ To computationally verify the consistency of the state machine defined by these 
 
 \bibitem{b23} M. Fredrikson et al., "Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures," in \textit{CCS}, 2015.
 
-\bibitem{b7} Y. Zheng, "Trajectory data mining: an overview," \textit{ACM TIST}, vol. 6, no. 3, 2015.
-
 \bibitem{b16} V. Costan and S. Devadas, "Intel SGX Explained," \textit{IACR Cryptology ePrint Archive}, 2016.
 
 \bibitem{b22} M. Abadi et al., "Deep Learning with Differential Privacy," in \textit{CCS}, 2016.
-
-\bibitem{b15} H. B. McMahan et al., "Communication-Efficient Learning of Deep Networks from Decentralized Data," \textit{AISTATS}, 2017.
 
 \bibitem{b5} R. Shokri et al., "Membership inference attacks against machine learning models," in \textit{IEEE S\&P}, 2017.
 

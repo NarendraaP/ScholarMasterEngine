@@ -86,7 +86,7 @@ Constrained Edge Perception, Geometric Abstraction, Volatile Memory Confinement,
 % ==========================================
 \section{Introduction}
 
-The main thesis of this paper is that the problem of persistent exposure of biometrics can be solved by introducing a bounded volatile-memory confinement with sparse geometric projection, so that privacy violations are minimized in the context of visual inferences at the edge. This paper addresses the issue strictly within the confines of the perception systems, focusing on the geometric aspect, not the privacy governance aspect, leaving the latter to the specific applications.
+The main thesis of this paper is that the problem of persistent exposure of biometrics can be solved by introducing a bounded volatile-memory confinement with sparse geometric projection, so that privacy violations are minimized in the context of visual inferences at the edge \cite{b25}. This paper addresses the issue strictly within the confines of the perception systems, focusing on the geometric aspect, not the privacy governance aspect, leaving the latter to the specific applications.
 
 \subsection{Representational Excess in Conventional Vision Pipelines}
 Many vision tasks on the edge only use spatial relationships, but traditional vision pipelines decode full RGB frames. Dense RGB tensors carry much more biometric information than needed for downstream tasks, increasing the attack surface of the pipeline unwisely. Geometric abstraction can satisfy kinematic inference requirements without preserving identity-bearing texture. The core issue is representational mismatch, not merely storage duration: capturing detailed texture data far exceeds what kinematic event detection requires \cite{b1}.
@@ -545,10 +545,6 @@ Experimental results show that the combination of pose-based dimensional reducti
 % ==========================================
 \begin{thebibliography}{00}
 
-\bibitem{b7} C. Lugaresi et al., "MediaPipe: A framework for building perception pipelines," \textit{arXiv:1906.08172}, 2019.
-
-\bibitem{b17} R. E. Kalman, "A New Approach to Linear Filtering and Prediction Problems," \textit{Journal of Basic Engineering}, 1960.
-
 \bibitem{b22} S. Garfinkel and a. shelat, "Remembrance of Data Passed: A Study of Disk Sanitization Practices," \textit{IEEE Security \& Privacy}, 2003.
 
 \bibitem{b21} J. Chow et al., "Shredding Your Garbage: Reducing Data Lifetime Through Secure Deallocation," \textit{USENIX Security}, 2005.
@@ -556,8 +552,6 @@ Experimental results show that the combination of pose-based dimensional reducti
 \bibitem{b8} V. Bazarevsky et al., "Blazepose: On-device real-time body pose tracking," \textit{arXiv:2006.10204}, 2020.
 
 \bibitem{b19} J. Halderman et al., "Lest We Remember: Cold Boot Attacks on Encryption Keys," \textit{USENIX Security}, 2008.
-
-\bibitem{b13} E. Murphy-Chutorian and M. M. Trivedi, "Head Pose Estimation in Computer Vision: A Survey," \textit{IEEE TPAMI}, 2009.
 
 \bibitem{b16} V. Lepetit et al., "EPnP: An Accurate O(n) Solution to the PnP Problem," \textit{IJCV}, vol. 81, no. 2, pp. 155-166, 2009.
 
@@ -577,17 +571,13 @@ Experimental results show that the combination of pose-based dimensional reducti
 
 \bibitem{b2} M. S. Ryoo et al., "Privacy-Preserving Human Activity Recognition from Extreme Low Resolution," \textit{AAAI}, 2017.
 
-\bibitem{b24} Y. H. Chen et al., "Eyeriss: An Energy-Efficient Reconfigurable Accelerator for Deep Convolutional Neural Networks," \textit{IEEE JSSC}, 2017.
-
 \bibitem{b25} P. Voigt and A. Von dem Bussche, "The EU General Data Protection Regulation (GDPR): A Practical Guide," \textit{Springer}, 2017.
 
 \bibitem{b14} N. Ruiz et al., "Fine-Grained Head Pose Estimation Without Keypoints," \textit{Proc. IEEE CVPR}, 2018.
 
-\bibitem{b12} K. Sun et al., "Deep High-Resolution Representation Learning for Human Pose Estimation," \textit{CVPR}, 2019.
-
 \bibitem{b23} X. Wang et al., "Convergence of Edge Computing and Deep Learning: A Comprehensive Survey," \textit{IEEE Comm. Surveys \& Tutorials}, 2020.
 
-\bibitem{b3} D. Padillo, "Privacy-Preserving Selective Video Surveillance," \textit{IEEE Access}, vol. 8, pp. 15432-15445, 2020.
+\bibitem{b3} A. H. Fitwi and Y. Chen, ``Privacy-Preserving Selective Video Surveillance,'' in \textit{Proc. 29th International Conference on Computer Communications and Networks (ICCCN)}, 2020, pp. 1--9.
 
 \bibitem{b6} Z. Cao et al., "OpenPose: Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields," \textit{IEEE TPAMI}, vol. 43, no. 1, pp. 172-186, 2021.
 

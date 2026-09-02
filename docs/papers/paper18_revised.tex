@@ -81,7 +81,7 @@ Runtime Privacy Verification, Crash-Oriented Enforcement, Temporal-Bound Supervi
 \section{Introduction}
 
 \subsection{Why Architectural Claims Require Runtime Verification}
-The dominant thesis of this paper is that \textbf{architectural privacy claims require empirical runtime enforcement validation}. The gap between policy and enforcement is the gap between design intent and observable behavior. Architectural privacy guarantees can easily fail operationally. Crash conditions frequently bypass intended invariants, and memory-management behavior under stress often diverges from theoretical design. Formal design principles alone do not guarantee enforcement; runtime failure semantics materially affect privacy. Therefore, empirical validation is required for deployment credibility. 
+The dominant thesis of this paper is that \textbf{architectural privacy claims require empirical runtime enforcement validation}. The gap between policy and enforcement is the gap between design intent and observable behavior. Architectural privacy guarantees can easily fail operationally. Crash conditions frequently bypass intended invariants, and memory-management behavior under stress often diverges from theoretical design. Differential privacy foundations \cite{b9} provide a complementary theoretical approach to privacy guarantees, but empirical validation remains necessary. Formal design principles alone do not guarantee enforcement; runtime failure semantics materially affect privacy. Therefore, empirical validation is required for deployment credibility. 
 
 \subsection{Scope and Authority}
 This subsystem validates runtime privacy enforcement, verifies fail-closed operational behavior, tests crash resilience, evaluates TTL enforcement correctness, and empirically confirms runtime invariant preservation. Within the ScholarMaster architecture, this subsystem performs runtime enforcement validation only. It does not define formal threat models or TCB assumptions (Paper 19), derive spatiotemporal logic theorems (Paper 21), define federated optimization (Paper 14), or synthesize deployment architecture (Paper 20). 
@@ -270,7 +270,7 @@ Enforcement: Type system prevents raw data types from appearing in post-boundary
 Enforcement: TTL enforcement loop (10ms interval) + independent watchdog (100ms interval). Dual enforcement provides defense in depth.
 
 \subsection{Proof Sketch for P18-INV-02 (TTL Safety)}
-We verify P18-INV-02 using Hoare Logic triples \cite{b19}. Let $S$ be the state of a raw buffer.
+We verify P18-INV-02 using Hoare Logic triples \cite{b19}. Foundational work in formal verification \cite{b15} and model checking \cite{b14} provides theoretical grounding for this approach. Let $S$ be the state of a raw buffer.
 \begin{equation}
 \{ \text{Alloc}(b) \land t = T_0 \} \quad P \quad \{ \text{Zero}(b) \land t < T_0 + \Delta \}
 \end{equation}
@@ -311,8 +311,6 @@ Enforcement: Zeroization before deallocation with verification. Failure to verif
 % 5. FAILURE INJECTION AND TEST HARNESS
 % ==========================================
 \section{Failure Injection and Test Harness}
-
-
 
 \subsection{Fault Injection Methodology}
 We employ systematic fault injection to verify invariant preservation under failure. All fault-injection scripts and invariant checkers are available in the ScholarMasterEngine repository under /tests/runtime\_enforcement/. The test harness:
@@ -556,7 +554,7 @@ The empirical verification of runtime privacy enforcement contains several metho
 The companion conceptual doctrine of architectural irreversibility establishes privacy-by-architecture as a foundational systems principle. This paper \textbf{validates}, but does not extend, those claims. We provide runtime evidence that the architecture behaves as specified, strictly isolating empirical verification from theoretical design. 
 
 \subsection{Related Work}
-Fault injection testing has a long history in systems research \cite{b1, b2}. Watchdog-based enforcement is standard in safety-critical systems \cite{b3}. Memory zeroization techniques derive from secure deletion literature \cite{b4}. Fail-closed semantics are established in safety-critical computing \cite{b5}. Our contribution is applying these techniques specifically to verify privacy-by-architecture claims in edge AI systems.
+Fault injection testing has a long history in systems research \cite{b1, b2}. Runtime verification approaches \cite{b16} further validate execution behaviors. Watchdog-based enforcement is standard in safety-critical systems \cite{b3}. Memory zeroization techniques derive from secure deletion literature \cite{b4}. Fail-closed semantics are established in safety-critical computing \cite{b5}. Our contribution is applying these techniques specifically to verify privacy-by-architecture claims in edge AI systems.
 
 \subsection{Hardware Enclaves vs. Software Enforcement}
 We rely on software enforcement rather than hardware enclaves. Architectural justification is detailed in Paper 17. This paper evaluates runtime correctness only.
@@ -606,19 +604,9 @@ This runtime-verification study demonstrates that architectural privacy claims c
 
 \bibitem{b14} E. M. Clarke, O. Grumberg, and D. A. Peled, \textit{Model Checking}. MIT Press, 1999.
 
-\bibitem{b22} J. Rushby, ``Partitioning in avionics architectures: Requirements, mechanisms, and assurance,'' \textit{NASA Contractor Report}, 1999.
-
 \bibitem{b16} M. Leucker and C. Schallhart, ``A brief account of runtime verification,'' \textit{Journal of Logic and Algebraic Programming}, vol. 78, no. 5, pp. 293--303, 2009.
 
 % New References
-
-\bibitem{b6} A. Cavoukian, ``Privacy by design: The 7 foundational principles,'' Information and Privacy Commissioner of Ontario, 2009.
-
-% Edge AI
-
-\bibitem{b8} L. Szekeres et al., ``SoK: Eternal war in memory,'' \textit{IEEE S\&P}, 2013.
-
-% Differential Privacy (Referenced in Context)
 
 \bibitem{b21} A. S. Tanenbaum and H. Bos, \textit{Modern Operating Systems}, 4th ed. Pearson, 2014.
 
@@ -628,15 +616,6 @@ This runtime-verification study demonstrates that architectural privacy claims c
 
 \bibitem{b18} R. Natella et al., ``Assessing dependability with software fault injection: A survey,'' \textit{ACM Computing Surveys}, vol. 48, no. 3, pp. 1--27, 2016.
 
-\bibitem{b20} V. Costan and S. Devadas, ``Intel SGX Explained,'' \textit{IACR Cryptology ePrint Archive}, 2016.
-
-\bibitem{b7} Y. Mao et al., ``A survey on mobile edge computing,'' \textit{IEEE Communications Surveys \& Tutorials}, vol. 19, no. 4, pp. 2322--2358, 2017.
-
-% Memory Safety
-
-\bibitem{b10} J. Chow et al., ``Understanding data lifetime with taint analysis, in \textit{USENIX Security Symposium}, pp. 187--202, 2004.
-\bibitem{b11} S. A. Seshia et al., ``Formal specification and runtime verification for cyber-physical systems, \textit{IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, vol. 39, no. 11, pp. 3179--3192, 2020.
-\bibitem{b12} H. Kopetz, \textit{Real-Time Systems: Design Principles for Distributed Embedded Applications}. Springer, 2011.
 \end{thebibliography}
 
 \end{document}

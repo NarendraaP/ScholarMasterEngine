@@ -1,0 +1,88 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "research_method": "Web search for recent GNN-based EEG seizure detection methods (2022-2026)",
+  "status": "RESEARCH_COMPLETE — names and trends identified. NO direct experimental comparison performed. Published results on different datasets/protocols are NOT directly comparable.",
+  "candidate_methods": [
+    {
+      "name": "NeuroGNN",
+      "year": 2024,
+      "description": "Dynamic graph construction integrating spatial, temporal, semantic, and taxonomic correlations.",
+      "dataset": "CHB-MIT (24 subjects)",
+      "directly_comparable": false,
+      "reason": "Different dataset (CHB-MIT vs Nasreddine). Different patient population (pediatric vs mixed). Cannot compare metrics without running on same data."
+    },
+    {
+      "name": "Heterogeneous GNN",
+      "year": 2024,
+      "description": "Captures distinct functional roles of brain regions via heterogeneous graph types.",
+      "dataset": "CHB-MIT",
+      "directly_comparable": false,
+      "reason": "Different dataset. Reports accuracy ~98% on CHB-MIT which is not comparable to our precision/specificity on Nasreddine."
+    },
+    {
+      "name": "HP-GNN (Hybrid Physics-Informed GNN)",
+      "year": 2026,
+      "description": "Combines data-driven learning with Kuramoto oscillator dynamics for chimera state prediction.",
+      "dataset": "Various",
+      "directly_comparable": false,
+      "reason": "Different task formulation (chimera state prediction vs binary seizure detection)."
+    },
+    {
+      "name": "GCN-Transformer Hybrid",
+      "year": 2024,
+      "description": "Combines GCN for local inter-node relationships with Transformer for global feature aggregation.",
+      "dataset": "Various",
+      "directly_comparable": false,
+      "reason": "Need to verify if evaluated on same dataset."
+    },
+    {
+      "name": "Meta-GNN",
+      "year": 2024,
+      "description": "Meta-learning for rapid patient-specific adaptation with few samples.",
+      "dataset": "Various",
+      "directly_comparable": false,
+      "reason": "Different training paradigm (few-shot vs standard supervised)."
+    },
+    {
+      "name": "EEG-GCA (Graph Correlation Analysis)",
+      "year": 2025,
+      "description": "Unsupervised anomaly detection for seizures without seizure training data.",
+      "dataset": "Various",
+      "directly_comparable": false,
+      "reason": "Unsupervised paradigm vs supervised."
+    },
+    {
+      "name": "EEG-GNN (Wagh & Varatharajah, 2019)",
+      "year": 2019,
+      "description": "GNN for EEG classification with distance-based adjacency. Already cited in manuscript.",
+      "dataset": "TUH EEG Corpus",
+      "directly_comparable": false,
+      "reason": "Different dataset. Already cited but not benchmarked."
+    }
+  ],
+  "larger_datasets_for_validation": [
+    {
+      "name": "CHB-MIT Scalp EEG Database",
+      "subjects": 24,
+      "hours": "~982",
+      "population": "Pediatric",
+      "availability": "Public (PhysioNet)",
+      "feasibility": "REQUIRES_CODE_AUDIT — need to verify if Colab pipeline can process CHB-MIT format",
+      "notes": "Similar scale to Nasreddine (24 vs 22 subjects). Would demonstrate cross-dataset generalization."
+    },
+    {
+      "name": "TUH EEG Seizure Corpus (TUSZ)",
+      "subjects": "675+",
+      "hours": "~1476+",
+      "population": "Clinical, heterogeneous",
+      "availability": "Public (Temple University)",
+      "feasibility": "REQUIRES_SIGNIFICANT_EFFORT — very large, heterogeneous format, variable channels",
+      "notes": "Orders of magnitude larger. Would be strong validation but may require significant code adaptation."
+    }
+  ],
+  "recommendation": {
+    "for_SOTA_comparison": "Add a discussion table of recent methods with explicit caveat: 'Direct numerical comparison is not valid across different datasets and protocols. The following table contextualizes our approach within the recent GNN-EEG landscape.' Do NOT fabricate comparable metrics.",
+    "for_larger_datasets": "CHB-MIT is the most feasible additional dataset (similar scale, public). If code can be adapted, run experiments. If not feasible within revision timeline, strengthen limitations section with specific dataset names and commit to future work."
+  }
+}

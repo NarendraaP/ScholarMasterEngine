@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICACT 2026 Presentation - Paper 6 (NLOS Acoustic Sensing)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .slide-aspect { aspect-ratio: 16 / 9; }
+    .code-font { font-family: 'Fira Code', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 flex flex-col items-center">
+
+  <!-- Header Banner -->
+  <header class="w-full max-w-5xl mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+    <div>
+      <span class="inline-block px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30">ICACT 2026 IEEE Conference</span>
+      <h1 class="text-xl font-bold text-white mt-1">Paper 6 Presentation &amp; Q&amp;A Defense Deck</h1>
+      <p class="text-xs text-slate-400">NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Live Timer -->
+      <div class="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="timerDisplay" class="code-font text-sm font-semibold text-emerald-400">00:00</span>
+        <button id="timerToggleBtn" onclick="toggleTimer()" class="text-xs px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">Start</button>
+        <button onclick="resetTimer()" class="text-xs px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-400">↺</button>
+      </div>
+      <!-- Tab Switcher -->
+      <div class="bg-slate-900 border border-slate-800 p-1 rounded-lg flex gap-1 text-xs">
+        <button id="btnTabSlides" onclick="switchView('slides')" class="px-3 py-1 rounded-md font-medium bg-sky-600 text-white">Slides</button>
+        <button id="btnTabQA" onclick="switchView('qa')" class="px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white">Q&amp;A Prep</button>
+        <button id="btnTabScript" onclick="switchView('script')" class="px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white">Full Script</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SLIDES VIEW -->
+  <main id="viewSlides" class="w-full max-w-5xl flex flex-col items-center">
+    
+    <!-- 16:9 Presentation Stage -->
+    <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative slide-aspect flex flex-col justify-between p-6 md:p-8 select-none transition-all">
+      
+      <!-- Top Slide Header -->
+      <div class="flex justify-between items-start border-b border-slate-800/80 pb-3">
+        <div>
+          <span id="slideCategory" class="text-xs font-bold uppercase tracking-wider text-sky-400">1. Introduction and Motivation</span>
+          <h2 id="slideTitle" class="text-lg md:text-2xl font-bold text-white mt-0.5">Title Loading...</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="slideTimeBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">1 min 30 s</span>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-sky-900/60 text-sky-300 border border-sky-700/50">IEEE ICACT</span>
+        </div>
+      </div>
+
+      <!-- Slide Main Dynamic Body -->
+      <div id="slideContent" class="my-auto py-2">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Slide Footer Bar -->
+      <div class="flex justify-between items-center pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+        <div>ICACT 2026 &bull; IEEE Conference Record No. 70625 &bull; 1–2 Sept 2026 &bull; Online</div>
+        <div class="font-semibold text-slate-300">Slide <span id="currentSlideNum">1</span> of <span id="totalSlidesNum">10</span></div>
+      </div>
+    </div>
+
+    <!-- Slide Navigation & Speaker Notes Controls -->
+    <div class="w-full mt-4 flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div class="flex items-center gap-2">
+        <button onclick="prevSlide()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-medium text-sm flex items-center gap-1.5 transition">
+          &larr; Prev
+        </button>
+        <button onclick="nextSlide()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-medium text-sm flex items-center gap-1.5 transition shadow-lg shadow-sky-600/20">
+          Next &rarr;
+        </button>
+        <span class="text-xs text-slate-500 ml-2 hidden sm:inline">(Use Left/Right Arrow Keys)</span>
+      </div>
+
+      <div class="w-full md:w-auto flex items-center gap-2">
+        <button onclick="toggleNotes()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-medium text-slate-300 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+          <span id="notesToggleText">Show Speaker Notes</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Speaker Notes Box -->
+    <div id="speakerNotesBox" class="w-full mt-3 p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 text-amber-200/90 text-sm hidden">
+      <div class="flex items-center justify-between font-semibold text-amber-400 mb-1.5 text-xs uppercase tracking-wider">
+        <span>Speaker Speech Script (Read this aloud for this slide)</span>
+        <span id="scriptTimestamp">Target: 0:30 - 2:00</span>
+      </div>
+      <p id="speakerNotesText" class="leading-relaxed"></p>
+    </div>
+
+  </main>
+
+  <!-- Q&A DEFENSE PREPARATION VIEW -->
+  <section id="viewQA" class="w-full max-w-5xl hidden flex-col gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+      <h2 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30">Master Defense</span>
+        Top 5 Anticipated Conference Q&amp;A Questions (Paper 6)
+      </h2>
+      <p class="text-xs text-slate-400 mb-4">Physics-grounded, bulletproof responses ready for the 2-minute defense period.</p>
+
+      <div class="space-y-4 text-sm" id="qaListContainer">
+        <!-- QA Injected via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FULL SPEECH SCRIPT VIEW -->
+  <section id="viewScript" class="w-full max-w-5xl hidden flex-col gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+      <h2 class="text-lg font-bold text-white mb-2">Word-for-Word 10-Minute Presentation Script</h2>
+      <p class="text-xs text-slate-400 mb-4">Read along during rehearsal to master pacing and inflection.</p>
+      <div class="space-y-6 text-sm text-slate-300 leading-relaxed" id="fullScriptContainer">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const slidesData = [
+      {
+        category: "ICACT 2026 • Title Slide",
+        title: "NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT",
+        time: "0:30 (0:00 - 0:30)",
+        content: `
+          <div class="text-center py-4">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30 mb-3">Paper 6 • Acoustic Safety Subsystem</span>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-snug">NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT</h1>
+            <p class="text-sm font-semibold text-slate-300 mt-3">Polisetti Narendra ¹,*, Vijaya Raju Motru ¹, Suresh Kumar Sreedharan ¹, Praveena Mallampalli ¹, T Murali Mohan ¹, T V Satyasheela ¹</p>
+            <p class="text-xs text-slate-400 mt-1">¹ Department of Computer Science and Engineering, Swarnandhra College of Engineering & Technology (Autonomous), Narsapur, AP, India</p>
+            <div class="mt-6 flex flex-wrap justify-center gap-3 text-xs text-slate-400">
+              <span class="px-2.5 py-1 rounded bg-slate-800 border border-slate-700">Presenting Author: <strong class="text-white">Polisetti Narendra</strong> (<a href="mailto:narendresh@yahoo.com" class="text-sky-400">narendresh@yahoo.com</a>)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-800 border border-slate-700">Format: <strong class="text-white">10 Min Oral + 2 Min Q&amp;A</strong></span>
+            </div>
+          </div>
+        `,
+        script: "Good morning Session Chair, distinguished judges, and fellow researchers. I am Polisetti Narendra, presenting our research on 'NLOS Acoustic Sensing via Spectral Gating and GCC-PHAT' on behalf of my co-authors at Swarnandhra College of Engineering and Technology. Our paper addresses the fundamental challenge of spatial blindness in indoor surveillance by developing a deterministic, physics-driven acoustic sensing subsystem capable of detecting and localizing non-line-of-sight safety anomalies under reverberant corridor conditions with bounded latency and zero audio storage."
+      },
+      {
+        category: "1. Introduction and Motivation",
+        title: "The Problem: Spatial Blindness in Indoor Vision",
+        time: "1:30 (0:30 - 2:00)",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-amber-400 text-sm mb-1.5">1. Line-of-Sight (LOS) Optical Blindness</h3>
+                <p class="text-slate-300 leading-relaxed">Cameras are physically constrained by straight-line optical paths. Architectural junctions, L-shaped corridor bends, and partitions create permanent blind spots where visual sensing cannot detect emergencies in time.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-700/50 text-slate-400">
+                Acoustic wave diffraction and surface reflections naturally propagate around corners without direct visibility.
+              </div>
+            </div>
+            <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-red-400 text-sm mb-1.5">2. Deep Learning AED Latency &amp; Privacy</h3>
+                <p class="text-slate-300 leading-relaxed">Transformer-based models (AST, PANNs) require multi-second audio context buffers (&gt;1000 ms structural latency) and &gt;85M parameters, violating sub-150 ms emergency response budgets and raising severe privacy objections.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-700/50 text-slate-400">
+                Safety requires instantaneous physical detection, not semantic conversational transcription.
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 p-2.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-xs text-sky-200">
+            <strong>Central Thesis:</strong> Deterministic signal-processing pipelines reliably detect impulsive NLOS anomalies under reverberant corridor physics with bounded latency (&lt;120 ms) and zero raw audio persistence.
+          </div>
+        `,
+        script: "In indoor monitoring, cameras suffer from a hard physical constraint: optical blindness around corners and L-shaped corridor junctions. When a safety incident like a physical impact, scream, or glass break occurs behind a blind bend, optical systems register zero detection until the hazard enters the line of sight. While acoustics naturally diffract around corners, deploying deep learning audio transformers introduces a fatal flaw: multi-second context buffers introduce over 1000 milliseconds of latency, and continuous raw audio retention creates massive privacy risks. Our paper proves that a deterministic, physics-driven signal processing pipeline can detect and localize impulsive NLOS anomalies in reverberant corridors within 120 milliseconds while immediately erasing raw audio from volatile memory."
+      },
+      {
+        category: "2. Related Work and the Gap",
+        title: "Semantic Audio Models vs. Deterministic Edge Physics",
+        time: "1:00 (2:00 - 3:00)",
+        content: `
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-700 text-slate-400 bg-slate-800/50">
+                  <th class="p-2">Criterion</th>
+                  <th class="p-2 text-red-400">Deep Learning AED (AST / CNN)</th>
+                  <th class="p-2 text-amber-400">Classical TDOA / SRP-PHAT</th>
+                  <th class="p-2 text-emerald-400 font-bold">Proposed System (Ours)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td class="p-2 font-medium">Audio Buffering</td>
+                  <td class="p-2 text-slate-400">Multi-second context buffer</td>
+                  <td class="p-2 text-slate-400">Variable buffering</td>
+                  <td class="p-2 text-emerald-300 font-semibold">100 ms Circular RAM Buffer (Zero Disk)</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Inference Latency</td>
+                  <td class="p-2 text-red-400 font-semibold">High (&gt;1000 ms)</td>
+                  <td class="p-2 text-amber-400">Moderate (~250 ms)</td>
+                  <td class="p-2 text-emerald-300 font-semibold">Ultra-Low (&lt;120 ms End-to-End)</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Reverberation Handling</td>
+                  <td class="p-2 text-slate-400">Implicit statistical learning</td>
+                  <td class="p-2 text-red-400">Multipath creates false peaks</td>
+                  <td class="p-2 text-emerald-300 font-semibold">GCC-PHAT Phase Whitening in R_rev</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Memory / Compute</td>
+                  <td class="p-2 text-red-400">Heavy (&gt;200 MB, GPU/NPU)</td>
+                  <td class="p-2 text-amber-400">Grid search overload (SRP)</td>
+                  <td class="p-2 text-emerald-300 font-semibold">Lightweight (&lt;5 MB, ARM CPU &lt;15%)</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Privacy Architecture</td>
+                  <td class="p-2 text-red-400">PCM stored / Transcribed</td>
+                  <td class="p-2 text-slate-400">Unconstrained retention</td>
+                  <td class="p-2 text-emerald-300 font-semibold">Immediate Overwrite (Metadata Only)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-400 mt-2"><strong>The Research Gap:</strong> Combining two-stage physical filtering (spectral gate &delta; + autocorrelation &rho;) with GCC-PHAT in a formalized reverberant operational regime (R_rev).</p>
+        `,
+        script: "Examining existing solutions reveals a fundamental mismatch: modern deep learning audio models are built for semantic classification, not emergency reaction speed. Buffering multiple seconds of audio to classify sound categories incurs prohibitive latency and requires heavy GPU memory. On the other hand, naive amplitude triggers fail completely in corridors because benign door slams exceed thresholds, and standard cross-correlation collapses under multipath echo reflections. Our work bridges this gap by formulating a two-stage physical filtering pipeline combined with GCC-PHAT phase whitening, operating in a mathematically defined reverberant regime."
+      },
+      {
+        category: "3. Proposed Method",
+        title: "Deterministic Signal Discrimination & GCC-PHAT Pipeline",
+        time: "2:30 (3:00 - 5:30)",
+        content: `
+          <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-center font-semibold mb-2">
+              <div class="p-2 rounded bg-sky-950/60 border border-sky-700/50 text-sky-200">1. 4-Mic Array<br><span class="font-normal text-[10px]">44.1kHz, d=4.2cm</span></div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-700 text-slate-300">2. Circular RAM<br><span class="font-normal text-[10px]">T_frame = 100ms</span></div>
+              <div class="p-2 rounded bg-amber-950/60 border border-amber-700/50 text-amber-200">3. Spectral Gate<br><span class="font-normal text-[10px]">&delta; &gt; 0.40 (2-4kHz)</span></div>
+              <div class="p-2 rounded bg-amber-950/60 border border-amber-700/50 text-amber-200">4. Periodicity Test<br><span class="font-normal text-[10px]">&rho; &lt; 0.65 (Autocorr)</span></div>
+              <div class="p-2 rounded bg-emerald-950/60 border border-emerald-700/50 text-emerald-200">5. GCC-PHAT TDOA<br><span class="font-normal text-[10px]">Azimuth &theta;, Wipe PCM</span></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-[11px] text-slate-300">
+              <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800">
+                <strong class="text-sky-300">Stage 1: Logarithmic Spectral Discrimination (&delta;)</strong>
+                <p class="mt-1">&delta; = log10(E_high / E_low) where E_high is 2-4 kHz and E_low is 0-500 Hz. Impulsive safety anomalies contain strong high-frequency harmonics (&delta; &gt; 0.40, &gt;2.5&times; ratio), while structural impacts concentrate energy at low frequencies (&delta; &le; 0).</p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800">
+                <strong class="text-amber-300">Stage 2: Periodicity Rejection (&rho;)</strong>
+                <p class="mt-1">&rho; = max(R_xx[k &gt; k_min]) / R_xx[0] with k_min set to 120 Hz. Chaotic human vocal bursts decay rapidly (&rho; &lt; 0.65), whereas repetitive mechanical noise (HVAC motors, ventilation fans) exhibits periodic autocorrelation peaks and gets discarded.</p>
+              </div>
+            </div>
+          </div>
+        `,
+        script: "Here is our proposed deterministic sensing pipeline: A linear 4-microphone array sampled at 44.1 kHz feeds into a 100-millisecond circular RAM ring buffer. Our two-stage physical discriminator first evaluates the logarithmic spectral ratio delta between the 2-to-4 kHz impulse band and the 0-to-500 Hz low-frequency band. Genuine impulsive anomalies produce strong high-frequency energy exceeding a delta of 0.40, instantly discarding benign low-frequency thuds. Passing frames are then subjected to autocorrelation periodicity testing: repeating mechanical waveforms like HVAC fans exhibit strong cyclic peaks above rho 0.65 and are pruned. For verified chaotic anomalies, GCC-PHAT applies phase whitening to cross-power spectral density, stripping out reverberant magnitude dominance to calculate the precise arrival angle theta. The moment this 3-tuple metadata is emitted, the raw PCM buffer is completely overwritten in volatile RAM."
+      },
+      {
+        category: "4. Experimental Setup",
+        title: "Corridor Testbed and Multipath Operating Regime (R_rev)",
+        time: "1:00 (5:30 - 6:30)",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-sky-400 text-sm mb-1.5">Physical Corridor Testbed</h3>
+              <ul class="space-y-1.5 text-slate-300">
+                <li>&bull; <strong>Corridor Geometry:</strong> 2.4m width &times; 3.0m height &times; 30m length with L-shaped blind intersection.</li>
+                <li>&bull; <strong>Acoustic Characterization:</strong> RT60 &approx; 1.2 s, Critical Distance D_c &approx; 2.1 m.</li>
+                <li>&bull; <strong>Operational Regime (R_rev):</strong> Safety envelope S_env = 15m &gt;&gt; D_c, deliberately testing where multipath echoes dominate over direct path sound.</li>
+                <li>&bull; <strong>Array Spacing:</strong> d = 4.2 cm, placing spatial aliasing frequency f_alias &approx; 4083 Hz safely above our 4 kHz target band.</li>
+              </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-emerald-400 text-sm mb-1.5">Hybrid Evaluation Corpus (~1000 Events)</h3>
+              <ul class="space-y-1.5 text-slate-300">
+                <li>&bull; <strong>Impulsive Screams:</strong> 500 FSD50K events convolved with measured corridor RIR.</li>
+                <li>&bull; <strong>Glass Breakage:</strong> 200 MIVIA events convolved with corridor RIR.</li>
+                <li>&bull; <strong>Door Slams:</strong> 150 synthesized mechanical impacts.</li>
+                <li>&bull; <strong>Ambient Baseline:</strong> 12 hours physical HVAC + 4 hours campus footsteps.</li>
+                <li>&bull; <strong>Hardware Platform:</strong> Quad-core ARM Cortex-A72 (1.5 GHz).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-3 p-2 rounded-xl bg-slate-900 border border-slate-800 text-center text-xs font-semibold text-slate-300">
+            Latency Budget: T_frame (100ms) + T_proc (18ms) = <span class="text-emerald-400 font-bold">&lt; 120 ms Total Latency</span> (CPU Utilization &lt; 15%)
+          </div>
+        `,
+        script: "We evaluated our system in a physical academic corridor measuring 30 meters in length with an L-shaped intersection. Impulse response profiling revealed a reverberation time of 1.2 seconds and a critical distance of just 2.1 meters. Because our safety envelope is 15 meters, the system operates entirely in the reverberant field regime R_rev, where multipath reflections dominate. We constructed a comprehensive hybrid corpus of approximately 1000 events by convolving anechoic scream and glass-break datasets from FSD50K and MIVIA with measured corridor room impulse responses, combined with 16 hours of real ambient campus audio. On a commodity quad-core ARM Cortex-A72, the entire pipeline executes in under 120 milliseconds with less than 15% CPU load."
+      },
+      {
+        category: "5. Results and Empirical Findings",
+        title: "NLOS Safety Envelope & Ablation Filtering Performance",
+        time: "2:30 (6:30 - 9:00)",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-sky-400 text-xs mb-1">1. NLOS Safety Envelope Detection</h3>
+              <table class="w-full text-left border-collapse text-[11px]">
+                <tr class="border-b border-slate-700 text-slate-400">
+                  <th class="p-1">Distance</th><th class="p-1">Visual Camera</th><th class="p-1 text-emerald-400 font-bold">Proposed Acoustic</th>
+                </tr>
+                <tr class="border-b border-slate-800">
+                  <td class="p-1">5m &amp; 15m (S_env)</td><td class="p-1 text-red-400">0.0% (Occluded)</td><td class="p-1 text-emerald-300 font-bold">100.0% (n=20)</td>
+                </tr>
+                <tr class="border-b border-slate-800">
+                  <td class="p-1">25 Meters</td><td class="p-1 text-red-400">0.0% (Occluded)</td><td class="p-1 text-slate-300">89.0% (n=20)</td>
+                </tr>
+                <tr>
+                  <td class="p-1">35 Meters</td><td class="p-1 text-red-400">0.0% (Occluded)</td><td class="p-1 text-slate-300">57.0% (n=20)</td>
+                </tr>
+              </table>
+              <p class="text-[10px] text-slate-400 mt-1.5">Maintains 100% detection within the 15m safety envelope where cameras are 100% blind.</p>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-amber-400 text-xs mb-1">2. Filtering Heuristic Ablation</h3>
+              <table class="w-full text-left border-collapse text-[11px]">
+                <tr class="border-b border-slate-700 text-slate-400">
+                  <th class="p-1">Pipeline Stage</th><th class="p-1">Recall</th><th class="p-1 text-red-400">False Pos. Rate</th>
+                </tr>
+                <tr class="border-b border-slate-800">
+                  <td class="p-1">SPL Trigger Only</td><td class="p-1">99.5%</td><td class="p-1 text-red-400 font-bold">42.6% (Unusable)</td>
+                </tr>
+                <tr class="border-b border-slate-800">
+                  <td class="p-1">+ Spectral Gate (&delta;)</td><td class="p-1">96.0%</td><td class="p-1 text-amber-300">8.2%</td>
+                </tr>
+                <tr>
+                  <td class="p-1 font-semibold text-emerald-300">+ Periodic Rejection (&rho;)</td><td class="p-1 font-semibold text-emerald-300">94.5%</td><td class="p-1 text-emerald-300 font-bold">1.8% (24&times; drop!)</td>
+                </tr>
+              </table>
+              <p class="text-[10px] text-slate-400 mt-1.5">Combining both stages collapses false alarms from 42.6% to 1.8%.</p>
+            </div>
+          </div>
+          <div class="mt-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 flex justify-between items-center">
+            <span><strong>Ambient SNR Robustness:</strong> Under 60dB traffic noise floor: <span class="text-sky-300 font-semibold">98.2% Precision, 94.5% Recall, 96.3% F1</span></span>
+            <span class="text-[10px] text-slate-400">Azimuth Accuracy: &plusmn;4.2&deg; (Free corridor) / &plusmn;8&deg; (Metallic)</span>
+          </div>
+        `,
+        script: "Our empirical results prove the power of physics-driven sensing: First, in our safety envelope test across visually occluded corners, optical cameras registered zero detection at all ranges, while our acoustic subsystem achieved perfect 100% detection at both 5 and 15 meters, decaying gracefully to 89% at 25 meters. Second, our ablation study validates why simple volume triggers fail: an SPL-only trigger produces an unusable 42.6% false positive rate from everyday door slams. Adding our logarithmic spectral gate delta drops false alarms to 8.2%, and adding autocorrelation periodicity rejection rho crushes false alarms down to just 1.8%—a 24-fold reduction—while preserving 94.5% recall. Even under 60 dB ambient traffic noise, our system delivers 96.3% F1 score."
+      },
+      {
+        category: "Discussion and Limitations",
+        title: "Architectural Trade-offs and Operational Boundary",
+        time: "Optional / Included in Results",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-emerald-400 text-sm mb-1.5">Why Deterministic Edge Sensing Wins</h3>
+              <ul class="space-y-1.5 text-slate-300">
+                <li>&bull; <strong>Strict Latency Boundedness:</strong> O(N log N) FFT complexity guarantees &lt;120 ms reaction time without GPU accelerators.</li>
+                <li>&bull; <strong>Privacy by Architectural Constraint:</strong> Raw audio is physically erased from volatile RAM upon feature extraction; no speech-to-text conversion or persistent recording is possible.</li>
+                <li>&bull; <strong>Minimal Bandwidth Telemetry:</strong> Emits only lightweight 3-tuple vectors [Timestamp, Confidence, &theta;].</li>
+              </ul>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-amber-400 text-sm mb-1.5">Physical Limitations (Honest Reading)</h3>
+              <ul class="space-y-1.5 text-slate-300">
+                <li>&bull; <strong>Azimuth-Only Localization:</strong> 1D linear array resolves horizontal angle &theta; only; multi-floor stairwells require volumetric arrays.</li>
+                <li>&bull; <strong>Multipath Jitter in Metallic Corridors:</strong> Highly reflective metal surfaces induce &plusmn;8&deg; angular drift.</li>
+                <li>&bull; <strong>Crowd Noise Masking:</strong> Heavy chatter at 70 dB masks the 2-4 kHz band, reducing recall to 78.0%.</li>
+                <li>&bull; <strong>Corridor Specificity:</strong> Thresholds assume hard indoor reflective surfaces (&alpha; &approx; 0.05-0.1).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-3 p-2 rounded-xl bg-slate-900 border border-slate-800 text-center text-xs text-slate-300">
+            <strong>System Role:</strong> A lightweight, privacy-preserving <em>first-responder physical trigger</em> that alerts human operators and cues PTZ cameras to occluded hotspots in real time.
+          </div>
+        `,
+        script: "From an architectural perspective, our system achieves privacy by design: because raw audio is processed exclusively in volatile RAM and immediately overwritten, it physically cannot record private conversations or leak raw sensor streams. However, we also acknowledge our physical limitations: our linear 4-microphone array provides 1D azimuth angles, so multi-story elevation tracking requires volumetric arrays; highly metallic corridors introduce up to plus or minus 8 degrees of angular jitter; and dense 70 dB crowd chatter causes acoustic masking that lowers recall to 78%."
+      },
+      {
+        category: "6. Conclusion and Future Work",
+        title: "Takeaway & Future Research Roadmap",
+        time: "1:00 (9:00 - 10:00)",
+        content: `
+          <div class="space-y-3 text-xs">
+            <div class="p-3 rounded-xl bg-sky-950/40 border border-sky-500/30">
+              <h3 class="font-bold text-sky-300 text-sm mb-1">What We Set Out to Do</h3>
+              <p class="text-slate-300 leading-relaxed">Eliminate blind spots in indoor corridor safety monitoring where line-of-sight cameras fail, without incurring the multi-second latency, heavy compute, and privacy risks of deep learning audio transformers.</p>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
+              <h3 class="font-bold text-emerald-300 text-sm mb-1">The One Sentence to Remember</h3>
+              <p class="text-emerald-100 font-semibold leading-relaxed">Deterministic, physics-driven acoustic signal processing extends spatial awareness into visually occluded corridors, achieving &gt;95% detection within a 15m envelope, &lt;120 ms latency, 1.8% false alarms, and zero audio storage.</p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+              <h3 class="font-bold text-amber-300 text-sm mb-1">Future Research Roadmap</h3>
+              <ul class="space-y-1 text-slate-300">
+                <li>&bull; <strong>3D Volumetric Arrays:</strong> Tetrahedral microphone geometries for simultaneous 3D azimuth and elevation tracking in stairwells.</li>
+                <li>&bull; <strong>Dynamic Noise Floor Tracking:</strong> Adaptive thresholding to maintain high recall across variable building occupancy.</li>
+                <li>&bull; <strong>ScholarMaster PTZ Cueing:</strong> Cross-modal triggering to steer automated cameras to acoustic incident vectors.</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        script: "To conclude, our paper proves that deterministic, physics-based acoustic signal processing can conquer spatial blindness in indoor security. By combining spectral gating, autocorrelation periodicity filtering, and GCC-PHAT phase normalization, we achieve over 95% detection in visually occluded corridor blind spots with sub-120 millisecond latency and zero audio storage. In our future work, we are developing 3D volumetric arrays for multi-floor localization and integrating these acoustic directional triggers into the broader ScholarMaster automated camera cueing pipeline. Thank you very much for your attention, and I welcome any questions."
+      },
+      {
+        category: "References and Declarations",
+        title: "References & Compliance Declarations",
+        time: "Shown Only",
+        content: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-slate-300 text-sm mb-1.5">Key Scientific References</h3>
+              <ol class="space-y-1 text-[11px] text-slate-400 list-decimal list-inside">
+                <li><strong class="text-slate-300">C. Knapp &amp; G. Carter</strong>, "The generalized correlation method for estimation of time delay," <em>IEEE Trans. ASSP</em>, 1976.</li>
+                <li><strong class="text-slate-300">J. B. Allen &amp; D. A. Berkley</strong>, "Image method for simulating small-room acoustics," <em>J. Acoust. Soc. Am.</em>, 1979.</li>
+                <li><strong class="text-slate-300">G. Valenzise et al.</strong>, "Scream and gunshot detection for audio-surveillance," <em>IEEE AVSS</em>, 2007.</li>
+                <li><strong class="text-slate-300">J. H. DiBiase</strong>, "Closed-form approximation to SRP-PHAT and TDOA," <em>IEEE ICASSP</em>, 2000.</li>
+                <li><strong class="text-slate-300">P. Narendra et al.</strong>, "Memory-Bound Edge Efficiency Envelope (MBEEE): A Hardware-Level Analytical Model," <em>Journal for Basic Sciences</em>, vol. 26, no. 5, pp. 31–37, 2026.</li>
+              </ol>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <h3 class="font-bold text-slate-300 text-sm mb-1.5">Conference Declarations</h3>
+              <ul class="space-y-1.5 text-[11px] text-slate-300">
+                <li>&bull; <strong>Data &amp; Ethics:</strong> Evaluated on open academic benchmarks (FSD50K, MIVIA) with room impulse response (RIR) spatial convolutions.</li>
+                <li>&bull; <strong>Reproducibility:</strong> Complete deterministic mathematical equations, filter thresholds (&delta;=0.4, &rho;=0.65), and sensor array specs fully documented.</li>
+                <li>&bull; <strong>Funding:</strong> None received (conducted solely and independently by the authors without external funding).</li>
+                <li>&bull; <strong>Conflicts of Interest:</strong> None declared.</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        script: "Here are our key scientific references and compliance declarations. The study was conducted independently without external funding, utilizing open datasets and established acoustic propagation standards."
+      },
+      {
+        category: "ICACT 2026 • Thank You Slide",
+        title: "Thank You & Q&A Session",
+        time: "2:00 (10:00 - 12:00 Q&A)",
+        content: `
+          <div class="text-center py-6">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-2">Thank you!</h1>
+            <p class="text-lg text-sky-400 font-semibold mb-4">Questions &amp; Discussion</p>
+            <div class="inline-block p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 space-y-1">
+              <p><strong class="text-white">Presenting Author:</strong> Polisetti Narendra</p>
+              <p><strong class="text-white">Email:</strong> <a href="mailto:narendresh@yahoo.com" class="text-sky-400">narendresh@yahoo.com</a></p>
+              <p><strong class="text-white">Affiliation:</strong> Department of Computer Science and Engineering</p>
+              <p>Swarnandhra College of Engineering &amp; Technology (Autonomous), Narsapur, AP, India</p>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-4">ICACT 2026 &bull; IEEE Conference Record No. 70625 &bull; Technically Co-Sponsored by IEEE Nepal Section</p>
+          </div>
+        `,
+        script: "Thank you Session Chair and members of the audience. I am now open to take your questions."
+      }
+    ];
+
+    const qaData = [
+      {
+        q: "Why use deterministic signal processing instead of modern deep learning models like Audio Spectrogram Transformers (AST)?",
+        a: "Deep learning models like AST or PANNs achieve high semantic categorization but require multi-second context buffers (>1000 ms structural latency) and massive memory (>200 MB), which violates our sub-150 ms emergency response budget on edge devices. Furthermore, continuous raw audio buffering raises severe privacy objections. In safety applications, identifying the semantic label is secondary to detecting high-energy chaotic impulses and estimating their direction with sub-120 ms determinism and zero raw audio persistence."
+      },
+      {
+        q: "What is the 'Reverberant Operating Regime' (R_rev), and why is critical distance (D_c) significant in corridor monitoring?",
+        a: "Critical distance (D_c) is the point where direct sound energy equals reverberant multipath energy. In hard concrete/tile corridors, RT60 exceeds 1.2 seconds, making D_c approximately 2.1 meters. Because our safety envelope is 15 meters, the system operates entirely beyond critical distance in the reverberant regime (R_rev). Under these conditions, standard inverse-square law and basic cross-correlation fail due to delayed echo peaks. We designed our pipeline specifically to handle multipath dominance using GCC-PHAT magnitude whitening and spatial aliasing bounds."
+      },
+      {
+        q: "How does the two-stage filter distinguish an emergency scream or glass break from a loud door slam or mechanical HVAC noise?",
+        a: "We exploit physical frequency and temporal decay properties. First, the logarithmic spectral gate (delta) compares energy between the 2-4 kHz impulse band and the 0-500 Hz low-frequency band: screams and glass breaks emit strong high frequencies (delta > 0.40), whereas heavy door slams concentrate energy at low rumble frequencies (delta <= 0). Second, autocorrelation periodicity testing (rho) measures waveform repetition: chaotic human screams decay immediately without repeating (rho < 0.65), while HVAC fans, motors, and compressor cycles produce strong periodic autocorrelation peaks and are filtered out."
+      },
+      {
+        q: "What are the physical limitations of using a 1D linear 4-microphone array in a corridor?",
+        a: "A 1D linear array provides horizontal azimuth localization along the corridor axis, which is sufficient for linear hallway geometries. However, it cannot resolve elevation angles in vertical stairwells or open atriums. Additionally, in metal-lined corridors with extreme specular reflections, GCC-PHAT can experience angular drift of up to +/- 8 degrees. For multi-story buildings, we are exploring 3D tetrahedral volumetric arrays."
+      },
+      {
+        q: "How does the system ensure privacy compliance in public and institutional spaces?",
+        a: "Privacy is enforced by architectural constraint, not just policy. Audio is captured exclusively into a 100 ms volatile RAM circular buffer and is immediately overwritten once spectral and correlation features are extracted. The node contains no persistent storage, runs no speech-to-text transcription, and emits only a lightweight 3-tuple telemetry packet: [Timestamp, Confidence, Azimuth Angle]. The system physically cannot reconstruct conversations."
+      }
+    ];
+
+    let currentSlide = 0;
+    let timerSeconds = 0;
+    let timerInterval = null;
+    let isTimerRunning = false;
+    let showNotes = false;
+
+    function renderSlide(index) {
+      const data = slidesData[index];
+      document.getElementById('slideCategory').textContent = data.category;
+      document.getElementById('slideTitle').textContent = data.title;
+      document.getElementById('slideTimeBadge').textContent = data.time;
+      document.getElementById('slideContent').innerHTML = data.content;
+      document.getElementById('currentSlideNum').textContent = index + 1;
+      document.getElementById('totalSlidesNum').textContent = slidesData.length;
+      document.getElementById('speakerNotesText').textContent = data.script;
+      document.getElementById('scriptTimestamp').textContent = "Target: " + data.time;
+    }
+
+    function nextSlide() {
+      if (currentSlide < slidesData.length - 1) {
+        currentSlide++;
+        renderSlide(currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide(currentSlide);
+      }
+    }
+
+    function toggleNotes() {
+      showNotes = !showNotes;
+      const box = document.getElementById('speakerNotesBox');
+      const text = document.getElementById('notesToggleText');
+      if (showNotes) {
+        box.classList.remove('hidden');
+        text.textContent = 'Hide Speaker Notes';
+      } else {
+        box.classList.add('hidden');
+        text.textContent = 'Show Speaker Notes';
+      }
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timerToggleBtn');
+      if (!isTimerRunning) {
+        isTimerRunning = true;
+        btn.textContent = 'Pause';
+        btn.classList.replace('bg-slate-800', 'bg-amber-600');
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const secs = String(timerSeconds % 60).padStart(2, '0');
+          const display = document.getElementById('timerDisplay');
+          display.textContent = `${mins}:${secs}`;
+          if (timerSeconds >= 600) {
+            display.classList.replace('text-emerald-400', 'text-red-400');
+          } else if (timerSeconds >= 540) {
+            display.classList.replace('text-emerald-400', 'text-amber-400');
+          }
+        }, 1000);
+      } else {
+        isTimerRunning = false;
+        btn.textContent = 'Resume';
+        btn.classList.replace('bg-amber-600', 'bg-slate-800');
+        clearInterval(timerInterval);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerSeconds = 0;
+      const display = document.getElementById('timerDisplay');
+      display.textContent = '00:00';
+      display.className = 'code-font text-sm font-semibold text-emerald-400';
+      const btn = document.getElementById('timerToggleBtn');
+      btn.textContent = 'Start';
+      btn.className = 'text-xs px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300';
+    }
+
+    function switchView(view) {
+      document.getElementById('viewSlides').classList.add('hidden');
+      document.getElementById('viewQA').classList.add('hidden');
+      document.getElementById('viewScript').classList.add('hidden');
+      
+      document.getElementById('btnTabSlides').className = 'px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white';
+      document.getElementById('btnTabQA').className = 'px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white';
+      document.getElementById('btnTabScript').className = 'px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white';
+
+      if (view === 'slides') {
+        document.getElementById('viewSlides').classList.remove('hidden');
+        document.getElementById('btnTabSlides').className = 'px-3 py-1 rounded-md font-medium bg-sky-600 text-white';
+      } else if (view === 'qa') {
+        document.getElementById('viewQA').classList.remove('hidden');
+        document.getElementById('btnTabQA').className = 'px-3 py-1 rounded-md font-medium bg-sky-600 text-white';
+      } else if (view === 'script') {
+        document.getElementById('viewScript').classList.remove('hidden');
+        document.getElementById('btnTabScript').className = 'px-3 py-1 rounded-md font-medium bg-sky-600 text-white';
+      }
+    }
+
+    function initQA() {
+      const container = document.getElementById('qaListContainer');
+      container.innerHTML = qaData.map((item, idx) => `
+        <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+          <div class="font-bold text-sky-300 text-sm mb-1.5 flex items-start gap-2">
+            <span class="px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-700/50 text-xs">Q${idx + 1}</span>
+            <span>${item.q}</span>
+          </div>
+          <div class="pl-8 text-slate-300 text-xs leading-relaxed">
+            <strong class="text-emerald-400">Authoritative Defense:</strong> ${item.a}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function initScript() {
+      const container = document.getElementById('fullScriptContainer');
+      container.innerHTML = slidesData.map((item, idx) => `
+        <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800">
+          <div class="flex items-center justify-between font-bold text-sky-400 text-xs mb-2">
+            <span>Slide ${idx + 1}: ${item.title}</span>
+            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">${item.time}</span>
+          </div>
+          <p class="italic text-slate-200">${item.script}</p>
+        </div>
+      `).join('');
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // Initialize
+    renderSlide(0);
+    initQA();
+    initScript();
+  </script>
+</body>
+</html>

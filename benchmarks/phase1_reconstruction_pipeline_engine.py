@@ -717,7 +717,7 @@ We have established the theoretical bounds and empirical mechanics of Generalize
 \bibitem{hendrycks2019benchmarking} D.~Hendrycks and T.~Dietterich, ``Benchmarking neural network robustness to common corruptions and perturbations,'' in \emph{Proc. ICLR}, 2019.
 \bibitem{tsai2019multimodal} Y.~H.~H.~Tsai et al., ``Multimodal transformer for unaligned multimodal language sequences,'' in \emph{Proc. ACL}, 2019, pp. 6558--6569.
 \bibitem{ma2021smil} M.~Ma, J.~Ren, L.~Zhao, D.~Testuggine, and X.~Peng, ``SMIL: Multimodal learning with severely missing modality,'' in \emph{Proc. AAAI}, 2021, pp. 2302--2310.
-\bibitem{lee2020private} N.~Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in \emph{Proc. NeurIPS}, 2020.
+\bibitem{lee2020private} M.~Lee et al., ``Private-shared disentangled multimodal vae for learning common and specific features,'' in \emph{Proc. NeurIPS}, 2020.
 \bibitem{khaleghi2013multisensor} B.~Khaleghi, A.~Khamis, F.~O.~Karray, and S.~N.~Razavi, ``Multisensor data fusion: A review of the state-of-the-art,'' \emph{Information Fusion}, vol. 14, no. 1, pp. 28--44, 2013.
 \bibitem{lin1991divergence} J.~Lin, ``Divergence measures based on the Shannon entropy,'' \emph{IEEE Trans. Inf. Theory}, vol. 37, no. 1, pp. 145--151, 1991.
 \bibitem{endres2003new} D.~M.~Endres and J.~E.~Schindelin, ``A new metric for probability distributions,'' \emph{IEEE Trans. Inf. Theory}, vol. 49, no. 7, pp. 1858--1860, 2003.

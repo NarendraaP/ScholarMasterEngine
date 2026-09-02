@@ -1,0 +1,78 @@
+{
+  "paper_id": "SPATIAL_GCN",
+  "audit_date": "2026-08-29",
+  "checklist": [
+    {
+      "item": "Source code availability",
+      "status": "DOCUMENTED",
+      "evidence": "Two Google Colab links: colab1 (CNN baseline), colab2 (Spatial-GCN)",
+      "urls": [
+        "https://colab.research.google.com/drive/18kuxxcqjJYh2-f7ZUGELKOZv1Vc4LIUG",
+        "https://colab.research.google.com/drive/1Bb5Ijcw3IWWXjKMIsj9IN5P77XvHas4P"
+      ],
+      "verified_accessible": "UNKNOWN — NOT CHECKED"
+    },
+    {
+      "item": "Dataset availability",
+      "status": "PARTIALLY_DOCUMENTED",
+      "evidence": "Nasreddine dataset cited but no download URL or access procedure provided."
+    },
+    {
+      "item": "Hardware platform",
+      "status": "DOCUMENTED",
+      "evidence": "NVIDIA Tesla T4 (Google Colab). Section III.I: 'All experiments have been performed in the same platform (NVIDIA Tesla T4)'."
+    },
+    {
+      "item": "Software framework",
+      "status": "NOT_DOCUMENTED",
+      "evidence": "Framework (PyTorch/TensorFlow/JAX) not stated in manuscript."
+    },
+    {
+      "item": "Python version",
+      "status": "NOT_DOCUMENTED",
+      "evidence": null
+    },
+    {
+      "item": "Deep learning framework version",
+      "status": "NOT_DOCUMENTED",
+      "evidence": null
+    },
+    {
+      "item": "GNN library version",
+      "status": "NOT_DOCUMENTED",
+      "evidence": "Unknown whether PyG, DGL, Spektral, or custom implementation is used."
+    },
+    {
+      "item": "Random seeds",
+      "status": "NOT_DOCUMENTED",
+      "evidence": null
+    },
+    {
+      "item": "Dependency list / requirements.txt",
+      "status": "NOT_DOCUMENTED",
+      "evidence": null
+    },
+    {
+      "item": "Training time",
+      "status": "NOT_DOCUMENTED",
+      "evidence": null
+    },
+    {
+      "item": "Inference time",
+      "status": "NOT_DOCUMENTED",
+      "evidence": "Computational complexity analysis given (Section III.J) but no actual timing measurements."
+    },
+    {
+      "item": "Reproducibility verification",
+      "status": "NOT_VERIFIED",
+      "evidence": "Colab notebooks not executed to confirm they reproduce reported results."
+    }
+  ],
+  "summary": {
+    "documented_items": 3,
+    "partially_documented_items": 1,
+    "undocumented_items": 8,
+    "completeness": "25%",
+    "critical_missing": ["software_framework", "random_seeds", "dependency_list", "framework_version"]
+  }
+}
