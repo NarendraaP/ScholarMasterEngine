@@ -115,7 +115,7 @@ To analyze deployment reliability systematically, we categorize the primary fail
 \end{itemize}
 
 \subsection{Embedded OTA Frameworks and Lifecycle Hardening}
-Industrial IoT systems have explored dual-partition (A/B) rootfs switching and OTA firmware update frameworks \cite{b25, b26}, alongside survivable software update protocols like The Update Framework (TUF) \cite{b20} and community delegation protections \cite{b18}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Lightweight container virtualization architectures \cite{b27} and minimal distributions such as Flatcar Container Linux \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
+Industrial IoT systems have explored dual-partition (A/B) rootfs switching and OTA firmware update frameworks \cite{b25, b26}, alongside survivable software update protocols like The Update Framework (TUF) \cite{b20} and community delegation protections \cite{b18}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Lightweight container virtualization architectures \cite{b27} and minimal containerized host environments \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
 
 \subsection{Embedded Reliability and Filesystems}
 Flash-based storage systems pose severe reliability challenges under power instability \cite{b12}. Journaling filesystems (e.g., Ext4) protect against metadata corruption, but cannot prevent underlying flash translation layer (FTL) corruption during interrupted block erasures \cite{b14}, contrasting with atomic transaction paradigms like ARIES \cite{b21}. F2FS \cite{b13} optimizes flash writes but remains vulnerable to power-cut corruption when root mounts remain writable. By contrast, structural immutability enforces zero host writes to flash during routine operation, mathematically eliminating FTL corruption during sudden power drops while respecting hardware-level memory and transfer efficiency bounds \cite{b24}.
@@ -430,7 +430,7 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b5} D. Sculley et al., ``Hidden Technical Debt in Machine Learning Systems,'' in \textit{NeurIPS}, pp. 2503--2511, 2015.
 
-\bibitem{b25} E. J\"{o}rns, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' in \textit{Embedded Linux Conference Europe}, 2020.
+\bibitem{b25} T. Zandberg, K. Schleiser, F. Acosta, H. Tschofenig, and E. Baccelli, ``Secure firmware updates for constrained IoT devices using open standards: A reality check,'' \textit{IEEE Access}, vol. 7, pp. 71907--71920, 2019.
 
 \bibitem{b26} S. El Jaouhari and E. Bouvet, ``Secure firmware Over-The-Air updates for IoT: Survey, challenges, and discussions,'' \textit{Internet of Things}, vol. 18, p. 100508, 2022.
 
@@ -438,7 +438,7 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b27} R. Morabito, V. Cozzolino, A. Y. Ding, N. Beijar, and J. Ott, ``Consolidate IoT Edge Computing with Lightweight Virtualization,'' \textit{IEEE Network}, vol. 32, no. 1, pp. 34--42, 2018.
 
-\bibitem{b28} Kinvolk / Red Hat, ``Flatcar Container Linux: Secure, Minimal Host OS for Containers,'' \textit{Architecture Specification}, 2020.
+\bibitem{b28} R. Morabito, ``Virtualization on Internet of Things Edge Devices With Container Technologies: A Performance Evaluation,'' \textit{IEEE Access}, vol. 5, pp. 8835--8850, 2017.
 
 \bibitem{b14} A. Mathur et al., ``The new ext4 filesystem: current status and future plans,'' in \textit{Proceedings of the Linux Symposium}, pp. 21--33, 2007.
 
