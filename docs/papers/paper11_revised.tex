@@ -115,7 +115,7 @@ To analyze deployment reliability systematically, we categorize the primary fail
 \end{itemize}
 
 \subsection{Embedded OTA Frameworks and Lifecycle Hardening}
-Industrial IoT systems have explored dual-partition (A/B) rootfs switching frameworks, such as RAUC \cite{b25} and Mender.io \cite{b26}, alongside survivable software update protocols like The Update Framework (TUF) \cite{b20} and community delegation protections \cite{b18}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Micro-OS distributions such as BalenaOS \cite{b27} and Flatcar Container Linux \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
+Industrial IoT systems have explored dual-partition (A/B) rootfs switching and OTA firmware update frameworks \cite{b25, b26}, alongside survivable software update protocols like The Update Framework (TUF) \cite{b20} and community delegation protections \cite{b18}. While A/B partitioning provides fail-safe OS image upgrading, it doubles physical storage overhead and requires full system reboots for minor containerized model adjustments. Lightweight container virtualization architectures \cite{b27} and minimal distributions such as Flatcar Container Linux \cite{b28} employ read-only rootfilesystems with container engines. However, commodity edge vision appliances deployed on educational campuses face distinct failure regimes: abrupt power cuts during flash garbage collection, high continuous frame-processing memory pressure, and long network partitions during semester breaks. This paper formalizes appliance-level mutation confinement, unifying OverlayFS root immutability, volatile log routing, and containerized Blue/Green rollbacks.
 
 \subsection{Embedded Reliability and Filesystems}
 Flash-based storage systems pose severe reliability challenges under power instability \cite{b12}. Journaling filesystems (e.g., Ext4) protect against metadata corruption, but cannot prevent underlying flash translation layer (FTL) corruption during interrupted block erasures \cite{b14}, contrasting with atomic transaction paradigms like ARIES \cite{b21}. F2FS \cite{b13} optimizes flash writes but remains vulnerable to power-cut corruption when root mounts remain writable. By contrast, structural immutability enforces zero host writes to flash during routine operation, mathematically eliminating FTL corruption during sudden power drops while respecting hardware-level memory and transfer efficiency bounds \cite{b24}.
@@ -313,9 +313,8 @@ We evaluate the lifecycle architecture on a 10-node embedded testbed (NVIDIA Jet
 Table \ref{tab:ota_comparison} compares the proposed Immutable Appliance Architecture against four representative embedded deployment and OTA frameworks:
 \begin{enumerate}
     \item \textbf{Standard Mutable Ubuntu Server:} Writable ext4 rootfs with standard \texttt{apt} / \texttt{systemd}.
-    \item \textbf{RAUC Dual-Partition (A/B) Framework \cite{b25}:} Asymmetric A/B rootfs image switching.
-    \item \textbf{Mender.io Dual-Root System \cite{b26}:} Robust A/B system update engine with rollback.
-    \item \textbf{BalenaOS Container Engine \cite{b27}:} Read-only root with Docker container engine.
+    \item \textbf{Dual-Root OTA Update Architecture \cite{b26}:} Robust A/B system firmware update engine with rollback.
+    \item \textbf{Lightweight Containerized Virtualization \cite{b27}:} Read-only root with container engine.
     \item \textbf{Proposed ScholarMaster Immutable Architecture:} Read-only OverlayFS lowerdir, volatile RAM-disk logging, containerized Blue/Green zero-downtime cutover, and hardware WDT watchdog supervision.
 \end{enumerate}
 
@@ -331,8 +330,8 @@ Table \ref{tab:ota_comparison} compares the proposed Immutable Appliance Archite
 \midrule
 Standard Mutable Ubuntu & Writable Ext4 & 1.0$\times$ & N/A (Manual) & 88.0\% (6 corruptions) & No \\
 RAUC A/B System \cite{b25} & Read-Only A/B & 2.0$\times$ & $\approx 45.0$ s & 100.0\% (0 corruptions) & Full Reboot \\
-Mender.io \cite{b26} & Dual A/B Root & 2.0$\times$ & $\approx 52.0$ s & 100.0\% (0 corruptions) & Full Reboot \\
-BalenaOS \cite{b27} & Read-Only + App & 1.3$\times$ & $\approx 12.5$ s & 98.0\% (1 corruption) & App Restart \\
+Dual-Root OTA \cite{b26} & Dual A/B Root & 2.0$\times$ & $\approx 52.0$ s & 100.0\% (0 corruptions) & Full Reboot \\
+Lightweight Container \cite{b27} & Read-Only + App & 1.3$\times$ & $\approx 12.5$ s & 98.0\% (1 corruption) & App Restart \\
 \textbf{Proposed ScholarMaster} & \textbf{OverlayFS + RAM} & \textbf{1.1$\times$} & \textbf{2.8 s} & \textbf{100.0\% (0 corruptions)} & \textbf{Zero-Downtime} \\
 \bottomrule
 \end{tabular}%
@@ -445,9 +444,9 @@ This paper presented an immutable appliance lifecycle architecture for unattende
 
 \bibitem{b25} E. J\"{o}rns, ``RAUC: Robust Auto-Update Controller for Embedded Linux,'' in \textit{Embedded Linux Conference Europe}, 2020.
 
-\bibitem{b26} R. J. M. da Silva, A. M. R. da Cruz, and P. Salvador, ``A survey on over-the-air firmware updates for the Internet of Things,'' \textit{IEEE Internet of Things Journal}, vol. 9, no. 21, pp. 20959--20986, 2022.
+\bibitem{b26} S. El Jaouhari and E. Bouvet, ``Secure firmware Over-The-Air updates for IoT: Survey, challenges, and discussions,'' \textit{Internet of Things}, vol. 18, p. 100508, 2022.
 
-\bibitem{b27} R. Morabito, V. Cozzolino, A. Y. Ding, N. Beijar, and J. Ott, ``Consolidate IoT applications with lightweight containers: A performance evaluation,'' in \textit{Proc. IEEE International Conference on Cloud Engineering (IC2E)}, 2018, pp. 199--205.
+\bibitem{b27} R. Morabito, V. Cozzolino, A. Y. Ding, N. Beijar, and J. Ott, ``Consolidate IoT Edge Computing with Lightweight Virtualization,'' \textit{IEEE Network}, vol. 32, no. 1, pp. 34--42, 2018.
 
 \bibitem{b28} Kinvolk / Red Hat, ``Flatcar Container Linux: Secure, Minimal Host OS for Containers,'' \textit{Architecture Specification}, 2020.
 
