@@ -335,7 +335,7 @@ The combination of page locking, explicit zeroization, and optional cache flush 
 % ==========================================
 \section{Algorithm Design}
 
-The pipeline is divided into two clearly separated phases: a volatile extraction stage and a persistent logical stage. The separation is structural rather than conceptual; raw pixel data is destroyed before any event emission occurs.
+The pipeline consists of two well-separated phases: a volatile phase of extraction and a persistent logical phase. This separation is structural and not conceptual; a destruction of raw pixel data occurs before any event emission.
 
 Algorithm 1 reflects this ordering:
 \begin{enumerate}
