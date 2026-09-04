@@ -206,7 +206,7 @@ E_{frame} \approx E_{compute} + E_{LPDDR} + E_{Fabric}
 LPDDR5 memory access costs about $2$--$5$ $pJ/bit$ whereas on die fabric traversal is usually under $1$ $pJ/bit$. Data movement energy adds up at the frame-rate scale; interconnect traversal forms a structural energetic floor, and reducing physical path length cuts switching overhead. The practical implication is that sustained inference efficiency is transfer-energy constrained rather than compute-constrained.
 
 \subsection{Amdahl's Law and the Serial Fraction}
-Even highly parallel accelerators remain bounded by residual serial execution segments. Amdahl’s law provides a formal way to express this limit. In discrete systems, the PCIe transfer phase constitutes a strictly serial segment:
+Even the most highly parallel accelerators are limited in their ability to conceal residual serial execution segments. Amdahl's law can be used to express this limitation analytically. In discrete systems, the PCIe transfer phase is a strictly serial segment:
 \begin{equation}
 (1-p)_{disc} = \frac{T_{PCIe}}{T_{total}}
 \end{equation}
