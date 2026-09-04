@@ -449,7 +449,7 @@ A structural difference between UMA and discrete architectures is UMA's prioriti
 The MBEEE defines structural bounds, not cycle-accurate predictions. Several simplifications bound the model's applicability:
 
 \begin{itemize}
-    \item \textbf{Idealized Queueing Assumptions:} The queueing abstractions ($M/M/1$, $M/D/1$) approximate bus and fabric behavior; real interconnect arbitration involves priority scheduling, burst modes, and contention patterns that deviate from idealized Poisson arrivals.
+    \item \textbf{Idealized Queueing Assumptions:} The queuing abstractions ($M/M/1$, $M/D/1$) approximate bus and fabric behavior; actual interconnect arbitration involves priority scheduling, burst modes, and contention patterns that are not captured by idealized Poisson arrivals.
     \item \textbf{Thermal Simplifications:} Thermal modeling assumes a lumped RC equivalent; spatially non-uniform hotspot formation, ambient-temperature variability, and thermal interface compound variance are not captured.
     \item \textbf{Vendor-Specific Fabric Variability:} The $pJ/bit$ energy figures represent published ranges; specific vendor SoC implementations, LPDDR contention profiles, and heterogeneous fabric topologies introduce measurable variation.
     \item \textbf{System Transients and Lack of Cycle-Accurate Simulation:} The model lacks cycle-accurate simulation. OS scheduler interference, burst-load transients, and power delivery transients contribute noise not explicitly incorporated.
