@@ -152,7 +152,7 @@ Given an incoming container image $C_{\mathrm{Green}}$ with fatal initialization
 \end{lemma}
 
 \begin{IEEEproof}
-During pre-flight dry run, $C_{\mathrm{Green}}$ runs in an isolated cgroup without hardware bindings. The systemd supervisor monitors heartbeat socket $\omega(t)$. If $\omega(t) = \emptyset$ for $t > T_{\mathrm{pre}}$, the supervisor executes an atomic container kill: $\text{SIGKILL}(C_{\mathrm{Green}})$ followed by reactivation of $C_{\mathrm{Blue}}$. Since $C_{\mathrm{Blue}}$ layers remain cached in local read-only storage, reactivation requires only process fork and namespace binding: $T_{\mathrm{rollback}} = t_{\mathrm{kill}} + t_{\mathrm{bind}} \le 0.8\text{ s} + 2.0\text{ s} = 2.8\text{ s} \le 3.0\text{ s}$.
+During pre-flight dry run, $C_{\mathrm{Green}}$ will execute in an isolated cgroup without hardware bindings. The systemd supervisor watches for heartbeat socket $\omega(t)$. On detecting $\omega(t) = \emptyset$ for $t > T_{\mathrm{pre}}$, it will execute atomic container kill: $\text{SIGKILL}(C_{\mathrm{Green}})$ and reactivation of $C_{\mathrm{Blue}}$. Since $C_{\mathrm{Blue}}$ layer states are cached in local read-only, activation takes only process fork and namespace binding: $T_{\mathrm{rollback}} = t_{\mathrm{kill}} + t_{\mathrm{bind}} \le 0.8\text{ s} + 2.0\text{ s} = 2.8\text{ s} \le 3.0\text{ s}$.
 \end{IEEEproof}
 
 \subsection{Immutability Layer Diagram}
