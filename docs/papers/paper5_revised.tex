@@ -265,7 +265,7 @@ Memory Mapping & 4.6 ms & 4.1 ms \\
 \end{tabular}
 \vspace{0.1cm}
 \flushleft
-\textit{*Note: During internal profiling on an NVIDIA Jetson Xavier (PCIe Gen3 x4), we observed that sustained 1080p frame transfers saturated effective throughput at $\sim 3.9$ GB/s, aligning closely with the modeled 6.5 ms transfer bound. The UMA bus transfer is represented as an amortized near-zero explicit copy overhead.}
+\textit{*Note: On internal profiling on NVIDIA Jetson Xavier (PCIe Gen3 x4), 1080p frame transfers at a rate of 1080p that saturate effective throughput at $\sim 3.9$ GB/s, close to the bound that would take $6.5$ ms for a 1080p transfer, appear as an amortized near-zero explicit copy overhead on the UMA bus.}
 \label{tab:latency}
 \end{table}
 
