@@ -418,7 +418,7 @@ The reduction in operational cost is immediate, since lower $P_{avg}$ directly r
 Although unified architectures reduce transfer overhead, they introduce distinct tradeoffs related to shared memory capacity, deterministic scheduling, and deployment scope.
 
 \subsection{Memory Capacity Contention}
-UMA platforms share a single LPDDR pool among CPU, GPU, and NPU cores. Large foundation models may consume multiple gigabytes, leaving reduced hardware headroom for buffering or auxiliary processes. Discrete nodes isolate VRAM from host memory, preventing model weights from competing with OS page cache. The tradeoff is structural: UMA reduces transfer overhead but introduces shared capacity pressure.
+UMA platforms essentially share a common LPDDR pool between the CPU, GPU, and NPU cores. This can be a problem for large foundation models that may take up several gigabytes of memory, leaving little room for other processes to utilize or buffer. Discrete nodes, on the other hand, have the ability to decouple the VRAM from the host memory. This prevents the weights of the model from being swapped out with the OS page cache.
 
 \subsection{Precision vs. Bandwidth: Pareto Considerations}
 To mitigate memory pressure, numerical precision can be reduced (Table \ref{tab:quantization}).
