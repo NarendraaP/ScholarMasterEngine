@@ -423,9 +423,9 @@ Embedding policy awareness and physical kinematic velocity constraints directly 
 The orchestration framework exhibits several operational boundaries:
 \begin{itemize}
     \item \textbf{Super-Kinematic Velocity Boundary ($v > 5.0\text{ m/s}$):} In activities that are either athletic or vehicular reaching speeds beyond $v_{\max} = 5.0\text{ m/s}$, the sampling period bound in \eqref{eq:kinematic_bound} demands higher frame rates than what is available in the standard 30 FPS camera hardware.
-    \item \textbf{PID Gain Calibration Sensitivity:} Tuning the PID gains ($K_p, K_i, K_d$) requires calibration to match edge memory buffer capacities; aggressive $K_i$ values risk transient overshoot during rapid multi-person ingress.
-    \item \textbf{Cold-Start Activation Latency:} Re-activating dormant deep neural networks from low-power standby introduces a 150--350ms warm-up latency on embedded GPU accelerators.
-    \item \textbf{Unscheduled Event Divergence:} Unscheduled classroom interactions occurring outside regular pedagogical phases may experience delayed capture until heuristic trigger thresholds are satisfied.
+    \item \textbf{PID Gain Calibration Sensitivity:} PID gain calibration ($K_p, K_i, K_d$) requires mapping to edge-memory buffer capacities; aggressive $K_i$ values may induce transient overshoot on multi-person ingress events.
+    \item \textbf{Cold-Start Activation Latency:} Re-activation of dormant deep neural networks from low power standby states incurs 150--350ms warm-up latency on embedded GPU accelerators.
+    \item \textbf{Unscheduled Event Divergence:} Off-schedule classroom interaction events occurring between pedagogical phases may experience delayed capture until heuristic trigger thresholds are reached.
 \end{itemize}
 
 % ==========================================
