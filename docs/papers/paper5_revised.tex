@@ -246,7 +246,7 @@ O_{map} = P_{miss} \times (T_{walk} + T_{sync})
 Where $P_{miss}$ is the TLB miss probability, $T_{walk}$ is the page table traversal latency, and $T_{sync}$ is the cache coherency synchronization time. Eliminating cross-device cache flushes reduces $T_{sync}$ \cite{b19}. However, not all UMA implementations are identical; some SoCs retain modest coherency overhead depending on fabric topology. The theoretical floor therefore varies slightly across vendors. The key structural difference remains: mapping overhead is internal rather than cross-bus.
 
 \subsection{Derived Latency Decomposition}
-We model frame processing time by separating microarchitectural phases. Assuming PCIe Gen3 x4 effective bandwidth ($\sim 3.9$ GB/s sustained under DMA contention), the 6.5 ms transfer bound for an uncompressed 1080p frame follows directly from payload size and bus throughput. Table \ref{tab:latency} captures this decomposition.
+We model per-frame processing time by partitioning microarchitectural phases. Given a PCIe Gen3 x4 link (equivalent $3.9$ GB/s effective bandwidth considering DMA contention), the 1080p $6.5$ ms transfer bound can be derived from uncompressed payload size and PCIe throughput. Table \ref{tab:latency} summarizes this analysis.
 
 % --- TABLE I: LATENCY BREAKDOWN ---
 \begin{table}[htbp]
