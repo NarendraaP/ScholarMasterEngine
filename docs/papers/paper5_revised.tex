@@ -102,7 +102,7 @@ The goal is not to advocate that UMA is universally a replacement for discrete a
 % ==========================================
 \section{Related Work}
 
-Prior research on efficient deep learning inference has examined accelerator microarchitecture, memory hierarchy design, and thermal constraints independently. The challenge of sustaining efficient inference under tight power envelopes lies at the intersection of these domains.
+Prior work on the problem of efficient deep learning inference has investigated the roles of accelerators, microarchitecture, memory hierarchy, and thermal constraints in isolation. The problem of achieving efficient inference under stringent power budgets is inherently multi-domain.
 
 \subsection{Edge Accelerator Architectures}
 A substantial body of research has explored domain-specific accelerators (DSAs) tailored for deep learning \cite{b1}. Jouppi et al. \cite{b_tpu} introduced the Tensor Processing Unit (TPU), demonstrating the efficiency of systolic arrays for dense matrix operations. While highly effective in data center environments, edge-oriented TPU variants often function as discrete coprocessors over USB or PCIe links. In doing so, they reintroduce the interconnect bottleneck examined in this work.
