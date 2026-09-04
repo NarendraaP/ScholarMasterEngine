@@ -125,7 +125,7 @@ Flash based storage systems face extreme reliability challenges under power inst
 % ==========================================
 \section{Appliance Invariance Model}
 
-The proposed deployment model treats the edge node as an immutable appliance rather than a mutable Linux host. All host packages, kernel modules, and system services reside in an immutable lower directory ($H_0$), while application models and pipeline configurations run inside containerized layers ($C$).
+The proposed deployment model assumes that edge node is an immutable appliance rather than a mutable Linux host. In other words, all packages, modules, and system services are present in a lower-level portion of the appliance, called $H_0$, which is typically mounted read-only (ro). Meanwhile, application models and pipelines live in isolated, user-space $C$ environments (i.e., containers).
 
 \subsection{Formal Invariance and Power-Loss Recovery Theorems}
 Let $\mathcal{S}(t) = (H(t), V(t), C(t))$ represent the total state tuple of the edge appliance at time $t$, where $H(t)$ is the persistent flash storage, $V(t)$ is the volatile RAM disk (\texttt{tmpfs}), and $C(t)$ is the containerized application image.
