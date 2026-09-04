@@ -197,7 +197,7 @@ For a discrete architecture:
 \begin{equation}
 E_{frame} = E_{compute} + 2 \cdot (S_{data} \times E_{PCIe})
 \end{equation}
-Where $S_{data}$ is the frame size in bits, and $E_{PCIe}$ represents energy per bit across the peripheral bus. A 1080p RGB frame contains approximately $49.7$ Mbits. PCIe Gen3 traversal typically costs $10$–$20$ $pJ/bit$. Even a single host-to-device transfer therefore incurs millijoule-scale overhead. Under sustained 30 FPS operation, this overhead compounds rapidly.
+Where $S_{data}$ is the number of bits in a frame and $E_{PCIe}$ energy per bit over a peripheral bus. A frame of 1080p RGB data is about $49.7$ Mbits. PCIe Gen3 takes $10$--$20$ $pJ/bit$ for traversal. A single host to device transfer thus involves millijoule overheads. At 30 FPS sustained this overheads add up fast.
 
 In UMA systems:
 \begin{equation}
