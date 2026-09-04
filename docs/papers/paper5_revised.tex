@@ -279,7 +279,7 @@ In the discrete configuration, almost a fifth of the time spent in the frame is 
 While average latency dictates throughput feasibility, temporal variance dictates the stability of real-time nodes. The variance of latency, jitter, causes instability in downstream synchronization even if the mean is acceptable. We analyze this phenomenon using classical queueing abstractions.
 
 \subsection{Stochastic vs. Deterministic Service}
-We model the peripheral bus in a discrete architecture as an $M/M/1$ queue. While real PCIe arbitration is more complex, the abstraction captures the essential property: stochastic service times under contention.
+We model the peripheral bus, operating in a discrete architecture, as an $M/M/1$ queue. While actual PCIe arbitration is more complex, it captures the key characteristic of stochastic service times in the presence of contention.
 
 Let $\lambda$ be the frame arrival rate, $\mu$ the effective bus service rate, and $\rho = \lambda / \mu$. The expected waiting time is:
 \begin{equation}
