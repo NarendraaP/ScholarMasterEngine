@@ -203,7 +203,7 @@ In UMA systems:
 \begin{equation}
 E_{frame} \approx E_{compute} + E_{LPDDR} + E_{Fabric}
 \end{equation}
-LPDDR5 memory access costs about $2$--$5$ $pJ/bit$ whereas on die fabric traversal is usually under $1$ $pJ/bit$. Data movement energy adds up at the frame-rate scale; interconnect traversal forms a structural energetic floor, and reducing physical path length cuts switching overhead. The practical implication is that sustained inference efficiency is transfer-energy constrained rather than compute-constrained.
+LPDDR5 memory access costs about $2$--$5$ $pJ/bit$ whereas on die fabric traversal is usually under $1$ $pJ/bit$. The cost of data movement accumulates at the frame-rate scale; interconnect traversal forms a structural energetic floor, and shortening physical path lengths reduces switching overhead. The practical implication is that inference efficiency is limited by transfer-energy rather than compute constraints.
 
 \subsection{Amdahl's Law and the Serial Fraction}
 Even the most highly parallel accelerators are limited in their ability to conceal residual serial execution segments. Amdahl's law can be used to express this limitation analytically. In discrete systems, the PCIe transfer phase is a strictly serial segment:
