@@ -257,7 +257,7 @@ The state machine operates as follows:
 The appliance configuration translates systemic design constraints into OS-level strictures. We enforce compliance via an automated deployment checklist applied to the base image:
 
 \begin{itemize}
-    \item \textbf{Volatile Mount Enforcement:} \texttt{/var/log}, container volumes, and local telemetry buffers are all mounted to \texttt{tmpfs}, which ensures that they can't be persisted to physical media. This is enforced by checking their mounts during the boot process.
+    \item \textbf{Volatile Mount Enforcement:} \texttt{/var/log}, container volumes and local telemetry buffers are all mounted to \texttt{tmpfs}, ensuring that they cannot be persisted to any physical media. This is enforced by checking these mounts during the boot process.
     \item \textbf{Swap Disablement:} \texttt{swapoff -a} is enforced. This guarantees that application memory buffers are never inadvertently paged to physical disk by the OS memory manager under load.
     \item \textbf{Encrypted Keystore:} Any persistent identity configuration keys or certificates required for network provisioning are stored on encrypted partitions and managed strictly through secured key services.
 \end{itemize}
