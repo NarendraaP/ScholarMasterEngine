@@ -361,7 +361,7 @@ As $t \to \infty$, the system approaches steady state:
 T_{junc,\infty} = T_{amb} + P_{dyn} R_{th}
 \end{equation}
 
-The architectural implication follows directly: lowering $P_{dyn}$ reduces the steady-state junction temperature linearly. Because UMA reduces transfer-induced dynamic power ($E_{PCIe}$ term), it lowers $P_{dyn}$ under sustained load. Discrete GPUs operating near 85–90°C frequently engage thermal throttling mechanisms that reduce clock frequency to preserve reliability \cite{b21}. UMA platforms, operating at lower dynamic power, approach a lower equilibrium temperature. In edge hardware, that difference determines whether throttling occurs at all.
+The architectural implication that follows is that when $P_{dyn}$ is reduced the steady-state junction temperature is reduced linearly. Since UMA reduces the transfer-induced dynamic power ($E_{PCIe}$ term), the value of $P_{dyn}$ will be reduced under sustained load. Discrete GPUs that operate near 85--90$^\circ$C often activate thermal throttling mechanisms to reduce the clock frequency in order to maintain reliability \cite{b21}. With UMA platforms operating at a lower dynamic power the difference in the resulting equilibrium temperature determines if throttling will be activated.
 
 \subsection{Arrhenius Reliability Scaling}
 Sustained elevated temperatures accelerate wear-out mechanisms such as electromigration and time-dependent dielectric breakdown (TDDB). The Arrhenius equation provides a widely accepted model for temperature-accelerated failure:
