@@ -269,7 +269,7 @@ Memory Mapping & 4.6 ms & 4.1 ms \\
 \label{tab:latency}
 \end{table}
 
-In the discrete configuration, nearly one-fifth of total frame time is spent strictly on data movement. In the UMA configuration, the explicit transfer term collapses to an amortized near-zero cost. The compute stage remains similar in both setups; what changes is the serialized precondition required before compute can begin.
+In the discrete configuration, almost a fifth of the time spent in the frame is spent on data movement. In the UMA configuration, the explicit transfer term falls to an amortized near-zero cost. The compute stage is similar in both configurations; what is different is the serialized precondition that must be taken before compute can begin.
 
 % ==========================================
 % V. QUEUEING THEORY AND LATENCY JITTER
