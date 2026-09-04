@@ -85,9 +85,9 @@ When modules are tightly coupled in flat execution pipelines, localized crashes 
 This work explores whether a logical control-plane abstraction can be leveraged to address these coordination challenges. We envision a layered execution paradigm, where the system is partitioned into three distinct spheres of influence: Perception, Reasoning, and Governance. By enforcing information and decision isolation within these domains, we propose the following contributions:
 \begin{itemize}
     \item A hierarchical control-plane abstraction relying on typed context vectors for orchestration isolation \cite{b17}.
-    \item A Compute Justification Model formalizing Inference Rate Governance (IRG) for policy-aligned module activation.
-    \item Explicit failure containment strategies ensuring graceful degradation when individual modules fail \cite{b18}.
-    \item Validation via fault injection to confirm orchestration resilience under deterministic failure scenarios \cite{b28}.
+    \item A Compute justification model formalizing inference-rate governance (IRG) for policy aligned module activation.
+    \item Explicit failure containment strategies that ensure graceful degradation on module failure \cite{b18}.
+    \item Validation by fault injection to ensure orchestration robustness to deterministic failure scenarios \cite{b28}.
 \end{itemize}
 
 Within the ScholarMaster architecture, this subsystem takes care of the activation of other modules, controls their orchestration logic, and only these three things. It does not assess survivability envelopes (Paper 10), optimize flash memory durability (Paper 12), optimize federated adaptation \cite{b8} (Paper 13), develop runtime verification theorems (Paper 18), or define irreversible governance doctrine (Paper 17).
