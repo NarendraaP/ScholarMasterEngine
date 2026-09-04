@@ -112,7 +112,7 @@ Similarly, Eyeriss \cite{b_eyeriss} and its mobile incarnation Eyeriss v2 \cite{
 \subsection{Memory Coherency and Heterogeneous Integration}
 Heterogeneous computing with shared virtual memory (SVM) has been investigated extensively. Early SVM implementations enabled pointer sharing between CPU and GPU, but below the abstraction layer data was frequently physically migrated.
 
-In contrast, modern System-on-Chip (SoC) designs integrate CPU, GPU, and NPU cores with physically unified memory. In such systems, no off-chip traversal is required to exchange tensors between heterogeneous execution units. The distinction is not merely semantic; it alters the physical path that data must travel. This work attempts to model that difference in energetic and latency terms.
+In contrast, modern System-on-Chip (SoC) designs combine CPU, GPU, and NPU cores with a shared pool of physically unified memory. In such a system, there is no need to traverse off-chip in order to exchange tensors between different heterogeneous execution units. The difference is not only one of semantics, but also of physical distance travelled by the data. This work attempts to quantify the difference in terms of energy and latency.
 
 \subsection{Energy and Thermal Constraints}
 Horowitz \cite{b8} demonstrated that data movement energy often exceeds arithmetic energy in modern CMOS systems. Fetching data from off-chip DRAM can cost orders of magnitude more energy than a floating-point operation \cite{b2, b8}, establishing power as a first-class architectural constraint \cite{b15}. In sustained vision pipelines, these costs accumulate at frame-rate scale, directly impacting overall carbon and energy footprints \cite{b12, b_energy_dl}.
