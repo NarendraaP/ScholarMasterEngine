@@ -232,7 +232,7 @@ The modeled advantages of unified memory assume specific analytical interactions
 \subsection{IOMMU and Zero-Copy Semantics}
 In conventional discrete hardware, the data transfer is modeled as a blocking payload spanning host and device memory across the peripheral bus.
 
-On UMA platforms, the analysis assumes zero-copy semantics. Instead of modeling a physical data copy, the tensor is mapped onto a shared physical memory space. The memory controller pinning prevents paging and exposes that address directly to the NPU or GPU execution engine. 
+On UMA platforms, the analysis uses zero-copy semantics. Rather than model a physical data copy, the tensor is mapped to a shared physical memory space. Memory controller pinning avoids paging and exposes the address directly to the NPU or GPU execution engines. 
 
 The operational distinction is subtle but meaningful in practice: the hardware does not explicitly move the tensor; it changes who can see it. As a result, measured latency becomes predominantly computational rather than transfer-dominated. Copy overhead does not disappear entirely—page locking and address translation still occur—but the expensive off-chip traversal phase is eliminated \cite{b24}.
 
