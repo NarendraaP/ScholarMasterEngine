@@ -160,7 +160,7 @@ Maintaining strict separation between architectural layers requires more than an
 \begin{equation}
 \vec{C}_{Perc \to Reas} = \{(event\_type, zone, timestamp)\}
 \end{equation}
-By receiving only abstracted event tuples via $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers operate without direct exposure to raw sensory data. Typed vectors constrain semantic propagation so that upper layers receive bounded abstractions instead of high-fidelity signals. Orchestration isolation structurally depends on this restricted cross-layer visibility.
+By only receiving abstracted event tuples from $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers are insulated from receiving raw sensory data. The use of typed vectors restricts the potential for cascading semantics such that higher layer modules only see abstractions bounded by their type. Orchestration isolation is made possible in this way.
 
 \subsection{Layer Isolation Factor (LIF)}
 To assess the quality of orchestration topology, we define Layer Isolation Factor (LIF). Scored per each fault injection scenario, LIF quantifies isolation topology, not uptime probability. Given an isolated crash, does it cascade?
