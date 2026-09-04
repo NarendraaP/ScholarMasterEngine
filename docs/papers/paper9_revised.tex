@@ -163,7 +163,7 @@ Maintaining strict separation between architectural layers requires more than an
 By only receiving abstracted event tuples from $\vec{C}_{Perc \to Reas}$, the Reasoning and Governance layers are insulated from receiving raw sensory data. The use of typed vectors restricts the potential for cascading semantics such that higher layer modules only see abstractions bounded by their type. Orchestration isolation is made possible in this way.
 
 \subsection{Layer Isolation Factor (LIF)}
-To assess the quality of orchestration topology, we define Layer Isolation Factor (LIF). Scored per each fault injection scenario, LIF quantifies isolation topology, not uptime probability. Given an isolated crash, does it cascade?
+To evaluate the quality of orchestration topology we define Layer Isolation Factor (LIF). Scored on per each fault injection scenario, LIF evaluates the isolation topology, not uptime probability. Given an isolated crash, is it cascading?
 \begin{equation}
 LIF = \frac{\text{Failures Contained in Origin Layer}}{\text{Total Module Failures}} \times 100\%
 \end{equation}
