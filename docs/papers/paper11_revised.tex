@@ -391,10 +391,10 @@ PoE+ Splitter & \$15.00 \\
 
 \subsection{Limitations and Failure Boundaries}
 \begin{itemize}
-    \item \textbf{Finite RAM-Disk Capacity:} Volatile \texttt{tmpfs} storage is physically bounded; multi-day network partitions require aggressive log rotation to prevent out-of-memory cascades.
-    \item \textbf{Firmware Protection Boundaries:} OverlayFS protects operating system partitions but does not guard against lower-level bootloader or baseband firmware attacks.
-    \item \textbf{TPM Hardware Requirement:} Zero-Touch Provisioning requires hardware TPM 2.0 cryptographic modules, limiting deployment on legacy microcontrollers.
-    \item \textbf{Flash Controller Firmware Divergence:} While read-only rootfs eliminates host-driven wear, proprietary wear-leveling algorithms in cheap SD cards remain outside OS control.
+    \item \textbf{Finite RAM-Disk Capacity:} Volatile \texttt{tmpfs} storage has physical limits; multi-day network partitions require aggressive log rotation to avoid out-of-memory cascades.
+    \item \textbf{Firmware Protection Boundaries:} OverlayFS protects operating system partitions but not lower-level bootloader or baseband firmware attacks.
+    \item \textbf{TPM Hardware Requirement:} Zero-Touch Provisioning requires hardware TPM 2.0 cryptographic modules, which rules out legacy microcontrollers.
+    \item \textbf{Flash Controller Firmware Divergence:} While read-only rootfs eliminates host-driven wear, proprietary wear-levelling algorithms in cheap SD cards are not OS controlled.
 \end{itemize}
 
 % ==========================================
