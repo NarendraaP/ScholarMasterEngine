@@ -117,7 +117,7 @@ In contrast, modern System-on-Chip (SoC) designs combine CPU, GPU, and NPU cores
 \subsection{Energy and Thermal Constraints}
 Horowitz \cite{b8} has shown that data movement energy often dominates arithmetic energy in modern CMOS systems. The cost of fetching data from off-chip DRAM can exceed the energy of a floating-point operation by orders of magnitude \cite{b8, b2}, making power a first-class architectural constraint \cite{b15}. These costs add up at the sustained, frame-rate scale in vision pipelines, with direct implications for overall carbon and energy footprints \cite{b12, b_energy_dl}.
 
-Skadron et al. \cite{b_thermal} established thermal-aware microarchitectural design principles, highlighting the limits of frequency scaling under sustained load. We apply similar thermodynamic reasoning to continuous edge inference, focusing on steady-state rather than burst behavior \cite{b5, b_thermal}, particularly as semiconductor scaling pushes beyond classical Moore's Law constraints \cite{b18}.
+Skadron et al. \cite{b_thermal} developed thermal-aware microarchitectural design principles that emphasize thermal limits of frequency scaling under sustained load. We adapt similar thermodynamic arguments to continuous edge inference, emphasizing steady-state rather than burst computation \cite{b_thermal, b5}, as semiconductor scaling approaches the limits of classical Moore's law \cite{b18}.
 
 % ==========================================
 % III. THE MEMORY-BOUND EDGE EFFICIENCY ENVELOPE
