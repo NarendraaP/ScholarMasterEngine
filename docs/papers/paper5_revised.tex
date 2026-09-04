@@ -440,7 +440,7 @@ INT8 & 25\% & 2.9x & $\approx 1.5\%$ \\
 \label{tab:quantization}
 \end{table}
 
-FP16 emerges as a practical Pareto point within the UMA constraint model. It halves bandwidth pressure and more than doubles throughput with negligible accuracy degradation. INT8 offers further gains but introduces nonlinear accuracy loss in certain model architectures \cite{b37, b38}. Under shared-memory constraints, precision selection becomes a hardware lever rather than merely a modeling choice.
+FP16 is a practical Pareto point in the UMA constraint model, cutting bandwidth by half and improving throughput more than 2x with only a small degradation in accuracy. INT8 provides additional benefits but has nonlinear accuracy degradation in some model architectures \cite{b37, b38}. In the shared-memory model, precision selection can become a design parameter for exploiting alternative hardware mappings.
 
 \subsection{Deterministic Latency versus Peak Throughput}
 A structural distinction between UMA and discrete architectures is that UMA platforms prioritize deterministic latency over peak throughput. For edge deployments requiring continuous real-time inference, this tradeoff is favorable: predictable frame-to-frame timing supports stable downstream coordination. For batch-oriented offline processing where throughput maximization dominates, discrete architectures with isolated high-bandwidth VRAM may remain preferable. The MBEEE does not claim universal superiority for unified architectures; it identifies the operating regions where their constraints align with continuous edge requirements.
