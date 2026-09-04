@@ -388,7 +388,7 @@ Dynamic power follows:
 \begin{equation}
 P_{dyn} \propto C_{eff} V_{dd}^2 f
 \end{equation}
-Because voltage appears quadratically, even modest reductions in $V_{dd}$ produce substantial energy savings. UMA nodes typically implement aggressive DVFS. If the modeled throughput exceeds the required target, the governor reduces voltage and frequency to meet—but not exceed—the real-time boundary. Discrete systems can also implement DVFS, but the energy floor imposed by peripheral transfer often limits the extent of downscaling under sustained load. In continuous edge inference, excess performance is wasted energy.
+Because voltage drops off quadratically, even small reductions in $V_{dd}$ result in considerable energy savings. UMA nodes typically have aggressive DVFS. If the modeled throughput of a node exceeds the amount needed, the governor will lower the voltage and frequency until the real-time boundary is met (but not exceeded). Discrete systems can also use DVFS, but the energy cost of peripheral transfer often dominates, limiting how much voltage and frequency can be reduced under continuous load. In particular, for continuous edge inference, having more than necessary is just a waste of energy.
 
 \subsection{Performance-Per-Watt (PPW)}
 We define efficiency as:
