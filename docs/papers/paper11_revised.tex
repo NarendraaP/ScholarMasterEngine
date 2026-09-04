@@ -128,7 +128,7 @@ Flash based storage systems face extreme reliability challenges under power inst
 The proposed deployment model assumes that edge node is an immutable appliance rather than a mutable Linux host. In other words, all packages, modules, and system services are present in a lower-level portion of the appliance, called $H_0$, which is typically mounted read-only (ro). Meanwhile, application models and pipelines live in isolated, user-space $C$ environments (i.e., containers).
 
 \subsection{Formal Invariance and Power-Loss Recovery Theorems}
-Let $\mathcal{S}(t) = (H(t), V(t), C(t))$ represent the total state tuple of the edge appliance at time $t$, where $H(t)$ is the persistent flash storage, $V(t)$ is the volatile RAM disk (\texttt{tmpfs}), and $C(t)$ is the containerized application image.
+Let $\mathcal{S}(t) = (H(t), V(t), C(t))$ be the total state tuple of the edge appliance at time $t$, where $H(t)$ denotes the persistent flash storage, $V(t)$ represents the volatile RAM disk (\texttt{tmpfs}), and $C(t)$ stands for the containerized application image.
 
 \begin{theorem}[Power-Cut State Recovery Invariance]
 Under the read-only OverlayFS mount predicate $\forall t, \frac{d H(t)}{dt} = 0$, if an unannounced power loss occurs at arbitrary time $t_{\mathrm{fail}}$, the post-reboot state $\mathcal{S}(t_{\mathrm{reboot}})$ strictly satisfies:
