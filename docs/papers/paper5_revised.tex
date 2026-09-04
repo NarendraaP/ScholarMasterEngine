@@ -237,7 +237,7 @@ On UMA platforms, the analysis uses zero-copy semantics. Rather than model a phy
 The difference in operation is subtle but significant: the hardware does not move the tensor, but rather exposes it to different visibility domains. Because of this, measured latency is dominated by computation rather than transfer. Copy overhead is not eliminated (page locking and address translation still take place), but the costly off-chip traversal is eliminated \cite{b24}.
 
 \subsection{Virtual-to-Physical Mapping Overheads}
-Discrete architectures often incur layered address translation. Host-side translation lookaside buffers (TLBs) resolve virtual addresses, followed by device-side IOMMU translation. Maintaining coherency between separate memory domains requires cache synchronization, frequently involving explicit flush operations.
+Discrete architectures can suffer from multiple levels of address translation. Both host side TLBs and device side IOMMU look aside caches must be consulted during address resolution. Cache coherence between separate memory domains can require explicit flush and synchronization operations.
 
 In UMA systems, address translation is unified. A TLB miss triggers a single page-table walk rather than dual translations. We model the mapping overhead as:
 \begin{equation}
