@@ -148,7 +148,7 @@ Consequently, $\int_{t_0}^{t_{\mathrm{fail}}} \mathbf{1}_{\{w \text{ writes to }
 \end{IEEEproof}
 
 \begin{lemma}[Bounded Rollback Liveness under Poisoned OTA]
-Let an incoming container image $C_{\mathrm{Green}}$ contain a fatal initialization bug (segfault or timeout). With pre-flight verification timeout $T_{\mathrm{pre}} \le 60\text{ s}$, the supervisor state machine guarantees automatic reversion to prior stable image $C_{\mathrm{Blue}}$ within total bounded downtime $T_{\mathrm{rollback}} \le 3.0\text{ s}$, preventing unbootable appliance bricking.
+Given an incoming container image $C_{\mathrm{Green}}$ with fatal initialization bug (segfault or timeout), with pre-flight verification timeout $T_{\mathrm{pre}} \le 60\text{ s}$, the supervisor state machine guarantees automatic revert to prior stable image $C_{\mathrm{Blue}}$ with total bounded downtime $T_{\mathrm{rollback}} \le 3.0\text{ s}$, preventing unbootable appliance bricking.
 \end{lemma}
 
 \begin{IEEEproof}
