@@ -110,7 +110,7 @@ A significant amount of research has been dedicated to the development of domain
 Similarly, Eyeriss \cite{b_eyeriss} and its mobile incarnation Eyeriss v2 \cite{b_eyeriss_v2} presented spatial accelerator architectures optimized for row-stationary dataflows to minimize on-chip data movement. Modern lightweight neural network topologies such as MobileNetV2 \cite{b31} and SqueezeNet \cite{b35} reduce parameter counts, but memory bandwidth limitations remain for decoupled accelerators such as the Tensor Streaming Processor (TSP) \cite{b20}. This current work focuses differently. Instead of optimizing the dataflow within the system, we analyze the ramifications of removing the separation between host and device entirely at the level of physical hardware.
 
 \subsection{Memory Coherency and Heterogeneous Integration}
-Heterogeneous computing with shared virtual memory (SVM) has been studied extensively. Early SVM models enabled pointer sharing between CPU and GPU domains, but behind the abstraction, physical data migration often persisted.
+Heterogeneous computing with shared virtual memory (SVM) has been investigated extensively. Early SVM implementations enabled pointer sharing between CPU and GPU, but below the abstraction layer data was frequently physically migrated.
 
 In contrast, modern System-on-Chip (SoC) designs integrate CPU, GPU, and NPU cores with physically unified memory. In such systems, no off-chip traversal is required to exchange tensors between heterogeneous execution units. The distinction is not merely semantic; it alters the physical path that data must travel. This work attempts to model that difference in energetic and latency terms.
 
